@@ -51,11 +51,18 @@ standard run takes 6-10 minutes, so a foreground run is killed mid-flight.
 
 ```bash
 mkdir -p /opt/data/research/raw/dr
-cd /opt/data/deepresearch-repo && python3 -m deepresearch \
+cd /opt/data/deepresearch-repo && DR_SEARXNG_URL=http://searxng:8080 python3 -m deepresearch \
   --question "<the fully-specified question>" \
   --depth standard \
   --out /opt/data/research/raw/dr/run.json --bg
 ```
+
+`DR_SEARXNG_URL=http://searxng:8080` is what keeps this a web research tool rather than
+a literature search. Without it, DuckDuckGo and Mojeek challenge this host, every
+general-web backend returns zero, and the run quietly becomes scholarly-only while still
+reading as complete (#8). Verified reachable from this container on 2026-09-06. If the
+container is not running, `curl -s -m 5 http://searxng:8080/ >/dev/null` fails fast —
+drop the variable and SAY in your report that coverage was scholarly-only.
 
 It prints JSON immediately: `pid`, `log`, `report`, `poll`, and an `expect` duration.
 Use a distinct `--out` filename per run if two could overlap.
@@ -147,7 +154,7 @@ Report these six things. Do not bury them.
    scholarly tier structurally cannot reach:
 
        cd contrib/searxng && docker compose up -d
-       export DR_SEARXNG_URL=http://127.0.0.1:8888
+       export DR_SEARXNG_URL=http://searxng:8080   # from inside this container
        sh verify.sh
 
    `searxng` is already first in the backend chain, so nothing else changes. If
