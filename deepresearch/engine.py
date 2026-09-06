@@ -1286,6 +1286,28 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out["rescue"] = rescue
     out["calibration"] = calibration
     out["droppedSample"] = dropped_sample
+    # These limits travel WITH the report. A caveat that only exists in the README
+    # is a caveat the person reading a pasted JSON blob never sees.
+    out["honestLimits"] = {
+        "falseKillRateUnmeasured": (
+            "This report kills claims. How often it kills a TRUE one has never been "
+            "measured — here or anywhere in the published literature. Read `refuted` "
+            "before concluding something is unsupported."),
+        "reliabilityNotValidity": (
+            "`calibration` measures whether the panel repeats itself, not whether it is "
+            "right. An LLM panel has been recorded agreeing with itself at alpha 0.77 "
+            "while being systematically wrong. A high kappa never licenses 'the panel is "
+            "correct'."),
+        "confirmedMeans": (
+            "`confirmed` means 'survived a filter of unknown accuracy', not 'true'."),
+        "killRateMeans": (
+            "The kill rate reports how much was removed, never whether removal was "
+            "correct."),
+        "searchCoverage": (
+            "Check stats.searchHealth. If every general-web backend reports 0 results, "
+            "this run saw a scholarly-only slice of the web and its coverage gaps are a "
+            "search artefact rather than evidence that nothing exists."),
+    }
     out["processCritique"] = {"verdict": verdict, "untraceableStatements": uniq("untraceableStatements"),
                               "coverageGaps": uniq("coverageGaps"), "planFlaws": uniq("planFlaws"),
                               "rationales": [webtext(c.get("rationale", ""), 500) for c in crits]}

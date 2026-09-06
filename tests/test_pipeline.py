@@ -334,6 +334,15 @@ _mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim"
 ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
    "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
 
+print("\n-- issue #12: honest limits travel with the report --")
+_hl = r.get("honestLimits") or {}
+ok(set(_hl) >= {"falseKillRateUnmeasured", "reliabilityNotValidity", "confirmedMeans"},
+   "every report carries its own limits, not just the README: %s" % sorted(_hl))
+ok("never been measured" in _hl.get("falseKillRateUnmeasured", ""),
+   "the false-kill rate is stated as unmeasured, in the output a reader actually pastes")
+ok("not whether it is right" in _hl.get("reliabilityNotValidity", ""),
+   "kappa is never allowed to masquerade as accuracy")
+
 print("\n-- issue #9: the dropped-claim majority --")
 _ENG = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                          "deepresearch", "engine.py"), encoding="utf-8").read()
