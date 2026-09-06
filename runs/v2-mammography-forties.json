@@ -1,0 +1,614 @@
+{
+ "question": "Does screening mammography for women in their forties reduce breast-cancer mortality, and by how much? Weigh the USPSTF position against the American Cancer Society position, and state the absolute risk reduction and the overdiagnosis rate.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "Have 2024 grade B for 40-74 biennial, but missing exact modeled ARR/lives saved per 1,000 screened for the 40-49 subgroup and the specific CISNET model assumptions (e.g., digital mammography, biennial vs annual, dense breast supplemental use) the Task Force relied on."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Have the 2015 ACS 'opportunity to begin at 40, recommend at 45' stance and rationale, but missing whether ACS has updated since 2015, its exact quantitative benefit figures (e.g., % mortality reduction, lives saved per 1,000), and a direct numeric comparison to USPSTF's modeled figures."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "Only UK Age trial results retrieved in detail; missing Swedish Two-County, Malmö, CNBSS, HIP trial-specific 40-49 RR/ARR figures and pooled Cochrane/prior USPSTF systematic review/CTFPHC meta-analytic estimates."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Have qualitative statement that ACS review found evidence insufficient for a confident lifetime overdiagnosis estimate; missing actual numeric overdiagnosis rate ranges (10% vs 30-50%) and explanation of why estimates vary (study design, lead-time bias, DCIS inclusion)."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Have general ACS statement that false-positive/biopsy risk is higher when starting younger; missing specific numeric recall/biopsy rates for ages 40-49 and how each organization explicitly weighs these harms against mortality benefit in decision analysis."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "Have 2015 status (USPSTF=50, ACS=45) and 2024 USPSTF (40); missing the 2009 USPSTF C-grade rationale and 2016 USPSTF update details to trace the full historical arc and assess convergence with ACS."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No direct evidence yet comparing whether USPSTF and ACS use the same underlying trial/CISNET data versus different quantitative benefit/overdiagnosis inputs; need explicit textual comparison from both guideline documents."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "Have USPSTF's Black-women mortality disparity figures and dense-breast I-statement (no quantified differential benefit); missing any ACS subgroup quantification and any family-history-specific mortality/overdiagnosis differential data."
+  }
+ ],
+ "contradictions": [
+  "The PMC5017543 source (2015) states USPSTF's recommendation at the time was to begin screening at age 50, while the 2024 USPSTF source states the current recommendation is to begin at 40 for all women 40-49 (this is not a true contradiction but a temporal discrepancy that must be explicitly reconciled with the 2009 and 2016 interim USPSTF positions, which are currently missing from the gathered evidence).",
+  "The UK Age trial data show a significant mortality reduction at 10 years (RR 0.75) but no significant reduction beyond 10 years (RR 0.98), which could be read as internally consistent but creates tension with USPSTF's/ACS's citation of long-term modeled benefit — need to check whether either guideline's quantitative ARR claims rely on the 10-year or full-follow-up UK Age trial estimate, as using the wrong one would overstate benefit."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "Scope is average-risk women aged 40-49 (not high-risk/BRCA carriers, who have separate, stronger screening recommendations from all bodies)",
+   "Geography/context is primarily US guidelines and trial evidence (USPSTF, ACS, US trial/observational data), since USPSTF and ACS are named; international guidelines (e.g., UK NHS, European) are out of scope unless needed for corroboration",
+   "Time horizon: current standing guidelines (USPSTF 2024 update and ACS 2015 guideline) plus the underlying randomized trial and meta-analysis evidence base (spanning ~1960s-2020s), not a historical timeline narrative",
+   "'Reduce mortality' means breast-cancer-specific mortality reduction from annual/biennial mammography screening in the 40-49 decade specifically, not all-cause mortality or lifetime screening effects starting later",
+   "'Absolute risk reduction' will be expressed per standard epidemiological convention (e.g., deaths averted per 1,000 or 10,000 women screened over ~10 years), and 'overdiagnosis rate' as a percentage of screen-detected cancers, acknowledging these are contested/heterogeneous estimates across studies",
+   "Reader is likely a clinician, informed patient, or policy-adjacent person deciding on an individual or population screening recommendation, not a biostatistician needing raw trial-by-trial data"
+  ],
+  "decisionAtStake": "Whether a woman in her 40s (and her clinician) should initiate routine screening mammography now (following ACS's 'opportunity to begin at 40' framing) versus waiting until 45 or 50 (following USPSTF's biennial-starting-at-40 but historically more conservative stance), and whether policymakers/insurers should mandate/cover screening starting at 40 versus later - this hinges on how large the mortality benefit is versus the overdiagnosis/false-positive harms.",
+  "keyQuestion": "Does starting routine mammography screening at age 40 (rather than 45 or 50) produce a mortality benefit large enough, relative to its overdiagnosis and false-positive harms, to justify the USPSTF's and ACS's respective recommendations, and what are the quantified absolute risk reduction and overdiagnosis figures each position relies on?",
+  "whatWouldChangeTheAnswer": [
+   "If the pooled/meta-analytic absolute risk reduction for women 40-49 turns out to be very small (e.g., <1 death averted per 1,000 screened over 10 years) versus a larger figure (e.g., >2-3 per 1,000), this would shift the harm-benefit calculus materially",
+   "If overdiagnosis estimates for this age group are shown to be low (~10%) versus high (~30-50% of screen-detected cancers), the case for/against early screening flips",
+   "If USPSTF's 2024 updated guidance has already moved to recommend starting at 40 (converging with ACS), the 'weigh two opposing positions' framing changes to 'note convergence with residual differences in interval/modality'",
+   "New RCT or large observational data (e.g., updated Swedish Two-County, CNBSS reanalysis, or UK Age trial follow-up) showing mortality benefit is substantially larger or smaller than currently cited would change confidence bounds",
+   "If differential benefit by race/risk subgroup (e.g., higher benefit for Black women who develop more aggressive early-onset cancers) is quantified, it could argue for a more targeted rather than blanket recommendation, altering the practical takeaway",
+   "If false-positive/biopsy harms are shown to cause measurable long-term psychological or economic harm outweighing modest mortality gains, this would tilt the answer toward the more conservative (USPSTF-style) position"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Screening mammography in the 40s produces a modest but real mortality benefit (roughly 15-20% relative risk reduction in breast-cancer death, translating to a small absolute risk reduction, e.g., ~1 death averted per 1,000-1,500 women screened over ~10 years), with overdiagnosis estimated around 10-20%; both USPSTF and ACS now broadly agree screening should start at 40 but differ on interval (biennial vs annual) and framing (recommendation vs. 'opportunity').",
+    "killCriterion": "Finding that USPSTF's current (2024) B-grade recommendation and ACS's 'opportunity to screen starting at 40, recommend at 45' guidance actually diverge substantially in the quantitative benefit estimates they cite, or that the cited RR reduction for this age band is materially outside the 15-20% range in the primary trials/meta-analyses (e.g., CNBSS showing null effect, Swedish trials showing >30%)."
+   },
+   {
+    "hypothesis": "The mortality benefit for 40-49 year-olds is real but small enough, and overdiagnosis/false-positive harm large enough, that USPSTF's historical position (screening starting at 50, individualized decision-making for 40s) is the more evidence-consistent stance, and ACS's earlier start recommendation is driven more by advocacy/practice norms than by decisively superior mortality data.",
+    "killCriterion": "Finding that USPSTF itself has revised to unconditionally recommend starting at 40 (removing the 'individual decision' framing for the 40s) based on updated modeling (e.g., CISNET) showing meaningful mortality benefit, which would undercut the claim that USPSTF's stance reflects weaker evidence."
+   },
+   {
+    "hypothesis": "The two organizations' positions are not fundamentally about differing mortality-benefit estimates but about differing risk-benefit value judgments (how much false-positive/overdiagnosis harm is acceptable per death averted) applied to essentially the same underlying trial data - i.e., the disagreement is normative, not empirical.",
+    "killCriterion": "Finding that USPSTF and ACS cite substantively different absolute risk reduction or overdiagnosis figures (not just different weighting of the same figures) - e.g., different meta-analyses, different trial inclusion/exclusion (USPSTF relies more heavily on trials with null results like CNBSS, ACS on Swedish cohort/service-screening data) - which would indicate the divergence is at least partly evidentiary, not purely value-based."
+   },
+   {
+    "hypothesis": "Evidence quality for the 40-49 subgroup is too heterogeneous/underpowered (mixing RCTs from decades ago with modern observational/CISNET modeling) to support a precise, reliable absolute risk reduction or overdiagnosis figure, meaning any single number cited by either body carries substantial uncertainty and the 'weigh the two positions' framing overstates the precision available.",
+    "killCriterion": "Finding that multiple independent meta-analyses (e.g., Cochrane, USPSTF systematic review, Canadian Task Force) converge on similar point estimates with reasonably tight confidence intervals for both ARR and overdiagnosis in the 40-49 subgroup, indicating the evidence base is in fact reasonably consolidated rather than too heterogeneous to summarize."
+   }
+  ]
+ },
+ "perspectives": [
+  {
+   "label": "Primary trialist",
+   "lens": "An academic epidemiologist who distrusts guideline summaries and wants to re-derive ARR/RRR directly from original RCT data and Cochrane meta-analysis, distrusting any number not traceable to a specific trial arm.",
+   "query": "randomized controlled trial mammography screening age 40-49 breast cancer mortality relative risk absolute risk reduction meta-analysis Cochrane"
+  },
+  {
+   "label": "USPSTF steelman modeler",
+   "lens": "A decision-modeling researcher who takes USPSTF's CISNET microsimulation seriously and wants to build the strongest honest case for why starting at 40 (2024 B-grade) is now justified under USPSTF's own framework, distrusting claims that USPSTF is 'too conservative.'",
+   "query": "USPSTF 2024 breast cancer screening recommendation grade B CISNET modeling women 40 to 49 lives saved"
+  },
+  {
+   "label": "ACS guideline auditor",
+   "lens": "A guideline-methodology auditor who distrusts advocacy-influenced organizations and scrutinizes ACS's 2015 guideline update process, its cited evidence, and whether its 'opportunity to begin at 40' language is actually backed by distinct quantitative estimates versus USPSTF.",
+   "query": "American Cancer Society 2015 breast cancer screening guideline update evidence review qualified recommendation age 40 rationale"
+  },
+  {
+   "label": "Overdiagnosis skeptic",
+   "lens": "A skeptical clinician-scientist (in the mold of Welch/Bleyer) who distrusts screening enthusiasm broadly and hunts for the strongest counter-case showing overdiagnosis and false-positive harms swamp any mortality benefit for women in their 40s.",
+   "query": "mammography overdiagnosis rate estimate 40s screening breast cancer false positive harms Welch Bleyer critique"
+  },
+  {
+   "label": "Health economist / cost-effectiveness analyst",
+   "lens": "A cost-effectiveness/health-policy analyst distrusting pure clinical framing, focused on number-needed-to-screen, cost per life-year saved, and insurance-mandate implications (e.g., ACA coverage tied to USPSTF grade) that make the ARR/overdiagnosis numbers policy-consequential.",
+   "query": "cost-effectiveness number needed to screen mammography age 40-49 quality-adjusted life year insurance coverage USPSTF grade"
+  },
+  {
+   "label": "Patient-advocate end user",
+   "lens": "A patient-decision-aid researcher or advocacy group representative who distrusts population-level statistics for not capturing individual risk variation (race, breast density, family history) and seeks how real women aged 40-49 are counseled to weigh personal risk.",
+   "query": "shared decision making mammography screening age 40 breast density Black women disparities racial differences outcomes"
+  }
+ ],
+ "summary": "Synthesis failed - returning 30 verified claims unmerged.",
+ "findings": [],
+ "confirmedRaw": [
+  {
+   "claim": "In the 2009 CISNET analysis, all six models concluded biennial screening from ages 50-74 was more efficient than earlier starting ages or annual intervals, which influenced the 2009 USPSTF recommendation of biennial screening from ages 50-74.",
+   "source": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quote": "In the initial analysis done for the 2009 recommendations, all six models concluded that biennial screening from ages 50-74 was more efficient than earlier starting ages or annual intervals (Mandelblatt et al., 2009). This finding was influential in the Task Force’s choice to recommend biennial plain-film mammography from ages 50 to 74 (USPSTF, 2009)."
+  },
+  {
+   "claim": "The CISNET Breast Working Group was commissioned by USPSTF in 2009 and 2014 to conduct modeling analyses informing updates to breast cancer screening recommendations.",
+   "source": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quote": "The CISNET Breast Working group was commissioned by the U.S. Preventive Services Task Force (USPSTF) in 2009 and 2014 to conduct analyses to inform an update of their breast cancer screening recommendations."
+  },
+  {
+   "claim": "The 2015 ACS guideline update changed the recommended age to begin regular screening mammography from 40 to 45 for women at average risk.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "quote": "The new ACS guidelines state that mammograms should begin at age 45 instead of 40"
+  },
+  {
+   "claim": "The 2016 CISNET modeling study also examined whether preferences for health states related to screening and its downstream harms affected conclusions about optimal screening strategy.",
+   "source": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quote": "We also examined how breast density, risk, or comorbidity levels affect results and whether preferences for health states related to screening and its downstream consequences affected conclusions."
+  },
+  {
+   "claim": "The ACS systematic evidence review found that the quality of available evidence on overdiagnosis was insufficient to confidently estimate a lifetime risk of breast cancer deaths from overdiagnosis.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "quote": "the authors stated that the quality of the available evidence on overdiagnosis is not sufficient to estimate a lifetime risk of breast cancer deaths with confidence"
+  },
+  {
+   "claim": "The ACS evidence review found that the cumulative lifetime risk of false-positive examinations is greater when mammography screening is started at a younger age, with higher recall and false biopsy rates in younger women.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "quote": "in younger women, the cumulative lifetime risk of false-positive examinations is greater when mammography is started at a younger age, as the higher recall rate and number of false biopsies in younger women can be a problem"
+  },
+  {
+   "claim": "In the UK Age trial, women aged 39-41 randomized to yearly mammographic screening from age 40 to 48 had a significant reduction in breast cancer mortality at 10 years of follow-up (83 deaths in intervention vs 219 in control; RR 0.75, 95% CI 0.58-0.97, p=0.029).",
+   "source": "https://kclpure.kcl.ac.uk/portal/en/publications/effect-of-mammographic-screening-from-age-40-years-on-breast-canc/",
+   "quote": "We observed a significant reduction in breast cancer mortality at 10 years of follow-up, with 83 breast cancer deaths in the intervention group versus 219 in the control group (relative rate [RR] 0·75 [95· CI 0·58–0·97]; p=0·029)."
+  },
+  {
+   "claim": "For the 2016 USPSTF recommendations, CISNET used six models to estimate outcomes of eight screening strategies differing by starting age and interval, and examined how breast density, risk, or comorbidity levels affect outcomes.",
+   "source": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quote": "This modeling study estimated outcomes of eight strategies that differed by starting age and interval (Mandelblatt et al., 2016). As in the earlier analysis, biennial strategies were consistently the most efficient for average-risk women and were influential in informing the 2016 USPSTF screening recommendations (Siu and the USPSTF, 2016)."
+  },
+  {
+   "claim": "Under the 2015 ACS guideline, women aged 40 to 44 should have the opportunity to begin annual mammography screening, rather than a firm recommendation to do so.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "quote": "Women from 40 to 44 should have the opportunity to have an annual mammogram screening (presumably after calculating personal risk, family history, and other pertinent factors)."
+  },
+  {
+   "claim": "USPSTF found insufficient evidence (I statement) to recommend for or against supplemental screening with ultrasound or MRI for women with dense breasts after an otherwise negative mammogram.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+   "quote": "The USPSTF concludes that the current evidence is insufficient to assess the balance of benefits and harms of supplemental screening for breast cancer using breast ultrasonography or magnetic resonance imaging (MRI) in women identified to have dense breasts on an otherwise negative screening mammogram."
+  },
+  {
+   "claim": "ACS identifies overdiagnosis as a risk of mammography, defined as diagnosis of a cancer that would never have caused problems if not found by screening, but does not quantify a specific overdiagnosis rate on this page.",
+   "source": "https://www.cancer.org/cancer/types/breast-cancer/screening-tests-and-early-detection/american-cancer-society-recommendations-for-the-early-detection-of-breast-cancer.html",
+   "quote": "Overdiagnosis : There’s a small chance of being diagnosed with cancer that never would have caused any problems had it not been found during screening."
+  },
+  {
+   "claim": "The modeling also quantified harms, finding 201 benign biopsies per 1000 women screened under the biennial 40-74 DBT strategy, alongside 165 life-years gained.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/document/modeling-study/breast-cancer-screening",
+   "quote": "Six validated CISNET models found that, compared with no screening, biennial mammography screening with digital breast tomosynthesis from age 40 to 74 yielded a median of 8.2 breast cancer deaths averted per 1000 women screened, equal to a 30% reduction in breast cancer mortality, and 165 life-years gained, 1376 false-positive recalls, 201 benign biopsies, and 14 overdiagnosed cases per 1000 women…"
+  },
+  {
+   "claim": "The UK Age trial found no significant reduction in breast cancer mortality beyond 10 years of follow-up (126 deaths vs 255 deaths, RR 0.98, 95% CI 0.79-1.22, p=0.86), though the trial authors state the absolute mortality reduction remained constant over time.",
+   "source": "https://kclpure.kcl.ac.uk/portal/en/publications/effect-of-mammographic-screening-from-age-40-years-on-breast-canc/",
+   "quote": "No significant reduction was observed thereafter, with 126 deaths versus 255 deaths occurring after more than 10 years of follow-up (RR 0·98 [0·79–1·22]; p=0·86)."
+  },
+  {
+   "claim": "The UK Age trial authors conclude that reducing the lower age limit for breast screening from 50 to 40 years could potentially reduce breast cancer mortality, based on yearly mammography from age 40/41 before age 50.",
+   "source": "https://kclpure.kcl.ac.uk/portal/en/publications/effect-of-mammographic-screening-from-age-40-years-on-breast-canc/",
+   "quote": "Yearly mammography before age 50 years, commencing at age 40 or 41 years, was associated with a relative reduction in breast cancer mortality, which was attenuated after 10 years, although the absolute reduction remained constant. Reducing the lower age limit for screening from 50 to 40 years could potentially reduce breast cancer mortality."
+  },
+  {
+   "claim": "The primary published sources for the CISNET modeling underlying USPSTF recommendations are Mandelblatt et al. 2009 and Mandelblatt et al. 2016, both published in Annals of Internal Medicine.",
+   "source": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quote": "Results of these studies were published in the following articles in the Annals of Internal Medicine in 2009 and 2016: Mandelblatt JS, Stout NK, Schechter CB, van den Broek JJ, Miglioretti DL, Krapcho M, et al. Collaborative Modeling of the Benefits and Harms Associated With Different U.S. Breast Cancer Screening Strategies. Ann Intern Med. 2016 Feb 16;164(4):215-25."
+  },
+  {
+   "claim": "The American Cancer Society recommends that women undergo regular screening mammography for early detection of breast cancer.",
+   "source": "https://www.cancer.org/health-care-professionals/american-cancer-society-prevention-early-detection-guidelines/breast-cancer-screening-guidelines.html",
+   "quote": "For the early detection of breast cancer, the American Cancer Society (ACS) recommends that women regularly get a screening mammography."
+  },
+  {
+   "claim": "USPSTF states Black women are approximately 40% more likely to die of breast cancer than White women, motivating a call for research into whether different screening strategies could help, but it does not quantify a differential mortality benefit from screening for Black women.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+   "quote": "Black women are 40 percent more likely to die from breast cancer than White women and too often get aggressive cancers at young ages."
+  },
+  {
+   "claim": "Annual screening of women aged 40-79 was estimated to have the lowest per-mammogram false-positive rate (6.5%) and benign biopsy rate (0.88%) among the modeled screening scenarios.",
+   "source": "https://www.rsna.org/news/2024/february/breast-screening-at-40-saves-lives",
+   "quote": "Annual screening of women 40-79 years showed the lowest per mammogram false-positive screens (6.5%) and benign biopsies (0.88%) compared to other screening scenarios."
+  },
+  {
+   "claim": "This 2024 recommendation changed from the prior approach of individualized decision-making for women 40-49 to universal biennial screening starting at 40.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+   "quote": "For the current recommendation, the USPSTF recommends biennial screening mammography for women aged 40 to 49 years, rather than individualizing the decision to undergo screening for women in this age group. This recommendation is otherwise consistent with the 2016 USPSTF recommendation on screening for breast cancer."
+  },
+  {
+   "claim": "The 2024 USPSTF final recommendation gives a B grade to biennial screening mammography for all women aged 40 to 74 years.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+   "quote": "The USPSTF recommends biennial screening mammography for women aged 40 to 74 years. B"
+  },
+  {
+   "claim": "ACS recommends that average-risk women aged 40-44 have the option to start annual mammography screening.",
+   "source": "https://www.cancer.org/cancer/types/breast-cancer/screening-tests-and-early-detection/american-cancer-society-recommendations-for-the-early-detection-of-breast-cancer.html",
+   "quote": "Women between 40 and 44 have the option to start screening with a mammogram every year."
+  },
+  {
+   "claim": "The 2024 CISNET analysis found that annual screening of Black women from age 40 to 49 with biennial screening thereafter reduced breast cancer mortality disparities while maintaining benefit-to-harm trade-offs similar to those for all women.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/document/modeling-study/breast-cancer-screening",
+   "quote": "Annual screening of Black women from age 40 to 49 years with biennial screening thereafter reduced breast cancer mortality disparities while maintaining similar benefit-to-harm trade-offs as for all women."
+  },
+  {
+   "claim": "The ACS commissioned a Duke Evidence Synthesis Group review of the literature on benefits and harms of breast cancer screening to update its guideline.",
+   "source": "https://www.cancer.org/health-care-professionals/american-cancer-society-prevention-early-detection-guidelines/breast-cancer-screening-guidelines.html",
+   "quote": "Benefits and Harms of Breast Cancer Screening Review of Literature for Updating the ACS Evidence-based Breast Cancer Screening Guideline (Duke Evidence Synthesis Group)"
+  },
+  {
+   "claim": "The ACS 2015 guideline explicitly notes that women aged 40-44 can choose to start screening early, reflecting an 'opportunity to begin at 40' stance distinct from its default starting age of 45.",
+   "source": "https://www.guidelinecentral.com/insights/breast-cancer-screening-side-by-side/",
+   "quote": "Special Notes More research needed for women 75+ Women 40-44 can choose to start early Screening mammography every 1 or 2 years based on informed decision-making"
+  },
+  {
+   "claim": "CISNET modeling (the basis for the 2024 USPSTF recommendation) found that biennial screening with digital breast tomosynthesis starting at age 40 until 74 averted a median of 8.2 breast cancer deaths per 1000 women screened compared with no screening.",
+   "source": "https://www.uspreventiveservicestaskforce.org/uspstf/document/modeling-study/breast-cancer-screening",
+   "quote": "Biennial screening with DBT starting at age 40, 45, or 50 years until age 74 years averted a median of 8.2, 7.5, or 6.7 breast cancer deaths per 1000 women screened, respectively, vs no screening."
+  },
+  {
+   "claim": "The American Cancer Society's 2015 guideline recommends average-risk women start regular annual mammography screening at age 45, though the guideline allows women 40-44 the choice to start earlier.",
+   "source": "https://www.guidelinecentral.com/insights/breast-cancer-screening-side-by-side/",
+   "quote": "Starting Age 40 years 45 years 40 years Frequency Every 2 years Every year for ages 45-54, biennial screening for ages 55-74 Every 1 or 2 years"
+  },
+  {
+   "claim": "The USPSTF assigns a letter grade from A to D based on certainty of evidence and magnitude of net benefit, with 'I statements' issued when evidence is insufficient, forming the general methodological basis for grades such as the one given to mammography screening in women 40-49.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10042553/",
+   "quote": "The USPSTF assigns a level of certainty to the estimate of net benefit of a preventive service (high, moderate, or low). The magnitude of net benefit is also judged (substantial, moderate, small, or zero/negative). The USPSTF uses these assessments to assign a letter grade from A (recommend) to D (recommend against). I statements are issued when evidence is insufficient."
+  },
+  {
+   "claim": "A Cochrane review found that most cancer screening trials do not even assess harms, contributing to a lack of harms data that forces USPSTF to rely on other sources.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5530253/",
+   "quote": "A recent Cochrane review confirmed that most cancer screening trials do not even assess harms ( Heleno et al., 2013 ). Due to the dearth of data on harms in clinical trials, the USPSTF often have to rely on other sources to assess harms of screening tests."
+  },
+  {
+   "claim": "The Affordable Care Act, when enacted in 2010, required new private health plans to cover annual breast cancer screenings without cost-sharing for women aged 40 and older, based on the earlier 2002 USPSTF recommendation rather than the 2009 revision.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5530253/",
+   "quote": "As a result, when it was enacted in 2010 the Affordable Care Act required that annual breast cancer screenings be covered by new private health plans without cost-sharing to women aged 40 and older, based on the 2002 USPSTF recommendations"
+  },
+  {
+   "claim": "The USPSTF does not consider cost-effectiveness in its recommendations; instead it commissions decision analyses to estimate the balance of clinical benefits and harms of preventive interventions.",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5530253/",
+   "quote": "the providers in the survey responded that potential cost-savings were factors that influence guidelines, but cost-effectiveness was not considered by the USPSTF. Instead, the USPSTF commissions decision analyses for some recommendations to estimate the balance of both clinical benefits and harms of preventive interventions."
+  }
+ ],
+ "citationAudit": {
+  "citationAccuracy": 82.9,
+  "effectiveCitations": 29,
+  "supported": 29,
+  "partial": 5,
+  "unsupported": 1,
+  "unreachable": 1,
+  "scope": "full verification pool (36 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 1
+ },
+ "rescue": {
+  "wipedSubQuestions": [
+   "Do USPSTF and ACS rely on the same underlying trial/meta-analytic data but reach different conclusions due to differing harm-weighting, or do they actually cite different quantitative estimates of benefit/overdiagnosis?"
+  ],
+  "targeted": 1,
+  "sourcesAdded": 4,
+  "claimsReVerified": 6,
+  "claimsSaved": 5
+ },
+ "refuted": [
+  {
+   "claim": "As of this 2015 publication, USPSTF's recommendation was for screening to begin at age 50, differing from ACS's age-45 start and from ACOG's age-40 recommendation.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "why": "The supporting quote only states the US Preventive Services Task Force calls for exams to begin at age 50 — it says nothing about ACS's age-45 start or ACOG's age-40 recommendation. The claim under review adds two comparative data points (ACS=45, ACOG=40) that are not present anywhere in the quoted text. This is a case of the claim generalizing well beyond what the quote licenses, fabricating specific numbers (45 and 40) that the quote does not state at all. Even if these facts might be true els…"
+  },
+  {
+   "claim": "Both USPSTF and ACS guidelines identify overdiagnosis, false positives, and unnecessary biopsies as potential harms of mammography screening, without providing a specific quantitative overdiagnosis percentage in this comparison.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://www.guidelinecentral.com/insights/breast-cancer-screening-side-by-side/",
+   "why": "The claim states neither USPSTF nor ACS provides a specific quantitative overdiagnosis percentage, but this is contradicted by the counter-evidence itself. The Oxford Academic/JBI source (academic.oup.com/jbi/article-abstract/6/4/338/7691827) explicitly states the USPSTF's 2024 report estimated overdiagnosis using summary evaluations of 3 RCTs — indicating USPSTF did generate a quantitative overdiagnosis estimate, not merely list it as an unquantified potential harm. This directly undercuts the …"
+  },
+  {
+   "claim": "A USPSTF meta-analysis of 8 randomized controlled trials for women aged 39-49 found a relative risk of breast-cancer mortality of 0.92 (95% CI 0.75-1.02) with screening versus no screening.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://www.komen.org/breast-cancer/facts-statistics/research-studies/topics/breast-cancer-screening-with-mammography-for-ages-40-49/",
+   "why": "The supporting quote is a bare table fragment: U.S. Preventive Services Task Force [1] 8 studies ages 39-49 0.92 (0.75-1.02). It does not contain the words meta-analysis, relative risk of breast-cancer mortality, randomized controlled trials, or screening versus no screening that appear in the claim. The claim is a paraphrase/reconstruction built around a table row, not verbatim page text, and it adds interpretive framing (calling it a meta-analysis, specifying randomized controlled trials, spec…"
+  },
+  {
+   "claim": "A Cochrane Collaboration meta-analysis of 8 studies in women under age 50 with 13 years follow-up found a relative risk of breast-cancer mortality of 0.84 (95% CI 0.73-0.96), while the 3 trials judged to have good methodology showed a combined RR of 0.87 (0.73-1.03).",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://www.komen.org/breast-cancer/facts-statistics/research-studies/topics/breast-cancer-screening-with-mammography-for-ages-40-49/",
+   "why": "The claim states 13 years follow-up as a description of the study duration, but the supporting quote shows 13 appearing in a table format (8 studies 13 ages less than 50 0.84 (0.73-0.96)*) that is ambiguous/truncated - it is not clear from the quote that 13 refers to 13 years follow-up rather than some other table column (e.g., number of something else, or a mis-parsed table cell). The quote as given is a fragmented table extraction, not verbatim prose confirming 13 years follow-up as a specific…"
+  },
+  {
+   "claim": "In 2009 the USPSTF revised breast cancer screening recommendations, changing frequency from 1-2 years to biennial and concluding that the overall benefit of mammography was smaller for women aged 40-49 than for older women, recommending individualized decisions after discussion with a doctor.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5530253/",
+   "why": "The claim under review characterizes the 2009 USPSTF position as merely recommending individualized decisions after discussion with a doctor for women 40-49, framing it as a soft, patient-choice recommendation. This materially understates and mischaracterizes the actual 2009 USPSTF stance. The primary source itself, the official USPSTF 2009 recommendation statement (uspreventiveservicestaskforce.org), states explicitly: The USPSTF now recommends against routine screening of women aged 40 to 49 y…"
+  },
+  {
+   "claim": "The USPSTF commissions simulation modeling studies (such as CISNET-type models) when empirical trial data are sufficient to recommend a service but questions remain, such as about screening intervals.",
+   "killedBy": "support+citation-audit",
+   "vote": "2-1",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10042553/",
+   "why": "The claim states USPSTF commissions modeling studies when empirical trial data are sufficient - but the quote actually says when empiric data are sufficient, not empirical trial data. This is a subtle but meaningful swap: empiric data in the source context refers to observational/empirical evidence broadly, not specifically trial data. The claim narrows the scope to randomized trial data specifically, which the quote does not state. Additionally, the claim adds (such as CISNET-type models) as a …"
+  }
+ ],
+ "sources": [
+  {
+   "url": "https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(20)30398-3/fulltext",
+   "quality": "unreliable",
+   "perspective": "Primary trialist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/32800099/",
+   "quality": "unreliable",
+   "perspective": "Primary trialist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://kclpure.kcl.ac.uk/portal/en/publications/effect-of-mammographic-screening-from-age-40-years-on-breast-canc/",
+   "quality": "primary",
+   "perspective": "Primary trialist",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.thelancet.com/journals/lancet/article/PIIS0140673606698346/abstract",
+   "quality": "unreliable",
+   "perspective": "Primary trialist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/MED/32800099",
+   "quality": "unreliable",
+   "perspective": "Primary trialist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://jamanetwork.com/journals/jama/fullarticle/2818283",
+   "quality": "unreliable",
+   "perspective": "USPSTF steelman modeler",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+   "quality": "primary",
+   "perspective": "USPSTF steelman modeler",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.uspreventiveservicestaskforce.org/uspstf/sites/default/files/file/supporting_documents/breast-cancer-screening-final-rec-bulletin.pdf",
+   "quality": "unreliable",
+   "perspective": "USPSTF steelman modeler",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.guidelinecentral.com/uspstf/2035/",
+   "quality": "secondary",
+   "perspective": "USPSTF steelman modeler",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.sciencedirect.com/science/article/pii/S073839912600114X",
+   "quality": "unreliable",
+   "perspective": "USPSTF steelman modeler",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://jamanetwork.com/journals/jama/fullarticle/2463262",
+   "quality": "unreliable",
+   "perspective": "ACS guideline auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5017543/",
+   "quality": "secondary",
+   "perspective": "ACS guideline auditor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://escholarship.org/uc/item/5s68h05q",
+   "quality": "unreliable",
+   "perspective": "ACS guideline auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.cancer.org/health-care-professionals/american-cancer-society-prevention-early-detection-guidelines/breast-cancer-screening-guidelines.html",
+   "quality": "primary",
+   "perspective": "ACS guideline auditor",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T3"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/26501536/?dopt=Abstract",
+   "quality": "unreliable",
+   "perspective": "ACS guideline auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa1600249",
+   "quality": "unreliable",
+   "perspective": "Overdiagnosis skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.uspreventiveservicestaskforce.org/uspstf/document/modeling-study/breast-cancer-screening",
+   "quality": "primary",
+   "perspective": "USPSTF 2024 modeling detail",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.uspreventiveservicestaskforce.org/uspstf/index.php/document/final-modeling-report/breast-cancer-screening",
+   "quality": "primary",
+   "perspective": "USPSTF 2024 modeling detail",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T3"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/38687505/",
+   "quality": "unreliable",
+   "perspective": "USPSTF 2024 modeling detail",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://cisnet.cancer.gov/breast/highlights/screening.html",
+   "quality": "primary",
+   "perspective": "USPSTF 2024 modeling detail",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pubs.rsna.org/doi/10.1148/radiol.232658",
+   "quality": "unreliable",
+   "perspective": "USPSTF 2024 modeling detail",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.cancer.org/cancer/types/breast-cancer/screening-tests-and-early-detection/american-cancer-society-recommendations-for-the-early-detection-of-breast-cancer.html",
+   "quality": "primary",
+   "perspective": "ACS current quantitative stance",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.rsna.org/news/2024/february/breast-screening-at-40-saves-lives",
+   "quality": "secondary",
+   "perspective": "ACS current quantitative stance",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.guidelinecentral.com/insights/breast-cancer-screening-side-by-side/",
+   "quality": "secondary",
+   "perspective": "ACS current quantitative stance",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.komen.org/breast-cancer/facts-statistics/research-studies/topics/breast-cancer-screening-with-mammography-for-ages-40-49/",
+   "quality": "secondary",
+   "perspective": "Pooled trial meta-analysis 40-49",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.thelancet.com/article/S1470-2045(20)30398-3/fulltext",
+   "quality": "unreliable",
+   "perspective": "Pooled trial meta-analysis 40-49",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10042553/",
+   "quality": "secondary",
+   "perspective": "rescue7",
+   "wave": "rescue",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5530253/",
+   "quality": "secondary",
+   "perspective": "rescue7",
+   "wave": "rescue",
+   "claims": 4,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.sciencedirect.com/science/article/pii/S0749379717305305",
+   "quality": "unreliable",
+   "perspective": "rescue7",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.ajpmonline.org/article/S0749-3797(17)30530-5/fulltext",
+   "quality": "unreliable",
+   "perspective": "rescue7",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T3"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 30,
+  "claimsExtracted": 61,
+  "urlDupes": 3,
+  "budgetDropped": 27,
+  "claimsDroppedBeforeVerify": 24,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 88,
+    "ok": 88,
+    "fail": 0,
+    "results": 476
+   }
+  },
+  "sourceTiers": {
+   "T2": 9,
+   "T1": 7,
+   "T3": 14
+  },
+  "agentCalls": 306,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 683472,
+  "outputTokens": 165083,
+  "wallSeconds": 671.0,
+  "claimsVerified": 36,
+  "confirmed": 30,
+  "killed": 6,
+  "afterSynthesis": 0
+ }
+}

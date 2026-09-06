@@ -362,6 +362,14 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                         break
                     return got
             else:
+                # No StructuredOutput block in the response. Say what DID come back:
+                # this path returned None silently, and a caller three phases later
+                # reported "synthesis failed" with nothing anywhere saying why.
+                kinds = [b.get("type") for b in (out.get("content") or [])]
+                log("  [%s] no StructuredOutput in the response (stop_reason=%s, blocks=%s); "
+                    "giving up on this call" % (label, out.get("stop_reason"), kinds or "none"))
+                with _stats_lock:
+                    _stats["errors"] += 1
                 return None
             continue
         except urllib.error.HTTPError as e:
@@ -394,6 +402,10 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
             break
     with _stats_lock:
         _stats["errors"] += 1
+    # Every exit above this point either returned a value or logged a reason. Say so
+    # here too, so "the agent returned None" is never a thing a reader has to infer
+    # from a downstream symptom.
+    log("  [%s] exhausted %d attempt(s) and returned nothing" % (label, retries))
     return None
 
 def pmap(fn, items, workers=None):
@@ -1526,11 +1538,32 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                         "why": webtext(next((v["evidence"] for v in c["verdicts"] if v.get("refuted")), ""), 500)}
 
     if not report:
+        # Carry the INSTRUMENTS through this path. They were dropped here, and the loss
+        # was measured 2026-09-06: a run computed a full calibration (n=30, kappa 0.7115,
+        # gate `calibrated`) and a dropped-claim sample (9/10 survived vs 87% of kept),
+        # logged both, and then discarded them because synthesis failed afterwards. The
+        # most expensive measurements in the run were thrown away at exactly the moment
+        # they were most worth having - a failed run is when you most want to know
+        # whether the panel was behaving.
+        #
+        # Synthesis failing says nothing about the verification that already happened.
         return dict(base, summary="Synthesis failed - returning %d verified claims unmerged." % len(confirmed),
                     findings=[], confirmedRaw=[{"claim": webtext(c["claim"], 400),
                                                 "source": webtext(c["sourceUrl"], 250),
                                                 "quote": webtext(c.get("quote", ""), 400)} for c in confirmed],
                     citationAudit=fact_metrics, rescue=rescue, refuted=[to_ref(c) for c in killed],
+                    calibration=calibration, droppedSample=dropped_sample,
+                    citationDetail=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
+                                     "support": f["support"]} for f in fact_by.values()],
+                    citationPartials=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
+                                       "reasoning": webtext(f.get("reasoning", ""), 400)}
+                                      for f in fact_by.values() if f["support"] == "partial"],
+                    honestLimits={"synthesisFailed": (
+                        "Synthesis did not return a usable report, so there are no findings and no "
+                        "summary. Everything BEFORE synthesis did run and is reported here: the "
+                        "verified claims, what was refuted and why, the citation audit, and the "
+                        "calibration if one was requested. Read `confirmedRaw` and `refuted` "
+                        "directly. This is an incomplete report, not an empty one.")},
                     sources=src_rows(), stats=stats(claimsVerified=len(voted), confirmed=len(confirmed),
                                                     killed=len(killed), afterSynthesis=0))
 

@@ -592,6 +592,17 @@ ok(dr._schema_shortfall({"type": "object", "required": ["a"],
    "but an EMPTY required array with no minItems is still legal - contradictions is "
    "legitimately empty, and rejecting that would retry every clean run")
 
+ok("no StructuredOutput in the response" in _agent_src and "exhausted" in _agent_src,
+   "every way agent() can return None now logs a reason: one run reported 'synthesis "
+   "failed' with nothing anywhere in the log saying why")
+
+_fallback = _engine_txt.split("Synthesis failed - returning", 1)[1].split("\n\n", 1)[0]
+ok("calibration=calibration" in _fallback and "droppedSample=dropped_sample" in _fallback,
+   "a failed synthesis no longer discards the calibration and the dropped-claim sample: "
+   "one run computed kappa=0.7115 at n=30, logged `calibrated`, and then threw it away")
+ok("synthesisFailed" in _fallback,
+   "and the report says it is incomplete rather than empty, naming what DID run")
+
 print("\n-- a rejected response is retried DIFFERENTLY, not identically --")
 ok("stop_reason" in _agent_src and "TRUNCATED" in _agent_src,
    "a truncated response is diagnosed as truncation: stop_reason separates 'cut off' from "
