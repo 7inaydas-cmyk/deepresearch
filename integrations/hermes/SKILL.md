@@ -1,6 +1,14 @@
 ---
 name: deepresearch
-description: "Deep fact-checked research (6-8 min). Exhaustive, citation-audited multi-agent research on any topic. Fans out diverse research perspectives, recursively closes coverage gaps, kills weak claims with a 3-lens adversarial panel, re-checks every citation blind against the live page, and audits its own process for hallucination. Use for: 'deep research on X', 'is it true that X', 'settle this question', 'due diligence', 'what does the evidence actually say', or any question where being WRONG is expensive. Costs nothing beyond the Claude subscription: keyless search, no API key. Slower and far more rigorous than mega_research - use mega_research for a quick sourced answer, deepresearch when correctness matters more than speed."
+description: >
+  Research that refutes itself first. Kills weak claims with a 3-lens adversarial panel, re-
+  checks every citation blind against the live page, and audits its own summary for statements
+  no source supports. Writes falsifiable kill criteria before it searches. Use for: 'deep
+  research on X', 'is it true that X', 'settle this question', 'due diligence', 'what does the
+  evidence actually say', or any question where being WRONG is expensive. Keyless search, no
+  API key beyond the Claude subscription. Slower and far more rigorous than mega_research —
+  use mega_research for a quick sourced answer, deepresearch when correctness matters more
+  than speed.
 version: 1.0.0
 author: ported from the Claude Code /deepresearch harness
 license: MIT
@@ -12,10 +20,6 @@ metadata:
 ---
 
 # deepresearch
-
-> Paths below use `/opt/data`, which is `HERMES_HOME` inside the standard
-> Hermes container. If yours differs, substitute it. `install.sh hermes` symlinks
-> this skill into the Hermes skills directory for you.
 
 Multi-agent research that assumes its own output is wrong until proven otherwise.
 

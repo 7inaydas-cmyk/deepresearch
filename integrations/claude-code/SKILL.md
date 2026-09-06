@@ -1,11 +1,12 @@
 ---
 name: deepresearch
 description: >
-  Exhaustive, citation-audited research on any topic using many parallel agents.
-  Fans out diverse research perspectives, recursively closes coverage gaps, kills weak
-  claims with a 3-lens adversarial panel, re-checks every citation blind, and audits its
-  own process for hallucination. Use when the user wants a deep, comprehensive,
-  fact-checked answer, or invokes /deepresearch. Prefer this over the built-in
+  Deep research that refutes its own findings before showing them. Kills weak claims with a
+  3-lens adversarial panel, re-checks every citation blind against the live page, and audits
+  its own summary for statements no source supports. Writes falsifiable kill criteria before
+  it searches. Use when being WRONG is expensive: 'deep research on X', 'is it true that X',
+  'settle this', 'due diligence', 'what does the evidence actually say'. Keyless search, no
+  paid search API. Slower and far more rigorous than a quick web lookup — prefer it over
   /deep-research when correctness matters more than speed.
 ---
 
