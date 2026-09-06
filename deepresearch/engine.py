@@ -65,6 +65,9 @@ RESCUE_MAX_SUBQ, RESCUE_FETCH = 4, 8
 MAX_CONCURRENCY = int(os.environ.get("DR_CONCURRENCY", "8"))
 MODEL = os.environ.get("DR_MODEL", "claude-sonnet-5")
 CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
+# Filled in at ranking time so synthesis can disclose the coverage limit.
+DROP_N = DROP_TOTAL = DROP_PCT = 0
+SAMPLE_DROPPED_N = int(os.environ.get("DR_SAMPLE_DROPPED", "0"))
 
 _print_lock = threading.Lock()
 def log(msg):
@@ -881,6 +884,9 @@ def deepresearch(question, depth="standard"):
             % (len(non_citable), ", ".join(sorted({host_of(c.get("sourceUrl", "")) for c in non_citable})[:5])))
     ranked = coverage_balanced(citable, T["max_verify"], len(subqs))
     dropped_pre = len(all_claims) - len(ranked)
+    globals()["DROP_N"] = dropped_pre
+    globals()["DROP_TOTAL"] = len(all_claims)
+    globals()["DROP_PCT"] = int(round(100 * dropped_pre / max(1, len(all_claims))))
     if dropped_pre > 0:
         log("NOTE: %d lower-ranked claims dropped before verification (cap %d) - NOT covered by this report"
             % (dropped_pre, T["max_verify"]))
@@ -944,6 +950,31 @@ def deepresearch(question, depth="standard"):
     confirmed = [c for c in voted if c["survives"]]
     killed = [c for c in voted if c["isRefuted"]]
     unver = [c for c in voted if not c["survives"] and not c["isRefuted"]]
+    # --- Dropped-claim sampling: would the discarded 60-80% have mattered? ---
+    # The report rests on a fifth of the gathered evidence and nobody has measured
+    # whether the rest would have changed anything. Verify a random-ish sample of
+    # what was dropped and report the survival rate: if dropped claims survive at
+    # the same rate as kept ones, the ranking is not selecting for much.
+    dropped_sample = None
+    if SAMPLE_DROPPED_N > 0:
+        pool = [c for c in citable if c not in ranked][:SAMPLE_DROPPED_N]
+        if pool:
+            log("SAMPLING %d dropped claims to measure what the cap discarded" % len(pool))
+            sv = run_panel(question, pool, lenses)
+            survived = sum(1 for c in sv if c["survives"])
+            kept_rate = (len(confirmed) / len(voted)) if voted else 0
+            dropped_sample = {
+                "sampled": len(pool), "survived": survived,
+                "survivalRate": round(survived / len(pool), 3),
+                "keptClaimSurvivalRate": round(kept_rate, 3),
+                "reading": ("dropped claims survive at a similar rate to kept ones, so the "
+                            "importance ranking is not selecting for verifiability"
+                            if abs(survived / len(pool) - kept_rate) < 0.15 else
+                            "dropped claims survive at a materially different rate to kept ones"),
+            }
+            log("SAMPLING: %d/%d dropped claims survived (%.0f%%) vs %.0f%% of kept claims"
+                % (survived, len(pool), 100 * survived / len(pool), 100 * kept_rate))
+
     # --- Calibration: is this panel a filter or a coin? --------------------
     # Re-run the SAME claims through an independent panel and measure whether the
     # survive/kill verdict repeats. Measures reliability, never validity.
@@ -1087,14 +1118,14 @@ def deepresearch(question, depth="standard"):
     fact_by = {(f["claim"], f.get("url")): f for f in fact_rows}
     return _synthesize(question, depth, base, subqs, persps, confirmed, killed, unver, voted,
                        fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                       lenses, T, all_claims, calibration)
+                       lenses, T, all_claims, calibration, dropped_sample)
 
 
 CONF = {"high": 0, "medium": 1, "low": 2}
 
 def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                lenses, T, all_claims, calibration=None):
+                lenses, T, all_claims, calibration=None, dropped_sample=None):
     blocks = []
     for i, c in enumerate(confirmed):
         good = sorted([v for v in dicts(c["verdicts"]) if not v.get("refuted")],
@@ -1146,7 +1177,13 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         "## Synthesis - final research report\n\n**Question:** " + q + "\n\n" +
         "%d claims survived a %d-lens adversarial panel%s.\n\n"
         % (len(confirmed), len(lenses), " and a blind citation-support audit" if T["audit"] else "") +
-        "## Confirmed claims\n" + WEB_NOTE + "\n".join(blocks) + cov_b + con_b + kill_b + unv_b + drop_b + "\n\n"
+        "## Confirmed claims\n" + WEB_NOTE + "\n".join(blocks) + cov_b + con_b + kill_b + unv_b + drop_b + "\n\n" +
+        (("## Coverage limit you MUST disclose\n"
+          "%d of %d extracted claims (%d%%) were never verified — the panel budget stops at %d. "
+          "The sample was ranked by source tier first, but a claim the extractor rated 'tangential' "
+          "is invisible here even if it would have overturned the answer. "
+          "State this in answerFirst, not only in caveats.\n\n"
+          % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_PCT >= 50 else "") +
         "## Instructions\n"
         "1. Merge claims that say the same thing; combine their sources.\n"
         "2. Group into findings that each answer part of the question. Order by how much they matter.\n"
@@ -1248,6 +1285,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                              for f in fact_by.values()]
     out["rescue"] = rescue
     out["calibration"] = calibration
+    out["droppedSample"] = dropped_sample
     out["processCritique"] = {"verdict": verdict, "untraceableStatements": uniq("untraceableStatements"),
                               "coverageGaps": uniq("coverageGaps"), "planFlaws": uniq("planFlaws"),
                               "rationales": [webtext(c.get("rationale", ""), 500) for c in crits]}
@@ -1299,6 +1337,9 @@ def main():
     ap.add_argument("--out", "-o", help="write the full JSON report here")
     ap.add_argument("--model", "-m", default=MODEL)
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)
+    ap.add_argument("--sample-dropped", type=int, default=0, metavar="N",
+                    help="Verify N claims the budget discarded and report how often they would "
+                         "have survived. Turns '80%% of evidence is dropped' from a worry into a number.")
     ap.add_argument("--calibrate", type=int, default=0, metavar="N",
                     help="Re-run the panel on N verified claims and report Cohen's kappa, "
                          "Scott's pi, per-lens agreement and the confusion matrix. Doubles "
@@ -1310,6 +1351,7 @@ def main():
     a = ap.parse_args()
     MODEL, MAX_CONCURRENCY = a.model, a.concurrency
     globals()['CALIBRATE_N'] = a.calibrate
+    globals()['SAMPLE_DROPPED_N'] = a.sample_dropped
     if a.selftest:
         sys.exit(0 if selftest() else 1)
     if not a.question or not a.question.strip():

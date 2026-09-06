@@ -334,6 +334,18 @@ _mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim"
 ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
    "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
 
+print("\n-- issue #9: the dropped-claim majority --")
+_ENG = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                         "deepresearch", "engine.py"), encoding="utf-8").read()
+ok("Coverage limit you MUST disclose" in _ENG,
+   "synthesis is told to disclose the coverage limit in answerFirst, not only in caveats")
+ok("if DROP_PCT >= 50" in _ENG,
+   "the disclosure is conditional: it fires above 50% dropped, not on every run")
+ok("SAMPLE_DROPPED_N" in _ENG and "keptClaimSurvivalRate" in _ENG,
+   "--sample-dropped verifies discarded claims and compares their survival rate to kept ones")
+ok("TIER_RANK.get(c.get(\"tier\"), 3)" in _ENG,
+   "ranking leads with the deterministic tier, not the extractor's self-rated importance (#3)")
+
 print("\n-- calibration statistics --")
 from deepresearch import calibration as C
 # Hand-computed: 50 items, both-survive 20, both-kill 15, A-only 10, B-only 5.
