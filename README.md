@@ -9,7 +9,7 @@
 
 Most research agents retrieve, summarise, and hand you the result. This one retrieves, then spends the rest of the run attacking what it found.
 
-It needs a model: set `ANTHROPIC_API_KEY`, or let it use a Claude Code login already on the machine. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref and Hacker News, no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
+It needs a model: set `ANTHROPIC_API_KEY`, or let it use a Claude Code login already on the machine. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref, Europe PMC, PubMed, arXiv and Hacker News (plus a self-hosted SearXNG if you have one), no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
 
 Before any evidence exists, it writes a contract: the decision at stake, the assumptions it is making, and 2–4 hypotheses each with an explicit **kill criterion**. That contract ships in the output JSON, so you can check what it committed to before it went looking. It does not claim the frame is *right* — only that the frame was fixed and visible before the evidence arrived.
 
@@ -195,6 +195,19 @@ None of them adversarially refute their own claims, blind-re-check their citatio
 ## Two things this ships that you may want regardless
 
 **DOIs are not fetchable, and it costs you every scholarly claim.** `doi.org` redirects to a publisher that answers crawlers with a JavaScript challenge — measured, ~212 bytes of *"a required part of this site couldn't load"*. Crossref **and** OpenAlex both return `doi.org` links, so a scholarly run can fetch 16 sources and extract **zero** claims while every log line says search succeeded. The fix is to ask `api.crossref.org/works/<doi>` instead, which is keyless and carries the abstract. Same 16 sources: **0 claims → 33**.
+
+**If your IP is challenged, run SearXNG.** DuckDuckGo and Mojeek reject datacentre and
+container IPs, and no public SearXNG instance exposes `format=json` — every one tested
+disables it, deliberately. Self-hosting is the only reliable fix, and it takes two commands:
+
+```bash
+docker run -d -p 8080:8080 searxng/searxng     # then set search: { formats: [html, json] }
+export DR_SEARXNG_URL=http://localhost:8080
+```
+
+The chain tries it first and no-ops instantly when the variable is unset. Without it the tool
+still works, but on a challenged IP it sees a scholarly-only slice of the web
+([#8](https://github.com/7inaydas-cmyk/deepresearch/issues/8)).
 
 **A rate-limited search engine looks exactly like an empty web.** DuckDuckGo answers challenged clients with an HTTP 202 page that parses to zero results *while reporting success*. A single-backend tool reads that as "no evidence exists" and the agent above it faithfully tells you so. Every backend attempt here is recorded and reported, so a null is provably a null.
 

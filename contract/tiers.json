@@ -1,6 +1,11 @@
 {
   "$comment": [
     "Shared source-quality tiers. This file is the ONE place tier rules live; both",
+    "Contributors: see issue #14. Edit THIS file, never either runtime's source \u2014",
+    "both read it so a host cannot be graded differently in each. Before promoting a",
+    "host to T1, ask whether it is a PUBLISHER or a RESOLVER: doi.org resolves to",
+    "anything, including a predatory journal, and grading the resolver top-tier makes",
+    "that journal outrank an SEC filing.",
     "the Python engine and the Claude Code workflow read it, so a domain graded",
     "wrong in one runtime cannot be graded right in the other.",
     "",
@@ -13,14 +18,48 @@
     "                            resolved: a resolver is not a publisher, and grading",
     "                            it T1 makes a predatory journal outrank a filing."
   ],
-  "resolvers": ["doi.org", "dx.doi.org", "hdl.handle.net", "handle.net", "purl.org"],
+  "resolvers": [
+    "doi.org",
+    "dx.doi.org",
+    "hdl.handle.net",
+    "handle.net",
+    "purl.org"
+  ],
   "rules": [
-    ["T1", "(^|\\.)(arxiv\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$"],
-    ["T2", "(^|\\.)(nature\\.com|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|pubmed\\.ncbi\\.nlm\\.nih\\.gov|pmc\\.ncbi\\.nlm\\.nih\\.gov|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$"],
-    ["T3", "(^|\\.)(github\\.com|gitlab\\.com|medium\\.com|substack\\.com|dev\\.to|news\\.ycombinator\\.com|stackoverflow\\.com|reddit\\.com|hashnode\\.dev|blogspot\\.com|wordpress\\.com)$"],
-    ["T4", "(^|\\.)(indeed\\.[\\w.]+|glassdoor\\.[\\w.]+|levels\\.fyi|linkedin\\.com|ziprecruiter\\.com|g2\\.com|capterra\\.com|trustpilot\\.com|producthunt\\.com|crunchbase\\.com|payscale\\.com|comparably\\.com)$"]
+    [
+      "T1",
+      "(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$"
+    ],
+    [
+      "T2",
+      "(^|\\.)(nature\\.com|europepmc\\.org|semanticscholar\\.org|cochranelibrary\\.com|nejm\\.org|jamanetwork\\.com|thelancet\\.com|plos\\.org|frontiersin\\.org|mdpi\\.com|tandfonline\\.com|sagepub\\.com|cambridge\\.org|oup\\.com|elsevier\\.com|arxiv-sanity\\.com|lemonde\\.fr|faz\\.net|spiegel\\.de|elpais\\.com|corriere\\.it|nrc\\.nl|asahi\\.com|nikkei\\.com|scmp\\.com|thehindu\\.com|abc\\.net\\.au|cbc\\.ca|npr\\.org|propublica\\.org|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$"
+    ],
+    [
+      "T3",
+      "(^|\\.)(github\\.com|gitlab\\.com|medium\\.com|substack\\.com|dev\\.to|news\\.ycombinator\\.com|stackoverflow\\.com|reddit\\.com|hashnode\\.dev|blogspot\\.com|wordpress\\.com)$"
+    ],
+    [
+      "T4",
+      "(^|\\.)(scholar\\.google\\.com|researchgate\\.net|academia\\.edu|semanticscholar\\.org\\.cache|quora\\.com|answers\\.com|ask\\.com|indeed\\.[\\w.]+|glassdoor\\.[\\w.]+|levels\\.fyi|linkedin\\.com|ziprecruiter\\.com|g2\\.com|capterra\\.com|trustpilot\\.com|producthunt\\.com|crunchbase\\.com|payscale\\.com|comparably\\.com)$"
+    ],
+    [
+      "T5",
+      "(^|\\.)(ezinearticles\\.com|articlesbase\\.com|hubpages\\.com|buzzfeed\\.com|listverse\\.com|thoughtcatalog\\.com|contentgrow\\.com|articlecity\\.com)$"
+    ]
   ],
   "farm_tells": "\\b(top \\d+ best|ultimate guide|you won'?t believe|listicle|sponsored content|affiliate link)\\b",
-  "rank": { "T1": 0, "T2": 1, "T?": 2, "T3": 3, "T4": 4, "T5": 5 },
-  "citable": ["T1", "T2", "T?", "T3"]
+  "rank": {
+    "T1": 0,
+    "T2": 1,
+    "T?": 2,
+    "T3": 3,
+    "T4": 4,
+    "T5": 5
+  },
+  "citable": [
+    "T1",
+    "T2",
+    "T?",
+    "T3"
+  ]
 }

@@ -156,6 +156,35 @@ CASES = [
 for url, want in CASES:
     got, why = tiers.tier_of(url)
     ok(got == want, "%-46s -> %-3s (%s)" % (url[:46], got, why[:38]))
+# Issue #14: hosts added alongside the new backends (#13), plus regions the rules
+# under-covered. Add your host here when you extend contract/tiers.json.
+for _u, _w in [("https://europepmc.org/article/PMC/PMC1", "T2"),
+               ("https://pubmed.ncbi.nlm.nih.gov/1/", "T1"),
+               ("https://www.biorxiv.org/content/x", "T1"),
+               ("https://clinicaltrials.gov/study/NCT1", "T1"),
+               ("https://www.gov.uk/guidance/x", "T1"),
+               ("https://www.thelancet.com/article/x", "T2"),
+               ("https://lemonde.fr/article", "T2"),
+               ("https://www.researchgate.net/publication/1", "T4"),
+               ("https://listverse.com/2026/top-10", "T5")]:
+    ok(tiers.tier_of(_u)[0] == _w, "%-44s -> %s" % (_u[:44], _w))
+
+# Rules are evaluated in order, so a host in a lower tier already matched by a
+# higher one is DEAD. pubmed.ncbi.nlm.nih.gov sat dead in T2 behind nih.gov in T1
+# from the day it was written. CI rejects this now; assert it here too.
+import re as _re
+def _hosts(pat):
+    _m = _re.search(r"\(\^\|\\\.\)\((.*)\)\$", pat)
+    return [h.replace("\\", "") for h in _m.group(1).split("|")] if _m else []
+_seen, _dead = [], []
+for _t, _p in tiers._C["rules"]:
+    for _h in _hosts(_p):
+        for _pt, _pp in _seen:
+            if _re.search(_pp, _h, _re.I):
+                _dead.append((_t, _h, _pt)); break
+    _seen.append((_t, _p))
+ok(not _dead, "no tier rule is shadowed dead by a higher tier: %s" % (_dead or "clean"))
+
 ok(tiers.tier_of("https://doi.org/10.1/x", resolved_journal="BMC Psychology")[0] == "T2",
    "a resolver we actually read is graded on its real journal")
 ok(tiers.census([{"tier": "T1"}, {"tier": "T1"}, {"tier": "T?"}]) == {"T1": 2, "T?": 1},

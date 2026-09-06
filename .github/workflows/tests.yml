@@ -61,6 +61,22 @@ jobs:
               assert tier in c["rank"], tier       # and be rankable
           assert "doi.org" in c["resolvers"], "doi.org must be treated as a resolver"
           assert c["rank"]["T1"] < c["rank"]["T3"], "tier ranking is inverted"
+          # Rules are evaluated in order, so a host listed in a lower tier that is
+          # already matched by a higher one is DEAD - it can never fire, and the
+          # file would be claiming a grade it never applies. pubmed.ncbi.nlm.nih.gov
+          # sat dead in T2 behind nih.gov in T1 from the day it was written.
+          import re as _re
+          def _hosts(pat):
+              m = _re.search(r"\(\^\|\\\.\)\((.*)\)\$", pat)
+              return [h.replace("\\", "") for h in m.group(1).split("|")] if m else []
+          seen, dead = [], []
+          for tier, pat in c["rules"]:
+              for h in _hosts(pat):
+                  for pt, pp in seen:
+                      if _re.search(pp, h, _re.I):
+                          dead.append((tier, h, pt)); break
+              seen.append((tier, pat))
+          assert not dead, "dead rules shadowed by a higher tier: %s" % dead
           print("tiers.json OK: %d rules, %d resolvers" % (len(c["rules"]), len(c["resolvers"])))
           PY
 

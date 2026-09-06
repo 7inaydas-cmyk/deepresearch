@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import html
 import json
+import os
 import re
 import threading
 import urllib.error
@@ -57,11 +58,16 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
 CROSSREF_UA = "deepresearch/1.0 (+https://github.com/7inaydas-cmyk/deepresearch)"
 TIMEOUT = 25
 
-BACKENDS = ["ddg-html", "ddg-lite", "mojeek", "wikipedia", "openalex", "crossref", "hn"]
+BACKENDS = ["searxng", "ddg-html", "ddg-lite", "mojeek", "wikipedia",
+            "openalex", "crossref", "europepmc", "pubmed", "arxiv", "hn"]
 # Order matters: general web first (broadest), then independent index, then the
 # scholarly and practitioner sources that stay healthy when the web ones are
 # challenged.
-DEFAULT_CHAIN = ["ddg-html", "ddg-lite", "mojeek", "wikipedia", "crossref", "openalex", "hn"]
+# searxng first when configured: it is the only general-web source that keeps
+# working when DDG and Mojeek challenge the host. It no-ops instantly when
+# DR_SEARXNG_URL is unset, so leaving it here costs nothing.
+DEFAULT_CHAIN = ["searxng", "ddg-html", "ddg-lite", "mojeek", "wikipedia",
+                 "crossref", "europepmc", "openalex", "pubmed", "arxiv", "hn"]
 
 _health: dict[str, dict[str, int]] = {}
 _health_lock = threading.Lock()
@@ -210,7 +216,97 @@ def _hn(query: str, n: int) -> list[dict]:
     return out
 
 
+
+def _arxiv(query: str, n: int) -> list[dict]:
+    """arXiv's own API. Keyless, and the abstract comes back in the response, so
+    these results are readable even when the publisher blocks crawlers."""
+    api = ("http://export.arxiv.org/api/query?max_results=%d&search_query=all:%s"
+           % (n, urllib.parse.quote(query)))
+    body = _get(api)
+    out = []
+    for entry in re.findall(r"<entry>(.*?)</entry>", body, re.S)[:n]:
+        idm = re.search(r"<id>(.*?)</id>", entry, re.S)
+        tm = re.search(r"<title>(.*?)</title>", entry, re.S)
+        sm = re.search(r"<summary>(.*?)</summary>", entry, re.S)
+        if not (idm and tm):
+            continue
+        # Prefer the abs page over the raw id URL: it is the one that renders.
+        url = _clean(idm.group(1)).replace("http://", "https://")
+        out.append({"url": url, "title": _clean(tm.group(1)),
+                    "snippet": _clean(sm.group(1))[:400] if sm else ""})
+    return out
+
+
+def _europepmc(query: str, n: int) -> list[dict]:
+    """Europe PMC. Keyless, biomedical, and crucially it reports whether an open
+    full text exists — so we can hand back a URL that actually fetches instead of
+    a paywalled landing page."""
+    api = ("https://www.ebi.ac.uk/europepmc/webservices/rest/search?format=json"
+           "&pageSize=%d&query=%s" % (n, urllib.parse.quote(query)))
+    data = json.loads(_get(api))
+    out = []
+    for r in ((data.get("resultList") or {}).get("result") or [])[:n]:
+        pmcid, doi = r.get("pmcid"), r.get("doi")
+        if pmcid:
+            url = "https://europepmc.org/article/PMC/" + pmcid
+        elif doi:
+            url = "https://doi.org/" + doi          # fetch() routes DOIs via Crossref
+        else:
+            continue
+        out.append({"url": url, "title": r.get("title", ""),
+                    "snippet": "%s %s cited=%s%s" % (r.get("journalTitle", ""), r.get("pubYear", ""),
+                                                     r.get("citedByCount"),
+                                                     " [open full text]" if pmcid else "")})
+    return out
+
+
+def _pubmed(query: str, n: int) -> list[dict]:
+    """PubMed E-utilities. Two calls: esearch returns ids, esummary turns them
+    into titles. Keyless, and NCBI asks only that you identify yourself."""
+    ids = json.loads(_get(
+        "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=json"
+        "&retmax=%d&term=%s" % (n, urllib.parse.quote(query)),
+        {"User-Agent": CROSSREF_UA})).get("esearchresult", {}).get("idlist", [])
+    if not ids:
+        return []
+    summ = json.loads(_get(
+        "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id="
+        + ",".join(ids), {"User-Agent": CROSSREF_UA})).get("result", {})
+    out = []
+    for pid in ids:
+        r = summ.get(pid) or {}
+        if not r.get("title"):
+            continue
+        out.append({"url": "https://pubmed.ncbi.nlm.nih.gov/%s/" % pid,
+                    "title": r.get("title", ""),
+                    "snippet": "%s %s" % (r.get("source", ""), r.get("pubdate", ""))})
+    return out
+
+
+def _searxng(query: str, n: int) -> list[dict]:
+    """A SELF-HOSTED SearXNG instance, via DR_SEARXNG_URL.
+
+    This is the only reliable way to get general-web results back when DuckDuckGo
+    and Mojeek are challenging your IP (see issue #8). Public instances are not an
+    option: every one tested disables `format=json` to prevent exactly this kind of
+    automated use, so pointing this at someone else's instance will not work and is
+    not polite. Run your own:
+
+        docker run -d -p 8080:8080 searxng/searxng
+        # in settings.yml:  search: { formats: [html, json] }
+        export DR_SEARXNG_URL=http://localhost:8080
+    """
+    base = os.environ.get("DR_SEARXNG_URL", "").rstrip("/")
+    if not base:
+        raise RuntimeError("DR_SEARXNG_URL not set")
+    data = json.loads(_get(base + "/search?format=json&q=" + urllib.parse.quote(query)))
+    return [{"url": r.get("url", ""), "title": r.get("title", ""),
+             "snippet": (r.get("content") or "")[:300]}
+            for r in (data.get("results") or [])[:n] if r.get("url")]
+
+
 _IMPL = {
+    "searxng": _searxng,
     "ddg-html": lambda q, n: _ddg(q, n, lite=False),
     "ddg-lite": lambda q, n: _ddg(q, n, lite=True),
     "mojeek": _mojeek,
@@ -218,6 +314,9 @@ _IMPL = {
     "openalex": _openalex,
     "crossref": _crossref,
     "hn": _hn,
+    "arxiv": _arxiv,
+    "europepmc": _europepmc,
+    "pubmed": _pubmed,
 }
 
 
