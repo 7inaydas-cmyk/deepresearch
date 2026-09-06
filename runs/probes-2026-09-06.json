@@ -1,0 +1,118 @@
+{
+ "report": "runs/calibration-2026-09-06.json",
+ "question": "Do blue-light blocking glasses reduce digital eye strain, and what does the randomised trial evidence show?",
+ "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
+ "auditProbes": {
+  "n": 5,
+  "caughtStrict": 2,
+  "caughtAny": 5,
+  "catchRate": 1.0,
+  "falseNegatives": [],
+  "byMutation": {
+   "negated": {
+    "n": 1,
+    "caught": 1
+   },
+   "inflated-number": {
+    "n": 1,
+    "caught": 1
+   },
+   "unsupported-causation": {
+    "n": 1,
+    "caught": 1
+   },
+   "fabricated-specificity": {
+    "n": 1,
+    "caught": 1
+   },
+   "scope-inflation": {
+    "n": 1,
+    "caught": 1
+   }
+  },
+  "reading": "the auditor catches defects of this kind",
+  "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
+  "excludedUnreachable": 0,
+  "detail": [
+   {
+    "probe": "negated",
+    "verdict": "unsupported",
+    "original": "This Cochrane systematic review included 17 RCTs comparing blue-light filtering spectacle lenses with non-blue-light filtering lenses in adults, with sample sizes ranging from 5 to 156 participants an",
+    "mutated": "It is NOT the case that this Cochrane systematic review included 17 RCTs comparing blue-light filtering spectacle lenses with non-blue-light filtering lenses in adults, with sample sizes ranging from ",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10436683/"
+   },
+   {
+    "probe": "inflated-number",
+    "verdict": "partial",
+    "original": "The Cochrane review concluded there may be no difference in subjective visual fatigue (eye strain) scores between blue-light filtering and non-blue-light filtering lenses at less than one week follow-",
+    "mutated": "The Cochrane review concluded there may be no difference in subjective visual fatigue (eye strain) scores between blue-light filtering and non-blue-light filtering lenses at less than one week follow-",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10436683/"
+   },
+   {
+    "probe": "unsupported-causation",
+    "verdict": "unsupported",
+    "original": "The authors explicitly acknowledge the study's design limitation: as a cross-sectional, self-reported study, findings reflect subjective recall rather than prospective, controlled measurement.",
+    "mutated": "The authors explicitly acknowledge the study's design limitation: as a cross-sectional, self-reported study, findings reflect subjective recall rather than prospective, controlled measurement, and thi",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12661913/"
+   },
+   {
+    "probe": "fabricated-specificity",
+    "verdict": "partial",
+    "original": "None of the 17 included RCTs had a low risk of bias across all seven Cochrane RoB 1 domains, with 65% judged high risk of bias due to unmasked outcome assessors and 59% high risk of performance bias d",
+    "mutated": "None of the 17 included RCTs had a low risk of bias across all seven Cochrane RoB 1 domains, with 65% judged high risk of bias due to unmasked outcome assessors and 59% high risk of performance bias d",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10436683/"
+   },
+   {
+    "probe": "scope-inflation",
+    "verdict": "partial",
+    "original": "The paper cites experimental evidence proposing that blue light (415-455 nm) induces oxidative stress via reactive oxygen species and NLRP3 inflammasome/IL-1β activation, impairing tear film stability",
+    "mutated": "The paper cites experimental evidence proposing that blue light (415-455 nm) induces oxidative stress via reactive oxygen species and NLRP3 inflammasome/IL-1β activation, impairing tear film stability",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12661913/"
+   }
+  ]
+ },
+ "criticProbes": {
+  "planted": 3,
+  "named": 3,
+  "detectionRate": 1.0,
+  "missed": [],
+  "cleanVerdict": "material-gaps",
+  "degradedVerdict": "material-gaps",
+  "verdictMoved": false,
+  "reading": "the verdict did NOT move when three fabricated sentences were added — it is saturated, and cannot discriminate a good run from a bad one",
+  "criticsPerArm": 2,
+  "plantedText": [
+   "These findings were independently confirmed by the Wellcome Trust review panel.",
+   "On balance the evidence points the other way, and the effect is most likely absent.",
+   "The pooled effect size across studies was 0.62 (95% CI 0.55-0.69)."
+  ],
+  "flaggedByDegradedArm": [
+   "Executive summary: 'A 2023 Cochrane review' - no claim in the pool specifies the publication year 2023 for the Cochrane review; this date appears inserted without support.",
+   "Executive summary: 'A 2023 Cochrane review' - no claim specifies the year 2023 for the Cochrane review; date is unsupported/inserted.",
+   "Executive summary: 'On balance the evidence points the other way, and the effect is most likely absent.' - this is an editorializing conclusion beyond what claims [1]/[9] license (which describe 'low-certainty' evidence and 'may not attenuate', not a confident directional claim); overstates certainty.",
+   "Executive summary: 'On balance the evidence points the other way, and the effect is most likely absent.' - this is an unsupported editorializing conclusion beyond what claim [9]/[1] license (which are hedged 'may not' / 'no difference' at low certainty), not a confident directional claim of 'most likely absent'.",
+   "Executive summary: 'The pooled effect size across studies was 0.62 (95% CI 0.55-0.69).' - directly contradicts claim [0] which states no meta-analysis was performed; this numeric effect size and CI appear nowhere in the claim pool and is fabricated.",
+   "Executive summary: 'The pooled effect size across studies was 0.62 (95% CI 0.55-0.69).' - directly contradicts claim [0]/[9] that no meta-analysis was performed; this number is fabricated and not traceable to any claim.",
+   "Executive summary: 'These findings were independently confirmed by the Wellcome Trust review panel.' - no claim in the pool mentions Wellcome Trust or any confirmation panel; fabricated.",
+   "Executive summary: 'These findings were independently confirmed by the Wellcome Trust review panel.' - no claim in the pool mentions a Wellcome Trust panel; this is fabricated.",
+   "Executive summary: 'individual-trial data show no significant difference in subjective visual fatigue/eye-strain scores' - claim [1] reports one RCT with MD 9.76 units (95% CI not given/truncated) rated 'low-certainty' and phrased as 'may be no difference', not a clean 'no significant difference' statement; the summary drops the hedge and specific effect size context.",
+   "Executive summary: 'individual-trial data show no significant difference' - claim [1] reports a specific MD (9.76 units) with a CI that is cut off/incomplete in the pool, so whether this MD was 'not significant' is not clearly verifiable from the given claim text; the summary asserts non-significance without the confidence interval being visible to confirm it.",
+   "Finding 1: '(one reporting RCT (n=…' - truncated/incomplete, but as written it implies a specific sample size was known and cited; the actual n is not given in the pool for that specific RCT (claim [1] mentions n=120 but the finding text is cut off ambiguously, risking misattribution).",
+   "Finding 8: uses claim [23] ('roughly half of trials showed benefit and half showed none') to characterize 'a separately cited Cochrane review' but this contradicts claim [0]/[9]'s characterization of the same Cochrane review (no meta-analysis, low-certainty no-difference finding) - the finding does not flag this internal contradiction between two claims describing what appears to be the same review inconsistently."
+  ],
+  "cleanArmFlagged": [
+   "Executive summary and Finding 1: 'The review's own authors concluded blue-light lenses may not attenuate symptoms of eye strain with computer use in the short term' is supported by [9], but the summary frames this as if it applies broadly to 'eye strain' generally, when the underlying evidence [1] is a single RCT of 120 participants at <1 week follow-up — the summary's confident framing slightly overstates the breadth of the evidentiary base behind the authors' conclusion.",
+   "Executive summary states the 85% figure is 'explicitly confounded by lack of blinding, control group, and recall bias' — claim [13]/[3] only state absence of control/placebo group and reliance on subjective recall; 'lack of blinding' is an inserted embellishment not stated in [3],[10],[13],[18].",
+   "Executive summary: 'A 2023 Cochrane review' — no claim specifies the year 2023; only claim [0]/[28] identify it as a Cochrane review of 17 RCTs, but the year is unsupported and thus an inserted fact.",
+   "Executive summary: 'A 2023 Cochrane review' — the specific year 2023 is not supported by any claim in the pool (claims [0],[28] describe the Cochrane review but never state its publication year); this is an inserted fact.",
+   "Executive summary: 'a separate meta-analysis found blue-light lenses have no significant effect on objective sleep outcomes either' is supported by [6], but conflating sleep-outcome evidence with eye-strain mechanism plausibility as if it were direct counter-evidence for eye strain is an inferential leap the claims do not explicitly license (claim [6] is about sleep, not eye strain, and finding #7 hedges this appropriately as 'relevant because...' but the executive summary states it more baldly as supporting evidence against clinical benefit).",
+   "Executive summary: 'no meta-analysis was possible due to heterogeneity' — claim [0] says 'no meta-analyses were performed' but does not state the reason was heterogeneity; this specific causal reason is an inserted/unsupported detail (finding #2 also states 'due to heterogeneity and lack of quantitative data' with the same unsupported specificity).",
+   "Executive summary: 'one RCT of 120 participants showing MD 9.76 units' detail is in claim [1] but the summary drops this specific number, presenting only a vaguer 'no significant difference' - not a fabrication but a notable loss of specificity/hedge (the CI is truncated with '...' in claim [1] itself, so the actual effect size and CI direction cannot be verified from the claim pool, yet the summary asserts 'no significant difference' as settled fact).",
+   "Executive summary: 'the RCT evidence available does not support a real, clinically meaningful effect ... though the trial base is too thin and low-quality to fully rule out a benefit' — this is the report's own interpretive synthesis/conclusion, not a direct restatement of any single claim; it goes beyond claim [9]'s hedged 'may not attenuate' language into a stronger blanket verdict ('does not support a real, clinically meaningful effect') that overstates the certainty licensed by the low-certainty, non-pooled evidence described in [1],[4],[9].",
+   "Finding 1 also ends in '...' truncation ('no difference ... was found in the one reporting RCT (n=...') — incomplete, so the actual n cited cannot be verified against claim [1]'s n=120.",
+   "Finding 1 is cut off mid-sentence ('...in the one reporting RCT (n=…') but as written implicitly asserts the null result generalizes from 'the one reporting RCT' — matches [1] but the truncation makes it impossible to verify the full n and CI matches [1] exactly (MD 9.76, CI, n=120) since the finding text is incomplete.",
+   "Finding 5: uses '...' truncation ('rather than prospective controlled m...') suggesting the finding text itself was cut off in production — not a fabrication but indicates incomplete/unverifiable finalized text.",
+   "Finding 6 lists three ORs (20-20-20 rule OR=1.95 p=0.045; screen time <6h OR=0.45 p=0.027; ≥12 months lens use OR=1.30 p=0.040) but only the first (20-20-20 rule, OR=1.95, p=0.045) appears in claim [2]. The other two odds ratios (screen time and lens duration) do not appear anywhere in the claim pool and are untraceable fabricated statistics."
+  ]
+ }
+}

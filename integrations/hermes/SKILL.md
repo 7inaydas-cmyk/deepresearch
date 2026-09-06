@@ -146,12 +146,19 @@ Report these six things. Do not bury them.
    Under ~70% means treat the report as provisional and say so. Also report
    `demotedBySurvivingPanel`: claims the panel passed but whose sources turned out not to
    say what they were read as saying.
-2. **`processCritique.verdict`** - `sound` / `minor-gaps` / `material-gaps`. This is the
-   WORST verdict across critics, not the average. `material-gaps` means a user acting on
-   this could be misled: lead with it.
-3. **`processCritique.untraceableStatements`** - assertions in the summary that trace to no
-   verified claim. These are orchestrator hallucinations. **Strike them from what you tell
-   the user**, and say you struck them.
+2. **`citationPartials`** - claims the blind re-fetch rated `partial`: the page points this
+   way, but the statement adds scope, certainty or specificity the page does not carry.
+   **A `partial` does NOT remove the claim** - only `unsupported` does - so these get
+   published with nothing but a note. Measured with injected defects: of five fabrications
+   the auditor caught all five, but rated three `partial`, and those three were an inflated
+   number, an invented attribution, and a claim widened to every adult on earth. Check this
+   list before quoting a number or an attribution.
+3. **`processCritique.untraceableCount` and `untraceableStatements`** - assertions in the
+   summary that trace to no verified claim. These are orchestrator hallucinations.
+   **Strike them from what you tell the user**, and say you struck them. Read these, not
+   `processCritique.verdict`: three fabricated sentences were appended to a real summary and
+   the critic named all three while returning `material-gaps` on the clean and the degraded
+   version alike. The verdict is a coarse tag, measured not to move.
 4. **`coverage`** - sub-questions that came back `unanswered`. A hole in the answer, not a
    footnote.
 5. **`rescue`** - present only if some sub-question lost every claim. `claimsSaved: 0`

@@ -30,7 +30,8 @@ the checker reports on real runs is measuring agreement-with-itself.
 from __future__ import annotations
 
 __all__ = ["make_audit_probes", "score_audit_probes",
-           "make_critic_probes", "score_critic_probes"]
+           "make_critic_probes", "score_critic_probes",
+           "run_audit_probes", "run_critic_probes", "main"]
 
 
 # ── Citation auditor (#11) ───────────────────────────────────────────────────
@@ -177,3 +178,155 @@ def _keywords(sentence):
             "their", "most", "other", "than", "have", "has", "for", "are", "its"}
     return [w.strip(".,()%").lower() for w in sentence.split()
             if len(w) > 4 and w.strip(".,()%").lower() not in stop][:6]
+
+
+# ── Runner ───────────────────────────────────────────────────────────────────
+# The functions above are pure and were unit-tested from the day they were
+# written. That is not the same as having RUN them: issues #10 and #11 ask what
+# the real auditor and the real critic do when handed a defect, and only a live
+# run answers that. This is the driver.
+#
+# It works on a FINISHED report rather than inside the pipeline, so a probe costs
+# ~10 model calls against an existing run instead of a whole new research pass,
+# and so the same probe can be pointed at a report from either runtime.
+
+def _report_summary_and_findings(rep):
+    return rep.get("summary") or "", [f for f in (rep.get("findings") or []) if isinstance(f, dict)]
+
+
+def run_audit_probes(rep, n=5):
+    """#11: mutate claims the auditor already called `supported`, then re-ask it.
+
+    Mutating an ALREADY-SUPPORTED claim is the sharp version of the test. The
+    auditor is on record saying that exact page supports that exact statement, so a
+    negation of it is one the same auditor, on the same page, must now reject. If
+    it does not, the 85-100% accuracy it reports on real runs is measuring its
+    agreement with the extractor rather than citation support.
+    """
+    from . import engine as E
+    endorsed = [d for d in (rep.get("citationDetail") or [])
+                if isinstance(d, dict) and d.get("support") == "supported"
+                and d.get("claim") and d.get("url")]
+    probes = make_audit_probes([{"claim": d["claim"], "sourceUrl": d["url"]} for d in endorsed], n)
+    if not probes:
+        return {"n": 0, "reason": "the report has no claims the auditor marked `supported`"}
+
+    pages = {}
+    for pr in probes:
+        u = pr["sourceUrl"]
+        if u not in pages:
+            pages[u] = E.web_fetch(u)
+
+    def one(pr):
+        text = pages.get(pr["sourceUrl"]) or ""
+        got = E.agent(E.p_fact(pr["claim"], pr["sourceUrl"], text), E.S_FACT,
+                      label="probe:audit:" + pr["probe"], max_tokens=1200)
+        out = dict(pr)
+        out["support"] = (got or {}).get("support")
+        out["auditorReasoning"] = (got or {}).get("reasoning", "")[:400]
+        return out
+
+    results = [r for r in E.pmap(one, probes) if r]
+    # An unreachable page cannot test the auditor — it tests the fetcher. Score
+    # only the probes where the auditor actually had text in front of it, and say
+    # how many were excluded rather than quietly counting them as catches.
+    scorable = [r for r in results if r.get("support") != "unreachable"]
+    excluded = len(results) - len(scorable)
+    out = score_audit_probes(scorable)
+    out["excludedUnreachable"] = excluded
+    if excluded:
+        out["excludedNote"] = ("%d probe(s) hit a page that would not fetch. Those measure the "
+                               "fetcher, not the auditor, so they are excluded from the rate." % excluded)
+    out["detail"] = [{"probe": r["probe"], "verdict": r.get("support"),
+                      "original": r["original"][:200], "mutated": r["claim"][:200],
+                      "url": r["sourceUrl"][:200]} for r in results]
+    return out
+
+
+def run_critic_probes(rep):
+    """#10: does the critic's VERDICT move when three fabrications are added?
+
+    The critic returned `material-gaps` in 5 of 5 recorded runs. Two readings:
+    the pipeline always produces materially misleading output, or the verdict is
+    saturated. Only an injected defect separates them.
+
+    Both arms use the engine's own `p_critic`, so this scores the real prompt. The
+    arms are identical except for the three appended sentences, which is what makes
+    the comparison mean anything.
+    """
+    from . import engine as E
+    depth = rep.get("depth") or "standard"
+    n_critics = (E.TIERS.get(depth) or E.TIERS["standard"])["critics"]
+    q = rep.get("question") or ""
+    subqs = [c.get("subQuestion", "") for c in (rep.get("coverage") or []) if isinstance(c, dict)]
+    persps = [p for p in (rep.get("perspectives") or []) if isinstance(p, dict)]
+    confirmed = [{"claim": d.get("claim", "")} for d in (rep.get("citationDetail") or [])
+                 if isinstance(d, dict) and d.get("claim")]
+    summary, findings = _report_summary_and_findings(rep)
+    if not summary or not confirmed:
+        return {"reason": "report has no summary or no claim pool to trace against"}
+
+    degraded, planted = make_critic_probes(summary, confirmed)
+
+    def arm(spec):
+        which, text = spec
+        got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, text, findings),
+                      E.S_CRITIC, label="probe:critic:" + which, max_tokens=3000)
+        return (which, got or {})
+
+    jobs = [("clean", summary)] * n_critics + [("degraded", degraded)] * n_critics
+    got = [x for x in E.pmap(arm, jobs) if x]
+    order = ["sound", "minor-gaps", "material-gaps"]
+    worst = lambda w: max([c.get("verdict", "sound") for k, c in got if k == w] or ["unknown"],
+                          key=lambda v: order.index(v) if v in order else 0)
+    flagged = sorted({s for k, c in got if k == "degraded"
+                      for s in (c.get("untraceableStatements") or [])})
+    out = score_critic_probes(planted, flagged, worst("clean"), worst("degraded"))
+    out["criticsPerArm"] = n_critics
+    out["plantedText"] = [p["text"] for p in planted]
+    out["flaggedByDegradedArm"] = flagged[:12]
+    out["cleanArmFlagged"] = sorted({s for k, c in got if k == "clean"
+                                     for s in (c.get("untraceableStatements") or [])})[:12]
+    return out
+
+
+def main():
+    import argparse
+    import json
+    import sys
+    ap = argparse.ArgumentParser(
+        description="Inject defects into a finished report and measure whether the citation "
+                    "auditor (#11) and the process critic (#10) catch them. Manufactures the "
+                    "ground truth that real output does not have.")
+    ap.add_argument("--report", "-r", required=True, help="a finished report JSON")
+    ap.add_argument("--out", "-o", help="write the probe result here")
+    ap.add_argument("--audit-n", type=int, default=5, help="how many citation probes to inject")
+    ap.add_argument("--only", choices=["audit", "critic"], help="run just one of the two")
+    a = ap.parse_args()
+
+    from . import engine as E
+    E.preflight()
+    rep = json.load(open(a.report, encoding="utf-8"))
+    res = {"report": a.report, "question": (rep.get("question") or "")[:200],
+           "measures": "detection of INJECTED defects, not validity of the pipeline as a whole"}
+    if a.only != "critic":
+        E.log("Injecting %d citation-audit probes (#11)..." % a.audit_n)
+        res["auditProbes"] = run_audit_probes(rep, a.audit_n)
+        E.log("  catch rate: %s" % res["auditProbes"].get("catchRate"))
+    if a.only != "audit":
+        E.log("Running the process critic on a clean and a degraded summary (#10)...")
+        res["criticProbes"] = run_critic_probes(rep)
+        E.log("  clean=%s degraded=%s moved=%s"
+              % (res["criticProbes"].get("cleanVerdict"), res["criticProbes"].get("degradedVerdict"),
+                 res["criticProbes"].get("verdictMoved")))
+    txt = json.dumps(res, indent=1, ensure_ascii=False)
+    if a.out:
+        open(a.out, "w", encoding="utf-8").write(txt)
+        print("wrote " + a.out)
+    else:
+        print(txt)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -182,7 +182,31 @@ Earlier builds audited only the claims that *survived* the panel and unsurprisin
 
 Six runs is a small sample and the 37–71% spread is wide. These say the filter removes a lot; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done.
 
-Everything above is reproducible: `runs/` holds the raw logs, and `tests/test_pipeline.py` runs the whole pipeline offline with no key and no network.
+### Injected defects, which are the only ground truth here
+
+Real output has no answer key, so both self-checks were tested by manufacturing one: take a finished report, break something on purpose, and see whether the checker notices.
+
+```bash
+python3 -m deepresearch.probes --report runs/your-run.json --out runs/probes.json
+```
+
+Five claims the citation auditor had already passed were mutated so their cited page provably no longer supports them, and the same auditor was asked again on the same page:
+
+| Injected defect | Verdict |
+|---|---|
+| claim negated | **unsupported** |
+| association restated as causation | **unsupported** |
+| headline number × 10 | partial |
+| invented "2019 Lancet consensus statement" | partial |
+| scope widened to "all adults worldwide" | partial |
+
+Nothing came back `supported`, which is the reassuring half. The other half: **only `unsupported` removes a claim.** Three of these five would have been published, flagged `partial` in a field nobody reads. So `partial` is now surfaced as its own `citationPartials` list — check it before quoting any number or attribution.
+
+The process critic was given the same summary twice, once with three fabricated sentences appended. It **named all three** — and returned `material-gaps` both times. The verdict is saturated and cannot separate a good run from a bad one, so the report and both skills now lead with `untraceableCount` and the statement list instead.
+
+Five probes on one report. This says the checkers catch defects of *these kinds*; it says nothing about subtler ones.
+
+Everything above is reproducible: `runs/` holds the raw logs and probe results, and `tests/test_pipeline.py` runs the whole pipeline offline with no key and no network.
 
 ---
 

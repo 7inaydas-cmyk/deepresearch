@@ -1077,9 +1077,20 @@ return {
     confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
     killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
     searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
+    partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry — and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.',
   },
   citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
-  processCritique: { verdict: critVerdict,
+  // A `partial` verdict does not demote the claim — only `unsupported` does — so it
+  // is easy to publish an overstatement with a footnote nobody reads. Measured
+  // 2026-09-06: of five injected fabrications the auditor caught all five, but
+  // called three of them `partial`, and those three were the inflated number, the
+  // invented attribution and the widened scope. Surface them in code.
+  citationPartials: factRows.filter(f => f.support === 'partial')
+    .map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
+  processCritique: { untraceableCount: untraceable.length,
+                     readThisFirst: 'Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three — and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.',
+                     verdict: critVerdict,
+                     verdictNote: 'coarse tag, measured to be saturated at `material-gaps`; see readThisFirst',
                      // 'flag' (default) reports them and leaves the summary intact.
                      // 'strike' removes them and records what was removed. Default is
                      // flag because the critic is itself a model whose precision has

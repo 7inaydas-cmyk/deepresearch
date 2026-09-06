@@ -657,6 +657,41 @@ def p_fact(claim, url, text):
         "- **unreachable** - the fetch returned nothing, or the page is a paywall/error shell.\n\n"
         "A working link proves the page EXISTS, not that it says this. Judge only the text above.")
 
+def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
+    """The process-critic prompt, lifted out of the pipeline so it has one home.
+
+    Extracted for the injected-defect probe (#10). The probe feeds the critic a
+    summary with three fabricated sentences in it and asks whether the VERDICT
+    moves. That only measures the real critic if the probe sends the real prompt;
+    a reconstructed paraphrase would measure the paraphrase instead. So the engine
+    and the probe now call the same function and cannot drift apart.
+    """
+    trace = "\n".join("[%d] %s" % (i, webtext(c["claim"], 400)) for i, c in enumerate(confirmed))
+    ql = "\n".join("%d. %s" % (i + 1, s) for i, s in enumerate(subqs))
+    return (
+        "## Process Critic %d/%d\n\nYou are auditing the RESEARCH PROCESS, not re-doing the research.\n\n"
+        % (k + 1, total) +
+        "## Original question\n" + q + "\n\n## Coverage checklist the scoper committed to\n" + ql + "\n\n"
+        "## Perspectives that were searched\n" +
+        "\n".join("- %s: %s" % (p["label"], webtext(p.get("lens", ""), 200)) for p in persps) + "\n\n"
+        "## The verified claim pool the report was allowed to draw from\n" + WEB_NOTE + trace + "\n\n"
+        "## The executive summary produced\n\"" + webtext(summary, 3000) + "\"\n\n"
+        "## The findings produced\n" +
+        "\n".join("%d. [%s] %s" % (i + 1, f.get("confidence"), webtext(f.get("claim", ""), 400))
+                  for i, f in enumerate(dicts(findings))) + "\n\n"
+        "## Your checks\n"
+        "1. **Traceability.** Go sentence by sentence through the summary and each finding. Does EVERY factual "
+        "assertion trace to a numbered claim above? List any that does not - inserted facts, inflated certainty, a "
+        "hedge quietly dropped, a \"therefore\" the claims do not license. Highest-yield check; do it literally.\n"
+        "2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was "
+        "never searched - a primary paper, official documentation, a dataset, a dissenting expert, a more recent "
+        "measurement?\n"
+        "3. **Plan flaws.** Did the SCOPING steer the research wrong - a leading sub-question, a premise accepted "
+        "instead of tested, a perspective set sharing one blind spot?\n\n"
+        "Verdict: **sound** / **minor-gaps** / **material-gaps** (a user acting on this could be misled). Be "
+        "concrete: name the exact sentence or the exact missing source type. \"Could be more thorough\" is useless.")
+
+
 # --- Helpers ----------------------------------------------------------------
 def as_list(v):
     """Model output is not a contract - a schema is what we asked for, not what we got.
@@ -990,8 +1025,13 @@ def deepresearch(question, depth="standard"):
         % (len({sq_key(c, len(subqs)) for c in ranked}), len(subqs)))
     log("Total: %d sources -> %d claims -> verifying %d" % (len(sources), len(all_claims), len(ranked)))
 
+    # `perspectives` is recorded so the injected-defect probe (#10) can rebuild the
+    # critic's prompt EXACTLY from a finished report. Without it the probe would be
+    # scoring a paraphrase of the prompt the run actually used.
     base = dict(question=question, depth=depth, coverage=coverage, contradictions=contradictions,
-                scopeContract=contract)
+                scopeContract=contract,
+                perspectives=[{"label": p.get("label"), "lens": p.get("lens"), "query": p.get("query")}
+                              for p in persps])
     src_rows = lambda: [{"url": webtext(s["url"], 300), "quality": s["sourceQuality"],
                          "perspective": s["persp"], "wave": s["wave"], "claims": len(s["claims"]),
                          # Reuse the tier computed at fetch time. Re-deriving it here
@@ -1303,7 +1343,10 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         "3. Confidence: **high** = multiple independent sources, clean votes, audit \"supported\". **medium** = single "
         "good source, split vote, or audit \"partial\". **low** = weak source or thin support. A finding whose audit "
         "came back \"unsupported\" MUST be dropped or restated to only what the audit confirmed - say which you did.\n"
-        "4. Put the audit result in each finding's citationCheck field.\n"
+        "4. Put the audit result in each finding's citationCheck field. Where it is \"partial\", the "
+        "citationCheck MUST also name WHAT the statement adds beyond the page - the inflated number, the "
+        "borrowed attribution, the widened population. \"partial\" alone tells the reader nothing, and a "
+        "partial verdict does not remove the claim, so this sentence is the only warning they get.\n"
         "5. Surface CONTRADICTIONS explicitly rather than silently picking a side.\n"
         "6. Executive summary: 3-6 sentences that actually ANSWER the question. Every sentence must trace to a "
         "confirmed claim above - you will be audited on this. If the evidence does not answer the question, say so "
@@ -1355,32 +1398,10 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # stay invisible to end-to-end checks; most final-report errors originate at
     # the synthesis step rather than in retrieval. So audit the PLAN and the
     # traceability of the summary, not just whether links resolve.
-    trace = "\n".join("[%d] %s" % (i, webtext(c["claim"], 400)) for i, c in enumerate(confirmed))
-    ql = "\n".join("%d. %s" % (i + 1, s) for i, s in enumerate(subqs))
     def critic(k):
-        return agent(
-            "## Process Critic %d/%d\n\nYou are auditing the RESEARCH PROCESS, not re-doing the research.\n\n"
-            % (k + 1, T["critics"]) +
-            "## Original question\n" + q + "\n\n## Coverage checklist the scoper committed to\n" + ql + "\n\n"
-            "## Perspectives that were searched\n" +
-            "\n".join("- %s: %s" % (p["label"], webtext(p.get("lens", ""), 200)) for p in persps) + "\n\n"
-            "## The verified claim pool the report was allowed to draw from\n" + WEB_NOTE + trace + "\n\n"
-            "## The executive summary produced\n\"" + webtext(report.get("summary", ""), 3000) + "\"\n\n"
-            "## The findings produced\n" +
-            "\n".join("%d. [%s] %s" % (i + 1, f.get("confidence"), webtext(f.get("claim", ""), 400))
-                      for i, f in enumerate(dicts(report.get("findings")))) + "\n\n"
-            "## Your checks\n"
-            "1. **Traceability.** Go sentence by sentence through the summary and each finding. Does EVERY factual "
-            "assertion trace to a numbered claim above? List any that does not - inserted facts, inflated certainty, a "
-            "hedge quietly dropped, a \"therefore\" the claims do not license. Highest-yield check; do it literally.\n"
-            "2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was "
-            "never searched - a primary paper, official documentation, a dataset, a dissenting expert, a more recent "
-            "measurement?\n"
-            "3. **Plan flaws.** Did the SCOPING steer the research wrong - a leading sub-question, a premise accepted "
-            "instead of tested, a perspective set sharing one blind spot?\n\n"
-            "Verdict: **sound** / **minor-gaps** / **material-gaps** (a user acting on this could be misled). Be "
-            "concrete: name the exact sentence or the exact missing source type. \"Could be more thorough\" is useless.",
-            S_CRITIC, label="critic:%d" % (k + 1), max_tokens=3000)
+        return agent(p_critic(k, T["critics"], q, subqs, persps, confirmed,
+                              report.get("summary", ""), dicts(report.get("findings"))),
+                     S_CRITIC, label="critic:%d" % (k + 1), max_tokens=3000)
 
     crits = [c for c in pmap(critic, list(range(T["critics"]))) if c]
     order = ["sound", "minor-gaps", "material-gaps"]
@@ -1416,6 +1437,13 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         "killRateMeans": (
             "The kill rate reports how much was removed, never whether removal was "
             "correct."),
+        "partialCitationsAreKept": (
+            "A `partial` citation verdict means the page points this way but the statement "
+            "adds scope, certainty or specificity the page does not carry - and it does NOT "
+            "remove the claim. Only `unsupported` does. Measured with injected defects: an "
+            "inflated number, an invented attribution and an inflated scope all came back "
+            "`partial`, so all three would have been published. Read `citationPartials` "
+            "before quoting a number or an attribution from this report."),
         "searchCoverage": (
             "Check stats.searchHealth. If every general-web backend reports 0 results, "
             "this run saw a scholarly-only slice of the web and its coverage gaps are a "
@@ -1427,6 +1455,19 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             "`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT "
             "because every hypothesis survived - the two look identical in this JSON and "
             "mean opposite things. Read this report as an ordinary literature summary.")
+    # A `partial` citation verdict does NOT demote the claim - only `unsupported`
+    # does. Measured 2026-09-06 with injected defects: of five fabrications the
+    # auditor caught all five, but called three of them `partial` rather than
+    # `unsupported` - a tenfold inflated number, an invented "2019 Lancet consensus
+    # statement", and a claim widened to every adult on earth. All three would have
+    # been published. `partial` is precisely the auditor's response to the
+    # OVERSTATEMENT family, which is the error class this tool is most likely to
+    # produce on its own, so surface it in code rather than leaving it to a model to
+    # remember to mention.
+    _partials = [d for d in (out.get("citationDetail") or [])
+                 if isinstance(d, dict) and d.get("support") == "partial"]
+    if _partials:
+        out["citationPartials"] = _partials
     _untraceable = uniq("untraceableStatements")
     _struck = []
     if UNTRACEABLE_POLICY == "strike" and _untraceable:
@@ -1442,7 +1483,17 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             out["summary"] = re.sub(r"\s{2,}", " ", _summary).strip()
             log("STRUCK %d untraceable statement(s) from the summary (DR_UNTRACEABLE=strike)"
                 % len(_struck))
-    out["processCritique"] = {"verdict": verdict,
+    out["processCritique"] = {"untraceableCount": len(_untraceable),
+                              "readThisFirst": (
+                                  "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. "
+                                  "Measured 2026-09-06: three fabricated sentences were appended to a real "
+                                  "summary and the critic named all three - and returned `material-gaps` "
+                                  "on the clean and the degraded summary alike. The verdict did not move, "
+                                  "so it cannot separate a good run from a bad one. The statement list is "
+                                  "where the information is."),
+                              "verdict": verdict,
+                              "verdictNote": ("coarse tag, measured to be saturated at `material-gaps`; "
+                                              "see readThisFirst"),
                               "policy": UNTRACEABLE_POLICY,
                               "struckFromSummary": _struck,
                               "untraceableStatements": _untraceable,

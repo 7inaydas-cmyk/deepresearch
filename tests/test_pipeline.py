@@ -499,5 +499,21 @@ ok("NOTHING will be adjudicated" in _dr_src,
    "a run that ends with no hypotheses says so loudly - empty hypothesisVerdicts otherwise "
    "reads identically to 'every hypothesis survived'")
 
+print("\n-- what the injected-defect probes measured (#10 / #11) --")
+_engine_txt = open(dr.__file__, encoding="utf-8").read()
+ok("citationPartials" in _engine_txt,
+   "a `partial` citation verdict is surfaced in code, not left for a model to mention: "
+   "measured, 3 of 5 injected fabrications came back `partial` and `partial` does not demote")
+ok("untraceableCount" in _engine_txt and "readThisFirst" in _engine_txt,
+   "the critique leads with the count and the list, because the VERDICT was measured not to move "
+   "when three fabricated sentences were added")
+ok(callable(P.run_audit_probes) and callable(P.run_critic_probes) and callable(P.main),
+   "the probes have a runner, so #10 and #11 can be re-measured against any finished report")
+_pc = dr.p_critic(0, 2, "Q?", ["s1"], [{"label": "L", "lens": "x"}],
+                  [{"claim": "c1"}], "A summary.", [{"confidence": "high", "claim": "f1"}])
+ok("Process Critic 1/2" in _pc and "Traceability" in _pc and "A summary." in _pc,
+   "p_critic is module-level and renders the real prompt, so the probe scores the critic "
+   "rather than a paraphrase of it")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

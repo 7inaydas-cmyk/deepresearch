@@ -47,6 +47,8 @@ SHARED = {
     "strike/flag policy":        ("UNTRACEABLE_POLICY", "UNTRACEABLE_POLICY"),
     "calibration":               ("cohenKappa", "cohenKappa"),
     "process critic":            ("processCritique", "processCritique"),
+    "partial citations surfaced": ("citationPartials", "citationPartials"),
+    "critique leads with count":  ("untraceableCount", "untraceableCount"),
 }
 
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
@@ -62,8 +64,9 @@ PYTHON_ONLY = {
         "Needs a second panel pass over discarded claims. Portable in principle; "
         "not yet ported, and tracked as a known gap rather than an oversight.",
     "injected-defect probes":
-        "probes.py operates on a finished report, not on the engine, so it already "
-        "works against either build's JSON output. Nothing to port.",
+        "probes.py and its runner operate on a finished report, not on the engine, so "
+        "`python3 -m deepresearch.probes --report <any report.json>` already scores a "
+        "report from either build. Nothing to port.",
 }
 
 

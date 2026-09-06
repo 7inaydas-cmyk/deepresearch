@@ -98,12 +98,20 @@ Report these four things. Do not bury them.
    so. Also report `demotedBySurvivingPanel`: claims the panel passed but whose sources
    turned out not to say what they were read as saying. Never present a report without
    these numbers when they exist.
-2. **`processCritique.verdict`** — `sound` / `minor-gaps` / `material-gaps`. This is the
-   worst verdict across all critics, not the average. `material-gaps` means a user acting
-   on the report could be misled: lead with that, do not tuck it into caveats.
-3. **`processCritique.untraceableStatements`** — assertions in the summary that trace to no
-   verified claim. These are orchestrator hallucinations. **Strike them from what you tell
-   the user**, and say you struck them.
+2. **`citationPartials`** — claims the blind re-fetch rated `partial`: the page points this
+   way, but the statement adds scope, certainty or specificity the page does not carry.
+   **A `partial` does NOT remove the claim** — only `unsupported` does — so these are
+   published with nothing but a note. Measured with injected defects: of five fabrications
+   the auditor caught all five, but rated three of them `partial`, and those three were an
+   inflated number, an invented attribution, and a claim widened to every adult on earth.
+   Check this list before you quote a number or an attribution from the report.
+3. **`processCritique.untraceableCount` and `untraceableStatements`** — assertions in the
+   summary that trace to no verified claim. These are orchestrator hallucinations.
+   **Strike them from what you tell the user**, and say you struck them. Read these, not
+   `processCritique.verdict`: three fabricated sentences were appended to a real summary
+   and the critic named all three while returning `material-gaps` on the clean and the
+   degraded version alike. The verdict is a coarse tag, measured not to move. The list
+   and the count are where the information is.
 4. **`coverage`** — which sub-questions came back `unanswered`. An unanswered sub-question
    is a hole in the answer, not a footnote.
 5. **`rescue`** — present only when some sub-question lost every claim. `claimsSaved: 0`
