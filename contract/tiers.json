@@ -1,0 +1,26 @@
+{
+  "$comment": [
+    "Shared source-quality tiers. This file is the ONE place tier rules live; both",
+    "the Python engine and the Claude Code workflow read it, so a domain graded",
+    "wrong in one runtime cannot be graded right in the other.",
+    "",
+    "T1 primary institutional  - standards bodies, regulators, filings, preprints",
+    "T2 peer-reviewed / major press",
+    "T3 practitioner           - blogs, forums, source repos. Real, but not authority",
+    "T4 aggregator             - DISCOVERY ONLY. Never cite as fact; follow to source",
+    "T5 content farm           - excluded, with the exclusion reported",
+    "T? resolver               - doi.org and friends. Provenance UNVERIFIED until",
+    "                            resolved: a resolver is not a publisher, and grading",
+    "                            it T1 makes a predatory journal outrank a filing."
+  ],
+  "resolvers": ["doi.org", "dx.doi.org", "hdl.handle.net", "handle.net", "purl.org"],
+  "rules": [
+    ["T1", "(^|\\.)(arxiv\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$"],
+    ["T2", "(^|\\.)(nature\\.com|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|pubmed\\.ncbi\\.nlm\\.nih\\.gov|pmc\\.ncbi\\.nlm\\.nih\\.gov|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$"],
+    ["T3", "(^|\\.)(github\\.com|gitlab\\.com|medium\\.com|substack\\.com|dev\\.to|news\\.ycombinator\\.com|stackoverflow\\.com|reddit\\.com|hashnode\\.dev|blogspot\\.com|wordpress\\.com)$"],
+    ["T4", "(^|\\.)(indeed\\.[\\w.]+|glassdoor\\.[\\w.]+|levels\\.fyi|linkedin\\.com|ziprecruiter\\.com|g2\\.com|capterra\\.com|trustpilot\\.com|producthunt\\.com|crunchbase\\.com|payscale\\.com|comparably\\.com)$"]
+  ],
+  "farm_tells": "\\b(top \\d+ best|ultimate guide|you won'?t believe|listicle|sponsored content|affiliate link)\\b",
+  "rank": { "T1": 0, "T2": 1, "T?": 2, "T3": 3, "T4": 4, "T5": 5 },
+  "citable": ["T1", "T2", "T?", "T3"]
+}

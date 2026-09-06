@@ -1,0 +1,106 @@
+{
+ "question": "Is standing at a desk for part of the workday actually better for health than sitting, and how large is the measured effect?",
+ "depth": "standard",
+ "coverage": null,
+ "contradictions": [],
+ "scopeContract": {
+  "assumptions": [
+   "Population of interest is generally healthy working-age adults in sedentary desk jobs, not clinical populations with specific conditions (unless noted)",
+   "'Standing desk' means a sit-stand adjustable desk used for part of the day (not standing all day)",
+   "'Health effects' scope includes cardiometabolic markers (glucose, lipids, weight), musculoskeletal outcomes (back/leg pain, fatigue), and cardiovascular/mortality risk where data exists - not just subjective comfort",
+   "'Better than sitting' is judged against continuous prolonged sitting as the comparator, not against walking or other activity interventions",
+   "Time horizon includes both short-term trials (weeks-months, surrogate markers) and longer-term/epidemiological evidence (years, hard outcomes like mortality/CVD) since these often diverge",
+   "Geography/context: mostly office/desk-based work settings in high-income countries, where most RCTs and cohort studies originate",
+   "'Large effect' will be defined relative to established clinical/statistical thresholds (e.g., effect sizes, hazard ratios, minimally important differences) rather than a subjective label",
+   "No specific currency or cost dimension is central to this question (it's a health-effect question, not a cost-benefit purchase decision), though desk cost/ROI may be a minor side note"
+  ],
+  "decisionAtStake": "Whether an individual (or an employer designing workplace wellness policy) should invest in sit-stand desks and encourage standing during work hours as a meaningful health intervention, versus treating it as a low-priority or cosmetic change, and whether to prioritize it over alternatives like walking breaks, exercise programs, or ergonomic seating.",
+  "hypotheses": [
+   {
+    "hypothesis": "Standing desks produce measurable, clinically meaningful health benefits (e.g., improved glucose/lipid markers, reduced musculoskeletal pain, reduced mortality/CVD risk) that justify their use as a health intervention.",
+    "killCriterion": "Meta-analyses or large RCTs show null or negligible effect sizes on cardiometabolic markers and no significant association with hard outcomes (mortality, CVD incidence) after adjusting for confounders."
+   },
+   {
+    "hypothesis": "Standing desks produce only minor/short-term subjective benefits (e.g., reduced discomfort, mild calorie/energy expenditure increase) but no meaningful change in hard clinical or long-term health outcomes.",
+    "killCriterion": "Evidence emerges of statistically and clinically significant improvements in hard outcomes (e.g., HbA1c, LDL, mortality hazard ratios) sustained over months-years, not just self-reported comfort."
+   },
+   {
+    "hypothesis": "Prolonged standing itself introduces new health risks (e.g., venous disorders, lower back/leg strain, orthostatic stress) that offset or negate benefits versus sitting, making net effect neutral or negative unless standing time is limited/interspersed with movement.",
+    "killCriterion": "Studies show no elevated risk of musculoskeletal or vascular issues with standing desk use at typical durations (e.g., <50% of workday), and any strain issues resolve with ergonomic adjustment/movement breaks."
+   },
+   {
+    "hypothesis": "The health benefit depends primarily on breaking up sedentary time / total movement (standing being one proxy), not on standing per se - meaning standing desks matter only insofar as they reduce sitting time, and equivalent benefit could be achieved via walking breaks alone.",
+    "killCriterion": "Head-to-head studies show standing (static, non-ambulatory) produces benefits equal to or greater than movement-based interventions (walking breaks) of similar duration, isolating standing itself as causal rather than just breaking sitting."
+   }
+  ],
+  "keyQuestion": "Compared to prolonged uninterrupted sitting, does using a sit-stand desk for part of the workday produce statistically and clinically meaningful improvements in measurable health outcomes (cardiometabolic markers, musculoskeletal symptoms, or mortality/CVD risk), and if so, what is the effect size reported in controlled trials or meta-analyses?",
+  "whatWouldChangeTheAnswer": [
+   "Discovery that large-scale RCTs or meta-analyses show null/negligible effects on hard outcomes (HbA1c, lipids, weight, CVD, mortality) despite popular claims of benefit - would flip toward 'no meaningful effect'",
+   "Discovery that effect sizes on cardiometabolic markers are statistically significant but clinically trivial (e.g., <5% relative change) - would flip toward 'marginal benefit, not worth prioritizing'",
+   "Evidence that benefits are dose-dependent and only appear above a threshold of standing time (e.g., >2 hrs/day) or when combined with movement, not from standing alone - would refine the answer to 'depends on how it's used'",
+   "Evidence of significant adverse effects from standing (varicose veins, musculoskeletal strain, cardiovascular strain from orthostasis) that were previously under-reported - would flip toward net-negative or risk-benefit tradeoff",
+   "Head-to-head trials showing walking breaks or short activity bouts outperform standing desks on the same outcomes - would flip toward 'standing desks are an inferior/placebo intervention compared to movement'",
+   "Long-term cohort data (5+ years) linking standing desk use to reduced all-cause mortality or CVD incidence independent of confounders - would strengthen the case for real benefit",
+   "Evidence that most existing studies are short-duration, small-sample, or funded/influenced by furniture industry, undermining confidence in reported benefits - would lower certainty regardless of direction"
+  ]
+ },
+ "summary": "No claims survived extraction. 0 sources fetched, all empty, paywalled or irrelevant.",
+ "findings": [],
+ "sources": [],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 0,
+  "claimsExtracted": 0,
+  "urlDupes": 0,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 0,
+  "searchHealth": {
+   "ddg-html": {
+    "attempts": 6,
+    "ok": 0,
+    "fail": 6,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 6,
+    "ok": 0,
+    "fail": 6,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 6,
+    "ok": 0,
+    "fail": 6,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 6,
+    "ok": 6,
+    "fail": 0,
+    "results": 2
+   },
+   "crossref": {
+    "attempts": 6,
+    "ok": 3,
+    "fail": 3,
+    "results": 24
+   },
+   "openalex": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 24
+   }
+  },
+  "sourceTiers": {},
+  "agentCalls": 2,
+  "agentErrors": 6,
+  "inputTokens": 3791,
+  "outputTokens": 4197,
+  "wallSeconds": 89.3,
+  "claimsVerified": 0,
+  "confirmed": 0
+ }
+}

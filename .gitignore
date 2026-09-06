@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Raw run logs ARE committed on purpose: they are the evidence behind every
+# percentage in the README. Ignore only scratch runs.
+runs/scratch-*

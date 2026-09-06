@@ -1,0 +1,817 @@
+{
+ "question": "Is standing at a desk for part of the workday actually better for health than sitting, and how large is the measured effect?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No RCT/meta-analysis data on standing desk effects on glucose, lipids, blood pressure, weight/BMI with quantified effect sizes/CIs has been gathered yet."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No longitudinal cohort/RCT evidence found linking standing-desk use itself to CVD events, diabetes incidence, or mortality."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "Varicose vein risk from prolonged standing/walking occupations is well quantified (RR 1.78), but musculoskeletal and cardiovascular risk comparisons across standing occupations (retail, manufacturing, healthcare) vs seated jobs are missing."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Dynamic vs static standing comparisons exist (discomfort, breaks, O2 consumption) but no direct isolation of static standing vs static sitting on hard health outcomes; posture-transition study suggests movement is the active ingredient but is small/cross-sectional (n=26)."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Energy expenditure data exists (standing ~1.62 vs sitting ~1.43 MET-like units) showing modest but real difference; missing calorie/day extrapolation, muscle activation data, and discomfort score comparisons over longer durations."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No dose-response data on optimal standing hours/day or interval patterns found."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No comparative effect-size data between standing desks and walking breaks/structured exercise; the office-worker exercise RCT shows exercise benefits but isn't compared head-to-head with standing interventions."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "Some implementation/compliance/adoption literature identified (attitudes, usage patterns, sensor tracking) but no cost data or cost-effectiveness comparison to cheaper alternatives like walking breaks."
+  }
+ ],
+ "contradictions": [
+  "The energy-expenditure study (10.1556/2060.105.2018.2.14) found that alternating sitting/standing every 20 minutes did NOT significantly increase energy expenditure over sustained sitting, while sustained standing alone DID show a significant ~13% increase — this suggests the pattern/duration of standing matters and that brief alternation may be metabolically insufficient, contradicting a simplistic 'any standing helps' framing.",
+  "The posture-transition study (10.3390/ijerph20054668) found that no single behavior, including standing time alone, was highly correlated with health outcomes — movement/transitions mattered more — which directly contradicts the implicit premise behind vendor/blog-style standing-desk advocacy (including the low-tier claim recommending 2 hours/day of standing) that standing time itself is the key protective variable.",
+  "Static/prolonged standing is associated with a confirmed harm (varicose vein hospitalisation RR 1.78) even as standing is also associated with modest benefits (energy expenditure, subjective vitality) — these are not mutually exclusive, but they mean 'standing desks are unambiguously healthier than sitting' is an overstatement; the health effect is a trade-off, not a one-directional improvement.",
+  "The energy-expenditure study (doi 10.1556/2060.105.2018.2.14) found sit-stand alternation did NOT significantly increase mean energy expenditure over sustained sitting, while the 'unreliable' framing in doi 10.3389/fphys.2017.00420 implies standing alone is a viable metabolic/obesity intervention — these are in tension over whether standing alone meaningfully raises energy expenditure enough to matter.",
+  "The posture-transition study (10.3390/ijerph20054668) concludes no single behavior including standing time alone correlates with health outcomes (movement/transitions matter most), which contradicts the implicit premise in vendor/blog-level standing-desk framing (e.g., unreliable Frontiers and Journal of Sports Science entries) that static standing itself is the active health-improving ingredient."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "Scope covers general working-age adults in office/desk-job settings, not people with specific pre-existing medical conditions requiring medical advice",
+   "'Standing part of the workday' means using a sit-stand desk for roughly 1-4 hours/day, not standing all day",
+   "'Health' includes cardiometabolic markers (weight, blood sugar, lipids), musculoskeletal outcomes (back/leg pain), and cardiovascular disease/mortality risk - not just subjective comfort or productivity",
+   "Time horizon of interest is both short-term (weeks-months, e.g., discomfort, energy expenditure) and long-term (years, e.g., disease incidence, mortality) evidence, since these often diverge",
+   "'Large effect' means clinically/practically meaningful (e.g., >10-15% relative risk reduction, or effect sizes seen in exercise interventions), not merely statistically significant",
+   "Geography/context: primarily evidence from high-income countries with office-worker populations, as this is where sit-stand desk research is concentrated",
+   "Evidence base includes RCTs of standing-desk interventions and epidemiological studies of sitting time/occupational posture, not just observational associations with total sedentary behavior"
+  ],
+  "decisionAtStake": "A reader deciding whether to buy/request a standing desk (or a workplace deciding whether to invest in them) and, if so, how to use it (how many hours standing, what pattern) - versus concluding it's not worth the cost/effort and other interventions (e.g., walking breaks, exercise) would be better use of time and money.",
+  "keyQuestion": "Does using a standing desk for part of the workday produce measurably better long-term health outcomes (cardiometabolic risk, musculoskeletal health, mortality) than sitting, and if so, how large is that effect compared to alternatives like regular movement breaks or exercise?",
+  "whatWouldChangeTheAnswer": [
+   "RCT/cohort evidence showing standing desks reduce hard outcomes (cardiovascular events, diabetes incidence, mortality) with a quantified, clinically meaningful effect size - would strongly support 'yes, large effect'",
+   "Evidence that standing time substitutes for sitting but does NOT reduce total sedentary risk markers, or that prolonged standing itself has offsetting harms (varicose veins, orthostatic stress, lower back/leg fatigue, even cardiovascular strain in some studies) - would flip toward 'no net benefit or mixed'",
+   "Meta-analyses showing standing desks improve only short-term proxies (self-reported discomfort, energy expenditure of ~10-50 kcal/day) but not biomarkers like blood glucose, lipids, or weight over months - would support 'minimal/negligible effect' conclusion",
+   "Comparative studies showing that light activity/walking breaks produce substantially larger effects than static standing - would reframe the answer from 'standing vs sitting' to 'movement vs stillness' as the real variable",
+   "Dose-response data indicating effects only emerge above/below a certain threshold of standing hours - would change the practical recommendation even if some benefit exists"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Standing desks provide a meaningful, evidence-backed health benefit (measurable reduction in cardiometabolic risk markers and/or musculoskeletal complaints) that justifies adoption, though effect sizes are modest compared to exercise.",
+    "killCriterion": "High-quality RCTs/meta-analyses find no significant difference in cardiometabolic biomarkers (glucose, lipids, weight, blood pressure) or long-term disease incidence between standing-desk users and seated controls after adjusting for confounders."
+   },
+   {
+    "hypothesis": "Standing desks produce only short-term subjective or minor physiological changes (reduced discomfort, marginally more calories burned) but no meaningful long-term health benefit over sitting - the 'sitting is the new smoking' framing is overstated for standing alone.",
+    "killCriterion": "Longitudinal cohort or RCT evidence shows statistically and clinically significant reductions in major health outcomes (CVD incidence, mortality, diabetes) attributable specifically to standing time, replicated across multiple independent studies."
+   },
+   {
+    "hypothesis": "The health benefit comes not from standing itself but from breaking up prolonged static posture (i.e., alternating/moving), meaning standing desks help only insofar as they encourage movement/posture changes - static standing alone is no better than static sitting and may add its own risks (venous issues, fatigue).",
+    "killCriterion": "Studies directly comparing static standing vs. static sitting (controlling for movement/breaks) show standing alone confers benefit independent of any movement, OR studies show no adverse effects of prolonged static standing, undermining the 'movement matters more' claim."
+   },
+   {
+    "hypothesis": "Standing desks are net negative or neutral for some users because prolonged standing introduces new risks (musculoskeletal strain, venous insufficiency, cardiovascular strain) that offset or outweigh the reduction in sitting-related risk, especially without proper alternation.",
+    "killCriterion": "Safety/occupational health literature shows no increased incidence of musculoskeletal, venous, or cardiovascular complaints among standing-desk users compared to seated workers over comparable follow-up periods."
+   }
+  ]
+ },
+ "answerFirst": "Standing desks are not a proven cure for the harms of sitting: the strongest evidence shows they measurably increase energy expenditure by a small amount (~13-18%) and modestly improve subjective wellbeing/vitality, but prolonged static standing itself carries a real, quantified harm (~78% higher relative risk of varicose vein hospitalisation) and there is no confirmed evidence that standing desks alone improve hard cardiometabolic outcomes (glucose, lipids, blood pressure, weight) or reduce cardiovascular/mortality risk. The best-supported takeaway is that movement and posture transitions - not static standing time itself - appear to be the more important variable for musculoskeletal/cardiometabolic benefit. Recommend standing desks as one tool for breaking up sitting and improving subjective vitality, used with regular movement/position changes rather than prolonged static standing, while acknowledging the evidence base for hard health outcomes remains thin.",
+ "summary": "Standing desks produce a small, statistically real increase in energy expenditure during desk work (~1.62 vs ~1.43 MET-equivalent units, a roughly 13% rise) and are associated with modest improvements in subjective health and work vitality in at least one RCT, but simply alternating sitting/standing every 20 minutes did not significantly raise energy expenditure over sitting alone. Occupational cohort data show prolonged standing/walking (≥75% of work time) is associated with a 78% higher relative risk of varicose vein hospitalisation, accounting for an estimated ~22.5% of such hospitalisations - a real harm of static standing that is often omitted from standing-desk advocacy. A pilot study of sedentary office workers found no single behavior, including standing time alone, was strongly correlated with musculoskeletal or cardiometabolic health outcomes; instead, posture transitions and combined movement (standing+walking+transitions) were the correlated factor. No confirmed evidence in this research surfaced RCT or cohort data linking standing-desk use to hard cardiometabolic biomarkers, cardiovascular events, diabetes incidence, or mortality - this remains an open, unanswered question. Overall, the current evidence supports standing desks as a modest adjunct for increasing movement/energy expenditure and subjective vitality, not as a proven superior alternative to sitting for major health outcomes, and static standing itself carries measurable venous health risk.",
+ "findings": [
+  {
+   "claim": "Standing during desk work modestly but significantly increases energy expenditure compared to sitting (EE ≈1.62±0.09 vs ≈1.43±0.07 in a 100-minute typing/editing task with 26 healthy male volunteers), a difference of roughly 13%.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1556/2060.105.2018.2.14"
+   ],
+   "evidence": "Quote: 'the mean EE while standing (EE = 1.62 ± 0.09) significantly increased compared to sitting.' Audit: supported.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "2-1"
+  },
+  {
+   "claim": "Alternating sitting and standing every 20 minutes over 100 minutes did NOT produce a statistically significant difference in mean energy expenditure versus sustained sitting (EE 1.55±0.08 vs 1.43±0.07), suggesting brief alternation is less metabolically impactful than sustained standing.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1556/2060.105.2018.2.14"
+   ],
+   "evidence": "Quote: 'There were no significant differences observed in the mean EE levels between sitting (EE = 1.43 ± 0.07) and sitting–standing alternation (EE = 1.55 ± 0.08).' Audit: supported.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "2-1"
+  },
+  {
+   "claim": "Prolonged standing/walking at work (≥75% of work time) is associated with a substantially elevated relative risk of varicose vein hospitalisation over a 12-year period: pooled RR 1.78 (95% CI 1.19-2.68), with sex-specific RRs of 1.75 (men, CI crosses 1) and 1.82 (women, significant); this exposure is estimated to account for ~22.5-22.6% of varicose vein hospitalisations (aetiological fraction).",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.1136/oem.2005.020537"
+   ],
+   "evidence": "Quote: 'The pooled estimate of the relative risk was 1.78 (95% CI 1.19 to 2.68)'; 'the relative risk was 1.75 (95% CI 0.92 to 3.34) for men and 1.82 (95% CI 1.12 to 2.95) for women'; 'aetiological fraction... 22.5% for men and 22.6% for women.' Audit: supported (all three).",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "3-0 / 3-0 / 3-0"
+  },
+  {
+   "claim": "In a pilot study of 26 sedentary office workers, no single movement behavior - including standing time alone - was highly correlated with musculoskeletal or cardiometabolic health outcomes; instead, posture transitions (movement between sitting/standing/walking) were negatively correlated with BMI and heart rate, and a combination of standing, walking, and transitions was associated with better outcomes.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.3390/ijerph20054668"
+   ],
+   "evidence": "Quote: 'Although no single behavior was highly correlated with health outcomes... a combination of increasing standing time, walking time, and the number of transitions between postures... was associated with positive musculoskeletal and cardiometabolic health indicators.' Also: 'Posture transitions had negative correlations with body mass index and heart rate.' Audit: supported (both).",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "3-0 / 2-1"
+  },
+  {
+   "claim": "A sit-stand desk intervention among Japanese office workers produced a significant increase in subjective health ratings (p=0.002) and work-related vitality/engagement (p<0.001), and workers maintained decreased workplace sitting time long-term after such interventions in another study - suggesting standing desks improve self-reported wellbeing and behavior change durability, though these are subjective/behavioral, not hard clinical, outcomes.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.3390/ijerph182111604",
+    "https://doi.org/10.1080/00140139.2021.1998647"
+   ],
+   "evidence": "Quote: 'There was a significant increase in subjective health (p = 0.002), vitality in work-related engagement (p < 0.001)...'; Title/quote: 'Office-workers maintain decreased workplace sitting time long-term following participation in a sit-stand desk intervention study.' Audit: supported (both), though the second source is metadata-only (title, no abstract).",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported / supported (partial abstract availability)",
+   "vote": "2-1 / 3-0"
+  },
+  {
+   "claim": "In a small feasibility study of 12 older adults with type 2 diabetes, both static and dynamic standing increased oxygen consumption/movement versus sitting (p<0.001) without evidence of executive cognitive worsening, and dynamic standing produced a lower rate of musculoskeletal discomfort development than static standing (p=0.043) - suggesting standing is physiologically feasible and dynamic standing may be preferable to static standing for comfort, but this is a very small, non-generalizable sample.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1186/s12877-020-01600-0"
+   ],
+   "evidence": "Quotes: 'Oxygen consumption and overall movements progressively increased from sitting to static and dynamic standing... (p<0.001)'; 'rate of total musculoskeletal discomfort development (p=0.043) were lower in the dynamic standing compared to static standing sessions'; 'There was no evidence of executive cognitive worsening during either standing session compared to sitting.' Audit: supported (all).",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "3-0 / 2-1 / 2-1"
+  },
+  {
+   "claim": "No confirmed evidence was found in this research linking standing-desk use to hard cardiometabolic biomarkers (glucose, lipids, blood pressure, weight/BMI), cardiovascular events, diabetes incidence, or all-cause mortality via RCT or longitudinal cohort data - this is a genuine evidence gap, not a null finding.",
+   "confidence": "low",
+   "sources": [],
+   "evidence": "Coverage checklist explicitly marks both the cardiometabolic-biomarker RCT/meta-analysis question and the hard-outcomes (CVD/diabetes/mortality) question as 'unanswered' - no sources were located to confirm or refute this pathway.",
+   "sourceTier": "N/A",
+   "factInferenceAssumption": "assumption",
+   "citationCheck": "not applicable - absence of evidence, not a tested claim",
+   "vote": "N/A"
+  }
+ ],
+ "baseRate": "No outside-view base rate for \"standing desk adoption improving hard health outcomes\" exists in the confirmed evidence; the only quantified base-rate-like figures available are occupational-cohort effect sizes for HARM (varicose veins: RR 1.78, ~22.5% aetiological fraction from prolonged standing/walking jobs) and short-term energy-expenditure deltas (~13% EE increase), not disease-incidence base rates. Absent a hard-outcome base rate, projections about standing desks preventing cardiovascular disease or improving longevity should be treated as unsupported extrapolation from proxy measures (subjective vitality, EE, discomfort scores).",
+ "hingeNumber": {
+  "value": "RR 1.78 (95% CI 1.19-2.68) for varicose vein hospitalisation among workers with ≥75% standing/walking time, vs. ~13% higher energy expenditure (1.62 vs 1.43) from standing during desk work",
+  "why": "The entire recommendation hinges on weighing a confirmed, real harm from PROLONGED STATIC standing/walking occupations (varicose veins) against a confirmed but modest metabolic benefit from standing at a desk. If the varicose-vein risk applies mainly to full-shift standing (≥75% of work time, e.g., retail/manufacturing) and not to intermittent desk-standing (a few hours/day), the harm may not generalize to typical standing-desk use patterns - this is a scope/dose question the evidence does not resolve.",
+  "source": "https://doi.org/10.1136/oem.2005.020537 and https://doi.org/10.1556/2060.105.2018.2.14",
+  "sensitivity": "If the standing-desk dose used by real-world office workers (typically 1-4 hrs/day, intermittent) is far below the ≥75% threshold in the varicose-vein cohort, the venous risk may not transfer at all, meaningfully strengthening the case for standing desks. Conversely, if office workers who adopt standing desks end up standing statically for long unbroken stretches approaching that 75% threshold, the venous-risk finding becomes directly relevant and the recommendation should shift toward emphasizing movement/transitions over static standing. A 10-20% shift in the RR CI (e.g., down to 1.19 or up to 2.68) does not change the qualitative conclusion, but the DOSE/duration threshold at which it applies is the true hinge and is unresolved by current evidence."
+ },
+ "strongestArgumentAgainst": "The strongest case against recommending standing desks is that essentially none of the confirmed evidence measures hard, clinically meaningful health outcomes (cardiovascular events, diabetes incidence, mortality, weight change) - it measures short-term proxies (energy expenditure over ~100 minutes, subjective vitality/health ratings, discomfort scores, a single occupational cohort's varicose vein risk). A ~13% acute increase in energy expenditure during a 100-minute lab task is a trivially small caloric effect (plausibly only ~10-20 extra kcal) that has never been shown to translate into weight loss, improved glucose/lipid profiles, or reduced disease risk over months or years - this is exactly the kind of surrogate-outcome inference that has repeatedly failed to predict real health benefit in other domains (e.g., many biomarker-based interventions). Meanwhile the one confirmed hard-outcome-adjacent finding (varicose vein hospitalisation) actually argues AGAINST prolonged standing, and the posture-transition study directly undercuts the standing-desk premise by finding standing time alone was not correlated with better outcomes - only movement/transitions were. There is also a real survivorship/publication bias risk: null or harmful standing-desk RCTs (on weight, glucose, blood pressure) may be underrepresented in what was retrieved, while positive subjective/vitality findings from smaller studies got through. A reasonable skeptic would say: the evidence supports \"movement breaks are good,\" not \"standing desks specifically improve health,\" and conflating the two overstates the case for standing desks as a category.",
+ "whatWouldChangeThisCall": [
+  "An RCT or meta-analysis directly linking standing-desk use to changes in blood glucose, lipids, blood pressure, or weight/BMI with quantified effect sizes and CIs would resolve the largest current gap.",
+  "Longitudinal cohort or RCT data connecting standing-desk use (not general activity/exercise) to cardiovascular events, diabetes incidence, or mortality would upgrade or downgrade confidence substantially.",
+  "Dose-response data clarifying at what daily standing duration/pattern the varicose-vein-type venous risk (RR 1.78 in ≥75%-standing occupations) begins to apply to intermittent desk-standing users would resolve the central hinge uncertainty.",
+  "A head-to-head comparison of standing-desk interventions versus walking breaks or structured exercise programs on the same outcome measures would clarify whether standing desks are the most cost-effective intervention or whether cheaper movement-based alternatives outperform them.",
+  "Confirmation or refutation of the 17 lower-ranked, never-verified claims could shift specific sub-findings, particularly around implementation/compliance and additional occupational risk data."
+ ],
+ "caveats": "Several sub-questions in the coverage checklist remain fully unanswered: (1) RCT/meta-analysis evidence on standing desks and cardiometabolic biomarkers (glucose, lipids, BP, weight/BMI); (2) longitudinal/RCT evidence linking standing-desk use to hard outcomes (CVD events, diabetes incidence, mortality); (3) dose-response evidence for optimal standing duration/pattern; (4) comparative effect sizes of standing desks versus walking breaks or structured exercise. These are marked \"unanswered\" in the checklist, not merely under-evidenced, and should not be assumed favorable or unfavorable. Additionally, 17 lower-ranked claims from the original claim set were never verified by the audit process and are excluded here entirely - their content is unknown and could not be incorporated. Several refuted claims were explicitly killed by contradicting evidence or provenance failure (e.g., the 6-month exercise program pain-reduction and strength claims, the 3-month Japanese RCT sitting-time-reduction claim, the neck/shoulder pain reduction claim, the desk-sensor accuracy claim, the PSSI risk index, and pulmonary embolism statistics) - none of these should be cited as supporting or refuting the standing-desk question. Two claim [2] sources are lower-tier/unreliable (T? provenance-unverified DOI recommending \"2 hours/day standing\") and should not be treated as authoritative dosing guidance. No T5 sources were found in the confirmed set requiring exclusion. Time-sensitivity: the underlying studies span 2005-2023; the varicose-vein cohort data is from a 2005 publication describing a 12-year Danish cohort, so occupational patterns (e.g., prevalence of standing desks, job composition) may have shifted since; more recent RCTs are needed to reflect current standing-desk products and usage norms. All effect sizes reported are from single primary studies (T2 tier) rather than multiple independent replications or meta-analyses, so replication risk remains for every quantitative claim.",
+ "openQuestions": [
+  "Do standing desks improve or have no effect on hard cardiometabolic outcomes (blood glucose, lipids, blood pressure, weight/BMI) when tested in adequately powered RCTs?",
+  "At what daily dose/duration of desk-standing (hours per day, continuous vs. broken up) does the venous health risk (varicose veins, and possibly other venous outcomes) seen in full-shift standing occupations begin to apply, if at all?",
+  "How do standing desks compare, in effect size and cost-effectiveness, to simpler/cheaper interventions like scheduled walking breaks or structured exercise programs for the same health outcomes?",
+  "Is there any evidence on long-term (multi-year) cardiovascular event or mortality differences between habitual standing-desk users and sitting-desk users?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 86.7,
+  "effectiveCitations": 26,
+  "supported": 26,
+  "partial": 4,
+  "unsupported": 0,
+  "unreachable": 0,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "A 6-month workplace exercise program (120 supervised sessions, 5x/week) reduced musculoskeletal pain duration and intensity by 43.1-70% in office workers compared to a non-intervention control group.",
+   "url": "https://doi.org/10.3390/healthcare12090915",
+   "support": "supported",
+   "reasoning": "The abstract explicitly describes a 6-month workplace exercise program with 120 supervised sessions at 5 times/week for office workers, compared against a control group that received no intervention, and reports that the intervention group significantly reduced duration and intensity of musculoskeletal pain by 43.1-70%. This directly matches all elements of the statement: the program duration, ses…"
+  },
+  {
+   "claim": "In a 12-year prospective study of Danish workers, employees with jobs requiring prolonged standing or walking (at least 75% of work time) had a pooled relative risk of 1.78 (95% CI 1.19 to 2.68) for hospitalisation due to varicose veins compared to other workers.",
+   "url": "https://doi.org/10.1136/oem.2005.020537",
+   "support": "supported",
+   "reasoning": "The abstract directly states the study design (12-year prospective study of Danish population, jobs requiring standing/walking ≥75% of work time), the outcome (hospitalisation due to varicose veins), and reports the pooled relative risk of 1.78 (95% CI 1.19 to 2.68) exactly as claimed in the statement. All key details—duration, population, exposure threshold, outcome, and statistic—match the page …"
+  },
+  {
+   "claim": "Compared to static standing, dynamic standing (with cued weight-shifting movements) reduced the duration of breaks needed during standing (p = 0.024).",
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the duration of breaks during standing was lower in dynamic standing compared to static standing, with p = 0.024. This directly matches the statement's claim that dynamic standing reduced the duration of breaks needed during standing compared to static standing, with the same p-value cited."
+  },
+  {
+   "claim": "In a small study of 12 older adults with type 2 diabetes, oxygen consumption and overall movements progressively increased from sitting to static standing to dynamic standing, respectively (p < 0.001).",
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the sample size (12 older adults with T2DM) and reports that oxygen consumption and overall movements progressively increased from sitting to static to dynamic standing with p < 0.001, matching the statement's claims almost verbatim."
+  },
+  {
+   "claim": "A 3-month RCT of 74 Japanese desk workers (intervention n=36, control n=38) using sit-stand desks found the intervention group significantly decreased sitting time at work (p=0.002) compared to controls.",
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "support": "supported",
+   "reasoning": "The abstract directly states the study was a 3-month RCT of 74 Japanese desk workers with intervention n=36 and control n=38, and that the intervention group significantly decreased sitting time at work with p=0.002. This matches the statement exactly with no interpretive leap needed."
+  },
+  {
+   "claim": "The publication recommends office workers stand up from their desks for two hours per day.",
+   "url": "https://doi.org/10.64628/aa.v7dcwqjv6",
+   "support": "partial",
+   "reasoning": "The only substantive text available is the title itself, which does align with the statement's core claim (standing up from desks for two hours a day). However, the page provides no abstract or body text - Crossref metadata explicitly states no abstract is held. There is no elaboration on whether this is a formal 'recommendation,' what publication/context this applies to, or the reasoning behind i…"
+  },
+  {
+   "claim": "A study titled 'The introduction of sit-stand worktables; aspects of attitudes, compliance and satisfaction' was published in Applied Ergonomics, addressing workplace adoption factors relevant to standing desk implementation such as attitudes, compliance, and satisfaction.",
+   "url": "https://doi.org/10.1016/j.apergo.2005.06.007",
+   "support": "partial",
+   "reasoning": "The page confirms the title, journal (Applied Ergonomics), and publication year (2006, though the statement doesn't specify year), matching the core claim that a study by this title was published in Applied Ergonomics. The title itself explicitly references attitudes, compliance and satisfaction, which aligns with the statement's claim that these are addressed. However, the fetched page contains n…"
+  },
+  {
+   "claim": "The study was published in the journal Ergonomics in 2021.",
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "support": "supported",
+   "reasoning": "The page metadata explicitly lists the journal as Ergonomics and the year as 2021, directly matching the statement that the study was published in the journal Ergonomics in 2021."
+  },
+  {
+   "claim": "The same exercise intervention increased cervical, handgrip, back, and leg maximal strength by 10.3-27.1%, and flexibility/balance by 12.3-73.7%, versus a control group that showed no change.",
+   "url": "https://doi.org/10.3390/healthcare12090915",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the intervention group increased cervical, handgrip, back, and leg maximal strength by 10.3-27.1% and flexibility and balance by 12.3-73.7%, while the control group showed no change in these indices. This matches the statement essentially verbatim in content and figures."
+  },
+  {
+   "claim": "The relative risk of varicose vein hospitalisation associated with prolonged standing/walking at work was 1.75 (95% CI 0.92 to 3.34) for men and 1.82 (95% CI 1.12 to 2.95) for women.",
+   "url": "https://doi.org/10.1136/oem.2005.020537",
+   "support": "supported",
+   "reasoning": "The abstract text explicitly states the exact relative risk values and confidence intervals for men and women as quoted in the statement, matching it verbatim in substance."
+  },
+  {
+   "claim": "The rate of total musculoskeletal discomfort development was lower during dynamic standing than during static standing (p = 0.043) among older adults with T2DM.",
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the rate of total musculoskeletal discomfort development was lower during dynamic standing compared to static standing, with p = 0.043, matching the statement's claim. The study population is older adults with T2DM, as stated. This directly supports the statement with no interpretive leap."
+  },
+  {
+   "claim": "In a controlled study of 26 healthy male volunteers performing typing/editing work, mean energy expenditure while standing (EE = 1.62 ± 0.09) was significantly higher than while sitting (EE = 1.43 ± 0.07) over 100 minutes.",
+   "url": "https://doi.org/10.1556/2060.105.2018.2.14",
+   "support": "supported",
+   "reasoning": "The abstract explicitly reports the study design (26 healthy male volunteers, typing/editing work, 100 min), and states the exact mean EE values for standing (1.62 ± 0.09) and sitting (1.43 ± 0.07), and explicitly states that the standing EE was significantly higher than sitting. This directly matches the statement's claim without requiring any interpretive leap."
+  },
+  {
+   "claim": "The study used objective measurement tools (a thigh-based IMU, heart rate monitor, and ambulatory blood pressure cuff) in 26 participants to quantify posture, step count, and cardiometabolic measures during both work and leisure time.",
+   "url": "https://doi.org/10.3390/ijerph20054668",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states 26 participants wore a thigh-based IMU to quantify posture and step count, and a heart rate monitor and ambulatory blood pressure cuff to quantify cardiometabolic measures, during both work and leisure time. This directly matches the statement's claims about objective measurement tools, participant count, and measured variables."
+  },
+  {
+   "claim": "All 12 older adult participants with type 2 diabetes (mean age 71, BMI 34) were able to complete three 4-hour sessions (sitting, static standing, dynamic standing), demonstrating feasibility of prolonged standing as a non-exercise intervention.",
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "support": "supported",
+   "reasoning": "The abstract states 12 older adult participants with T2DM (mean age 71, BMI 34) completed three sessions (sitting, static standing, dynamic standing), and explicitly says All participants were able to complete all sessions, which matches the claim that all 12 completed the sessions. The sessions are described as 4-h sessions in the aim/methods, matching the 4-hour sessions detail. The conclusion e…"
+  },
+  {
+   "claim": "Self-rated work performance improved significantly (p=0.017) over a four-week period following sit-stand desk introduction, suggesting productivity effects independent of cardiometabolic biomarkers.",
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "support": "partial",
+   "reasoning": "The abstract confirms a significant increase in self-rated work performance (p=0.017) over a four-week period, which supports the core numerical claim. However, the abstract does not explicitly frame this as productivity effects independent of cardiometabolic biomarkers - that is an interpretive addition not stated in the text. The study is a three-month intervention with the four-week performance…"
+  },
+  {
+   "claim": "A custom desk-mounted sensor system measuring desk floor height, user distance, and temperature can estimate sit-stand desk posture and user presence with 95.6% accuracy.",
+   "url": "https://doi.org/10.1177/1064804620947630",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the custom desk-mounted sensor system, which measures desk floor heights, user distances, and temperature, was used with a logistic model to estimate gross posture and user presence at a 95.6% accuracy rate. This directly matches the statement's claim about the sensor system estimating sit-stand desk posture and user presence with 95.6% accuracy, using the same …"
+  },
+  {
+   "claim": "The study involved 70 office workers randomly assigned to an intervention group (n=35) receiving daily exercise during working hours versus a control group (n=35) receiving no intervention, over 6 months.",
+   "url": "https://doi.org/10.3390/healthcare12090915",
+   "support": "supported",
+   "reasoning": "The abstract directly states 70 office workers were randomly assigned to intervention (n=35) and control (n=35) groups, with the intervention group receiving a supervised exercise program during working hours every working day for 6 months, while the control group received no intervention. This matches all details of the statement: 70 participants, random assignment, 35/35 split, daily exercise du…"
+  },
+  {
+   "claim": "Sit-stand desk intervention significantly reduced neck and shoulder pain (p=0.001) over the 3-month study period.",
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the intervention group had reduced neck and shoulder pain with p=0.001, over the three-month intervention study period described earlier in the abstract. This matches the statement closely with no interpretive leap needed."
+  },
+  {
+   "claim": "In a cross-sectional pilot study of 26 sedentary office workers, posture transitions (movement between sitting/standing/walking) were negatively correlated with body mass index and heart rate, rather than standing time alone.",
+   "url": "https://doi.org/10.3390/ijerph20054668",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states: Twenty-six participants completed a survey... confirming n=26 sedentary office workers, describes this as a cross-sectional pilot study, and states Posture transitions had negative correlations with body mass index and heart rate. This directly matches the statement's claim about negative correlations between posture transitions and BMI/heart rate. The abstract also…"
+  },
+  {
+   "claim": "Alternating sitting and standing every 20 minutes during a 100-minute desk work task did not produce a statistically significant difference in mean energy expenditure compared to sustained sitting (EE = 1.55 ± 0.08 vs 1.43 ± 0.07).",
+   "url": "https://doi.org/10.1556/2060.105.2018.2.14",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that mean EE values for sitting (1.43 ± 0.07) and sitting-standing alternation every 20 minutes (1.55 ± 0.08) during the 100-minute desk task showed no significant difference, matching the statement's numbers and claim exactly."
+  },
+  {
+   "claim": "The sit-stand desk intervention produced a significant increase in subjective health ratings (p=0.002) and work-related vitality/engagement (p<0.001) among Japanese office workers.",
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the intervention group showed a significant increase in subjective health (p=0.002) and vitality in work-related engagement (p<0.001), which directly matches the statement's claims about subjective health ratings and work-related vitality/engagement among Japanese office workers (the study population was Japanese desk workers). This is a direct match with no int…"
+  },
+  {
+   "claim": "A study found office workers maintained decreased workplace sitting time long-term after participating in a sit-stand desk intervention.",
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "support": "supported",
+   "reasoning": "The page title itself directly states the finding: office workers maintained decreased workplace sitting time long-term after a sit-stand desk intervention study. While the full abstract is not available (only title and metadata), the title matches the statement's claim almost verbatim, providing direct textual support without requiring interpretive leaps."
+  },
+  {
+   "claim": "As of the study's publication, standing while working had not become commonplace in Japan and there was little existing evidence supporting standing-during-work health benefits, indicating a gap the RCT aimed to address.",
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "support": "supported",
+   "reasoning": "The abstract directly states that standing while working has not yet become commonplace in Japan and that there is little evidence supporting the benefits of standing during work, which is then used as the motivation/gap for conducting the RCT described in the same abstract. This matches the statement closely with no added scope or certainty beyond what the page states."
+  },
+  {
+   "claim": "A method called Prolonged Standing Strain Index (PSSI) was developed to quantify risk levels of standing jobs, calculated as the product of multipliers assigned to risk factors including working posture, muscle activity, standing duration, holding time, whole-body vibration, and indoor air quality.",
+   "url": "https://doi.org/10.4028/www.scientific.net/amr.433-440.497",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that PSSI was developed to quantify risk levels of standing jobs, lists the same six risk factors (working posture, muscle activity, standing duration, holding time, whole-body vibration, indoor air quality), and states that the PSSI is calculated as the product of multipliers assigned to these factors. This directly matches the statement with no added scope or inter…"
+  },
+  {
+   "claim": "The study found that no single movement behavior (e.g., standing time alone) was highly correlated with musculoskeletal or cardiometabolic health outcomes; instead a combination of increased standing, walking, and posture transitions was associated with better outcomes.",
+   "url": "https://doi.org/10.3390/ijerph20054668",
+   "support": "supported",
+   "reasoning": "The abstract's conclusion directly states that no single behavior was highly correlated with health outcomes, and that a combination of increased standing, walking, and posture transitions was associated with positive musculoskeletal and cardiometabolic health outcomes. This matches the statement almost verbatim in meaning and scope."
+  },
+  {
+   "claim": "There was no evidence of executive cognitive worsening during either static or dynamic standing sessions compared to sitting in this small sample of older adults with T2DM.",
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "support": "supported",
+   "reasoning": "The abstract states nearly verbatim the claim, confirming no cognitive worsening during static or dynamic standing compared to sitting. The sample described (12 older adults with T2DM) matches small sample of older adults with T2DM in the statement."
+  },
+  {
+   "claim": "A 3-month in-situ workplace study quantitatively evaluated electric sit-stand desk usage patterns.",
+   "url": "https://doi.org/10.1080/24725838.2018.1521351",
+   "support": "supported",
+   "reasoning": "The page title itself directly matches the statement: it is a quantitative evaluation of electric sit-stand desk usage, conducted as a 3-month in-situ workplace study. This is a direct entailment with no interpretive leap needed, even though the full abstract text is not available (metadata only)."
+  },
+  {
+   "claim": "Pulmonary emboli affect about 430,000 people annually in Europe and cause between 300,000 and 600,000 cases per year in the United States, contributing to at least 40,000 deaths.",
+   "url": "https://en.wikipedia.org/wiki/Pulmonary_embolism",
+   "support": "supported",
+   "reasoning": "The statement closely paraphrases the page text, which explicitly states the same figures: ~430,000 cases annually in Europe, 300,000-600,000 cases annually in the US, contributing to at least 40,000 deaths. All numbers and claims match directly."
+  },
+  {
+   "claim": "Prolonged standing or walking at work was estimated to account for 22.5% of varicose vein hospitalisations in men and 22.6% in women (aetiological fraction).",
+   "url": "https://doi.org/10.1136/oem.2005.020537",
+   "support": "supported",
+   "reasoning": "The abstract directly states the aetiological fraction values matching the statement exactly, in the context of VV hospitalisations, confirming the claim without interpretive leap."
+  },
+  {
+   "claim": "A recommended method to help prevent pulmonary embolism is beginning to move as soon as possible after surgery and performing lower leg exercises during periods of sitting, implying movement rather than posture per se reduces clot risk.",
+   "url": "https://en.wikipedia.org/wiki/Pulmonary_embolism",
+   "support": "partial",
+   "reasoning": "The page directly supports that early mobilization after surgery and lower leg exercises during sitting are recommended preventive measures for PE, matching the first part of the statement verbatim in substance. However, the statement adds an interpretive claim - implying movement rather than posture per se reduces clot risk - which is an inference not stated or discussed by the page. The page sim…"
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "Is there any longitudinal cohort or RCT evidence linking standing-desk use specifically (not general reduced sedentary time) to hard outcomes such as cardiovascular events, diabetes incidence, or all-cause mortality?",
+   "How do the measured effects of standing desks compare in magnitude to alternative interventions such as regular walking/movement breaks or structured exercise programs?"
+  ],
+  "targeted": 2,
+  "sourcesAdded": 1,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "processCritique": {
+  "verdict": "material-gaps",
+  "untraceableStatements": [
+   "Executive summary clause 'not as a proven superior alternative to sitting for major health outcomes, and static standing itself carries measurable venous health risk' - the 'static standing' qualifier is inserted; claim [0]/[5]/[18] describe 'prolonged standing OR WALKING' combined exposure (75%+), not isolated static standing, so attributing the venous risk specifically to 'static' standing overstates precision not present in the source.",
+   "Executive summary implies the varicose vein RR (78% higher) is a consequence of 'static standing' comparable to desk-standing, but claim [0]/[5] describe occupational standing/walking ≥75% of work time (which includes walking, not static standing), so equating this to 'static standing' risk is a mischaracterization not licensed by the claims - this conflates the very static-vs-movement distinction the report elsewhere emphasizes (see claim [15], finding 4).",
+   "Executive summary sentence: 'Occupational cohort data show prolonged standing/walking (≥75% of work time) is associated with a 78% higher relative risk of varicose vein hospitalisation... a real harm of static standing that is often omitted from standing-desk advocacy' - the claim [0]/[3]/[18] is about occupational jobs requiring near-constant standing/walking (retail, manufacturing, healthcare), not about part-time office standing-desk use (2 hrs/day per [2]); labeling this 'a real harm of static standing' analogous to standing-desk risk is an inferential leap not licensed by the claims, which never link this occupational cohort dosage to desk-based standing dosage.",
+   "Executive summary/finding wording using 'MET-equivalent units' for EE values (1.62 vs 1.43) - the original claims [7],[11] give unitless 'EE' ratios without specifying they are METs; labeling them 'MET-equivalent units' inserts a specific unit interpretation not stated in the claim pool.",
+   "Executive summary: 'a real harm of static standing that is often omitted from standing-desk advocacy' - the characterization 'often omitted from standing-desk advocacy' is an editorializing claim with no supporting source in the pool.",
+   "Executive summary: 'a roughly 13% rise' - this is an inserted calculation not present in any claim; claim [7] gives raw EE numbers but no percentage figure is stated in the pool, so this derived stat should be flagged as computed, not sourced.",
+   "Finding 1 labeled [medium] confidence for a well-controlled 26-person physiology study with p<0.001-level significance implied by claim [7]; confidence labeling is inconsistent/unexplained but not strictly untraceable - still worth noting as a soft flaw.",
+   "Finding 3 [high confidence] and its summary framing imply this varicose-vein risk is relevant/transferable to standing-desk users, but no claim in the pool establishes dose-equivalence between '≥75% of work time standing/walking' (an occupational exposure) and the 1-3 hours/day typical of standing-desk interventions referenced elsewhere (claim [2]: 2 hours/day recommended) - this conflation is an unsupported bridge.",
+   "Finding 5 mentions 'workers maintained decreased workplace sitting time long-term after such interventions in another study' (citing claim [13]) as if it is the same population/intervention as the Japanese RCT (claims [12],[14]) - claim [13] does not specify it is the same study or population, so merging them into one narrative ('suggesting standing desks improve...behavior change durability') is an untraceable inferential stitch between two different unlinked studies.",
+   "Finding 6 summary clause '...suggesting standing is physiologically feasible and dynamic stand...' is cut off/truncated in the provided findings list, but as given, the feasibility claim about older T2DM adults tolerating 4-hour sessions traces to claim [9], which is not cited in finding 6's evidence chain explicitly (finding 6 cites p<0.001 and p=0.043 items [1],[6],[16] but the feasibility/completion claim from [9] is asserted without being called out separately)."
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (RCT/meta-analysis effects on cardiometabolic biomarkers with effect sizes/CIs) is not answered at all - no biomarker RCT or meta-analysis data appear anywhere in the claim pool; report correctly flags this as a gap in finding 7 but the checklist commitment to find 'quantified effect sizes and CIs' for biomarkers was never actually attempted via a systematic review or meta-analysis search - no meta-analysis source type appears in the pool at all.",
+   "Checklist item 1 (RCT/meta-analysis effects on cardiometabolic biomarkers with quantified effect sizes/CIs) is not answered at all - no claim in the pool provides glucose, lipid, BP, or BMI effect sizes from RCTs or meta-analyses; the report correctly flags this as a gap in finding 7 but the checklist commitment to find 'quantified effect sizes and CIs' was never fulfilled by any search, suggesting the meta-analyst perspective's search failed to surface even null/negative meta-analytic results (e.g., published Cochrane or systematic reviews on sit-stand desks and biomarkers exist in the literature but are absent here).",
+   "Checklist item 2 (longitudinal cohort/RCT linking standing-desk use specifically to hard outcomes - CVD events, diabetes incidence, mortality) is unanswered; the only hard-outcome data in the pool (claims 0,5,18) concern occupational standing/walking and varicose veins, not standing desks, and not CVD/diabetes/mortality. This is a full gap, correctly noted as such, but no search appears to have targeted large cohort studies (e.g., UK Biobank, NHANES-linked mortality studies) that are known to exist in this space.",
+   "Checklist item 2 (longitudinal cohort/RCT linking standing-desk use specifically to hard outcomes - CVD, diabetes incidence, mortality) - explicitly unanswered (finding 7), which is honestly flagged, but no claim shows any attempt was made to search dedicated hard-outcome epidemiology (e.g., studies on occupational standing and mortality/CVD incidence, which do exist, e.g. Danish/UK Biobank cohorts on standing and CVD mortality) - the pool only has varicose vein hospitalization as a hard outcome, not CVD/diabetes/mortality.",
+   "Checklist item 3 (occupational musculoskeletal, venous, AND cardiovascular risk from prolonged-standing jobs) is only partially covered: venous risk (varicose veins) is well covered via claims 0,5,18, but musculoskeletal risk in occupational (non-desk) populations and cardiovascular risk in standing occupations are not covered by any claim in the pool - only desk-based musculoskeletal discomfort (claim 6) is present, which is a different population/context.",
+   "Checklist item 4 (movement vs static posture disaggregation) is partially covered by claims [10],[15],[6] but the report never resolves the tension: claim [11] shows alternating sit-stand doesn't raise EE vs sitting, while claim [7] shows sustained standing does - the summary notes this but doesn't reconcile with claim [1]/[6] showing dynamic standing has MORE movement/EE than static standing, potentially the strongest 'movement is the active ingredient' evidence, which is underdeveloped in the synthesis.",
+   "Checklist item 6 (dose-response evidence for optimal standing duration/pattern) is barely addressed - claim [2] gives a bare recommendation ('stand two hours per day') with no dose-response data, trial, or threshold analysis; no claim in the pool actually tests multiple durations against outcomes to identify a threshold.",
+   "Checklist item 6 (dose-response evidence for optimal standing duration/pattern, thresholds) is not addressed by any claim - claim [2] gives a single recommendation (2 hrs/day) with no dose-response curve or threshold data; this sub-question is silently dropped from both the summary and findings without being flagged as a gap the way item 1/2 was.",
+   "Checklist item 7 (comparison of standing-desk effect magnitude vs. walking breaks or structured exercise programs) is not answered - no claim provides a head-to-head effect-size comparison between standing desks and exercise programs; this is silently omitted rather than flagged as a gap.",
+   "Checklist item 7 (how standing desk effects compare in magnitude to walking breaks or structured exercise) is not answered - no claim compares standing-desk effect sizes numerically to exercise program effect sizes; the closest is claim [10]/[15] which discuss posture transitions vs standing alone, but this does not quantify comparison to walking-break or exercise interventions as committed.",
+   "Checklist item 8 (financial/implementation costs and cost-effectiveness) is not covered by any quantitative claim - claim [3] and [17] merely note that studies on adoption/compliance and desk usage patterns exist, but no actual cost figures, compliance rates, or cost-effectiveness comparisons are given in the claim pool, despite a dedicated Cost-benefit analyst perspective being listed as searched.",
+   "Checklist item 8 (financial/implementation/compliance costs and cost-effectiveness vs cheaper alternatives) is essentially unaddressed - claim [3] only notes a paper exists on 'attitudes, compliance, and satisfaction' but no actual cost figures, compliance rates, or cost-effectiveness comparisons are given; the report never surfaces this gap explicitly to the reader in the executive summary despite the checklist committing to it.",
+   "No dissenting/critical expert perspective or contrarian meta-analysis (e.g., a paper arguing standing desks are ineffective or harmful) was surfaced beyond the venous-risk occupational data - the report lacks any explicit skeptical synthesis paper questioning the standing-desk industry evidence base.",
+   "Source-type gap: no meta-analysis or systematic review document was actually found/cited anywhere in the pool despite the meta-analyst perspective being tasked with finding 'pooled effect sizes with confidence intervals' - only a single Danish cohort (varicose veins) provides a CI; no pooled/meta-analytic estimate appears, meaning this perspective's core deliverable was not met and this shortfall is not called out in the executive summary's limitations.",
+   "The Skeptical epidemiologist perspective's mandate (hard outcomes only, tied specifically to standing time) returned essentially nothing except the caveat in finding 7; no cohort study attempt (e.g., a null result search) is documented, so it's unclear if this was actually searched exhaustively or just concluded absent."
+  ],
+  "planFlaws": [
+   "No perspective or checklist item explicitly probes for 'null/negative' standing-desk trials on hard outcomes published in major journals (e.g., existing systematic reviews such as Shrestha et al. Cochrane review on sit-stand desks show no biomarker benefit) - the plan appears to have accepted the premise that current evidence would be sparse rather than testing whether it is sparse because search terms/sources were limited (e.g., no mention of PubMed/Cochrane database queries, only scattered individual studies of very small n, e.g., n=12, n=26).",
+   "No perspective was tasked with searching specifically for existing systematic reviews/meta-analyses on standing desks and cardiometabolic markers (e.g., Cochrane reviews or known meta-analyses in this literature), despite item 1 explicitly requesting meta-analyses - this is a premise/plan gap: the scoper assumed such literature would surface organically via the six perspectives, but none of the six perspective descriptions explicitly commits to a systematic-review database search (e.g., Cochrane, PubMed meta-analysis filter).",
+   "The cost-benefit analyst perspective's checklist item 8 was severely underserved by retrieved claims (only claim [3], a title mention) - the plan did not build in a check/threshold for 'perspective returned essentially no substantive data' before finalizing the report, so the executive summary omits any discussion of cost-effectiveness despite it being a named checklist commitment, silently failing to flag this to the reader.",
+   "The dose-response checklist item (6) was scoped as a standalone item but no perspective was explicitly assigned to it (the six perspectives map to items 1,2,3,4,7,8 roughly, with items 5 and 6 partially covered by the ergonomist/physiologist) - this diffusion of responsibility likely caused item 6 to fall through unaddressed, a structural planning gap rather than a search-execution failure.",
+   "The perspective panel has no persona dedicated to actively searching for existing systematic reviews/meta-analyses of standing-desk RCTs on biomarkers (checklist item 1) even though a 'Meta-analyst' perspective exists nominally - the claim pool shows this perspective produced no meta-analytic output at all, suggesting the plan's persona design didn't translate into an actual differentiated search strategy, or the search was insufficiently thorough and no fallback/escalation step was built into the plan when a perspective returns empty-handed on its core question.",
+   "The perspective set never included a specifically 'cost-effectiveness with real pricing' searcher who actually retrieved price/ROI data - the Cost-benefit analyst perspective is listed but produced no cost claims in the final pool, indicating this branch was scoped but not executed to completion, and the report should have flagged this as a failed/incomplete perspective rather than silently omitting it from the executive summary.",
+   "The scoping checklist conflates two very different populations - occupational standing jobs (retail/manufacturing/healthcare, item 3) and office standing-desk users (items 1,2,4-8) - and the research pool ended up leaning on occupational venous-risk data (Danish worker cohort) as if it were informative about desk-based standing risk; the executive summary's harm claim partly imports this conflation without flagging that occupational 'prolonged standing' (≥75% of time, likely full shifts, different footwear/no chair option) is a different exposure than a sit-stand desk used for part of a workday.",
+   "The scoping treats 'occupational prolonged standing' (retail/manufacturing/healthcare jobs, ≥75% of time, checklist item 3) and 'standing desk use' (checklist items 1,2,5,6) as cleanly separable questions, but the executed research (and especially the executive summary) blurs them - using the occupational varicose-vein cohort as if it directly informs standing-desk risk assessment. The scoping did not anticipate or guard against this dose/context conflation, which is a structural blind spot shared across perspectives (none of the 6 persectives was tasked specifically with checking whether occupational-standing findings are dose-transferable to desk-standing).",
+   "The scoping's item 4 (movement-vs-posture disaggregation) was well-served by the Movement-vs-posture disaggregator perspective (claims 10, 15), but this created a structural blind spot: because this perspective's null/nuanced finding was compelling, it appears to have crowded out deeper pursuit of item 1 (biomarkers) and item 2 (hard outcomes) - the research seems to have settled for the movement-vs-posture answer as a substitute for the harder biomarker/outcomes questions rather than pursuing both independently."
+  ],
+  "rationales": [
+   "",
+   ""
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "A 6-month workplace exercise program (120 supervised sessions, 5x/week) reduced musculoskeletal pain duration and intensity by 43.1-70% in office workers compared to a non-intervention control group.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.3390/healthcare12090915",
+   "why": "The claim states the intervention was a 6-month workplace exercise program (120 supervised sessions, 5x/week) but the supporting quote itself contains none of these details - it only says The IG significantly reduced duration and intensity of pain (43.1–70%; p = 0.000).... The quote does not mention 6-month, 120 supervised sessions, 5x/week, or even identify the intervention as an exercise program at all - IG (intervention group) is undefined in the excerpt, and none of the program-design specif…"
+  },
+  {
+   "claim": "Compared to static standing, dynamic standing (with cued weight-shifting movements) reduced the duration of breaks needed during standing (p = 0.024).",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1186/s12877-020-01600-0",
+   "why": "The claim states dynamic standing reduced the duration of breaks needed during standing, implying causal reduction of break duration as an outcome. But the quote only reports that the duration of breaks during standing... [was] lower in the dynamic standing compared to static standing sessions - a between-condition comparison of an observed measure, not evidence of a causal reduction mechanism, and the quote does not use the word reduced or frame it as an effect of an intervention reducing a nee…"
+  },
+  {
+   "claim": "A 3-month RCT of 74 Japanese desk workers (intervention n=36, control n=38) using sit-stand desks found the intervention group significantly decreased sitting time at work (p=0.002) compared to controls.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3390/ijerph182111604",
+   "why": "The supporting quote only verifies the group sizes (n=36 intervention, n=38 control, total 74). It contains no information about: (1) the 3-month duration, (2) the study being conducted with Japanese desk workers, (3) that sitting time at work significantly decreased in the intervention group, or (4) the p=0.002 statistic. The claim bundles multiple specific factual assertions (study population/nationality, duration, statistical significance value, and directional outcome) that are not present a…"
+  },
+  {
+   "claim": "The same exercise intervention increased cervical, handgrip, back, and leg maximal strength by 10.3-27.1%, and flexibility/balance by 12.3-73.7%, versus a control group that showed no change.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3390/healthcare12090915",
+   "why": "The claim states versus a control group that showed no change implying the CG had strength/flexibility/balance measures that stayed flat, but the quote's actual statement about the CG is different and narrower: In CG, all musculoskeletal pain and functional capacity indices remained unchanged. This refers to pain and functional capacity indices, not specifically to the cervical/handgrip/back/leg strength or flexibility/balance metrics named in the IG result. The claim conflates functional capaci…"
+  },
+  {
+   "claim": "Self-rated work performance improved significantly (p=0.017) over a four-week period following sit-stand desk introduction, suggesting productivity effects independent of cardiometabolic biomarkers.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3390/ijerph182111604",
+   "why": "The supporting quote is a truncated fragment (self-rated work performance over a four-week period (p = 0.017)) that lacks a verb or direction of effect - it does not itself state that performance improved significantly. The claim asserts a specific directional finding (improved significantly) and adds an interpretive causal/independence claim (suggesting productivity effects independent of cardiometabolic biomarkers) that appears nowhere in the quoted text. This independent of cardiometabolic bi…"
+  },
+  {
+   "claim": "A custom desk-mounted sensor system measuring desk floor height, user distance, and temperature can estimate sit-stand desk posture and user presence with 95.6% accuracy.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1177/1064804620947630",
+   "why": "The claim states the sensor measures desk floor height, user distance, and temperature and uses a logistic model to estimate gross posture and user presence - but the supporting quote only says the authors performed sensor component testing, a survey of desk height ranges, and a logistic model to estimate gross posture and user presence with a 95.6% accuracy rate. The quote does not verbatim state that the specific inputs to the model are desk floor height, user distance, and temperature - this …"
+  },
+  {
+   "claim": "The study involved 70 office workers randomly assigned to an intervention group (n=35) receiving daily exercise during working hours versus a control group (n=35) receiving no intervention, over 6 months.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3390/healthcare12090915",
+   "why": "The claim states the study is about standing desks vs sitting, but the quote describes a completely different intervention: daily exercise during working hours for office workers with musculoskeletal pain in any body area. Nothing in the supporting quote mentions standing desks, sitting, or posture at all - it's about an exercise intervention for musculoskeletal pain over an unspecified duration (the 6 months duration is also not present in the quoted text). This citation appears to be for an en…"
+  },
+  {
+   "claim": "Sit-stand desk intervention significantly reduced neck and shoulder pain (p=0.001) over the 3-month study period.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3390/ijerph182111604",
+   "why": "The claim states the intervention significantly reduced neck and shoulder pain (p=0.001) over the 3-month study period, presenting this as an established causal/temporal finding with a specific study duration. However, the supporting quote only says the intervention group had reduced neck and shoulder pain (p = 0.001) - it does not state or confirm a 3-month study period anywhere in the quoted text. This duration detail is an unsupported addition not licensed by the quote itself. Additionally, t…"
+  },
+  {
+   "claim": "A method called Prolonged Standing Strain Index (PSSI) was developed to quantify risk levels of standing jobs, calculated as the product of multipliers assigned to risk factors including working posture, muscle activity, standing duration, holding time, whole-body vibration, and indoor air quality.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.4028/www.scientific.net/amr.433-440.497",
+   "why": "The claim states PSSI is calculated as the product of multipliers assigned to risk factors, but the supporting quote never describes the calculation method as a product of multipliers. The quote only says the listed risk factors were considered as basis to develop the PSSI - it does not state or confirm that the index is computed by multiplying together risk-factor multipliers. This specific mathematical/methodological detail (multiplicative product formula) is an addition not licensed by the qu…"
+  },
+  {
+   "claim": "Pulmonary emboli affect about 430,000 people annually in Europe and cause between 300,000 and 600,000 cases per year in the United States, contributing to at least 40,000 deaths.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Pulmonary_embolism",
+   "why": "This claim about pulmonary embolism epidemiology is not relevant counter-evidence to the actual research question, which concerns whether standing desks improve health outcomes versus sitting and the size of that effect. The claim under review is a completely unrelated statistic about PE incidence/mortality in Europe and the US; it does not address standing vs. sitting, DVT/PE risk specifically tied to prolonged sitting or standing at work, or any measured effect size relevant to desk posture in…"
+  },
+  {
+   "claim": "A recommended method to help prevent pulmonary embolism is beginning to move as soon as possible after surgery and performing lower leg exercises during periods of sitting, implying movement rather than posture per se reduces clot risk.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Pulmonary_embolism",
+   "why": "The quote merely lists three preventive measures for PE (early mobilization, leg exercises, blood thinners) without any comparative or causal claim about movement rather than posture per se reduces clot risk. That interpretive clause is an inference added by the claim author, not stated or implied verbatim in the source text. The quote never contrasts movement vs. posture, nor addresses standing-vs-sitting desks at all (the research question's topic). This is an overreach: the claim generalizes …"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.3390/healthcare12090915",
+   "quality": "primary",
+   "perspective": "Steelman advocate",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1111/dom.71176/v1/review2",
+   "quality": "unreliable",
+   "perspective": "Steelman advocate",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1136/oem.2005.020537",
+   "quality": "primary",
+   "perspective": "Skeptical epidemiologist",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Pulmonary_embolism",
+   "quality": "secondary",
+   "perspective": "Skeptical epidemiologist",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1093/med/9780198784906.003.0672_update_001",
+   "quality": "unreliable",
+   "perspective": "Skeptical epidemiologist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1007/s11657-023-01351-6",
+   "quality": "unreliable",
+   "perspective": "Skeptical epidemiologist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1186/s12877-020-01600-0",
+   "quality": "primary",
+   "perspective": "Movement-vs-posture disaggregator",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1556/2060.105.2018.2.14",
+   "quality": "primary",
+   "perspective": "Movement-vs-posture disaggregator",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.3389/fphys.2017.00420",
+   "quality": "unreliable",
+   "perspective": "Movement-vs-posture disaggregator",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1161/hypertensionaha.118.11190",
+   "quality": "unreliable",
+   "perspective": "Movement-vs-posture disaggregator",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.3390/ijerph20054668",
+   "quality": "primary",
+   "perspective": "Movement-vs-posture disaggregator",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.apergo.2005.06.007",
+   "quality": "primary",
+   "perspective": "Field practitioner/ergonomist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "quality": "primary",
+   "perspective": "Field practitioner/ergonomist",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1080/24725838.2018.1521351",
+   "quality": "primary",
+   "perspective": "Field practitioner/ergonomist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1177/1064804620947630",
+   "quality": "primary",
+   "perspective": "Field practitioner/ergonomist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.17265/2332-7839/2018.02.001",
+   "quality": "unreliable",
+   "perspective": "Field practitioner/ergonomist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.3390/ijerph182111604",
+   "quality": "primary",
+   "perspective": "Standing desk and hard clinical outcomes",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1186/s12889-019-8038-9",
+   "quality": "unreliable",
+   "perspective": "Standing desk and hard clinical outcomes",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1080/10803548.2012.11076917",
+   "quality": "secondary",
+   "perspective": "Occupational standing vs sitting musculoskeletal and cardiovascular risk",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.ergon.2020.103079",
+   "quality": "unreliable",
+   "perspective": "Occupational standing vs sitting musculoskeletal and cardiovascular risk",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1097/jom.0b013e3181f8da77",
+   "quality": "unreliable",
+   "perspective": "Occupational standing vs sitting musculoskeletal and cardiovascular risk",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.4028/www.scientific.net/amr.433-440.497",
+   "quality": "primary",
+   "perspective": "Occupational standing vs sitting musculoskeletal and cardiovascular risk",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1201/b11474-10",
+   "quality": "unreliable",
+   "perspective": "Occupational standing vs sitting musculoskeletal and cardiovascular risk",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1136/bmj.h4160",
+   "quality": "unreliable",
+   "perspective": "Dose-response for standing desk duration",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.64628/aa.v7dcwqjv6",
+   "quality": "unreliable",
+   "perspective": "Dose-response for standing desk duration",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1136/ebm.1995.1.28",
+   "quality": "secondary",
+   "perspective": "Dose-response for standing desk duration",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.30707/etd2017.dohm.h",
+   "quality": "unreliable",
+   "perspective": "rescue7",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T?"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 27,
+  "claimsExtracted": 47,
+  "urlDupes": 1,
+  "budgetDropped": 6,
+  "claimsDroppedBeforeVerify": 17,
+  "searchHealth": {
+   "auto": {
+    "attempts": 43,
+    "ok": 0,
+    "results": 0,
+    "fail": 43
+   },
+   "mojeek": {
+    "attempts": 43,
+    "ok": 0,
+    "results": 0,
+    "fail": 43
+   },
+   "wikipedia": {
+    "attempts": 43,
+    "ok": 43,
+    "results": 19,
+    "fail": 0
+   },
+   "hn": {
+    "attempts": 40,
+    "ok": 40,
+    "results": 0,
+    "fail": 0
+   },
+   "crossref": {
+    "attempts": 40,
+    "ok": 38,
+    "results": 226,
+    "fail": 2
+   },
+   "openalex": {
+    "attempts": 2,
+    "ok": 2,
+    "results": 8,
+    "fail": 0
+   },
+   "crawl-fallback": {
+    "attempts": 1,
+    "ok": 0,
+    "results": 0,
+    "fail": 1
+   }
+  },
+  "sourceTiers": {
+   "T2": 22,
+   "T?": 5
+  },
+  "agentCalls": 165,
+  "agentErrors": 0,
+  "inputTokens": 306834,
+  "outputTokens": 83984,
+  "wallSeconds": 1246.3,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 19,
+  "killed": 11,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

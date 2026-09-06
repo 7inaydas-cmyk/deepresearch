@@ -1,0 +1,23 @@
+Question: Is standing at a desk for part of the workday actually better for health than sitting, and how large is the me
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Does using a standing desk for part of the workday produce measurably better health outcomes (cardio
+Assumptions stated: 7 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Meta-analyst / Effect-size auditor | Mortality/cohort epidemiologist steelman | Occupational health & musculoskeletal skeptic | Behavioral mechanism isolator | Cost-benefit / workplace decision analyst | Research integrity / funding-bias data auditor
+  [w1] Occupational health & musculoskeletal skeptic: 8 hits -> 5 picked
+  [w1] Meta-analyst / Effect-size auditor: 8 hits -> 5 picked
+  [w1] Mortality/cohort epidemiologist steelman: 8 hits -> 0 picked
+  [w1] Research integrity / funding-bias data auditor: 8 hits -> 0 picked
+  [w1] Behavioral mechanism isolator: 8 hits -> 2 picked
+  [w1] Cost-benefit / workplace decision analyst: 8 hits -> 5 picked
+[w1] 16 sources, 38 claims
+Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups
+  [w2] Standing dose-response threshold: 8 hits -> 0 picked
+  [w2] Cardiometabolic RCT effect sizes: 8 hits -> 2 picked
+  [w2] Mortality and sedentary time extrapolation: 3 hits -> 3 picked
+  [w2] Standing vs walking isolated trial: 8 hits -> 3 picked
+  [w2] Industry funding and bias audit: 8 hits -> 4 picked
+[w2] 9 sources, 20 claims
+NOTE: 28 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 9 distinct sub-question buckets (of 8)
+Total: 25 sources -> 58 claims -> verifying 30
