@@ -162,6 +162,14 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 - **The panel is harsh** and occasionally kills a true claim whose near-duplicate survives. Read `refuted` before concluding something is unsupported.
 - **Model cost is real.** Search is free; a standard run is a few hundred thousand tokens.
 
+Each of these is tracked as an open issue with its evidence, so you can read the numbers
+rather than take the bullet on trust:
+[#8 scholarly-only degradation](https://github.com/7inaydas-cmyk/deepresearch/issues/8) ·
+[#9 unverified claim sample](https://github.com/7inaydas-cmyk/deepresearch/issues/9) ·
+[#10 critic saturation](https://github.com/7inaydas-cmyk/deepresearch/issues/10) ·
+[#11 audit blindness](https://github.com/7inaydas-cmyk/deepresearch/issues/11) ·
+[#12 false-kill rate unmeasured](https://github.com/7inaydas-cmyk/deepresearch/issues/12)
+
 ## The measured numbers, and what they do not prove
 
 | Measurement | Value | Denominator |
@@ -207,6 +215,15 @@ python3 tests/test_pipeline.py     # 49 tests, offline, no key, no network
 ```
 
 Every test exists because something actually broke; the comments say what. Among them: an array field that arrived as a string and became 226 one-character sub-questions, and the API's `<UNKNOWN>` serialisation artifact that appeared in roughly half of one sample of structured-output calls.
+
+## Contributing
+
+Two on-ramps that need no context on the rest of the codebase:
+[add a keyless search backend](https://github.com/7inaydas-cmyk/deepresearch/issues/13) ·
+[extend the source-tier rules](https://github.com/7inaydas-cmyk/deepresearch/issues/14).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). The short version: every test exists because
+something broke, and the comment above it says what.
 
 ## License
 
