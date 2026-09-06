@@ -34,9 +34,9 @@ export const meta = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const TIERS = {
-  quick:      { perspectives: 4, wave1: 10, deepenRounds: 0, wavePerRound: 0,  maxVerify: 14, lenses: 2, factAudit: false, critics: 1, rescue: false },
-  standard:   { perspectives: 6, wave1: 16, deepenRounds: 1, wavePerRound: 10, maxVerify: 30, lenses: 3, factAudit: true,  critics: 2, rescue: true },
-  exhaustive: { perspectives: 9, wave1: 24, deepenRounds: 2, wavePerRound: 14, maxVerify: 50, lenses: 3, factAudit: true,  critics: 3, rescue: true },
+  quick:      { perspectives: 4, wave1: 10, deepenRounds: 0, wavePerRound: 0,  maxVerify: 14, lenses: 2, factAudit: false, critics: 1, rescue: false, calibrate: 0 },
+  standard:   { perspectives: 6, wave1: 16, deepenRounds: 1, wavePerRound: 10, maxVerify: 30, lenses: 3, factAudit: true,  critics: 2, rescue: true, calibrate: 0 },
+  exhaustive: { perspectives: 9, wave1: 24, deepenRounds: 2, wavePerRound: 14, maxVerify: 50, lenses: 3, factAudit: true,  critics: 3, rescue: true, calibrate: 0 },
 }
 const RESCUE_MAX_SUBQ = 4
 const RESCUE_FETCH = 8
@@ -645,7 +645,10 @@ const baseStats = extra => Object.assign({
 if (rankedClaims.length === 0) {
   return {
     question: QUESTION, depth: DEPTH,
-    summary: 'No claims extracted. ' + allSources.length + ' sources fetched, all empty or failed. Retry, or the topic may have no indexed sources.',
+    summary: (allSources.length === 0
+      ? 'AGENT FAILURE, not a research finding: no source was successfully read before the run ended — the model calls did not complete. Check credentials and connectivity, then retry. Do NOT report this as "no evidence exists". '
+      : 'No claims extracted. ' + allSources.length + ' sources fetched, all empty/failed. ')
+      + dupes.length + ' URL dupes, ' + budgetDropped.length + ' budget-dropped.',
     findings: [], coverage: lastCoverage, sources: sourceRows(), stats: baseStats({ claimsVerified: 0, confirmed: 0 }),
   }
 }
@@ -748,6 +751,55 @@ if (confirmed.length === 0) {
     question: QUESTION, depth: DEPTH, summary, findings: [], coverage: lastCoverage,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
     sources: sourceRows(), stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverified: unverified.length }),
+  }
+}
+
+// ═══ Calibration: is this panel a filter or a coin? ═════════════════════════
+// Re-run the SAME claims through an independent panel and measure whether the
+// survive/kill verdict repeats. Measures RELIABILITY, never validity — a panel
+// can agree with itself perfectly and be perfectly wrong.
+// Reports Cohen's kappa AND Scott's pi: Cohen's corrects using each rater's own
+// marginals, which is part of what we are trying to measure, so pi is reported
+// beside it. Raw agreement is never reported alone — two independent coin-flip
+// panels at a 7% kill rate score 0.84 raw and kappa -0.02.
+let calibration = null
+if (T.calibrate > 0 && voted.length) {
+  phase('Calibrate')
+  const subset = voted.slice(0, Math.min(T.calibrate, voted.length))
+  log('CALIBRATION: re-running the panel on ' + subset.length + ' claims to measure reliability')
+  const again = await runPanel(subset.map(c => ({ ...c, verdicts: undefined })))
+  const byClaim = new Map(again.map(c => [c.claim, c]))
+  const a = [], b = []
+  for (const c of subset) {
+    const d = byClaim.get(c.claim)
+    if (d) { a.push(!!c.survives); b.push(!!d.survives) }
+  }
+  if (a.length) {
+    const n = a.length
+    const yy = a.filter((x, i) => x && b[i]).length
+    const nn = a.filter((x, i) => !x && !b[i]).length
+    const yn = a.filter((x, i) => x && !b[i]).length
+    const ny = a.filter((x, i) => !x && b[i]).length
+    const po = (yy + nn) / n, pa = (yy + yn) / n, pb = (yy + ny) / n
+    const peC = pa * pb + (1 - pa) * (1 - pb)
+    const m = (pa + pb) / 2, peS = m * m + (1 - m) * (1 - m)
+    const r4 = x => Math.round(x * 10000) / 10000
+    calibration = {
+      n, rawAgreement: r4(po),
+      // Undefined stays undefined: if every claim landed in one category, chance
+      // agreement is 1.0 and the correction divides by zero. Reporting 1.0 or 0.0
+      // would be a lie in opposite directions.
+      cohenKappa: peC >= 1 ? null : r4((po - peC) / (1 - peC)),
+      scottPi: peS >= 1 ? null : r4((po - peS) / (1 - peS)),
+      confusion: { survive_survive: yy, kill_kill: nn, survive_then_kill: yn, kill_then_survive: ny },
+      surviveRateRun1: r4(pa), surviveRateRun2: r4(pb),
+      verdictFlips: yn + ny,
+      measures: 'reliability (does the panel repeat), NOT validity (is the panel right)',
+      thresholds: { noise: '< 0.4', noisy: '0.4-0.6', calibrated: '>= 0.6', note: 'pre-registered 2026-09-06' },
+    }
+    log('CALIBRATION: n=' + n + ' raw=' + calibration.rawAgreement +
+        ' cohenKappa=' + calibration.cohenKappa + ' scottPi=' + calibration.scottPi +
+        ' flips=' + calibration.verdictFlips)
   }
 }
 
@@ -929,6 +981,7 @@ return {
   coverage: lastCoverage,
   citationAudit: factMetrics,
   rescue: rescueStats,
+  calibration,
   citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
   processCritique: { verdict: critVerdict, untraceableStatements: untraceable, coverageGaps: gaps, planFlaws, rationales: critiques.map(c => webText(c.rationale || '')) },
   refuted: killed.map(toRefuted),
