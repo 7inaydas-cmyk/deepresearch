@@ -73,6 +73,22 @@ def _kappa_like(a, b, pooled):
                       "survive_then_kill": yn, "kill_then_survive": ny},
         "surviveRateRun1": round(pa, 4), "surviveRateRun2": round(pb, 4),
     }
+    # NEAR-degenerate, not just perfectly degenerate. Measured 2026-09-06: run 1
+    # kept 10/10 and run 2 kept 8/10, so pe was 0.9 — under the 1.0 guard — and the
+    # formula produced a confident-looking kappa of exactly 0.0, which the gate then
+    # read as "the panel is noise". It is not: with no cell where both runs killed
+    # the same claim, there is nothing for chance-correction to work with. A
+    # coefficient computed on a marginal this lopsided is an artefact of the base
+    # rate, not a measurement of the panel.
+    minority = min(yy + yn, ny + nn, yy + ny, yn + nn)
+    if pe < 1.0 and minority < 2:
+        detail["reason"] = (
+            "unreliable: the smallest marginal cell holds %d item(s) of %d. Chance "
+            "agreement is %.2f, so the coefficient is pinned near zero by the base "
+            "rate whatever the panel did. Re-run on a question that produces a more "
+            "balanced kill rate before adjudicating any gate on this." % (minority, n, pe))
+        detail["degenerate"] = True
+        return None, detail
     if pe >= 1.0:
         detail["reason"] = ("undefined: both runs assigned every claim to the same "
                             "category, so chance agreement is 1.0 and the correction "
@@ -155,7 +171,7 @@ def interpret(kappa, thresholds=(0.4, 0.6)):
     quietly renegotiated."""
     lo, hi = thresholds
     if kappa is None:
-        return ("undefined", "Coefficient undefined — the base rate was too skewed for "
+        return ("undefined", "Coefficient undefined or unreliable — the base rate was too skewed for "
                              "chance correction to mean anything. The gate cannot be "
                              "adjudicated on this sample; rerun on a question that "
                              "produces a less lopsided kill rate.")

@@ -424,6 +424,21 @@ _r = C.agreement(_a, _b)
 ok(abs(_r["cohenKappa"] - 0.4) < 1e-9, "Cohen's kappa matches the hand-computed 0.4000")
 ok(abs(_r["scottPi"] - 0.3939) < 1e-3, "Scott's pi matches the hand-computed 0.3939")
 ok(_r["verdictFlips"] == 15, "verdict flips counted (15 of 50)")
+# The REAL 2026-09-06 result: run 1 kept 10/10, run 2 kept 8/10. pe was 0.80 —
+# under the perfect-degeneracy guard — so the formula produced a confident-looking
+# kappa of exactly 0.0 and the gate read it as "the panel is noise". With no cell
+# where both runs killed the same claim there is nothing to chance-correct, so the
+# coefficient was an artefact of the base rate, not a measurement.
+_real = C.agreement([True]*10, [True]*8 + [False]*2)
+ok(_real["cohenKappa"] is None,
+   "a near-degenerate marginal returns None, not a confident 0.0 that reads as 'noise'")
+ok("pinned near zero by the base rate" in (_real.get("reason") or ""),
+   "and says why, so the gate is not adjudicated on an artefact")
+ok(C.interpret(_real["cohenKappa"])[0] == "undefined",
+   "the gate reports 'undefined' rather than failing the panel on a lopsided sample")
+_bal = C.agreement([True]*20 + [False]*20, [True]*17 + [False]*3 + [True]*4 + [False]*16)
+ok(_bal["cohenKappa"] is not None and _bal["cohenKappa"] > 0.5,
+   "a balanced sample with real disagreement still measures: kappa %s" % _bal["cohenKappa"])
 ok(C.agreement([True]*30, [True]*30)["cohenKappa"] is None,
    "perfect agreement on a one-sided base rate is UNDEFINED, not 1.0 - the correction divides by zero")
 import random as _rnd
