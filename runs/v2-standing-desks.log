@@ -100,3 +100,184 @@ CALIBRATION: re-running the panel on 30 claims to measure reliability
 CALIBRATION: n=30 raw=0.867 cohenKappa=0.5349 scottPi=0.52 flips=4 -> usable but noisy
 Verify: 27 confirmed, 3 refuted, 0 unverified | kills by lens: {'support': 3, 'provenance': 2, 'counter': 2}
 RESCUE: 1 sub-question(s) have ZERO surviving claims - re-searching 1
+  [rescue] rescue8: 8 hits -> 5 picked
+[rescue] 5 sources, 7 claims
+  OK          3-0  In a pilot RCT-style within-subject study of 20 office workers, no significant differences…
+  OK          3-0  MacEwen, MacDonald, and Burr conducted a systematic review of standing and treadmill desks…
+  OK          3-0  This study used only 20 participants in a single-day, counterbalanced laboratory pilot des…
+  OK          3-0  The study design confounds standing posture with active desk type (treadmill/walking) by c…
+  OK          3-0  A dissertation titled 'Workplace Standing Desks and Arterial Stiffness' by Ian Greenlund e…
+  KILLED[support+counter+provenance] 0-3  There exists a 2024 study/article titled 'Standing desks are bad for your health', authore…
+RESCUE: +5 sources, 6 claims re-verified, 5 survived
+Citation audit (full pool of 36): 28 supported, 7 partial, 0 UNSUPPORTED, 1 unreachable -> 80.0%
+Process critique: material-gaps | 6 untraceable, 17 coverage gaps, 9 plan flaws
+Report written to runs/v2-standing-desks.json
+{
+ "citationAudit": {
+  "citationAccuracy": 80.0,
+  "effectiveCitations": 28,
+  "supported": 28,
+  "partial": 7,
+  "unsupported": 0,
+  "unreachable": 1,
+  "scope": "full verification pool (36 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "untraceableCount": 6,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A larger, longer 6-month Portuguese cluster RCT (n=39) found NO significant time*group interaction for sitting time (the primary outcome) or any secondary outcome, except waist circumference - which favored the CONTROL group, not the intervention.",
+   "No RCT has isolated standing posture from confounded behavior/movement changes: the one pilot RCT-style study that varied desk type (sit-only/sit-stand/sit-walk) bundled standing together with active/treadmill conditions, and found no significant difference in an objective attentional-resource measure (SSVEP amplitude) across conditions in n=20.",
+   "RCTs consistently show sit-stand desks reduce workplace sitting time, with the effect attenuating over time: ~100 min/day at short-term follow-up (≤3 months, 10 studies, low-quality evidence) down to ~57 min/day at medium-term follow-up (3-12 months, 2 studies), and no evidence exists beyond 12 months."
+  ],
+  "untraceableStatements": [
+   "Finding 1 characterizes reduction from 10 studies at short-term as consistent across RCTs generally, but claim [17] notes no evidence beyond 12 months and the review composition is 34 studies total (17 RCTs, 2 cross-over RCTs, 7 cluster-RCTs, 8 CBAs) - the finding implies all evidence is RCT-based ('RCTs consistently show') when the pooled estimates [18],[11] come from a mixed set of study designs within a Cochrane review, not RCTs alone.",
+   "Finding 1 characterizes the entire 'RCT' evidence base as 'consistently' showing reduced sitting time, but claim [4] (Portuguese cluster RCT) found NO significant effect on sitting time, directly contradicting 'consistently'.",
+   "Finding 3 labels the Portuguese cluster RCT as 'larger, longer' than the Japanese RCT, but claim [22]/[4] gives the Portuguese study n=39 compared to the Japanese study's n=74 - so the Portuguese study is actually SMALLER, not larger, contradicting the finding's own parenthetical description.",
+   "Finding 3 labels the Portuguese study as 'larger' than the Japanese study, but the Portuguese RCT had n=39 while the Japanese RCT had n=74 - so it is smaller, not larger.",
+   "Finding 6 states 'No RCT has isolated standing posture from confounded behavior/movement changes' as a general conclusion about the entire RCT literature, but the claim pool only supports this for the one small pilot study [29][30]; no claim surveys the full RCT literature to confirm none has isolated posture from movement.",
+   "Finding 6's claim that 'No RCT has isolated standing posture from confounded behavior/movement changes' is an inference/generalization stated as fact; the claim pool only shows one pilot study [29][30] doing this, not a systematic review of all RCTs establishing this as a global absence."
+  ],
+  "coverageGaps": [
+   "Cardiometabolic markers (blood glucose, blood pressure, weight) from RCTs (checklist item 2) are essentially unaddressed - only within-group body-fat change [9]/[15] and one study's waist circumference favoring control [4] appear; no RCT evidence on blood glucose or blood pressure is in the claim pool at all.",
+   "Checklist item 1 (systematic reviews/meta-analyses of RCTs on musculoskeletal pain effect sizes with CIs) is not answered - no pooled/meta-analytic effect size for pain is reported anywhere in the findings, only a single small RCT's p-value [0].",
+   "Checklist item 2 (RCT effect sizes for cardiometabolic markers - blood glucose, blood pressure, weight - vs control) is essentially unanswered; only within-group (not vs control) body-fat change [9]/[15] is reported, and blood glucose/blood pressure are never mentioned.",
+   "Checklist item 3 (productivity/cognitive performance RCT effect sizes distinguishable from zero) is only partially covered by one small positive RCT [1] and one null SSVEP pilot [27]; no synthesis or meta-analytic effect size for productivity is given, and typing speed/task completion/reaction time outcomes are not addressed at all despite being explicitly named in the checklist.",
+   "Checklist item 4 (extent of confounder adjustment in cohorts, e.g., SES, baseline health, job type) is not interrogated - findings report the Taiwanese cohort's adjustment set (sex, age, education, smoking, drinking, BMI) but never flag that SES, baseline health status, or job type are absent from that adjustment set, an omission the observational-cohort-auditor perspective was supposed to catch.",
+   "Checklist item 5 (direct RCT vs observational effect-size convergence/divergence, ~20-30% comparison) is never performed - the findings present RCT and observational results in parallel but do not attempt any quantitative reconciliation or explain the gap.",
+   "Checklist item 7 (negative effects: leg discomfort, venous issues, fatigue, reduced productivity, with effect size/frequency) is not answered with any quantitative finding - claims [7] and [14] exist in the pool (venous symptoms, lower-leg discomfort during standing) but no finding synthesizes them into an effect size or frequency estimate.",
+   "Checklist item 8 (cost-effectiveness vs alternative interventions like movement breaks, treadmill desks, ergonomic seating) is completely absent from the findings despite a dedicated 'cost-benefit/procurement analyst' perspective being listed as searched; claim [28] (MacEwen et al. review of standing/treadmill desks) is in the pool but never used to address cost or comparative effectiveness.",
+   "Checklist item 9 (duration/follow-up length of RCTs and long-term multi-year data) is partially touched (finding 1 notes no evidence beyond 12 months) but the small-sample/short-duration nature of RCTs generally (claims [22], [26], [29]) is not synthesized into an explicit finding about evidence quality limitations.",
+   "Cost-effectiveness comparisons against alternative interventions (checklist item 8) are completely absent from both the claim pool and findings, despite a dedicated 'Cost-benefit/procurement analyst' perspective being listed as searched.",
+   "Direct observational-vs-RCT effect size convergence/divergence analysis (checklist item 5) is never performed in the findings - mortality HRs from cohorts [10],[16] are presented but never explicitly compared in magnitude/reasoning to any RCT effect size for a comparable outcome (RCTs don't measure mortality), leaving the central question of the report title only partially addressed via a plausibility argument (finding 5) rather than a quantitative reconciliation.",
+   "Long-term/multi-year RCT or trial follow-up data (checklist item 9) is confirmed absent (correctly noted as a gap in finding 1), but the report never pulls in the large multi-year PURE cohort study [2] results (mentioned as a source but its actual sitting-mortality association findings are never reported) despite being catalogued as directly relevant.",
+   "Net-negative effects (checklist item 7) are only weakly covered: claims [7] and [14] merely note that studies on venous symptoms/leg discomfort during standing exist, but no effect size, incidence rate, or RCT-derived harm frequency is reported in the findings - the checklist explicitly asks for 'effect size/frequency' which is never delivered.",
+   "No executive summary was produced at all, leaving the report's overall weighing of RCT vs observational evidence and headline effect sizes (as the question explicitly demands) unstated.",
+   "No official/regulatory guidance (e.g., occupational health & safety agency guidelines) or industry-independent expert dissent was retrieved despite the 'Null-result skeptic' perspective being tasked with hunting for publication bias/industry-funded critiques - no claim addresses funding source or publication bias directly.",
+   "No pooled/meta-analytic effect size with CI is reported for musculoskeletal pain (checklist item 1) - only a single 3-month n=74 RCT's p-value [0] is cited; no systematic review of pain outcomes with SMD/CI appears in the claim pool or findings, so item 1's core ask (is the pooled effect >0.2 SD, clinically meaningful) is unanswered.",
+   "Productivity/cognitive performance findings (checklist item 3) rest on a single RCT's self-rated performance measure [1] and one small SSVEP pilot [27]; no data on task completion, typing speed, or reaction time were found despite this being an explicit checklist item and a searched perspective (HR practitioner) - no field/absenteeism data surfaced."
+  ],
+  "planFlaws": [
+   "Finding 9 references a claim that was 'refuted/killed' by the panel but the reasoning or evidence for why it failed provenance checks is not shown, reducing auditability of the negative-findings process.",
+   "Given that the observational-cohort auditor perspective was tasked with confounding scrutiny, the pool includes cohort HRs [10],[16] described as adjusted 'for standard confounders' but no claim interrogates residual confounding (e.g., reverse causation from pre-existing illness affecting sitting time, socioeconomic status, job type) even though the checklist (item 4) explicitly demands this - the scoping accepted the adjusted-HR figures at face value rather than testing them.",
+   "The checklist and perspectives conflate 'sitting time reduction' with 'health/productivity improvement' throughout - most RCT evidence gathered (claims 11,12,18,23) measures the intermediate behavioral outcome (minutes sat/stood) rather than the actual health/productivity endpoints the question asks about, and the scoping never forced a sub-question demanding RCTs report health/productivity outcomes directly rather than proxy behavior metrics.",
+   "The cost-benefit perspective produced zero claims in the final pool, indicating the search for that perspective was either not executed or filtered out entirely, but this was never flagged as a limitation anywhere in the findings - a silent coverage failure rather than an acknowledged gap.",
+   "The cost-benefit/procurement perspective was listed as searched but produced zero findings in the final output, indicating either the search was not actually executed or its results were dropped in synthesis - this is a silent process failure, not just a coverage gap.",
+   "The perspective set has no dedicated occupational-safety/harms specialist despite standing desk harms (venous issues, fatigue) being a checklist item; the 'Null-result skeptic' and 'Occupational health steelman' perspectives were tasked more broadly and neither surfaced quantified harm data, so the harms sub-question was structurally under-resourced by the panel design.",
+   "The perspective set never included a specifically medical/clinical outcomes reviewer for cardiometabolic markers (blood glucose, blood pressure) - all six perspectives cluster around sitting-time behavior, pain, productivity, and cost, so checklist item 2's specific markers were structurally unlikely to be surfaced by any searcher.",
+   "The premise embedded in checklist item 6 (that movement/behavior change rather than standing itself may be the active ingredient) was investigated only via one tiny, methodologically confounded pilot study (n=20) that itself conflates standing with treadmill walking - the scoping did not ensure a study existed that could actually isolate posture from movement, so this sub-question was scoped in a way that could not be properly answered by the available/searched literature.",
+   "The scoping treated 'standing desks improve health/productivity' and 'observational sitting-time associations' as parallel tracks to investigate separately (per items 1-4) but only weakly required a reconciliation step (item 5); as executed, the findings never actually cross-compare effect sizes, so the core question (RCT vs observational weighing) is left to the reader rather than answered by the research."
+  ],
+  "rationales": [
+   "The findings contain internal contradictions (Finding 1's 'consistently' vs Finding 3's null/negative RCT; Finding 3 mischaracterizing the smaller n=39 study as 'larger' than the n=74 study) that would actively mislead a reader about the strength and direction of RCT evidence. More importantly, several checklist items central to the question - pooled meta-analytic pain effect sizes with CIs, cardiometabolic RCT effect sizes, productivity effect-size synthesis, RCT-vs-observational quantitative r…",
+   "The findings contain factual distortions relative to their own cited claims (e.g., calling the 39-person Portuguese RCT 'larger' than the 74-person Japanese RCT, and stating pooled sitting-time reductions are from RCTs when the underlying Cochrane review pools mixed designs), and overgeneralize from single small studies to blanket claims about 'no RCT' isolating posture from movement. More importantly, several checklist items central to the question - pooled pain effect sizes with CIs, cardiomet…"
+  ]
+ },
+ "rescue": {
+  "wipedSubQuestions": [
+   "How do standing desks compare in cost-effectiveness (cost per unit health/productivity gain) against alternative workplace interventions such as movement breaks, treadmill desks, or ergonomic seating?"
+  ],
+  "targeted": 1,
+  "sourcesAdded": 5,
+  "claimsReVerified": 6,
+  "claimsSaved": 5
+ },
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 9,
+  "sourcesFetched": 31,
+  "claimsExtracted": 56,
+  "urlDupes": 3,
+  "budgetDropped": 17,
+  "claimsDroppedBeforeVerify": 19,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 88,
+    "ok": 88,
+    "fail": 0,
+    "results": 32
+   },
+   "ddg-html": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 84,
+    "ok": 84,
+    "fail": 0,
+    "results": 46
+   },
+   "crossref": {
+    "attempts": 81,
+    "ok": 74,
+    "fail": 7,
+    "results": 391
+   },
+   "europepmc": {
+    "attempts": 7,
+    "ok": 7,
+    "fail": 0,
+    "results": 24
+   },
+   "openalex": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "results": 12
+   },
+   "pubmed": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 1
+   },
+   "arxiv": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 10
+   }
+  },
+  "sourceTiers": {
+   "T2": 17,
+   "T1": 6,
+   "T4": 1,
+   "T3": 2,
+   "T?": 5
+  },
+  "agentCalls": 308,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 643994,
+  "outputTokens": 162594,
+  "wallSeconds": 1366.0,
+  "claimsVerified": 36,
+  "lensesPerClaim": 3,
+  "confirmed": 32,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}

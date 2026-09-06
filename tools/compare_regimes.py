@@ -19,6 +19,9 @@ def row(path):
     s = d.get("stats") or {}
     ca = d.get("citationAudit") or {}
     cal = d.get("calibration") or {}
+    # Top level, NOT under stats — read the wrong key once and concluded the instrument
+    # had not fired when it had.
+    ds = d.get("droppedSample") or {}
     hp = s.get("searchHealth") or {}
     gen = ("searxng", "ddg-html", "ddg-lite", "mojeek")
     web = sum((hp.get(n) or {}).get("results", 0) for n in gen)
@@ -33,6 +36,9 @@ def row(path):
         "partial": ca.get("partial"),
         "demoted": ca.get("demotedBySurvivingPanel"),
         "dropped": s.get("claimsDroppedBeforeVerify"),
+        "dropSurv": ds.get("survivalRate"),
+        "keptSurv": ds.get("keptClaimSurvivalRate"),
+        "dropN": ds.get("sampled"),
         "kappa": cal.get("cohenKappa"),
         "calN": cal.get("n"),
         "gate": cal.get("gateVerdict"),
@@ -81,6 +87,12 @@ def main():
               "runs with ANY general-web result: %d of %d"
               % (label, len(rows), spread(rows, "killRate"), spread(rows, "citeAcc"),
                  len(gen), len(rows)))
+    ds = [r for r in (old + new) if r["dropN"]]
+    if ds:
+        print("\n  dropped-claim sampling (#9) - do the discarded claims verify worse?")
+        for r in ds:
+            print("    %-30s n=%-3s dropped survive %s vs kept %s"
+                  % (r["run"][:30], r["dropN"], r["dropSurv"], r["keptSurv"]))
     gates = [r["gate"] for r in new if r["gate"]]
     if gates:
         print("  gate verdicts, current regime: %s" % ", ".join(gates))

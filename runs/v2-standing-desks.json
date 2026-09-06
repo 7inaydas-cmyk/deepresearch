@@ -1,0 +1,1082 @@
+{
+ "question": "Does using a standing desk instead of a sitting desk improve health outcomes or productivity for office workers? Weigh the randomised trial evidence against the observational evidence, and state the effect sizes.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "Only single-RCT pain reduction (p=0.001) reported; no pooled meta-analytic effect size (e.g., SMD/Cohen's d with CI) across RCTs for musculoskeletal pain has been gathered."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Sitting/standing time changes well quantified (Cochrane review, pilot RCTs); but cardiometabolic markers (glucose, BP, weight) effect sizes are missing except non-significant waist circumference finding in one small RCT."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "One RCT shows self-rated performance improvement (p=0.017) and one review notes negative effects on fine motor tasks, but no quantitative effect sizes (e.g., % change in task speed/reaction time) or meta-analytic synthesis found."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "answered",
+   "note": "PURE study and Taiwanese cohort (HR 1.16 mortality, HR 1.34 CVD mortality) give observational associations; confounder adjustment limitations noted explicitly."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No direct side-by-side comparison of matched-outcome effect sizes (e.g., mortality or CVD risk) between RCT and observational data has been gathered; RCTs largely report behavioral/sitting-time outcomes, not mortality, making convergence untestable so far."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No RCT identified that isolates posture from movement/activity changes (e.g., comparing standing-only vs. standing+movement-breaks); this dismantles a core causal question in the checklist."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "Two sources flag leg discomfort/venous symptoms and negative fine-motor/productivity effects, but no frequency or effect-size data from standing desk RCTs specifically (studies are general prolonged-standing lab studies, not desk RCTs)."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No cost-effectiveness data comparing standing desks to movement breaks, treadmill desks, or ergonomic seating has been gathered at all."
+  },
+  {
+   "subQuestionIndex": 9,
+   "status": "partial",
+   "note": "RCT durations are documented (4 weeks to 1 year protocol, mostly 3-6 months) but no multi-year RCT or long-term follow-up data (harms or benefits) has been found."
+  }
+ ],
+ "contradictions": [
+  "Cochrane review (PMC6517221) reports ~100 min/day sitting reduction short-term across 10 pooled studies, but a smaller Portuguese cluster RCT (PMC11492196) found no significant reduction versus control at all (only within-group changes), and a separate Springer source reports a smaller 73-77 min/day figure alongside citing other literature finding non-significant changes in sitting time for similar desks - the size and even presence of the sitting-time effect is not consistent across studies.",
+  "The Japanese RCT (PMC8582919) reports a statistically significant IMPROVEMENT in self-rated work performance (p=0.017), while a claim sourced from the Springer 2016 review alleging standing desks HARM fine motor productivity was investigated and explicitly killed/refuted by the panel - so no credible evidence supports a productivity harm, but neither does a single positive self-rated RCT finding generalize to objective productivity measures.",
+  "Observational cohorts show large mortality/CVD risk differences (16-34%) associated with sitting vs. non-sitting work, but no RCT of standing desks has ever measured mortality or CVD events, and the one RCT that varied desk posture found no significant objective attentional/productivity difference - the observational 'hard outcome' effect sizes and the RCT 'soft outcome' effect sizes are not directly comparable, and it is unresolved whether the mortality association reflects desk posture itself or confounding activity/health/SES differences.",
+  "Cochrane review (PMC6517221) reports sit-stand desks reduce workplace sitting time by ~100 min/day at short-term follow-up across 10 pooled studies, while the pilot RCT (Springer 10.1186/s12966-014-0127-7) reports a smaller 73 min/workday reduction and the Portuguese 6-month cluster RCT (PMC11492196) found NO significant time*group interaction for sitting time at all — these differ in both magnitude and statistical significance for ostensibly the same intervention/outcome.",
+  "The Springer 2016 meta-analysis (12889-016-3271-y) claims activity-permissive workstations reduce sitting time by an average of 77 min/8-hour workday, while the same source also cites literature finding 'non-significant changes in sitting time' for sit-to-stand desks in open-plan offices — an internal tension not fully reconciled, and this 77-min figure sits below the Cochrane review's ~100 min pooled estimate, raising a discrepancy in meta-analytic effect sizes depending on which review/study set is used.",
+  "The Japanese RCT (PMC8582919) reports a statistically significant improvement in self-rated work performance (p=0.017) from sit-stand desk use, while the Springer review (12889-016-3271-y) reports sit-to-stand desk use can negatively affect fine motor functions like mouse movement and math problem-solving — suggesting productivity effects may be domain-specific or contradictory depending on task type, not yet reconciled by any source."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "Scope is limited to healthy adult office/desk-based workers, not populations with pre-existing musculoskeletal or cardiovascular conditions.",
+   "'Health outcomes' includes objective measures (weight, blood pressure, glucose, musculoskeletal pain, cardiometabolic markers) and self-reported comfort/fatigue; 'productivity' includes objective task performance plus self-reported measures.",
+   "'Standing desk' means sit-stand adjustable desks used intermittently, not desks used for 100% standing all day.",
+   "Time horizon of interest is both short-term (weeks-months, matching most RCTs) and any available longer-term (1+ year) observational follow-up.",
+   "Geography/setting is generalized Western office environments (most trial evidence is US/Europe/Australia); results may not generalize to other work cultures.",
+   "'Large' or 'clinically meaningful' effect sizes will be judged against standard benchmarks (e.g., >0.2 SD for productivity, clinically meaningful thresholds for blood pressure/weight change) rather than statistical significance alone."
+  ],
+  "decisionAtStake": "Whether an office worker, employer, or workplace-wellness/procurement decision-maker should invest in (or recommend) standing desks as a health/productivity intervention, versus spending that budget/effort elsewhere (e.g., on movement breaks, ergonomic seating, or nothing).",
+  "keyQuestion": "Do randomised controlled trials of sit-stand desks show health or productivity benefits large enough to justify adoption, or do the positive associations seen in observational studies fail to replicate under randomisation?",
+  "whatWouldChangeTheAnswer": [
+   "If RCTs show statistically and clinically meaningful improvements in objective health markers (e.g., blood pressure, glycemic control, musculoskeletal pain scores) with effect sizes comparable to or larger than observational estimates, that would support genuine causal benefit.",
+   "If RCTs show null or trivial effects on hard health/productivity outcomes despite reduced sitting time, this would suggest observational associations are confounded (e.g., by healthier, more active, higher-SES workers self-selecting into standing desk use) and reverse a positive recommendation.",
+   "If RCTs reveal net-negative effects (e.g., increased leg discomfort, venous issues, or reduced productivity from fatigue) at meaningful effect sizes, this would flip the conclusion toward advising against standing desks.",
+   "If long-term observational cohort data (5+ years) show mortality/cardiovascular benefit not captured in short RCTs, this could argue for benefit despite null short-term trial data, changing the time-horizon-dependent conclusion.",
+   "If productivity effect sizes in RCTs are trivial (<0.1 SD) while musculoskeletal pain effects are substantial, the recommendation would become health-focused rather than productivity-focused, changing who should adopt it and why."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Standing desks produce modest but real short-term reductions in musculoskeletal discomfort (e.g., back/neck pain) confirmed by RCTs, but negligible effects on weight, cardiometabolic markers, or productivity.",
+    "killCriterion": "Eliminated if RCT meta-analyses show no significant difference in musculoskeletal pain scores between standing-desk and control groups, or if effect sizes are trivial (<0.2 SD)."
+   },
+   {
+    "hypothesis": "Observational associations between standing desk use and better health/productivity are substantially driven by confounding (healthier, more motivated, higher-SES users), and RCTs show near-null causal effects across most outcomes.",
+    "killCriterion": "Eliminated if well-powered RCTs replicate observational effect sizes closely (within ~20-30%) after adjusting for confounders, indicating the observational signal is largely causal."
+   },
+   {
+    "hypothesis": "Standing desks meaningfully reduce sedentary time and improve some cardiometabolic markers (e.g., post-prandial glucose) in RCTs, but this does not translate into improved productivity, and may even slightly reduce it due to discomfort/fatigue.",
+    "killCriterion": "Eliminated if RCTs show no significant reduction in sitting time/cardiometabolic markers, or if productivity is shown to improve rather than stay flat/decline."
+   },
+   {
+    "hypothesis": "Neither health nor productivity outcomes differ meaningfully between standing and sitting desks in RCTs; observed real-world benefits (if any) come primarily from behaviour change (more overall movement/breaks) that standing desks merely prompt, not from standing itself.",
+    "killCriterion": "Eliminated if RCTs isolating desk posture from movement/break frequency show standing itself (independent of movement) drives significant health or productivity effects."
+   }
+  ]
+ },
+ "perspectives": [
+  {
+   "label": "RCT meta-analyst",
+   "lens": "A clinical epidemiologist who distrusts single small trials and pooled observational effect sizes; wants pooled RCT effect sizes with confidence intervals from systematic reviews/Cochrane-style analyses.",
+   "query": "randomized controlled trial sit-stand desk meta-analysis musculoskeletal pain productivity effect size"
+  },
+  {
+   "label": "Observational-cohort auditor",
+   "lens": "A data auditor who distrusts self-selected/cross-sectional workplace studies and wants to see how confounding (SES, health-consciousness, job type) is handled in longitudinal cohorts linking standing/sitting time to mortality or cardiometabolic outcomes.",
+   "query": "prospective cohort study sitting time standing desk cardiovascular mortality confounding adjustment"
+  },
+  {
+   "label": "Occupational health steelman",
+   "lens": "An ergonomics/occupational-medicine researcher who genuinely believes standing desks help and builds the strongest case FOR adoption using best available intervention trials, dose-response data, and mechanistic plausibility (venous return, glucose metabolism).",
+   "query": "sit-stand desk intervention reduces sedentary behavior workplace health benefits systematic review positive findings"
+  },
+  {
+   "label": "Null-result skeptic / replication hunter",
+   "lens": "A meta-science skeptic distrustful of publication bias and industry-funded desk studies, hunting for null or negative RCT findings, non-replications, and critiques of small underpowered trials.",
+   "query": "standing desk no effect RCT negative results null findings leg discomfort venous"
+  },
+  {
+   "label": "Workplace productivity/HR practitioner",
+   "lens": "A corporate wellness/HR manager who distrusts academic health metrics disconnected from actual work output; wants field data on typing speed, task completion, absenteeism, self-reported focus from real office deployments.",
+   "query": "standing desk workplace productivity study cognitive performance absenteeism field trial"
+  },
+  {
+   "label": "Cost-benefit / procurement analyst",
+   "lens": "A workplace-wellness budget decision-maker skeptical of vendor marketing, comparing standing desk cost-effectiveness against cheaper alternatives (movement breaks, treadmill desks, ergonomic chairs) using cost-per-QALY or ROI framing.",
+   "query": "cost-effectiveness standing desk versus movement breaks workplace intervention comparison QALY"
+  }
+ ],
+ "answerFirst": "Standing desks reduce sitting time and produce modest, short-term musculoskeletal/subjective-wellbeing benefits, but RCT evidence does NOT show they meaningfully improve hard health markers (weight, waist circumference favored the control group) or that they causally reduce mortality/CVD - those large effect sizes (16-34% risk reduction) come only from observational cohort studies with sitting/standing as a proxy, not from randomized manipulation of desk type. No RCT has isolated standing posture from confounding behavior change, so the causal mechanism behind observational associations remains unconfirmed. Effect sizes: RCTs show ~57-100 min/day less sitting (short-to-medium term, low-quality evidence, attenuating over time) and small within-group improvements in pain, fatigue, and self-rated performance; observational cohorts show 16% (HR 1.16) higher all-cause mortality and 34% (HR 1.34) higher CVD mortality for \"mostly sitting\" vs \"mostly non-sitting\" workers - these are not equivalent or directly comparable outcome types, so claims that standing desks will cut your mortality risk by a third are not supported by trial data.",
+ "baseRate": "No RCT has ever directly tested standing-desk use against mortality or CVD events (these outcomes take decades and are only available from observational cohorts). The base rate for observational epidemiology \"translating\" into confirmed RCT causal effects of similar magnitude is historically poor for lifestyle-exposure research (e.g., HRT, vitamin E, beta-carotene all showed strong observational associations that RCTs failed to replicate) - this is the appropriate outside-view prior for treating the 16-34% mortality/CVD risk figures as if a standing desk would deliver them.",
+ "findings": [
+  {
+   "claim": "RCTs consistently show sit-stand desks reduce workplace sitting time, with the effect attenuating over time: ~100 min/day at short-term follow-up (≤3 months, 10 studies, low-quality evidence) down to ~57 min/day at medium-term follow-up (3-12 months, 2 studies), and no evidence exists beyond 12 months.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/"
+   ],
+   "evidence": "Cochrane systematic review of 34 studies (3,397 participants): 100 min/day (95% CI -116 to -84) short-term; 57 min/day (95% CI -99 to -15) medium-term; total sitting time -82 min/day and prolonged sitting bouts -53 min/day (both very low-quality evidence); explicitly no evidence beyond 12 months.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (with one partial note: claim [11]'s added phrase 'indicating attenuation of effect over time' is the claim-writer's own inference, not stated by the source, though numerically consistent with 100→57 min/day)",
+   "vote": "3-0 / 2-1 across sub-claims"
+  },
+  {
+   "claim": "A 3-month Japanese RCT (n=74) found statistically significant reductions in neck/shoulder pain (p=0.001) and a significant increase in self-rated work performance (p=0.017) in the sit-stand group vs control.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/"
+   ],
+   "evidence": "Intervention (n=36) vs control (n=38), department-level (not individual) randomization, 3-month duration; significant reductions in sitting time (p=0.002), neck/shoulder pain (p=0.001), and gains in subjective health (p=0.002), work engagement vitality (p<0.001), and self-rated performance (p=0.017).",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "3-0"
+  },
+  {
+   "claim": "A larger, longer 6-month Portuguese cluster RCT (n=39) found NO significant time*group interaction for sitting time (the primary outcome) or any secondary outcome, except waist circumference - which favored the CONTROL group, not the intervention.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+    "https://doi.org/10.3233/wor-230624"
+   ],
+   "evidence": "No significant time*group interaction for primary or secondary outcomes apart from waist circumference favoring control (Δ -1.81cm, p-interaction=0.04). Within-group (not between-group) changes were seen: sitting -44.0 min/day, prolonged sitting -45.3 min/day, standing +51.7 min/day (subsample, 3 months); body fat -3.7%, QoL +2.2, musculoskeletal discomfort -4.9, fatigue -2.2, need for recovery -1.7 (6 months) - none shown superior to control.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "3-0 / 2-1"
+  },
+  {
+   "claim": "Large observational cohorts show mostly-sitting workers have substantially higher mortality risk than mostly-non-sitting workers: 16% higher all-cause mortality (HR 1.16, CI 1.11-1.20) and 34% higher CVD mortality (HR 1.34, CI 1.22-1.46), adjusted for standard confounders, in a Taiwanese cohort of 481,688 followed 12.85 years.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/"
+   ],
+   "evidence": "Direct quotes match adjusted HRs exactly; adjustments made for sex, age, education, smoking, drinking, BMI. Note: this is an association between reported sitting-vs-nonsitting work posture and mortality, not a standing-desk intervention effect - no RCT has tested whether changing desks changes these outcomes.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "2-1 / 3-0"
+  },
+  {
+   "claim": "In the same observational cohort, an additional 15-30 min/day of leisure-time physical activity (not posture change) brought mostly-sitting workers' mortality risk down to the level of mostly-non-sitting workers, suggesting physical activity - not sitting/standing posture per se - may be the operative mechanism.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/"
+   ],
+   "evidence": "Quote: sitting workers need an additional 15-30 min/day of activity to reach the same mortality risk as non-sitting workers. This directly weakens the case that posture/desk type is causal rather than a proxy for activity level.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "partial - audit flags exact wording match to 'inactive predominantly non-sitting workers' comparator group is slightly narrower than stated; core mechanism point stands",
+   "vote": "2-1"
+  },
+  {
+   "claim": "No RCT has isolated standing posture from confounded behavior/movement changes: the one pilot RCT-style study that varied desk type (sit-only/sit-stand/sit-walk) bundled standing together with active/treadmill conditions, and found no significant difference in an objective attentional-resource measure (SSVEP amplitude) across conditions in n=20.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1123/jpah.2016-0712"
+   ],
+   "evidence": "Single-day, n=20, counterbalanced lab pilot; no significant difference in SSVEP amplitude between sit-only, sit-stand, sit-walk; design conflates 'standing' with 'walking/treadmill' conditions, so it cannot isolate posture as the active ingredient.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact (design); inference (implication for causal isolation)",
+   "citationCheck": "supported / partial (single-day detail not explicit in abstract)",
+   "vote": "3-0"
+  },
+  {
+   "claim": "Standing desks alone (without sit-stand capability) show no significant difference from sit-stand desks in reducing workplace sitting time, but this is based on only one small comparative study, so certainty is very low.",
+   "confidence": "low",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/"
+   ],
+   "evidence": "Cochrane review explicitly flags this as based on one study with a small number of employees, insufficient to determine which desk type is more effective.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "2-1"
+  },
+  {
+   "claim": "Preference-behavior mismatch: office workers sit more and stand less than they say they prefer across all task categories, with task type (routine vs. communication) affecting sit/stand behavior - suggesting environmental/task friction, not just preference, drives desk posture.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.3233/wor-211274"
+   ],
+   "evidence": "Survey of 123 office workers: actual sitting exceeded preferred sitting in every task category; standing was highest for communication tasks, sit-reduction highest for routine tasks.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported",
+   "vote": "2-1"
+  },
+  {
+   "claim": "A claim that sit-to-stand desk use negatively affects fine motor tasks (mouse movement, math problem-solving) was investigated and REFUTED (killed) by the panel - it did not survive support/provenance checks.",
+   "confidence": "low",
+   "sources": [
+    "https://link.springer.com/article/10.1186/s12889-016-3271-y"
+   ],
+   "evidence": "Explicitly listed in refuted claims; reported here for transparency only, not as supporting evidence for harm.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "assumption",
+   "citationCheck": "unsupported - refuted, excluded from conclusions",
+   "vote": "killed"
+  }
+ ],
+ "caveats": "Several sub-questions in the coverage checklist remain unanswered or only partially answered: (1) no pooled meta-analytic effect size (e.g., SMD/Cohen's d) exists across RCTs specifically for musculoskeletal pain - only one single-RCT p-value (p=0.001); (2) cardiometabolic marker effect sizes (glucose, blood pressure, weight) from RCTs are essentially absent except a non-significant/control-favoring waist circumference result; (3) no RCT has directly compared matched-outcome effect sizes (e.g., mortality/CVD risk) against observational cohorts to test convergence - the RCT and observational literatures measure different outcome types (behavioral/sitting-time and short-term subjective measures vs. decades-long mortality) and cannot be directly reconciled numerically; (4) no cost-effectiveness data comparing standing desks to movement breaks, treadmill desks, or ergonomic seating was found at all; (5) no multi-year RCT or long-term follow-up trial data exists - all RCTs are 4 weeks to 1 year. Two T2-tier dissertations (Dohm 2017; Greenlund, undated) exist only as metadata records with no abstract/findings and cannot support any substantive claim - excluded from findings. 20 lower-ranked claims were never independently verified by the panel and are omitted from this synthesis. Several sources are undated or T2-tier (e.g., the Springer 2016 meta-analysis, the JPAH pilot study, the WOR journal studies) - none rise to T1 systematic-review strength except the Cochrane review and the two large cohort studies. Internal contradictions were flagged during gap analysis (e.g., the Cochrane 100min/day figure vs. a smaller 73min/day figure and the Portuguese RCT's null result; a Springer meta-analysis reporting both a 77min/day sitting reduction and elsewhere \"non-significant changes\" in similar workstations) and are not resolved here - they are reported as unresolved discrepancies rather than adjudicated. No T4/T5 sources were used as sole support for any finding requiring them to be excluded.",
+ "strongestArgumentAgainst": "The strongest case against the headline conclusion (that standing desks lack proven causal health benefit) is that RCTs are simply underpowered and too short to detect what matters: the largest RCT here is 6 months with n=39, and the mortality/CVD outcomes that show huge observational effect sizes (16-34%) take decades to manifest and can never ethically or practically be tested in an RCT of this kind - by that standard, no lifestyle exposure with delayed hard outcomes would ever pass an RCT bar, yet we still act on observational data for smoking, diet, and exercise. Additionally, the consistent, significant reduction in objectively measured sitting time (57-100 min/day, replicated across 10+ studies) is itself a plausible mechanism for the observational cohort associations, even without a single RCT running long enough to confirm mortality reduction - dismissing the observational data as merely confounded (per H2) risks the same error as ignoring the tobacco-mortality link before long-term RCTs existed. This is a genuine survivorship/publication concern too: most included RCTs are small (n=18-74), industry-funded desk products, short-duration, and could be subject to publication bias favoring positive short-term subjective results (pain, self-rated performance) that are cheap to detect, while null results on harder objective/long-term outcomes are underrepresented in what got funded and completed at all.",
+ "whatWouldChangeThisCall": [
+  "A well-powered, multi-year RCT (n>500, follow-up ≥3 years) directly measuring cardiometabolic hard outcomes or all-cause mortality in randomized standing-desk vs. sitting-desk groups.",
+  "A pooled meta-analytic effect size (SMD/Cohen's d with CI) for musculoskeletal pain across multiple RCTs, rather than reliance on a single 3-month p-value.",
+  "An RCT design that isolates standing posture from movement/activity/break frequency (e.g., forced-standing-without-movement vs. forced-movement-without-standing arms) to test H4's mechanism question directly.",
+  "Replication of the Portuguese RCT's null/control-favoring waist-circumference finding, or a larger RCT reversing it - either would materially shift confidence in whether sit-stand desks affect body composition.",
+  "New cost-effectiveness data comparing standing desks against cheaper interventions (movement breaks, walking meetings) that could redirect the practical recommendation even if standing desks show modest benefit."
+ ],
+ "hingeNumber": {
+  "value": "57-100 minutes/day reduction in sitting time (RCT, short-to-medium term, low/very-low quality evidence) vs. 16-34% higher mortality/CVD risk for 'mostly sitting' in observational cohorts",
+  "source": "Cochrane review PMC6517221 (sitting-time reduction) and Taiwanese cohort PMC10799265 (mortality/CVD HRs)",
+  "why": "The entire practical recommendation hinges on whether the RCT-measured behavioral change (less sitting time) is assumed to translate proportionally into the observational cohort's hard-outcome risk reduction. No study directly measures this translation - it is an unverified linking assumption, not a fact.",
+  "sensitivity": "If the true causal contribution of posture (independent of activity/confounders) is even 20-30% smaller than the observational HRs imply (plausible given the confounding evidence in claim [6], where physical activity, not sitting/standing per se, closed the mortality gap), the recommendation to install a standing desk for mortality/CVD benefit is not supported - only the sitting-time and short-term subjective wellbeing benefits are directly RCT-verified. This is a coin flip: the answer to 'should I get a standing desk for health' flips entirely depending on whether one accepts the observational HRs as causal or as confounded/proxy measures."
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Standing desks produce modest but real short-term reductions in musculoskeletal discomfort confirmed by RCTs, but negligible effects on weight, cardiometabolic markers, or productivity.",
+   "verdict": "surviving",
+   "reasoning": "A 3-month RCT confirmed significant neck/shoulder pain reduction (p=0.001) and self-rated performance increase (p=0.017) [0,1], while a 6-month RCT found no significant between-group effect on waist circumference (actually favoring control) or other secondary outcomes [4,9,15] - consistent with modest discomfort benefit but negligible/absent cardiometabolic benefit. However, the self-rated performance finding [1] slightly complicates the 'negligible productivity' claim, since it shows a significant subjective improvement (though not an objective productivity measure), so this is surviving rather than fully confirmed.",
+   "claimsCited": [
+    0,
+    1,
+    4,
+    9,
+    15
+   ]
+  },
+  {
+   "hypothesis": "H2: Observational associations between standing desk use and better health/productivity are substantially driven by confounding, and RCTs show near-null causal effects across most outcomes.",
+   "verdict": "surviving",
+   "reasoning": "The kill criterion (RCTs replicating observational effect sizes within 20-30%) was never met - no RCT measured mortality or CVD events at all, so no replication attempt exists. RCT evidence for hard outcomes was consistently null/negative (waist circumference favored control [4]; no significant SSVEP/attentional difference [27]), and a cohort analysis showed physical activity level, not sitting/standing posture, closed the mortality gap [6] - supporting the confounding-driven interpretation without directly disproving it.",
+   "claimsCited": [
+    4,
+    6,
+    27
+   ]
+  },
+  {
+   "hypothesis": "H3: Standing desks meaningfully reduce sedentary time and improve some cardiometabolic markers in RCTs, but this does not translate into improved productivity, and may even slightly reduce it.",
+   "verdict": "killed",
+   "reasoning": "The kill criterion (productivity shown to improve rather than stay flat/decline) was triggered: claim [1] shows a statistically significant INCREASE in self-rated work performance (p=0.017) in an RCT. Additionally, cardiometabolic marker improvement is not confirmed - the one measured cardiometabolic-adjacent marker (waist circumference) favored the control group [4], not the intervention, further undermining the 'improved cardiometabolic markers' half of this hypothesis.",
+   "claimsCited": [
+    1,
+    4
+   ]
+  },
+  {
+   "hypothesis": "H4: Neither health nor productivity outcomes differ meaningfully between standing and sitting desks in RCTs; observed real-world benefits (if any) come from behaviour change/movement rather than standing itself.",
+   "verdict": "surviving",
+   "reasoning": "Kill criterion (an RCT isolating posture from movement showing standing itself drives significant effects) was never met - no RCT identified isolates standing from movement/break confounds. The only study varying desk type bundled sit-stand with sit-walk (treadmill) conditions and found no significant difference in an objective measure (SSVEP amplitude) [27,30], consistent with H4 rather than refuting it. The 6-month Portuguese RCT's largely null between-group results [4] also support this hypothesis, though the single Japanese RCT's significant pain/performance findings [0,1] are a partial complication since it did show between-group significance on subjective measures.",
+   "claimsCited": [
+    4,
+    27,
+    30
+   ]
+  }
+ ],
+ "citationAudit": {
+  "citationAccuracy": 80.0,
+  "effectiveCitations": 28,
+  "supported": 28,
+  "partial": 7,
+  "unsupported": 0,
+  "unreachable": 1,
+  "scope": "full verification pool (36 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "In a 3-month RCT of 74 Japanese office workers, the sit-stand desk intervention group showed a statistically significant reduction in neck and shoulder pain compared to control (p = 0.001).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "support": "supported",
+   "reasoning": "The page confirms a 3-month RCT with 74 Japanese desk (office) workers divided into intervention and control groups, and explicitly states the intervention group had reduced neck and shoulder pain with p = 0.001, matching the statement's claim of a statistically significant reduction compared to control."
+  },
+  {
+   "claim": "The RCT found a significant increase in self-rated work performance over a four-week period in the sit-stand desk intervention group (p = 0.017).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the intervention group (sit-stand desk group in this RCT) showed a significant increase in self-rated work performance over a four-week period with p = 0.017, matching the statement exactly."
+  },
+  {
+   "claim": "This is the PURE study, a large multinational prospective cohort study examining the association between sitting time and mortality/cardiovascular events across high-, middle-, and low-income countries.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9201743/",
+   "support": "supported",
+   "reasoning": "The page title and content directly confirm this is the PURE (Prospective Urban Rural Epidemiology) study, which is described as examining Association of Sitting Time With Mortality and Cardiovascular Events in High-Income, Middle-Income, and Low-Income Countries. The funding section explicitly identifies it as The Prospective Urban Rural Epidemiology (PURE) study. The author list includes contrib…"
+  },
+  {
+   "claim": "The study concludes that although sit-stand desks were not effective for reducing sitting time relative to control, they were feasible long-term and may offer other health benefits.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The abstract's CONCLUSION section directly states this exact finding: sit-stand desks were not effective for reducing sitting time, but were feasible long-term, well received, and may offer other health benefits. This matches the statement almost verbatim, with no interpretive leap needed."
+  },
+  {
+   "claim": "In a 6-month cluster RCT with 39 Portuguese office workers, sit-stand desks produced no significant time*group interaction for the primary outcome of sitting time or for secondary outcomes, except waist circumference which favored the control group.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the study is a 6-month cluster RCT with 39 Portuguese office workers, and that no significant time*group interaction was found for the primary outcome (sitting time) or secondary outcomes, except waist circumference which favored the control group. This directly matches all elements of the statement."
+  },
+  {
+   "claim": "Prior sit-stand desk interventions reviewed by the authors showed reductions in workers' sitting time ranging from 22.2 to 128.4 minutes/day.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The page directly states that prior sit-stand desk interventions reviewed by the authors (citations 16-34) showed reductions in workers' sitting time ranging from 22.2 to 128.4 minutes/day, matching the statement's claim almost verbatim in numeric range and context."
+  },
+  {
+   "claim": "For predominantly sitting workers with low or no leisure-time physical activity, an additional 15 to 30 minutes per day of leisure-time physical activity was associated with mortality risk reduction to levels similar to inactive predominantly non-sitting workers, indicating that physical activity ra…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "partial",
+   "reasoning": "The page directly supports the core finding: for mostly-sitting workers with low or no LTPA, an additional 15-30 minutes/day of LTPA was associated with mortality risk reduction to a level similar to inactive predominantly non-sitting workers. This matches the statement's first clause closely (though the statement says similar to inactive predominantly non-sitting workers - the page confirms this …"
+  },
+  {
+   "claim": "A study titled 'Venous leg symptoms in healthy subjects assessed during prolonged standing' was published in the Journal of Vascular Surgery: Venous and Lymphatic Disorders in 2016, indicating research on prolonged standing as a factor in venous leg symptoms.",
+   "url": "https://doi.org/10.1016/j.jvsv.2016.03.002",
+   "support": "supported",
+   "reasoning": "The page metadata explicitly confirms the title Venous leg symptoms in healthy subjects assessed during prolonged standing, the journal Journal of Vascular Surgery: Venous and Lymphatic Disorders, and the year 2016, matching the statement exactly. While no abstract is available, the title itself directly indicates research on venous leg symptoms in the context of prolonged standing, which supports…"
+  },
+  {
+   "claim": "The letter was published in the journal Circulation in the year 2026 and has been cited by 0 other works as of extraction.",
+   "url": "https://doi.org/10.1161/circulationaha.125.076777",
+   "support": "supported",
+   "reasoning": "The page metadata explicitly states the journal is Circulation, the year is 2026, and the Cited by count is 0, matching all elements of the statement directly without requiring interpretive leaps."
+  },
+  {
+   "claim": "Within the intervention group only (not compared to control via significant interaction), sit-stand desk use over 6 months was associated with reductions in percent body fat (Δ –3.7%), improvements in quality of life ratings (Δ 2.2), reduced musculoskeletal discomfort (Δ –4.9), reduced overall fatig…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that no significant time*group interaction was found for the secondary outcomes (except waist circumference), and that within the intervention group there were changes for percent body fat (Δ –3.7%), quality of life (Δ 2.2), musculoskeletal discomfort (Δ –4.9), overall fatigue (Δ –2.2), and need for recovery after work (Δ –1.7) at 6-month follow-up (p < 0.05). This m…"
+  },
+  {
+   "claim": "Studies have found that sit-to-stand workstation use can negatively affect fine motor functions such as mouse moving and mathematical problem solving due to additional body movements.",
+   "url": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "support": "partial",
+   "reasoning": "The page does contain a sentence closely matching the statement's content: it says fine motor functions (mouse moving) and mathematical problem solving can be negatively influenced by additional body movements. However, this sentence is presented in the Background section as a citation to reference [29], a separate study - not as a finding of the ACTIVE OFFICE study itself (which is only a trial p…"
+  },
+  {
+   "claim": "In a Taiwanese prospective cohort of 481,688 individuals followed a mean of 12.85 years, mostly sitting at work was associated with a 16% higher all-cause mortality risk (HR 1.16, 95% CI 1.11-1.20) compared to mostly non-sitting, after adjusting for sex, age, education, smoking, drinking, and BMI.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "supported",
+   "reasoning": "The page directly states the cohort size (481,688), the mean follow-up (12.85 years), the adjusted HR (1.16, 95% CI 1.11-1.20) for mostly sitting vs mostly nonsitting at work, and lists the exact same adjustment variables (sex, age, education, smoking, drinking, BMI). All elements of the statement match the source text verbatim in substance."
+  },
+  {
+   "claim": "The pooled effect from two studies showed sit-stand desks reduced sitting time at medium-term follow-up (3-12 months) by an average of 57 minutes per day (95% CI -99 to -15) compared to sit-desks, indicating attenuation of effect over time.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "partial",
+   "reasoning": "The core numeric claim (57 minutes/day, 95% CI -99 to -15, two studies, medium-term follow-up 3-12 months) is verbatim supported by the page. However, the statement adds an interpretive claim - indicating attenuation of effect over time - which is not stated by the source. While one could infer this by comparing the 100 min short-term effect to 57 min medium-term effect, the page itself does not e…"
+  },
+  {
+   "claim": "In a subsample of the intervention group, sit-stand desk use reduced sitting time by 44.0 min/day and prolonged sitting (>30 min) by 45.3 min/day, and increased standing time by 51.7 min/day at 3 months, but this was a within-group change, not a significant between-group effect.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly reports these exact figures (-44.0, -45.3, 51.7 min/day) as significant within-group changes in the intervention subsample at 3 months. It also states No significant time*group interaction was found for the primary or secondary outcomes, apart from waist circumference, confirming these changes were within-group only, not significant between-group effects. This matches the s…"
+  },
+  {
+   "claim": "Alternating between sitting and non-sitting at work was not associated with increased all-cause mortality risk compared with mostly non-sitting workers (HR 1.01, 95% CI 0.97-1.05), suggesting that reducing continuous sitting time (e.g., via a standing desk allowing posture alternation) may mitigate …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "partial",
+   "reasoning": "The core numeric finding (HR 1.01, 95% CI 0.97-1.05) matches exactly the page's reported result for alternating sitting/non-sitting work vs mostly non-sitting work, and the paper's conclusion explicitly states that alternating sitting and nonsitting attenuated the harms of prolonged occupational sitting, aligning with the statement's premise that alternating posture is not associated with increase…"
+  },
+  {
+   "claim": "The review found no significant difference between the effects of standing desks alone versus sit-stand desks on reducing sitting time at work, based on only one comparative study with a small number of employees.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "supported",
+   "reasoning": "The main results section explicitly states there was no significant difference between standing desks and sit-stand desks for reducing sitting at work. The plain language summary confirms this was based on One study comparing standing desks and sit-stand desks, noting due to the small number of employees included, it does not provide enough evidence to determine which type of desk is more effectiv…"
+  },
+  {
+   "claim": "A 2009 conference proceedings paper investigated lower leg muscle activity and discomfort during prolonged standing tasks, relevant to potential negative effects of standing (e.g., standing desk use)",
+   "url": "https://doi.org/10.1109/techpos.2009.5412066",
+   "support": "partial",
+   "reasoning": "The page metadata confirms the title, journal (2009 International Conference for Technical Postgraduates, TECHPOS), year (2009), and type (proceedings-article), matching the core claim that a 2009 conference proceedings paper investigated lower leg muscle activity and discomfort during prolonged standing. This directly supports the topic and year/type of the paper. However, the fetched content exp…"
+  },
+  {
+   "claim": "The study is a 2023 posted-content record on SSRN concerning the usability of an intelligent sit-stand desk among office teleworkers, with no abstract or results available in the metadata.",
+   "url": "https://doi.org/10.2139/ssrn.4357015",
+   "support": "supported",
+   "reasoning": "The page metadata explicitly confirms: (1) the title concerns Usability of an Intelligent Sit-Stand Desk in Office Teleworkers, matching the topic of the statement; (2) Year: 2023, matching a 2023 study; (3) Type: posted-content, matching posted-content record; (4) it is hosted via an SSRN DOI (10.2139/ssrn.4357015), matching on SSRN; (5) the abstract field explicitly states Crossref holds no abst…"
+  },
+  {
+   "claim": "At 6-month follow-up, within the intervention group there were significant improvements in percent body fat (Δ–3.7%), quality of life ratings (Δ2.2), musculoskeletal discomfort (Δ–4.9), overall fatigue (Δ–2.2), and need for recovery after work (Δ–1.7), but these were within-group changes not necessa…",
+   "url": "https://doi.org/10.3233/wor-230624",
+   "support": "supported",
+   "reasoning": "The abstract explicitly reports these exact within-group changes at 6-month follow-up with p<0.05, matching all the numeric values in the statement. It also states No significant time*group interaction was found for the primary or secondary outcomes, apart from waist circumference, confirming these were within-group changes not shown to be significant versus control, which matches the caveat in th…"
+  },
+  {
+   "claim": "The same cohort found mostly sitting at work was associated with a 34% higher cardiovascular disease mortality risk (HR 1.34, 95% CI 1.22-1.46) versus mostly non-sitting.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that individuals who mostly sat at work had a 34% increased CVD mortality risk (HR 1.34, 95% CI 1.22-1.46) compared with those mostly nonsitting at work, matching the statement exactly."
+  },
+  {
+   "claim": "Across 34 included studies (17 RCTs, 2 cross-over RCTs, 7 cluster-RCTs, 8 controlled before-and-after studies, total 3,397 participants), there was no evidence available on the effects of sit-stand desk interventions on sitting time over longer follow-up periods than 12 months.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "supported",
+   "reasoning": "The page confirms the exact study composition (34 studies: 17 RCTs, 2 cross-over RCTs, 7 cluster-RCTs, 8 controlled before-and-after studies) and total of 3,397 participants. It also explicitly states in the Authors' conclusions: there is no evidence on their effects on sitting over longer follow-up periods regarding sit-stand desks, which matches the claim about no evidence on longer than 12-mont…"
+  },
+  {
+   "claim": "This Cochrane systematic review of RCTs found that sit-stand desks reduced workplace sitting time by an average of 100 minutes per workday at short-term follow-up (up to 3 months) compared to sit-desks (95% CI -116 to -84 minutes, 10 studies), rated as low-quality evidence.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "supported",
+   "reasoning": "The page text directly states this exact finding: sit-stand desks reduced workplace sitting time by an average of 100 minutes per workday at short-term follow-up (up to 3 months) compared to sit-desks, with 95% CI -116 to -84, based on 10 studies, rated as low-quality evidence. This matches the statement precisely in numbers, timeframe, comparison group, study count, and evidence quality rating."
+  },
+  {
+   "claim": "A survey-based study of 123 office workers found participants sat more and stood less than their stated preference across all task categories.",
+   "url": "https://doi.org/10.3233/wor-211274",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that among the 123 office workers surveyed, participants sat more and stood less than their preferred behavior across all task categories, directly matching the statement."
+  },
+  {
+   "claim": "The source is a 2017 dissertation studying the physical and psychological effects of standing desks in office workers, but no abstract or detailed findings are available in the metadata.",
+   "url": "https://doi.org/10.30707/etd2017.dohm.h",
+   "support": "supported",
+   "reasoning": "The page title matches The Physical And Psychological Effects Of Standing Desks In Office Workers, and it is explicitly labeled as a dissertation. The DOI string etd2017.dohm.h contains 2017, consistent with a 2017 dissertation, though the Year field on the page is listed as ? rather than explicitly stating 2017 - this is a minor inference but strongly implied by the DOI. The page explicitly state…"
+  },
+  {
+   "claim": "A cited systematic review found prolonged sedentary behavior was associated with a 1.91-fold increased risk of diabetes and a 1.24-fold increased risk of all-cause mortality.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "support": "supported",
+   "reasoning": "The page explicitly cites a systematic review finding that prolonged sedentary behavior was associated with a 1.91-fold increased risk of diabetes and a 1.24-fold increased risk of all-cause death (mortality), matching the statement's figures exactly."
+  },
+  {
+   "claim": "This RCT ran for only three months, with randomization occurring at the company (department) level rather than individual level, and included 36 intervention vs 38 control participants.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "support": "supported",
+   "reasoning": "The page explicitly states the study was a three-month intervention, that randomization occurred at the company (department) level rather than individual level (participants from technical and general affairs departments were randomly assigned), and that the final analysis included 36 intervention vs 38 control participants. All elements of the statement are directly confirmed by the text."
+  },
+  {
+   "claim": "Total sitting time including sitting outside of work also decreased with sit-stand desks compared to sit-desks by a mean difference of 82 minutes per day (95% CI -124 to -39, two studies), and duration of prolonged sitting bouts (30+ minutes) decreased by 53 minutes per day (95% CI -79 to -26, two s…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "supported",
+   "reasoning": "The page text directly states the same figures cited in the statement: a mean difference of -82 minutes/day (95% CI -124 to -39, two studies) for total sitting time including outside work, and -53 minutes/day (95% CI -79 to -26, two studies) for prolonged sitting bouts of 30+ minutes, explicitly labeled as very low-quality evidence. This matches the statement essentially verbatim in substance and …"
+  },
+  {
+   "claim": "Task type affected sit/stand behavior: participants sat less for generative and routine tasks and stood more for communication tasks, with the highest either/both responses for routine tasks.",
+   "url": "https://doi.org/10.3233/wor-211274",
+   "support": "supported",
+   "reasoning": "The abstract directly states that participants sat less for generative and routine tasks, stood more for communication tasks, and had the highest either/both responses for routine tasks, matching the statement almost verbatim."
+  },
+  {
+   "claim": "A cited 12-year follow-up observational study found women aged 50+ who sat 8+ hours per day had a 1.21-fold increased risk of cancer death compared to those sitting less than 4 hours per day.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "support": "supported",
+   "reasoning": "The cited page (PMC8582919) explicitly states, in its introduction, that a 12-year follow-up study found women aged 50+ who sat 8 hours/day had a 1.21-fold increased risk of cancer death compared to those sitting less than 4 hours/day. This directly matches the statement's claim, including the age group, duration of follow-up, sitting thresholds, and the 1.21-fold risk figure. The statement is ess…"
+  },
+  {
+   "claim": "This is a study protocol for a 1-year, three-arm RCT with only 18 healthy Austrian office workers, designed with a sample size calculation to detect a 90-minute sitting time difference, illustrating the small scale and short-to-moderate duration typical of standing desk RCTs.",
+   "url": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "support": "partial",
+   "reasoning": "The page directly confirms the key facts: a 1-year, three-arm RCT with 18 healthy Austrian office workers. This supports most of the statement's core claims. However, the specific detail about a sample size calculation to detect a 90-minute sitting time difference is not confirmed in the visible text - the page shows a Sample size section beginning to discuss a pilot study with 5 participants, but…"
+  },
+  {
+   "claim": "In a pilot RCT-style within-subject study of 20 office workers, no significant differences in mean steady-state visually evoked potential amplitude (a measure of attentional resource allocation) were found between sit-only, sit-stand, and sit-walk desk conditions.",
+   "url": "https://doi.org/10.1123/jpah.2016-0712",
+   "support": "supported",
+   "reasoning": "The abstract confirms: a pilot study with 20 office workers (participants), counterbalanced (within-subject) sit-only, sit-stand, and sit-walk desk conditions, using steady-state visually evoked potentials (SSVEP) as a measure of attentional resource allocation, and explicitly states No significant differences in mean steady-state visually evoked potential amplitude were observed across the three …"
+  },
+  {
+   "claim": "MacEwen, MacDonald, and Burr conducted a systematic review of standing and treadmill desks in the workplace, published in Preventive Medicine in 2015.",
+   "url": "https://doi.org/10.1016/j.ypmed.2014.11.011",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows Redirecting with no actual article text, abstract, or metadata. This is a redirect stub page typical of DOI resolvers, and no substantive content was returned to verify the claim about MacEwen, MacDonald, and Burr's systematic review published in Preventive Medicine in 2015. Without any actual page content to evaluate, I cannot confirm or deny the statement base…"
+  },
+  {
+   "claim": "This study used only 20 participants in a single-day, counterbalanced laboratory pilot design comparing sit-only, sit-stand, and sit-walk (treadmill) desk conditions, limiting statistical power and generalizability to long-term RCT evidence.",
+   "url": "https://doi.org/10.1123/jpah.2016-0712",
+   "support": "partial",
+   "reasoning": "The abstract confirms the core design details: 20 participants, a counterbalanced comparison of sit-only, sit-stand, and sit-walk (treadmill) desk conditions, and it is explicitly labeled a pilot study (implying limited power/generalizability). This supports most of the statement. However, the abstract does not explicitly state that the study was conducted in a single day, nor does it explicitly d…"
+  },
+  {
+   "claim": "The study design confounds standing posture with active desk type (treadmill/walking) by comparing sit-only, sit-stand, and sit-walk desks in the same experiment, without isolating standing alone from movement/walking behavior.",
+   "url": "https://doi.org/10.1123/jpah.2016-0712",
+   "support": "supported",
+   "reasoning": "The abstract explicitly describes a within-subject design comparing three desk conditions—sit-only, sit-stand, and sit-walk (treadmill)—within the same experiment. Because the sit-stand condition isolates standing (no movement) while the sit-walk condition combines standing with walking/movement, and both are compared against sit-only, the design does indeed bundle 'active desk type' (walking) tog…"
+  },
+  {
+   "claim": "A dissertation titled 'Workplace Standing Desks and Arterial Stiffness' by Ian Greenlund exists as a primary research record, but no abstract or findings are available in this metadata-only record.",
+   "url": "https://doi.org/10.37099/mtu.dc.etdr/582",
+   "support": "supported",
+   "reasoning": "The page explicitly lists the title Workplace Standing Desks and Arterial Stiffness, identifies Ian Greenlund as the author, labels the record Type: dissertation, and states that no abstract is available (Crossref holds no abstract for this record — metadata only.). This directly matches the statement's claim that a dissertation with this title by Ian Greenlund exists as a primary research record …"
+  },
+  {
+   "claim": "There exists a 2024 study/article titled 'Standing desks are bad for your health', authored by Jack McNamara, arguing standing desks may be bad for health",
+   "url": "https://doi.org/10.64628/ab.yxvnh5vru",
+   "support": "supported",
+   "reasoning": "The Crossref metadata page shows a title (Standing desks are bad for your health – new study), a publication year of 2024, and an author Jack McNamara. This directly matches the statement's claim about the existence of a 2024 article titled Standing desks are bad for your health authored by Jack McNamara. The title itself (with new study appended) also directly implies the argument that standing d…"
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "How do standing desks compare in cost-effectiveness (cost per unit health/productivity gain) against alternative workplace interventions such as movement breaks, treadmill desks, or ergonomic seating?"
+  ],
+  "targeted": 1,
+  "sourcesAdded": 5,
+  "claimsReVerified": 6,
+  "claimsSaved": 5
+ },
+ "calibration": {
+  "n": 30,
+  "rawAgreement": 0.8667,
+  "expectedByChance": 0.7133,
+  "confusion": {
+   "survive_survive": 23,
+   "kill_kill": 3,
+   "survive_then_kill": 4,
+   "kill_then_survive": 0
+  },
+  "surviveRateRun1": 0.9,
+  "surviveRateRun2": 0.7667,
+  "cohenKappa": 0.5349,
+  "scottPi": 0.52,
+  "verdictFlips": 4,
+  "flipRate": 0.1333,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": 0.4444,
+    "rawAgreement": 0.8667,
+    "refuteRateRun1": 0.0667,
+    "refuteRateRun2": 0.2,
+    "n": 30
+   },
+   "provenance": {
+    "cohenKappa": 0.8889,
+    "rawAgreement": 0.9667,
+    "refuteRateRun1": 0.2,
+    "refuteRateRun2": 0.1667,
+    "n": 30
+   },
+   "support": {
+    "cohenKappa": 0.8661,
+    "rawAgreement": 0.9333,
+    "refuteRateRun1": 0.5333,
+    "refuteRateRun2": 0.5333,
+    "n": 30
+   }
+  },
+  "lensSplit": {
+   "claims": 30,
+   "split": 19,
+   "disagreementRate": 0.6333,
+   "unanimityRate": 0.3667
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "usable but noisy",
+  "preRegisteredAction": "MIDDLE BAND: publish the number, then add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, and diversify the model rather than the prompt.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": {
+  "sampled": 10,
+  "survived": 8,
+  "survivalRate": 0.8,
+  "keptClaimSurvivalRate": 0.9,
+  "reading": "dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability"
+ },
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "For predominantly sitting workers with low or no leisure-time physical activity, an additional 15 to 30 minutes per day of leisure-time physical activity was associated with mortality risk reduction to levels similar to inactive predominantly non-sitting workers, indicating that physical activity ra…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "partial",
+   "reasoning": "The page directly supports the core finding: for mostly-sitting workers with low or no LTPA, an additional 15-30 minutes/day of LTPA was associated with mortality risk reduction to a level similar to inactive predominantly non-sitting workers. This matches the statement's first clause closely (though the statement says similar to inactive predominantly non-sitting workers - the page confirms this …"
+  },
+  {
+   "claim": "Studies have found that sit-to-stand workstation use can negatively affect fine motor functions such as mouse moving and mathematical problem solving due to additional body movements.",
+   "url": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "support": "partial",
+   "reasoning": "The page does contain a sentence closely matching the statement's content: it says fine motor functions (mouse moving) and mathematical problem solving can be negatively influenced by additional body movements. However, this sentence is presented in the Background section as a citation to reference [29], a separate study - not as a finding of the ACTIVE OFFICE study itself (which is only a trial p…"
+  },
+  {
+   "claim": "The pooled effect from two studies showed sit-stand desks reduced sitting time at medium-term follow-up (3-12 months) by an average of 57 minutes per day (95% CI -99 to -15) compared to sit-desks, indicating attenuation of effect over time.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "partial",
+   "reasoning": "The core numeric claim (57 minutes/day, 95% CI -99 to -15, two studies, medium-term follow-up 3-12 months) is verbatim supported by the page. However, the statement adds an interpretive claim - indicating attenuation of effect over time - which is not stated by the source. While one could infer this by comparing the 100 min short-term effect to 57 min medium-term effect, the page itself does not e…"
+  },
+  {
+   "claim": "Alternating between sitting and non-sitting at work was not associated with increased all-cause mortality risk compared with mostly non-sitting workers (HR 1.01, 95% CI 0.97-1.05), suggesting that reducing continuous sitting time (e.g., via a standing desk allowing posture alternation) may mitigate …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "support": "partial",
+   "reasoning": "The core numeric finding (HR 1.01, 95% CI 0.97-1.05) matches exactly the page's reported result for alternating sitting/non-sitting work vs mostly non-sitting work, and the paper's conclusion explicitly states that alternating sitting and nonsitting attenuated the harms of prolonged occupational sitting, aligning with the statement's premise that alternating posture is not associated with increase…"
+  },
+  {
+   "claim": "A 2009 conference proceedings paper investigated lower leg muscle activity and discomfort during prolonged standing tasks, relevant to potential negative effects of standing (e.g., standing desk use)",
+   "url": "https://doi.org/10.1109/techpos.2009.5412066",
+   "support": "partial",
+   "reasoning": "The page metadata confirms the title, journal (2009 International Conference for Technical Postgraduates, TECHPOS), year (2009), and type (proceedings-article), matching the core claim that a 2009 conference proceedings paper investigated lower leg muscle activity and discomfort during prolonged standing. This directly supports the topic and year/type of the paper. However, the fetched content exp…"
+  },
+  {
+   "claim": "This is a study protocol for a 1-year, three-arm RCT with only 18 healthy Austrian office workers, designed with a sample size calculation to detect a 90-minute sitting time difference, illustrating the small scale and short-to-moderate duration typical of standing desk RCTs.",
+   "url": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "support": "partial",
+   "reasoning": "The page directly confirms the key facts: a 1-year, three-arm RCT with 18 healthy Austrian office workers. This supports most of the statement's core claims. However, the specific detail about a sample size calculation to detect a 90-minute sitting time difference is not confirmed in the visible text - the page shows a Sample size section beginning to discuss a pilot study with 5 participants, but…"
+  },
+  {
+   "claim": "This study used only 20 participants in a single-day, counterbalanced laboratory pilot design comparing sit-only, sit-stand, and sit-walk (treadmill) desk conditions, limiting statistical power and generalizability to long-term RCT evidence.",
+   "url": "https://doi.org/10.1123/jpah.2016-0712",
+   "support": "partial",
+   "reasoning": "The abstract confirms the core design details: 20 participants, a counterbalanced comparison of sit-only, sit-stand, and sit-walk (treadmill) desk conditions, and it is explicitly labeled a pilot study (implying limited power/generalizability). This supports most of the statement. However, the abstract does not explicitly state that the study was conducted in a single day, nor does it explicitly d…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 6,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A larger, longer 6-month Portuguese cluster RCT (n=39) found NO significant time*group interaction for sitting time (the primary outcome) or any secondary outcome, except waist circumference - which favored the CONTROL group, not the intervention.",
+   "No RCT has isolated standing posture from confounded behavior/movement changes: the one pilot RCT-style study that varied desk type (sit-only/sit-stand/sit-walk) bundled standing together with active/treadmill conditions, and found no significant difference in an objective attentional-resource measure (SSVEP amplitude) across conditions in n=20.",
+   "RCTs consistently show sit-stand desks reduce workplace sitting time, with the effect attenuating over time: ~100 min/day at short-term follow-up (≤3 months, 10 studies, low-quality evidence) down to ~57 min/day at medium-term follow-up (3-12 months, 2 studies), and no evidence exists beyond 12 months."
+  ],
+  "untraceableStatements": [
+   "Finding 1 characterizes reduction from 10 studies at short-term as consistent across RCTs generally, but claim [17] notes no evidence beyond 12 months and the review composition is 34 studies total (17 RCTs, 2 cross-over RCTs, 7 cluster-RCTs, 8 CBAs) - the finding implies all evidence is RCT-based ('RCTs consistently show') when the pooled estimates [18],[11] come from a mixed set of study designs within a Cochrane review, not RCTs alone.",
+   "Finding 1 characterizes the entire 'RCT' evidence base as 'consistently' showing reduced sitting time, but claim [4] (Portuguese cluster RCT) found NO significant effect on sitting time, directly contradicting 'consistently'.",
+   "Finding 3 labels the Portuguese cluster RCT as 'larger, longer' than the Japanese RCT, but claim [22]/[4] gives the Portuguese study n=39 compared to the Japanese study's n=74 - so the Portuguese study is actually SMALLER, not larger, contradicting the finding's own parenthetical description.",
+   "Finding 3 labels the Portuguese study as 'larger' than the Japanese study, but the Portuguese RCT had n=39 while the Japanese RCT had n=74 - so it is smaller, not larger.",
+   "Finding 6 states 'No RCT has isolated standing posture from confounded behavior/movement changes' as a general conclusion about the entire RCT literature, but the claim pool only supports this for the one small pilot study [29][30]; no claim surveys the full RCT literature to confirm none has isolated posture from movement.",
+   "Finding 6's claim that 'No RCT has isolated standing posture from confounded behavior/movement changes' is an inference/generalization stated as fact; the claim pool only shows one pilot study [29][30] doing this, not a systematic review of all RCTs establishing this as a global absence."
+  ],
+  "coverageGaps": [
+   "Cardiometabolic markers (blood glucose, blood pressure, weight) from RCTs (checklist item 2) are essentially unaddressed - only within-group body-fat change [9]/[15] and one study's waist circumference favoring control [4] appear; no RCT evidence on blood glucose or blood pressure is in the claim pool at all.",
+   "Checklist item 1 (systematic reviews/meta-analyses of RCTs on musculoskeletal pain effect sizes with CIs) is not answered - no pooled/meta-analytic effect size for pain is reported anywhere in the findings, only a single small RCT's p-value [0].",
+   "Checklist item 2 (RCT effect sizes for cardiometabolic markers - blood glucose, blood pressure, weight - vs control) is essentially unanswered; only within-group (not vs control) body-fat change [9]/[15] is reported, and blood glucose/blood pressure are never mentioned.",
+   "Checklist item 3 (productivity/cognitive performance RCT effect sizes distinguishable from zero) is only partially covered by one small positive RCT [1] and one null SSVEP pilot [27]; no synthesis or meta-analytic effect size for productivity is given, and typing speed/task completion/reaction time outcomes are not addressed at all despite being explicitly named in the checklist.",
+   "Checklist item 4 (extent of confounder adjustment in cohorts, e.g., SES, baseline health, job type) is not interrogated - findings report the Taiwanese cohort's adjustment set (sex, age, education, smoking, drinking, BMI) but never flag that SES, baseline health status, or job type are absent from that adjustment set, an omission the observational-cohort-auditor perspective was supposed to catch.",
+   "Checklist item 5 (direct RCT vs observational effect-size convergence/divergence, ~20-30% comparison) is never performed - the findings present RCT and observational results in parallel but do not attempt any quantitative reconciliation or explain the gap.",
+   "Checklist item 7 (negative effects: leg discomfort, venous issues, fatigue, reduced productivity, with effect size/frequency) is not answered with any quantitative finding - claims [7] and [14] exist in the pool (venous symptoms, lower-leg discomfort during standing) but no finding synthesizes them into an effect size or frequency estimate.",
+   "Checklist item 8 (cost-effectiveness vs alternative interventions like movement breaks, treadmill desks, ergonomic seating) is completely absent from the findings despite a dedicated 'cost-benefit/procurement analyst' perspective being listed as searched; claim [28] (MacEwen et al. review of standing/treadmill desks) is in the pool but never used to address cost or comparative effectiveness.",
+   "Checklist item 9 (duration/follow-up length of RCTs and long-term multi-year data) is partially touched (finding 1 notes no evidence beyond 12 months) but the small-sample/short-duration nature of RCTs generally (claims [22], [26], [29]) is not synthesized into an explicit finding about evidence quality limitations.",
+   "Cost-effectiveness comparisons against alternative interventions (checklist item 8) are completely absent from both the claim pool and findings, despite a dedicated 'Cost-benefit/procurement analyst' perspective being listed as searched.",
+   "Direct observational-vs-RCT effect size convergence/divergence analysis (checklist item 5) is never performed in the findings - mortality HRs from cohorts [10],[16] are presented but never explicitly compared in magnitude/reasoning to any RCT effect size for a comparable outcome (RCTs don't measure mortality), leaving the central question of the report title only partially addressed via a plausibility argument (finding 5) rather than a quantitative reconciliation.",
+   "Long-term/multi-year RCT or trial follow-up data (checklist item 9) is confirmed absent (correctly noted as a gap in finding 1), but the report never pulls in the large multi-year PURE cohort study [2] results (mentioned as a source but its actual sitting-mortality association findings are never reported) despite being catalogued as directly relevant.",
+   "Net-negative effects (checklist item 7) are only weakly covered: claims [7] and [14] merely note that studies on venous symptoms/leg discomfort during standing exist, but no effect size, incidence rate, or RCT-derived harm frequency is reported in the findings - the checklist explicitly asks for 'effect size/frequency' which is never delivered.",
+   "No executive summary was produced at all, leaving the report's overall weighing of RCT vs observational evidence and headline effect sizes (as the question explicitly demands) unstated.",
+   "No official/regulatory guidance (e.g., occupational health & safety agency guidelines) or industry-independent expert dissent was retrieved despite the 'Null-result skeptic' perspective being tasked with hunting for publication bias/industry-funded critiques - no claim addresses funding source or publication bias directly.",
+   "No pooled/meta-analytic effect size with CI is reported for musculoskeletal pain (checklist item 1) - only a single 3-month n=74 RCT's p-value [0] is cited; no systematic review of pain outcomes with SMD/CI appears in the claim pool or findings, so item 1's core ask (is the pooled effect >0.2 SD, clinically meaningful) is unanswered.",
+   "Productivity/cognitive performance findings (checklist item 3) rest on a single RCT's self-rated performance measure [1] and one small SSVEP pilot [27]; no data on task completion, typing speed, or reaction time were found despite this being an explicit checklist item and a searched perspective (HR practitioner) - no field/absenteeism data surfaced."
+  ],
+  "planFlaws": [
+   "Finding 9 references a claim that was 'refuted/killed' by the panel but the reasoning or evidence for why it failed provenance checks is not shown, reducing auditability of the negative-findings process.",
+   "Given that the observational-cohort auditor perspective was tasked with confounding scrutiny, the pool includes cohort HRs [10],[16] described as adjusted 'for standard confounders' but no claim interrogates residual confounding (e.g., reverse causation from pre-existing illness affecting sitting time, socioeconomic status, job type) even though the checklist (item 4) explicitly demands this - the scoping accepted the adjusted-HR figures at face value rather than testing them.",
+   "The checklist and perspectives conflate 'sitting time reduction' with 'health/productivity improvement' throughout - most RCT evidence gathered (claims 11,12,18,23) measures the intermediate behavioral outcome (minutes sat/stood) rather than the actual health/productivity endpoints the question asks about, and the scoping never forced a sub-question demanding RCTs report health/productivity outcomes directly rather than proxy behavior metrics.",
+   "The cost-benefit perspective produced zero claims in the final pool, indicating the search for that perspective was either not executed or filtered out entirely, but this was never flagged as a limitation anywhere in the findings - a silent coverage failure rather than an acknowledged gap.",
+   "The cost-benefit/procurement perspective was listed as searched but produced zero findings in the final output, indicating either the search was not actually executed or its results were dropped in synthesis - this is a silent process failure, not just a coverage gap.",
+   "The perspective set has no dedicated occupational-safety/harms specialist despite standing desk harms (venous issues, fatigue) being a checklist item; the 'Null-result skeptic' and 'Occupational health steelman' perspectives were tasked more broadly and neither surfaced quantified harm data, so the harms sub-question was structurally under-resourced by the panel design.",
+   "The perspective set never included a specifically medical/clinical outcomes reviewer for cardiometabolic markers (blood glucose, blood pressure) - all six perspectives cluster around sitting-time behavior, pain, productivity, and cost, so checklist item 2's specific markers were structurally unlikely to be surfaced by any searcher.",
+   "The premise embedded in checklist item 6 (that movement/behavior change rather than standing itself may be the active ingredient) was investigated only via one tiny, methodologically confounded pilot study (n=20) that itself conflates standing with treadmill walking - the scoping did not ensure a study existed that could actually isolate posture from movement, so this sub-question was scoped in a way that could not be properly answered by the available/searched literature.",
+   "The scoping treated 'standing desks improve health/productivity' and 'observational sitting-time associations' as parallel tracks to investigate separately (per items 1-4) but only weakly required a reconciliation step (item 5); as executed, the findings never actually cross-compare effect sizes, so the core question (RCT vs observational weighing) is left to the reader rather than answered by the research."
+  ],
+  "rationales": [
+   "The findings contain internal contradictions (Finding 1's 'consistently' vs Finding 3's null/negative RCT; Finding 3 mischaracterizing the smaller n=39 study as 'larger' than the n=74 study) that would actively mislead a reader about the strength and direction of RCT evidence. More importantly, several checklist items central to the question - pooled meta-analytic pain effect sizes with CIs, cardiometabolic RCT effect sizes, productivity effect-size synthesis, RCT-vs-observational quantitative r…",
+   "The findings contain factual distortions relative to their own cited claims (e.g., calling the 39-person Portuguese RCT 'larger' than the 74-person Japanese RCT, and stating pooled sitting-time reductions are from RCTs when the underlying Cochrane review pools mixed designs), and overgeneralize from single small studies to blanket claims about 'no RCT' isolating posture from movement. More importantly, several checklist items central to the question - pooled pain effect sizes with CIs, cardiomet…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "Studies have found that sit-to-stand workstation use can negatively affect fine motor functions such as mouse moving and mathematical problem solving due to additional body movements.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "why": "The claim states this as a direct finding (Studies have found that... use can negatively affect...) but the quote itself is citing a reference [29] for this statement—i.e., it's the paper reporting a claim from a prior cited study, not necessarily the paper's own finding. More importantly, the claim asserts this as an established fact about sit-to-stand workstation use generally, while the quote is phrased with the hedged, passive construction can be negatively influenced by additional body move…"
+  },
+  {
+   "claim": "Alternating between sitting and non-sitting at work was not associated with increased all-cause mortality risk compared with mostly non-sitting workers (HR 1.01, 95% CI 0.97-1.05), suggesting that reducing continuous sitting time (e.g., via a standing desk allowing posture alternation) may mitigate risk even without full elimination of sitting.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "why": "The quote only supports the factual statement that alternating sitters had no increased mortality risk vs mostly-nonsitting workers (HR 1.01, 95% CI 0.97-1.05). The claim under review adds an unsupported causal/interpretive leap: it reframes alternating sitting and nonsitting (an observational occupational exposure category, not a standing-desk intervention) as evidence that reducing continuous sitting time (e.g., via a standing desk allowing posture alternation) may mitigate risk. The quoted te…"
+  },
+  {
+   "claim": "The study is a 2023 posted-content record on SSRN concerning the usability of an intelligent sit-stand desk among office teleworkers, with no abstract or results available in the metadata.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://doi.org/10.2139/ssrn.4357015",
+   "why": "The claim states facts not present in the quote itself: the quote is just a citation record listing Journal: (unknown), Year: 2023, Type: posted-content, Cited by: 0, Authors: Patrick Boissy - it does not literally state no abstract or results available in the metadata. That phrase is the claim-writer's own inference/paraphrase added on top of the bare citation fields, not verbatim text from the source. The quote also never characterizes itself as posted-content record on SSRN concerning usabili…"
+  },
+  {
+   "claim": "There exists a 2024 study/article titled 'Standing desks are bad for your health', authored by Jack McNamara, arguing standing desks may be bad for health",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.64628/ab.yxvnh5vru",
+   "why": "The claim asserts specific bibliographic facts not licensed by the quote: it names an author Jack McNamara and a publication year 2024, and labels the piece a study/article. The supporting quote itself is only the headline text Standing desks are bad for your health – new study — it contains no author attribution, no date, and no indication of what type of publication this is (news article vs. peer-reviewed study vs. blog post). The quote merely references that a new study exists somewhere, but …"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://www.sciencedirect.com/science/article/abs/pii/S0003687019300304",
+   "quality": "unreliable",
+   "perspective": "RCT meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8582919/",
+   "quality": "primary",
+   "perspective": "RCT meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s12889-016-3271-y",
+   "quality": "primary",
+   "perspective": "RCT meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/386383365_The_Impact_of_Sit-Stand_Desks_on_Full-Day_and_Work-Based_Sedentary_Behavior_of_Office_Workers_A_Systematic_Review",
+   "quality": "unreliable",
+   "perspective": "RCT meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T4"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "quality": "primary",
+   "perspective": "RCT meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9201743/",
+   "quality": "primary",
+   "perspective": "Observational-cohort auditor",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10799265/",
+   "quality": "primary",
+   "perspective": "Observational-cohort auditor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.jacc.org/doi/10.1016/j.jacc.2019.02.031",
+   "quality": "unreliable",
+   "perspective": "Observational-cohort auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.ahajournals.org/doi/10.1161/CIRCOUTCOMES.124.011644?client=ios&client_new=au_revamp",
+   "quality": "unreliable",
+   "perspective": "Observational-cohort auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s12966-014-0127-7",
+   "quality": "primary",
+   "perspective": "Occupational health steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quality": "primary",
+   "perspective": "Occupational health steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.tandfonline.com/doi/abs/10.1080/21577323.2016.1183534",
+   "quality": "unreliable",
+   "perspective": "Occupational health steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.cdc.gov/pcd/issues/2012/11_0323.htm",
+   "quality": "unreliable",
+   "perspective": "Occupational health steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://doi.org/10.1007/s13142-017-0500-6",
+   "quality": "unreliable",
+   "perspective": "Null-result skeptic / replication hunter",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.jvsv.2016.03.002",
+   "quality": "primary",
+   "perspective": "Null-result skeptic / replication hunter",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/techpos.2009.5412066",
+   "quality": "unreliable",
+   "perspective": "Null-result skeptic / replication hunter",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12073017",
+   "quality": "unreliable",
+   "perspective": "Pooled MSK pain effect size",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12164069",
+   "quality": "unreliable",
+   "perspective": "Pooled MSK pain effect size",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12063225",
+   "quality": "unreliable",
+   "perspective": "Pooled MSK pain effect size",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13147922",
+   "quality": "unreliable",
+   "perspective": "Pooled MSK pain effect size",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13152228",
+   "quality": "unreliable",
+   "perspective": "Pooled MSK pain effect size",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1161/circulationaha.125.076777",
+   "quality": "secondary",
+   "perspective": "Cardiometabolic RCT effect sizes",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quality": "primary",
+   "perspective": "Cardiometabolic RCT effect sizes",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.2139/ssrn.4357015",
+   "quality": "unreliable",
+   "perspective": "Cardiometabolic RCT effect sizes",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.30707/etd2017.dohm.h",
+   "quality": "unreliable",
+   "perspective": "Isolating posture from movement",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.3233/wor-211274",
+   "quality": "primary",
+   "perspective": "Isolating posture from movement",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.ypmed.2014.11.011",
+   "quality": "secondary",
+   "perspective": "rescue8",
+   "wave": "rescue",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1123/jpah.2016-0712",
+   "quality": "primary",
+   "perspective": "rescue8",
+   "wave": "rescue",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.37099/mtu.dc.etdr/582",
+   "quality": "primary",
+   "perspective": "rescue8",
+   "wave": "rescue",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.64628/ab.yxvnh5vru",
+   "quality": "unreliable",
+   "perspective": "rescue8",
+   "wave": "rescue",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1201/9781315374000-18",
+   "quality": "unreliable",
+   "perspective": "rescue8",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T?"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 9,
+  "sourcesFetched": 31,
+  "claimsExtracted": 56,
+  "urlDupes": 3,
+  "budgetDropped": 17,
+  "claimsDroppedBeforeVerify": 19,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 88,
+    "ok": 88,
+    "fail": 0,
+    "results": 32
+   },
+   "ddg-html": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 84,
+    "ok": 0,
+    "fail": 84,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 84,
+    "ok": 84,
+    "fail": 0,
+    "results": 46
+   },
+   "crossref": {
+    "attempts": 81,
+    "ok": 74,
+    "fail": 7,
+    "results": 391
+   },
+   "europepmc": {
+    "attempts": 7,
+    "ok": 7,
+    "fail": 0,
+    "results": 24
+   },
+   "openalex": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "results": 12
+   },
+   "pubmed": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 1
+   },
+   "arxiv": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 10
+   }
+  },
+  "sourceTiers": {
+   "T2": 17,
+   "T1": 6,
+   "T4": 1,
+   "T3": 2,
+   "T?": 5
+  },
+  "agentCalls": 308,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 643994,
+  "outputTokens": 162594,
+  "wallSeconds": 1366.0,
+  "claimsVerified": 36,
+  "lensesPerClaim": 3,
+  "confirmed": 32,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}

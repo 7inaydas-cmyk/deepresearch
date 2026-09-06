@@ -1,0 +1,7 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: How much water does a single ChatGPT or comparable large-language-model query actually consume? Trace the wide
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Does the peer-reviewed/original source behind the viral '500 ml (one bottle of water) per ChatGPT qu
+Assumptions stated: 5 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Primary-source hunter | Steelman defender | Skeptical debunker | Cost/technical analyst | Model-diversity comparator | Historian/timeline tracer
