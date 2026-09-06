@@ -1221,20 +1221,25 @@ def main():
     if a.bg and os.environ.get("DR_BG_CHILD") != "1":
         out = a.out or "/tmp/deepresearch.json"
         logp = (out[:-5] if out.endswith(".json") else out) + ".log"
-        argv = [sys.executable, os.path.abspath(__file__)] + [x for x in sys.argv[1:] if x != "--bg"]
+        # Re-exec as a MODULE, not as a file. Running engine.py directly breaks the
+        # package-relative imports (`from . import search`) — caught when the
+        # documented `python3 -m deepresearch ... --bg` invocation was run for real.
+        pkg_parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        argv = [sys.executable, "-m", "deepresearch"] + [x for x in sys.argv[1:] if x != "--bg"]
         if not a.out:
             argv += ["--out", out]
         env = dict(os.environ, DR_BG_CHILD="1")
         with open(logp, "wb") as lf:
             proc = subprocess.Popen(argv, stdout=lf, stderr=lf, stdin=subprocess.DEVNULL,
-                                    start_new_session=True, env=env, close_fds=True)
+                                    start_new_session=True, env=env, close_fds=True,
+                                    cwd=pkg_parent)
         print(json.dumps({
             "status": "launched in background",
             "pid": proc.pid,
             "log": logp,
             "report": out,
             "poll": "tail -15 " + logp,
-            "done_when": "pgrep -f 'deepresearch.py --question' returns nothing",
+            "done_when": "pgrep -f 'deepresearch --question' returns nothing",
             "expect": {"quick": "2-7 min", "standard": "6-10 min", "exhaustive": "15-25 min"},
         }, indent=1))
         return

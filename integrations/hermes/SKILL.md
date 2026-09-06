@@ -39,57 +39,65 @@ answer. This gets you an answer that has survived being attacked.
 
 ## How to run it
 
-**Always pass `--bg`.** The script detaches itself and returns immediately with the paths
-to watch. This is not optional hygiene: Hermes kills terminal commands at
-`terminal.timeout` (180s here), a standard run takes 6-10 minutes, and a quick run has been
-measured at 415s when search backends are degraded. Without `--bg` the command is killed
-mid-flight and the user gets nothing.
+This skill runs the **shared engine** from the deepresearch repo, checked out at
+`/opt/data/deepresearch-repo`. Hermes and Claude Code now run the same code, on purpose:
+when they were separate copies they drifted five features apart.
 
-**Step 1 - tell the user roughly how long it will take, then launch:**
+**Always pass `--bg`.** The engine detaches itself and returns the paths to watch. This is
+not optional: Hermes kills terminal commands at `terminal.timeout` (180s here) and a
+standard run takes 6-10 minutes, so a foreground run is killed mid-flight.
+
+**Step 1 - say roughly how long it will take, then launch:**
 
 ```bash
-mkdir -p /opt/data/state/dr
-cd /opt/data/skills/research/deepresearch && python3 deepresearch.py \
+mkdir -p /opt/data/research/raw/dr
+cd /opt/data/deepresearch-repo && python3 -m deepresearch \
   --question "<the fully-specified question>" \
   --depth standard \
-  --out /opt/data/state/dr/run.json --bg
+  --out /opt/data/research/raw/dr/run.json --bg
 ```
 
-It prints JSON immediately - `pid`, `log`, `report`, `poll`, and an `expect` duration.
+It prints JSON immediately: `pid`, `log`, `report`, `poll`, and an `expect` duration.
 Use a distinct `--out` filename per run if two could overlap.
 
-**Step 2 - poll.** Each call returns instantly, well inside the timeout. Relay the
-interesting lines as they appear (perspectives chosen, claims killed, RESCUE firing,
-citation accuracy) so a long run does not look like a hang:
+**Step 2 - poll.** Returns instantly, well inside the timeout. Relay the interesting lines
+as they appear (perspectives chosen, claims killed, RESCUE firing, citation accuracy) so a
+long run does not look like a hang:
 
 ```bash
-tail -15 /opt/data/state/dr/run.log
+tail -15 /opt/data/research/raw/dr/run.log
 ```
 
 **Step 3 - when the process is gone, read the report:**
 
 ```bash
-pgrep -f "deepresearch.py --question" || echo DONE
-python3 -c "import json;d=json.load(open('/opt/data/state/dr/run.json'));print(d['summary'])"
+pgrep -f "deepresearch --question" || echo DONE
+python3 -c "import json;d=json.load(open('/opt/data/research/raw/dr/run.json'));print(d['answerFirst'])"
 ```
 
-The `--out` file holds the full report. Read it for `findings`, `refuted`, `citationAudit`,
-`processCritique`, `coverage` and `rescue`.
+Read the JSON for `findings`, `refuted`, `citationAudit`, `processCritique`, `coverage`,
+`rescue` and `scopeContract`.
 
-Run `--selftest` first if anything looks broken - it checks the OAuth credential, keyless
-search (naming which backends are alive), page fetch, a model round-trip and parallel
-agents in about 20 seconds, comfortably inside the timeout.
+Run the selftest first if anything looks broken - it checks the credential, keyless search
+(naming which backends are alive), page fetch, a model round-trip and parallel agents in
+about 30 seconds:
+
+```bash
+cd /opt/data/deepresearch-repo && python3 -m deepresearch --selftest
+```
+
+To update the engine: `cd /opt/data/deepresearch-repo && git pull`.
 
 ### Timing to quote to the user
 
 | depth | healthy search | degraded search | agents |
 |---|---|---|---|
-| `quick` | ~2-3 min | up to ~7 min | ~30-45 |
-| `standard` | ~6-8 min | up to ~10 min | ~145 |
-| `exhaustive` | ~15-20 min | up to ~25 min | ~250 |
+| `quick` | ~2-3 min | up to ~9 min | ~30-45 |
+| `standard` | ~6-10 min | up to ~12 min | ~145-160 |
+| `exhaustive` | ~15-25 min | longer | ~250 |
 
-Wall time is dominated by search latency, not by agent count: when the general web backends
-are rate-limited every query walks the whole failover chain first.
+Wall time is dominated by search latency, not agent count: when the general web backends
+are rate-limited, every query walks the whole failover chain first.
 
 ### Sharpen the question before running
 

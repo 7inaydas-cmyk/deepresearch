@@ -242,5 +242,13 @@ r12 = run({"kill_all": True}, depth="quick")
 ok(r12["stats"]["confirmed"] == 0 and "refuted" in r12["summary"].lower(),
    "everything-killed is reported as a real result, not an error")
 
+print("\n-- --bg self-detach --")
+import inspect as _insp
+_src = _insp.getsource(dr.main)
+ok('"-m", "deepresearch"' in _src,
+   "--bg re-execs as a MODULE: running engine.py as a file breaks `from . import search`")
+ok("cwd=pkg_parent" in _src, "and from the package parent, so the import resolves")
+ok("deepresearch.py --question" not in _src, "the done_when hint matches the real process name")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
