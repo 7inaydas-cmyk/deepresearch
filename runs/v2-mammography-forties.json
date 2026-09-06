@@ -610,5 +610,22 @@
   "confirmed": 30,
   "killed": 6,
   "afterSynthesis": 0
+ },
+ "calibration": {
+  "n": 30,
+  "rawAgreement": 0.933,
+  "cohenKappa": 0.7115,
+  "scottPi": 0.7115,
+  "verdictFlips": 2,
+  "gateVerdict": "calibrated",
+  "recoveredFrom": "the run log — synthesis failed and the fallback return path dropped this block before the report was written. Fixed; the per-lens table and confusion matrix were lost with it and are NOT recoverable, so this verdict cannot be checked against the per-lens precondition.",
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)"
+ },
+ "droppedSample": {
+  "sampled": 10,
+  "survived": 9,
+  "survivalRate": 0.9,
+  "keptClaimSurvivalRate": 0.87,
+  "recoveredFrom": "the run log, same cause as `calibration` above"
  }
 }

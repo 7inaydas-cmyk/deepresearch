@@ -207,13 +207,50 @@ rather than take the bullet on trust:
 
 ## The measured numbers, and what they do not prove
 
+### The central claim, measured
+
+The whole tool rests on one assertion: that a 2-of-3 adversarial panel is a filter rather than a coin. It was asserted for the tool's entire life and never tested. Six runs at `--calibrate 30`, against a gate whose thresholds were fixed before the instrument was built:
+
+| Run | Kill rate | κ | n | Gate verdict |
+|---|---|---|---|---|
+| minimum-wage-employment | 37% | **0.86** | 30 | **calibrated** |
+| mammography-forties | 17% | **0.71** | 30 | **calibrated** \* |
+| standing-desks | 11% | 0.53 | 30 | usable but noisy |
+| tdd-defect-rates | 30% | 1.00 | 27 | **underpowered** |
+| ai-water-per-query | 52% | 0.79 | 21 | **underpowered** |
+| nudge-publication-bias | 17% | 0.75 | 12 | **underpowered** |
+
+\* *its per-lens table was lost to a bug in the synthesis-failure path, so this verdict cannot be re-checked against the per-lens precondition. Recovered from the run log; the bug is fixed.*
+
+**Read the bottom three rows first.** All three score above the 0.6 "calibrated" threshold, and all three are rejected — the middle one on a **perfect κ = 1.00**. That run's three lenses disagreed on 74% of claims while the aggregate repeated flawlessly, and one lens was unmeasurable. A 2-of-3 vote can turn unstable raters into a stable-looking verdict, and the gate exists to notice.
+
+So: **two runs pass, one lands in the middle band, three cannot be adjudicated.** That is the honest state. It is a necessary condition met twice, not a settled question.
+
+> **Pre-registration and its one amendment.** Bands fixed 2026-09-06 before the instrument existed: κ ≥ 0.6 calibrated, 0.4–0.6 usable but noisy, < 0.4 noise. Amended the same day, before these runs produced any numbers, to add two preconditions: **n ≥ 30**, and **every lens individually measurable at κ ≥ 0.4**. The amendment can only make the gate stricter — it cannot promote a verdict, which is what stops it being a quiet renegotiation. Both the original and the amendment are in [`deepresearch/calibration.py`](deepresearch/calibration.py).
+
+**Reliability is not validity.** κ = 0.86 says the panel repeats itself. It does not say the panel is right, and the two come apart badly for LLM judges — a 26-model panel has been recorded at Krippendorff α 0.77 while being systematically wrong. The false-kill rate remains unmeasured ([#12](https://github.com/7inaydas-cmyk/deepresearch/issues/12)).
+
+### What the discarded evidence does
+
+The budget caps verification, so most extracted claims are never checked. `--sample-dropped N` verifies some of them anyway. Five samples so far:
+
+| Run | Dropped claims that survived | Kept claims that survived |
+|---|---|---|
+| minimum-wage-employment | 80% | 63% |
+| mammography-forties | 90% | 87% |
+| standing-desks | 80% | 90% |
+| (two earlier, n=3 and n=6) | 33%, 100% | 83%, 83% |
+
+**In four of five samples the discarded claims verified as well as or better than the kept ones.** The ranking is not selecting for verifiability. That is the unfavourable answer, it is the one the data gives, and it is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9).
+
 > **Correction, 2026-09-06.** This table previously read `37%, 50%, 53%, 54%, 60%, 71%` for the kill rate and `86.7%, 88.1%, 90%` for citation accuracy. **50%, 53%, 60% and 90% appear in no run, under any definition of the denominator.** The published range also dropped the four lowest kill rates — 7%, 17%, 20%, 27% — which are the unflattering ones, the runs where the panel barely killed anything. Corrected below against every recorded run, and `tools/compare_regimes.py` now regenerates this table from `runs/` so it cannot drift again. A tool that exists to catch unsupported numbers had unsupported numbers in its own README; that is the least defensible place for them.
 
-| Measurement | Value | Denominator |
+| Measurement | Superseded regime | Current regime |
 |---|---|---|
-| Claims killed by the panel | 7%, 17%, 20%, 27%, 37%, 54%, 71%, 71% | 8 runs, 11–42 claims each, Sept 2026 |
-| Blind citation accuracy | 82.8%, 85.2%, 85.7%, 86.7%, 88.1%, 96.4% | full verification pool, 11–42 claims |
-| Claims demoted *after* passing the panel | **1, across all 8 runs** | same runs |
+| Claims killed by the panel | 7%–71% (8 runs) | **11%–52%** (6 runs) |
+| Blind citation accuracy | 82.8%–100% (8 runs) | **38.1%–90.0%** (6 runs) |
+| Claims demoted *after* passing the panel | 1, across all 8 runs | **4, across 6 runs** |
+| Runs where the general web returned anything | 2 of 8 | **5 of 6** |
 
 Regenerate any time:
 
@@ -221,13 +258,15 @@ Regenerate any time:
 python3 tools/compare_regimes.py
 ```
 
-**The kill rate spans 7% to 71% on the same kind of question.** That is a tenfold spread, it is the strongest argument against this tool, and hiding the low end would have made the panel look far more like a calibrated filter than the data supports. Two of the eight are the *same question* at 7% and 37%.
+**The kill-rate spread narrowed but is still wide** — 11% to 52%, against 7% to 71% before. It is the strongest argument against this tool and the low end is shown on purpose: hiding it would make the panel look far more like a calibrated filter than the data supports.
 
-**The demotion path has fired once, ever.** `demotedBySurvivingPanel` is the whole point of the blind citation audit — a claim the panel passed that its own source turns out not to support — and across eight recorded runs it has removed exactly one claim. Either the panel rarely lets a badly-cited claim through, or the audit rarely catches one. The injected-defect probes below say it is partly the second: three of five fabrications came back `partial`, and `partial` does not demote.
+**Citation accuracy went DOWN, and that is the audit working.** The old range topped out at 100% because sources were scholarly stubs that the extractor and auditor read identically. On a real corpus the auditor stops agreeing with the extractor and the floor drops to 38.1%. A number that only looked good because nothing was being checked is worse than a bad number honestly obtained.
+
+**The demotion path went from 1 firing in 8 runs to 4 in 6** — for the same reason. It still under-fires: three of five injected fabrications came back `partial`, and `partial` does not demote. Check `citationPartials` before quoting any number or attribution.
 
 Earlier builds audited only the claims that *survived* the panel and unsurprisingly scored 100% — twice, both still in `runs/`. That was a rubber stamp: the weak claims were already dead before the auditor ran. The percentages above exclude those two and come from the current build, which audits the **whole** verification pool.
 
-Eight runs is a small sample and the 7–71% spread is enormous. These say the filter removes a variable amount; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done. Every number above was also measured on a pipeline running **scholarly-only search** — see `runs/README.md`; a full re-measurement under the current setup is in progress.
+Six runs is a small sample and the 11–52% spread is wide. These say the filter removes a variable amount; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done.
 
 ### Injected defects, which are the only ground truth here
 
