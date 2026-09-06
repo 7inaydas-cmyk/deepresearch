@@ -77,6 +77,37 @@ Two changes, both shipped here:
 If you see this, wait a few minutes or enable more engines. Nothing is wrong with the
 container.
 
+## Check what your engines actually return
+
+`qwant` is **disabled** in the shipped settings, and the reason is worth stating.
+
+Enabled on this instance, every single Qwant result was **fabricated**: a nonsense
+domain with a gibberish title, interleaved one-for-one with Bing's genuine results, so
+half of every result page was invented.
+
+```
+bing     https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/   "No evidence for nudging after adjusting…"
+qwant    http://dawedep.hu/cunfone                           "Uno nudge publication bias effect"
+bing     https://www.pnas.org/doi/10.1073/pnas.2200300119    "How effective is nudging? A quantitative…"
+qwant    http://ug.pn/jikuvioha                              "Bo cedlamceh nudge publication bias"
+```
+
+The pipeline did not cite any of it — the source picker rejected them — but it cost real
+coverage: **11 of 15 pick calls in one run returned nothing**, and that run finished with
+12 verified claims instead of 30. It reads in the logs exactly like the model being
+fussy, which is why it took reading the raw SearXNG response to find.
+
+A search engine injecting invented sources into a tool built for factual correctness is
+the worst failure available here, and unknown hosts default to the *citable* T3 tier — so
+had the picker been more permissive, fabricated domains would have entered the evidence
+pool.
+
+**If you enable engines beyond the shipped set, look at their raw output first:**
+
+```bash
+curl -s "http://127.0.0.1:8888/search?format=json&q=any+question"   | python3 -c "import json,sys; [print(','.join(r.get('engines') or []), r['url'][:70]) for r in json.load(sys.stdin)['results'][:20]]"
+```
+
 ## Security note
 
 This compose file binds to `127.0.0.1` and turns the rate limiter **off**. Both are

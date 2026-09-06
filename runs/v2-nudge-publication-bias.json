@@ -1,0 +1,619 @@
+{
+ "question": "Do behavioural 'nudge' interventions produce meaningful real-world effect sizes once publication bias is corrected for? Weigh the Mertens et al. (2022) meta-analysis against the Maier et al. (2022) and Szaszi et al. re-analyses, and state what the corrected effect size actually is.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No primary data on Mertens et al.'s original pooled effect size, CI, or their own bias-correction method (they claim to have applied trim-and-fill or similar); only secondary mentions of the controversy exist."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Wikipedia paraphrase says Maier et al. found 'no evidence of effect' but no actual point estimate/CI or which specific methods (PET-PEESE, selection model, p-uniform*) produced this is given."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "unanswered",
+   "note": "No information at all on Szaszi et al.'s methods or numeric estimate."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "unanswered",
+   "note": "No comparison across correction methods' convergence/divergence has been gathered."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No evidence yet of a Mertens et al. rebuttal or response paper."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "One secondary claim that effectiveness varies by nudge type (defaults strong, others weak) but no quantitative breakdown or source-checked figures."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "One secondary reference to a large-scale nudge-unit meta-analysis (23M individuals) showing weaker but real effects, but not clearly identified as Milkman et al. or another megastudy; no effect size given."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No discussion of what d-threshold counts as 'meaningful' or its defensibility."
+  }
+ ],
+ "contradictions": [
+  "A Wikipedia-sourced paraphrase states Maier et al. found 'no evidence of effect' after correcting Mertens et al.'s publication bias, which is in apparent tension with the independent Milkman et al. field megastudy showing a real (2.0pp/6.8%) vaccination-nudge effect — however these may not be contradictory since they address different evidence bases (a meta-analytic synthesis of the published nudge literature vs. one specific new field trial not necessarily included in either meta-analysis).",
+  "A claim that a 23-million-person nudge-unit meta-analysis found nudges 'effective but weaker' than published estimates was explicitly investigated and REFUTED on audit, meaning it cannot be used to reconcile the Mertens-vs-Maier dispute despite initially appearing to bridge the gap.",
+  "Mertens et al. (2022) reportedly find nudges have a meaningful pooled effect, while Maier et al. (2022) claim 'no evidence that nudging has any effect' after bias correction — these two positions directly conflict and the checklist needs the actual numeric estimates to see whether this is a real disagreement or a rhetorical overstatement.",
+  "The Wikipedia-sourced claim that a large real-world nudge-unit meta-analysis (23M people) still found nudges 'effective but weaker' sits in tension with Maier et al.'s claim of 'no evidence of effect' — unclear if these are describing the same evidence base or different literatures (lab/field vs. published meta-analytic corrections)."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "'Nudge interventions' refers to the class of behavioural public policy/choice-architecture interventions covered by the nudge literature broadly (defaults, framing, social norms, reminders, simplification), not any single narrow nudge type",
+   "'Real-world effect sizes' means effects measured in field settings on actual behaviour (not just lab/survey intentions), and 'meaningful' is operationalized against benchmarks used in the literature (e.g., Cohen's d ~0.2 as 'small' vs the original meta-analytic claim of d ~0.43)",
+   "Time horizon is the published record through the 2022 exchange (Mertens et al. 2022 PNAS meta-analysis, Maier et al. 2022 PNAS specification-curve/PET-PEESE re-analysis, and Szaszi et al. commentary/re-analysis), plus any directly relevant follow-up corrections or replies through the search date",
+   "Publication bias correction refers specifically to the statistical methods used in these papers (trim-and-fill, p-curve, PET-PEESE, selection models) rather than a fresh independent bias correction",
+   "No geographic restriction; the underlying studies are predominantly US/Europe-based lab and field experiments, which is treated as a scope limitation rather than something to control for",
+   "The reader wants a single best-estimate corrected effect size (with uncertainty range) rather than a qualitative verdict only"
+  ],
+  "decisionAtStake": "Whether a reader (e.g., a policymaker, behavioural science practitioner, or researcher deciding on funding/adoption of nudge-based interventions vs. more costly structural/regulatory alternatives) should treat 'nudges' as a reliably impactful, cost-effective tool at the effect sizes originally advertised (~d=0.43, or ~2x odds ratio) or should substantially discount expected impact (toward d~0.1-0.2 or lower) when planning interventions, setting expectations, or allocating research/implementation budgets.",
+  "keyQuestion": "After applying the publication-bias corrections proposed by Mertens et al. (2022), Maier et al. (2022), and Szaszi et al., does the nudge literature's meta-analytic effect size remain practically meaningful (roughly d≥0.2 or equivalent), or does it shrink to a small/negligible size that undermines claims of nudges as generally effective policy tools — and what is the actual corrected point estimate reported/derivable across these analyses?",
+  "whatWouldChangeTheAnswer": [
+   "If Maier et al.'s PET-PEESE/selection-model corrected estimate is shown to be substantially higher than commonly cited (e.g., closer to d=0.3-0.4 rather than near-zero), the 'nudges are debunked' conclusion would flip toward 'nudges remain meaningful but overstated'",
+   "If the corrected estimate varies drastically by nudge category (e.g., defaults and simplification retain large effects while social-norm nudges collapse to null), a single aggregate verdict would be wrong and the answer must be category-specific rather than a single number",
+   "If Szaszi et al.'s re-analysis of a specific sub-literature (e.g., in a particular domain) shows publication bias correction eliminates effects entirely in that domain but Mertens' broader corpus does not, domain heterogeneity would change the overall interpretation",
+   "If there is a documented author response/correction from Mertens et al. rebutting Maier et al.'s methodology (e.g., disputing PET-PEESE applicability to this literature) that is broadly accepted by the field, this would shift confidence away from the 'debunked' hypothesis back toward 'moderate effect survives'",
+   "If new evidence shows publication bias corrections themselves are unreliable for this specific literature structure (e.g., due to small-study heterogeneity confounding the correction methods), then no single 'corrected effect size' would be trustworthy and the answer becomes 'inconclusive, not zero'",
+   "If large-scale pre-registered field replications (e.g., mega-studies like the Mertens/Milkman megastudies) independently corroborate small-but-nonzero real-world effects, this would empirically ground the theoretical correction and resolve ambiguity in favor of 'small but real'"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Nudges retain a meaningful effect after correction: bias-adjusted effect size is still practically relevant (roughly d≈0.2-0.3 or equivalent OR~1.3-1.5), smaller than originally claimed (d=0.43) but not negligible.",
+    "killCriterion": "Maier et al. and/or Szaszi et al. report corrected point estimates that are statistically indistinguishable from zero or below commonly-used 'small effect' thresholds (e.g., d<0.1) across most nudge categories, with Mertens et al. not credibly rebutting this."
+   },
+   {
+    "hypothesis": "Nudges are effectively debunked: publication-bias-corrected effect sizes collapse to near-zero or negligible (d<0.1), implying original meta-analytic estimates were driven predominantly by selective publication and researcher degrees of freedom.",
+    "killCriterion": "Independent large-scale field replications (megastudies) or Mertens et al.'s rebuttal show robust, real-world corrected effects meaningfully above zero (e.g., d>0.15-0.2) that are not explained away by the same correction methods applied by Maier/Szaszi."
+   },
+   {
+    "hypothesis": "The true answer is heterogeneous/category-dependent: some nudge types (e.g., defaults) retain robust corrected effects while others (e.g., social norms, framing) shrink to null, making a single aggregate effect size misleading.",
+    "killCriterion": "If corrected effects are found to be uniformly small (or uniformly moderate) across nudge categories in Maier/Szaszi's subgroup analyses, with no statistically/practically significant heterogeneity by intervention type."
+   },
+   {
+    "hypothesis": "The dispute is methodologically unresolved: different bias-correction techniques (PET-PEESE vs. selection models vs. p-curve) yield materially different corrected estimates for this literature, so no single 'the corrected effect size' exists — the honest answer is a range reflecting genuine methodological uncertainty rather than a point estimate.",
+    "killCriterion": "If the major correction methods (Mertens' selection models, Maier's PET-PEESE, Szaszi's approach) converge on a similar corrected estimate (within ~0.1 SD of each other), indicating methodological choice does not drive the conclusion."
+   }
+  ]
+ },
+ "perspectives": [
+  {
+   "label": "Primary meta-analyst",
+   "lens": "An academic replicating the statistics: trusts only raw data and code, distrusts prose summaries of 'what the paper found'",
+   "query": "Mertens Kroese Mackie Karlsson 2022 nudge meta-analysis effect size d=0.43 publication bias"
+  },
+  {
+   "label": "Bias-correction skeptic (steelman of collapse)",
+   "lens": "A meta-science methodologist who distrusts underpowered nudge studies and wants to build the strongest case that corrected effects are near zero",
+   "query": "Maier Bartos Stanley 2022 nudge meta-analysis PET-PEESE selection model publication bias corrected effect size"
+  },
+  {
+   "label": "Independent re-analyst",
+   "lens": "A second replication-methods researcher (Szaszi et al.) who distrusts both the original authors' and Maier's single-method conclusions, wants convergence across techniques",
+   "query": "Szaszi nudge meta-analysis reanalysis publication bias correction robustness Mertens"
+  },
+  {
+   "label": "Rebuttal author / data auditor",
+   "lens": "Mertens et al. defending their own meta-analysis, distrusts PET-PEESE's applicability to heterogeneous small-sample literatures; treated as data auditor checking whether critics' methods are even valid here",
+   "query": "Mertens response reply Maier PET-PEESE nudge unit heterogeneity criticism 2022 2023"
+  },
+  {
+   "label": "Field megastudy practitioner",
+   "lens": "An applied behavioural-insights practitioner (e.g., running a nudge unit) who distrusts lab/online meta-analytic estimates and wants real-world field effect sizes independent of the correction debate",
+   "query": "nudge megastudy field experiment effect size real-world Milkman gym savings default policy 2021 2022"
+  },
+  {
+   "label": "Category/heterogeneity constructor",
+   "lens": "A subgroup-analysis-focused researcher constructing the answer bottom-up from category-specific data (defaults vs. social norms vs. framing), distrusts single pooled point estimates as masking heterogeneity",
+   "query": "nudge type default social norm framing effect size heterogeneity subgroup meta-analysis moderator publication bias"
+  }
+ ],
+ "answerFirst": "The evidence gathered does NOT actually answer the core question. The panel could not retrieve Mertens et al.'s original pooled effect size, Maier et al.'s or Szaszi et al.'s corrected point estimates, or any specific correction method (PET-PEESE, selection models, p-uniform*) — only a single Wikipedia paraphrase that Maier et al. found \"no evidence that nudging has any effect\" after correcting for Mertens' publication bias. No numeric corrected effect size can be stated with confidence from what was verified. Separately, an independent large field megastudy (Milkman et al., N=689,693) found a small but real 2.0-percentage-point / 6.8% relative increase in vaccination from text nudges — this is field evidence of a non-zero real-world effect, but it is a different literature (a single behaviour/domain) from the meta-analytic publication-bias dispute and cannot be used to numerically resolve it.",
+ "baseRate": "No outside-view base rate for \"typical publication-bias shrinkage in behavioural-science meta-analyses\" was retrieved by this panel. Broadly in psychology, bias-corrected meta-analytic effects often shrink by 50-90% relative to naive pooled estimates (a commonly cited outside-view pattern in the replication-crisis literature), which is consistent with Maier et al.'s \"no evidence of effect\" claim, but this base rate was not itself sourced in the confirmed claims and should be treated as background context, not evidence.",
+ "findings": [
+  {
+   "claim": "Maier et al. (2022) concluded that after correcting for the publication bias identified by Mertens et al. (2021/2022), there is no evidence that nudging has any effect.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Nudge_theory"
+   ],
+   "evidence": "Wikipedia states near-verbatim: 'Maier et al. wrote that, after correcting the publication bias found by Mertens et al. (2021), there is no evidence that nudging has any effect.'",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (near-verbatim match) — but this is a single T2 secondary (Wikipedia) paraphrase of Maier et al.'s conclusion, not a primary-source quote of their actual numeric point estimate or CI. No independent second source corroborates it, and no specific correction method or effect-size number is given.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "No confirmed source in this research provides Mertens et al.'s original pooled effect size/CI, their bias-correction method, or Maier/Szaszi's actual corrected point estimates and methods (PET-PEESE, selection models, p-uniform*, etc.).",
+   "confidence": "low",
+   "sources": [],
+   "evidence": "Coverage checklist marks these sub-questions explicitly 'unanswered' or only 'partial' with no numeric data retrieved.",
+   "sourceTier": "T4",
+   "factInferenceAssumption": "assumption",
+   "citationCheck": "not applicable — this is an absence-of-evidence finding, not a sourced claim. Flagged so the reader does not assume a number exists when it does not.",
+   "vote": "n/a"
+  },
+  {
+   "claim": "An independent large field megastudy (Milkman et al., N=689,693 Walmart pharmacy patients, 22 text-nudge arms vs. business-as-usual control) found reminder texts increased flu vaccination rates by an average of 2.0 percentage points (6.8% relative increase) over a 3-month follow-up, published in PNAS Feb 1, 2022.",
+   "confidence": "high",
+   "sources": [
+    "https://www.gsb.stanford.edu/faculty-research/publications/680000-person-megastudy-nudges-encourage-vaccination-pharmacies",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/"
+   ],
+   "evidence": "Direct quote: 'We found that the reminder texts that we tested increased pharmacy vaccination rates by an average of 2.0 percentage points, or 6.8%, over a 3-mo follow-up period.'",
+   "sourceTier": "T1/T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — verbatim match on sample size, design, and effect size across two independent audits.",
+   "vote": "3-0"
+  },
+  {
+   "claim": "This megastudy demonstrates that at least some nudge interventions (text reminders in a single health-behaviour domain) produce small but statistically detectable real-world effects when tested in a highly-powered field setting, and the best-performing arm was not predicted in advance by experts or laypeople.",
+   "confidence": "high",
+   "sources": [
+    "https://www.gsb.stanford.edu/faculty-research/publications/680000-person-megastudy-nudges-encourage-vaccination-pharmacies"
+   ],
+   "evidence": "'The top performing intervention included two texts delivered three days apart... Neither experts nor lay people anticipated that this would be the best-performing treatment, underscoring the value of simultaneously testing many different nudges in a highly powered megastudy.'",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — matches statement closely, no added scope.",
+   "vote": "3-0"
+  },
+  {
+   "claim": "Some researchers argue nudge effectiveness is highly heterogeneous by technique (e.g., default effects strong, others near-null) and that research should shift from average effects to studying moderators; others argue personalized nudging (based on individual differences) outperforms one-size-fits-all approaches.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Nudge_theory"
+   ],
+   "evidence": "'Skeptics believe some nudges (e.g. default effect) can be highly effective while others have little to no effect... Implementations of personalized nudging (based on individual differences) appear to be more effective.'",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — but rests solely on a T2 secondary aggregator (Wikipedia), no primary Maier/Szaszi subgroup data retrieved to quantify this heterogeneity.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "A claim that a large real-world nudge-unit meta-analysis of 23 million individuals found nudges 'effective but weaker' was investigated and REFUTED (killed) upon audit — it should not be used as evidence.",
+   "confidence": "low",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Nudge_theory"
+   ],
+   "evidence": "Listed under Refuted claims: killed by support+counter+provenance check.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "unsupported/refuted — explicitly killed; included here only for transparency, not as evidence for any hypothesis.",
+   "vote": "n/a"
+  }
+ ],
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Nudges retain a meaningful effect after correction (d≈0.2-0.3, OR~1.3-1.5), smaller than d=0.43 but not negligible.",
+   "verdict": "killed",
+   "reasoning": "The only confirmed claim bearing directly on Maier et al.'s corrected estimate states they found 'no evidence that nudging has any effect' after correcting for Mertens' publication bias — this directly matches H1's own kill criterion (corrected estimates statistically indistinguishable from zero). No Mertens rebuttal was found to contest this. However, this rests on a single T2 paraphrase, not a primary numeric estimate, so the kill is evidentially thin.",
+   "claimsCited": [
+    2
+   ]
+  },
+  {
+   "hypothesis": "H2: Nudges are effectively debunked — corrected effects collapse to near-zero (d<0.1) across the board.",
+   "verdict": "surviving",
+   "reasoning": "Consistent with claim [2] (Maier et al.: 'no evidence of effect'), and the kill criterion (independent field megastudies showing robust d>0.15-0.2 effects not explained by the same correction methods) is not triggered — the Milkman et al. megastudy [8,9] shows a real but small effect (2.0pp/6.8%, not converted to Cohen's d here) in a single narrow domain (vaccination text reminders), which is a different literature from the meta-analytic publication-bias correction and does not use Maier/Szaszi's correction methods, so it cannot rebut H2 on its own terms. Surviving but weakly supported — no primary numeric Maier/Szaszi estimate was actually verified.",
+   "claimsCited": [
+    2,
+    8
+   ]
+  },
+  {
+   "hypothesis": "H3: Corrected effects are heterogeneous/category-dependent (defaults robust, others null).",
+   "verdict": "untested",
+   "reasoning": "Claim [3]/[5] show that 'some researchers argue' effectiveness varies by nudge type and call for moderator-focused research, but this is a general theoretical/skeptic position from a secondary source, not a quantitative subgroup finding from Maier or Szaszi's re-analyses. No confirmed claim reports actual subgroup corrected effect sizes, so H3 cannot be confirmed or killed.",
+   "claimsCited": [
+    3,
+    5
+   ]
+  },
+  {
+   "hypothesis": "H4: The dispute is methodologically unresolved — different correction methods yield materially different estimates, so no single 'corrected effect size' exists.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim reports the specific numeric outputs of Mertens' selection models, Maier's PET-PEESE, or Szaszi's method, so convergence or divergence between methods cannot be assessed from the evidence gathered. This is the most significant coverage gap in the entire research run.",
+   "claimsCited": []
+  }
+ ],
+ "strongestArgumentAgainst": "See strongestArgumentAgainst field above.",
+ "hingeNumber": {
+  "value": "Maier et al.'s actual corrected point estimate and CI (unknown — not retrieved)",
+  "why": "The entire question hinges on whether the bias-corrected pooled effect is statistically/practically indistinguishable from zero (supporting H2) or small-but-real (supporting H1), and this exact number was never retrieved by the research panel — only a qualitative paraphrase ('no evidence of effect') exists.",
+  "source": "Not found; closest proxy is Wikipedia's paraphrase of Maier et al. (2022), sourced from https://en.wikipedia.org/wiki/Nudge_theory",
+  "sensitivity": "If Maier et al.'s actual point estimate turns out to be, e.g., d=0.05 with CI crossing zero, this confirms H2 (debunked). If it is d=0.15-0.2 with CI excluding zero, this would flip the conclusion toward H1 (small-but-real). A 10-20% move in either direction around a near-zero estimate is enough to flip the qualitative verdict from 'null' to 'small but real' — this is a genuine coin-flip-sensitive number that was never actually verified."
+ },
+ "caveats": "This research run failed to answer the majority of the coverage checklist: no primary numeric data was retrieved for Mertens et al.'s original pooled effect size/CI or bias-correction method; no numeric point estimate or CI for Maier et al.'s corrected effect (only a Wikipedia paraphrase); and NOTHING was found on Szaszi et al.'s methodology or corrected estimate at all — the second re-analysis named in the question is entirely unaddressed by confirmed claims. No Mertens rebuttal was located. No comparison of correction-method convergence (PET-PEESE vs. selection models vs. p-curve) was gathered. Two claims were explicitly refuted during the audit (a claim about a 23-million-person nudge-unit meta-analysis, and an overlapping description of the Milkman megastudy's institutional framing) and are excluded from the findings above. Several supporting claims rest solely on Wikipedia (T2) with no independent primary-source corroboration of the Maier et al. conclusion specifically. The question of what effect-size threshold counts as 'practically meaningful' (d=0.1 vs 0.2 vs 0.3) was never addressed by any confirmed claim, so 'meaningful' is undefined in this synthesis. This is a live, actively contested methodological dispute (2021-2022 publications) and further rebuttals/re-analyses may have appeared since; treat this synthesis as time-sensitive and incomplete.",
+ "whatWouldChangeThisCall": [
+  "Retrieval of Mertens et al.'s (2022) actual primary-source pooled effect size, CI, and bias-correction method (currently entirely unverified).",
+  "Retrieval of Maier et al.'s (2022) primary-source numeric corrected point estimate/CI and specific method (PET-PEESE, selection model, or p-uniform*), rather than relying on a single Wikipedia paraphrase.",
+  "Retrieval of Szaszi et al.'s re-analysis methodology and numeric estimate, which is currently completely absent from the evidence base.",
+  "Discovery of a published Mertens et al. rebuttal defending their original estimate against Maier/Szaszi's corrections, which would reopen the dispute as genuinely unresolved.",
+  "A quantitative subgroup breakdown (by nudge category: defaults, social norms, framing, simplification) from Maier or Szaszi's corrected analyses, which would let H3 be properly tested instead of remaining untested."
+ ],
+ "summary": "Based on confirmed claims, the only direct evidence found on the meta-analytic dispute is a secondary (Wikipedia) paraphrase stating that Maier et al. (2022), after correcting for the publication bias Mertens et al. identified, found 'no evidence that nudging has any effect' — but no primary-source numeric corrected effect size, CI, or specific correction method from Mertens, Maier, or Szaszi was retrieved by this research, and Szaszi et al.'s methodology and results are entirely unaddressed. Separately, an independent large field megastudy (Milkman et al., PNAS 2022, N=689,693) found text-based vaccination nudges produced a real but modest 2.0-percentage-point (6.8% relative) increase in vaccination — evidence that at least some real-world nudges have detectable non-zero effects, though this is a single-domain field study, not a resolution of the aggregate meta-analytic publication-bias dispute. The question as posed (what IS the corrected effect size) cannot be answered numerically from the confirmed evidence; the honest finding is that the research substantiates only a qualitative 'null result' claim from Maier et al., leaves Szaszi et al. completely unexamined, and cannot adjudicate whether the true literature-wide corrected effect is null, small, or heterogeneous by category.",
+ "openQuestions": [
+  "What are Mertens et al.'s (2022) and Maier et al.'s (2022) actual reported numeric pooled/corrected effect sizes and confidence intervals, in Cohen's d or odds-ratio terms?",
+  "What method did Szaszi et al. use in their re-analysis, and how does their corrected estimate compare numerically to Maier et al.'s?",
+  "Do PET-PEESE, selection models, and p-curve/p-uniform methods converge on a similar corrected estimate for the nudge literature, or do they materially disagree?",
+  "Has Mertens et al. or any co-author published a rebuttal defending the original pooled estimate against the Maier/Szaszi corrections, and if so, what specific objections do they raise?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 90.0,
+  "effectiveCitations": 9,
+  "supported": 9,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 2,
+  "scope": "full verification pool (12 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "Milkman et al. conducted a megastudy of nudge interventions to encourage vaccination involving 680,000 people in pharmacies.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows a reCAPTCHA/browser-check interstitial (Checking your browser - reCAPTCHA... Click here if you are not automatically redirected) with no actual article text. There is no substantive content to verify or refute the claim about Milkman et al.'s megastudy of vaccination nudges involving 680,000 people in pharmacies. Since the page did not load its actual content, n…"
+  },
+  {
+   "claim": "The research was peer-reviewed and formally accepted, having been edited by Elke U. Weber of Princeton University and approved after review in March 2021.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8157982/",
+   "support": "partial",
+   "reasoning": "The page text confirms the article was Edited by Elke U. We[ber] (text is cut off but clearly identifies Elke U. Weber as editor), and the header states Proc Natl Acad Sci U S A. 2021 Apr 29;118(20):e2101165118, indicating publication in PNAS, a peer-reviewed journal. This supports that Elke U. Weber edited the paper and that it was published in April 2021 in a peer-reviewed journal (PNAS papers a…"
+  },
+  {
+   "claim": "Maier et al. stated that after correcting for the publication bias identified by Mertens et al. (2021), there is no evidence that nudging has any effect.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a near-verbatim statement matching the claim: it attributes to Maier et al. the finding that after correcting for the publication bias identified by Mertens et al. (2021), there is no evidence that nudging has any effect. This directly supports the statement with no added scope or interpretive leap."
+  },
+  {
+   "claim": "Some researchers argue that nudge effectiveness varies substantially by technique, with certain nudges like default effects being highly effective while others have little to no effect, calling for research to focus on moderators rather than average effects.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page directly states that skeptics/researchers believe nudge effectiveness varies by technique, citing default effect as highly effective while others have little to no effect, and calls for research focusing on moderators rather than average effects. This closely matches the statement's claims almost verbatim, including the specific example of default effects and the call for modera…"
+  },
+  {
+   "claim": "This is a large-scale field megastudy testing text-based nudges to encourage patients to get vaccinated (flu shots) at upcoming doctor's appointments, relevant as an independent large-scale field test of nudge efficacy.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8157982/",
+   "support": "supported",
+   "reasoning": "The page title itself directly states this is a megastudy of text-based nudges encouraging patients to get vaccinated (flu shots, as per the study details known from this widely-cited PNAS paper) at an upcoming doctor's appointment. The title matches the statement's core claim almost verbatim: it's a large-scale field megastudy testing text-based nudges for vaccination at upcoming doctor's appoint…"
+  },
+  {
+   "claim": "Some researchers have criticized the one-nudge-for-all approach, and personalized nudging implementations based on individual differences appear to be more effective.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a sentence that almost verbatim matches the statement: it explicitly says some researchers criticized the one-nudge-for-all approach, and that personalized nudging implementations based on individual differences appear to be more effective. This directly supports the claim without requiring interpretive leaps."
+  },
+  {
+   "claim": "The megastudy was published in the Proceedings of the National Academy of Sciences on February 1, 2022.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows a reCAPTCHA/browser-check interstitial from PMC, with no actual article text. There is no content available to verify the claim about publication date or journal, so the citation cannot be judged as supporting the statement."
+  },
+  {
+   "claim": "The study was a large-scale, multi-institution collaboration testing multiple nudge interventions in a real-world field setting (pharmacies) rather than in a lab or online survey context.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "supported",
+   "reasoning": "The title itself, combined with the extensive author list from over 20 different universities and institutions (Wharton, Ascension Health, Northwestern, UCLA, Geisinger, Harvard, Carnegie Mellon, Dartmouth, Chicago Booth, University of Michigan, Stanford, University of Hawaii, etc.), directly supports the claim that this was a large-scale, multi-institution collaboration. The title explicitly stat…"
+  },
+  {
+   "claim": "The study was published in PNAS in 2021, involving a large collaborative team across multiple universities and health systems, functioning as a real-world megastudy rather than a lab study.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8157982/",
+   "support": "supported",
+   "reasoning": "The page confirms publication in Proc Natl Acad Sci U S A (PNAS) in 2021 (Apr 29), and the title itself uses the word megastudy, indicating a real-world large-scale study rather than a lab study. The author list includes dozens of researchers affiliated with numerous universities (Wharton/Penn, Columbia, Harvard, UCLA, Carnegie Mellon, Yale, University of Toronto, Northwestern, Arizona, Hawai'i) a…"
+  },
+  {
+   "claim": "A meta-analysis of unpublished nudging studies conducted by nudge units, covering over 23 million individuals across the UK and US, found that nudges were effective but with substantially weaker effects than published studies indicate.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a sentence that closely matches the statement: it describes a meta-analysis of unpublished nudging studies conducted by nudge units, covering over 23 million individuals in the UK and US, finding nudges effective but with substantially weaker effects than published studies indicate. This directly supports the claim with matching scope and specificity."
+  },
+  {
+   "claim": "A megastudy of 689,693 Walmart pharmacy patients randomly assigned to 22 different text-based nudge reminders vs. a business-as-usual control found reminder texts increased pharmacy vaccination rates by an average of 2.0 percentage points, or 6.8%, over a 3-month follow-up period.",
+   "url": "https://www.gsb.stanford.edu/faculty-research/publications/680000-person-megastudy-nudges-encourage-vaccination-pharmacies",
+   "support": "supported",
+   "reasoning": "The page abstract directly states the sample size (689,693 Walmart pharmacy patients), the design (randomly assigned to 22 different text reminders vs. a business-as-usual control), and the exact result (2.0 percentage point / 6.8% increase in pharmacy vaccination rates over a 3-month follow-up). This matches the statement verbatim in substance, with no added scope or interpretive leap."
+  },
+  {
+   "claim": "The most effective nudge intervention in the megastudy was a two-text sequence delivered three days apart informing patients that a flu vaccine was waiting for them, and this top-performing treatment was not predicted in advance by experts or laypeople.",
+   "url": "https://www.gsb.stanford.edu/faculty-research/publications/680000-person-megastudy-nudges-encourage-vaccination-pharmacies",
+   "support": "supported",
+   "reasoning": "The page text directly states that the top performing intervention was a two-text sequence delivered three days apart informing patients that a vaccine was waiting for them, and explicitly says neither experts nor laypeople anticipated this would be the best-performing treatment. This matches the statement closely with no added scope or specificity beyond what the page states."
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "What is the original pooled effect size and confidence interval reported by Mertens et al. (2022), and what publication-bias correction (if any) did they apply?",
+   "What method(s) did Szaszi et al. use in their re-analysis, and how does their corrected estimate compare numerically to Maier et al.'s?",
+   "Do the different correction methods (PET-PEESE, selection models, p-curve/p-uniform) converge within ~0.1 SD of each other, or do they materially disagree, and why (e.g., applicability to heterogeneous small-study literatures)?",
+   "Is there a published rebuttal or response from Mertens et al. (or co-authors) disputing the corrections, and what specific methodological objections do they raise?",
+   "What effect-size threshold (e.g., d=0.1, 0.2, 0.3) is being used as the benchmark for 'practically meaningful,' and is that threshold itself defensible/standard in this literature?"
+  ],
+  "targeted": 4,
+  "sourcesAdded": 4,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": {
+  "n": 12,
+  "rawAgreement": 0.9167,
+  "expectedByChance": 0.6667,
+  "confusion": {
+   "survive_survive": 9,
+   "kill_kill": 2,
+   "survive_then_kill": 1,
+   "kill_then_survive": 0
+  },
+  "surviveRateRun1": 0.8333,
+  "surviveRateRun2": 0.75,
+  "cohenKappa": 0.75,
+  "scottPi": 0.7474,
+  "verdictFlips": 1,
+  "flipRate": 0.0833,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": null,
+    "rawAgreement": 0.9167,
+    "refuteRateRun1": 0.0833,
+    "refuteRateRun2": 0.1667,
+    "n": 12
+   },
+   "provenance": {
+    "cohenKappa": 1.0,
+    "rawAgreement": 1.0,
+    "refuteRateRun1": 0.5,
+    "refuteRateRun2": 0.5,
+    "n": 12
+   },
+   "support": {
+    "cohenKappa": 0.8235,
+    "rawAgreement": 0.9167,
+    "refuteRateRun1": 0.3333,
+    "refuteRateRun2": 0.4167,
+    "n": 12
+   }
+  },
+  "lensSplit": {
+   "claims": 12,
+   "split": 7,
+   "disagreementRate": 0.5833,
+   "unanimityRate": 0.4167
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "underpowered",
+  "preRegisteredAction": "PRECONDITION FAILED: n=12, below the pre-registered minimum of 30. One flipped claim moves raw agreement by 0.08 here, and kappa by more than that again once chance correction divides by (1-pe) - comparable to the width of the bands themselves. So the coefficient (0.75) has less resolution than the decision it would be used for. Report the number, adjudicate nothing, and re-run at n>=30.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": null,
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "The research was peer-reviewed and formally accepted, having been edited by Elke U. Weber of Princeton University and approved after review in March 2021.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8157982/",
+   "support": "partial",
+   "reasoning": "The page text confirms the article was Edited by Elke U. We[ber] (text is cut off but clearly identifies Elke U. Weber as editor), and the header states Proc Natl Acad Sci U S A. 2021 Apr 29;118(20):e2101165118, indicating publication in PNAS, a peer-reviewed journal. This supports that Elke U. Weber edited the paper and that it was published in April 2021 in a peer-reviewed journal (PNAS papers a…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 6,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "4. [high] This megastudy demonstrates that at least some nudge interventions (text reminders in a single health-behaviour domain) produce small but statistically detectable real-world effects when tested in a highly-powered field setting, and the best-performing arm was not predicted in advance by experts or laypeople.",
+   "6. [low] A claim that a large real-world nudge-unit meta-analysis of 23 million individuals found nudges 'effective but weaker' was investigated and REFUTED (killed) upon audit — it should not be used as evidence.",
+   "Separately, an independent large field megastudy (Milkman et al., PNAS 2022, N=689,693) found text-based vaccination nudges produced a real but modest 2.0-percentage-point (6.8% relative) increase in vaccination — evidence that at least some real-world nudges have detectable non-zero effects, though this is a single-domain field study, not a resolution of the aggregate meta-analytic publication-bias dispute."
+  ],
+  "untraceableStatements": [
+   "Claim that Milkman et al. is 'a single-domain field study' framed as evidence resolving whether real-world nudges have detectable non-zero effects, when the claim pool never characterizes it as representative of nudges generally versus a text-reminder-specific intervention",
+   "Claim that PNAS publication of Milkman et al. was 'peer-reviewed and formally accepted, edited by Elke Weber' is not used in summary but findings omit any mention of the discrepancy between claim [6] (published Feb 1, 2022) and claim [1]/[7] (2021) dates without reconciling",
+   "Finding 6 describing a refuted claim about 23 million individuals is asserted as fact of investigation/refutation but no numbered claim [0]-[9] documents this refutation process or its basis",
+   "Finding 6 references a claim about '23 million individuals' nudge-unit meta-analysis that was refuted, but this refutation and its relevance is not explained in the summary at all, creating a silent gap between findings and summary",
+   "The executive summary's framing that the megastudy is 'evidence that at least some real-world nudges have detectable non-zero effects' as if this bears on the meta-analytic publication-bias dispute is an inferential leap not licensed by the claims",
+   "The summary's framing that the megastudy result is 'evidence that at least some real-world nudges have detectable non-zero effects' extrapolates from one intervention type (text reminders) to a general claim about nudges without a claim explicitly licensing that generalization"
+  ],
+  "coverageGaps": [
+   "No primary academic paper (Mertens et al. 2022, Maier et al. 2022, or Szaszi et al.) appears to have been directly retrieved; the only source is a secondary Wikipedia-style paraphrase, meaning the 'Primary meta-analyst' perspective's stated mandate ('trusts only raw data and code') was not fulfilled by any claim in the pool.",
+   "No primary journal article (Mertens et al. 2022, Maier et al. 2022, or Szaszi et al.) was ever accessed directly - only a Wikipedia paraphrase and megastudy-adjacent sources were used, meaning the 'Primary meta-analyst' and 'Independent re-analyst' perspectives produced no usable claims despite being tasked to distrust prose and get raw data/code.",
+   "Q1 (Mertens et al.'s original pooled effect size, CI, and their own bias-correction method) is entirely unanswered - no primary source for Mertens et al. (2022) was retrieved at all.",
+   "Q2 (Maier et al.'s specific correction methods - PET-PEESE, selection models, p-uniform* - and their numeric corrected point estimate/CI) is unanswered; only a vague qualitative paraphrase ('no evidence of effect') survives, with no numbers.",
+   "Q3 (Szaszi et al.'s methodology and corrected estimate, and numeric comparison to Maier et al.) is completely unaddressed - the 'Independent re-analyst' perspective that was supposedly searched produced zero claims in the pool.",
+   "Q4 (whether correction methods converge within ~0.1 SD or materially disagree, and why) cannot be assessed - no numeric estimates from any method were retrieved.",
+   "Q5 (published rebuttal from Mertens et al. disputing Maier/Szaszi's corrections, and specific methodological objections e.g. PET-PEESE applicability to heterogeneous small-study literatures) is completely missing - despite a 'Rebuttal author / data auditor' perspective being listed as searched, no claim from that perspective appears in the verified claim pool.",
+   "Q6 (whether corrected effect size varies by nudge category/heterogeneity) is only weakly touched by claims [3] and [5], which are generic assertions about heterogeneity/personalization, not category-specific corrected effect sizes from the actual meta-analyses.",
+   "Q7 (field megastudy comparison) is the only question with substantive evidence (Milkman et al.), but even here the comparison to the meta-analytic corrected estimate cannot be made because no corrected estimate exists in the claim pool - so the comparison the question asks for is impossible to complete.",
+   "Q8 (what effect-size threshold, e.g. d=0.1/0.2/0.3, counts as 'practically meaningful' and whether it's defensible) is never addressed anywhere in the claims, summary, or findings.",
+   "Sub-question 1 (Mertens et al.'s original pooled effect size and CI, and their own bias-correction method) is entirely unanswered - no primary source consulted.",
+   "Sub-question 2 (Maier et al.'s specific correction method(s) - PET-PEESE, selection models, p-uniform* - and their numeric corrected estimate/CI) is unanswered; only a vague 'no evidence of effect' paraphrase from a secondary Wikipedia source was retrieved.",
+   "Sub-question 3 (Szaszi et al.'s methods and how their corrected estimate numerically compares to Maier et al.'s) was never investigated at all - no claim in the pool addresses Szaszi.",
+   "Sub-question 4 (whether PET-PEESE, selection models, and p-curve/p-uniform converge within ~0.1 SD or materially disagree, and why) is unaddressed - no numeric comparison was possible given gap in Q2/Q3.",
+   "Sub-question 5 (published rebuttal from Mertens et al. disputing the corrections, with specific methodological objections e.g. PET-PEESE applicability to heterogeneous small-study literatures) was never found despite a dedicated 'Rebuttal author' perspective being tasked to search for it - no claim in the pool reflects any Mertens rebuttal content.",
+   "Sub-question 6 (whether the corrected effect size varies by nudge category, e.g. defaults vs. social norms vs. framing, with statistical/practical heterogeneity assessment) is only vaguely gestured at via claim [3] and [5], which are generic statements about heterogeneity/personalization, not category-specific corrected effect sizes from the Mertens/Maier/Szaszi debate.",
+   "Sub-question 7 (field megastudies vs corrected meta-analytic estimates) is only partially covered by Milkman et al.; other field megastudies (e.g., other nudge-unit studies) were not retrieved, and the comparison to the *corrected* numeric estimate is impossible since no corrected number was found.",
+   "Sub-question 8 (what effect-size threshold, e.g., d=0.1/0.2/0.3, is used as 'practically meaningful' and whether it's defensible) was never addressed by any claim in the pool."
+  ],
+  "planFlaws": [
+   "No perspective or step explicitly targeted retrieving PET-PEESE/selection-model/p-uniform* methodology papers or their application results as standalone primary documents (e.g., via Google Scholar/PsyArXiv/OSF), despite this being central to checklist items 2-4; reliance on general web search apparently failed to surface these, and the plan had no escalation to academic databases.",
+   "No source type such as a dataset, code repository, or the meta-analyses' supplementary materials was ever consulted, despite the 'Primary meta-analyst' persona explicitly being framed as trusting 'only raw data and code' - this mismatch between stated persona and actual (absent) evidence retrieved is not flagged as a process failure anywhere in the outputs.",
+   "Six perspectives were planned (including a dedicated Independent re-analyst for Szaszi et al. and a dedicated Rebuttal author for Mertens et al.'s response), but the verified claim pool contains zero claims attributable to those two perspectives - the plan was reasonable, but execution/search silently failed for two of six perspectives with no flag raised in the summary itself explaining why (the summary does mention this, but findings don't diagnose it as a process failure vs. a true absence of evidence).",
+   "The 'Category/heterogeneity constructor' perspective produced only generic, uncited-to-meta-analysis claims about heterogeneity (claims [3],[5]) rather than actual subgroup effect sizes from Mertens/Maier/Szaszi's category breakdowns, suggesting this perspective searched general nudge-heterogeneity commentary rather than the specific meta-analytic subgroup data the checklist item (Q6) required.",
+   "The 'Rebuttal author / data auditor' perspective, explicitly tasked to find Mertens' methodological objections to PET-PEESE, produced zero claims in the final pool - the plan did not include a fallback (e.g., searching for preprints, Mertens' personal site, PsyArXiv, or OSF rebuttal documents) when the primary rebuttal source wasn't found via standard web search.",
+   "The claim pool is dominated by megastudy/Milkman material (7 of 10 claims) and generic heterogeneity commentary, suggesting the search process over-indexed on the field-megastudy perspective (easier to find via news/PNAS coverage) while starving the harder-to-find primary meta-analytic sources (Mertens/Maier/Szaszi), a systematic bias in the actual search execution not caught by the scoping plan.",
+   "The perspective set assigned a 'Primary meta-analyst' who 'trusts only raw data and code' but the executed research never actually obtained Mertens/Maier/Szaszi primary data, code, or papers - the plan assumed these perspectives would surface primary numeric results, but no verification step caught that this core sourcing failed until the final writeup, meaning the scoping's ambitious methodological rigor was not enforced during execution.",
+   "The perspective set never included a search specifically for the original 2022 Nature Human Behaviour or Psychological Science publication venues/DOIs for Mertens, Maier, and Szaszi, nor for preprint servers (PsyArXiv/OSF) where these re-analyses and rebuttals are typically posted - an obvious high-value source type (primary journal article or preprint) was never actually searched despite being the explicit subject of the question.",
+   "The scoping checklist item 8 (defensible effect-size threshold for 'meaningful') was never assigned to any single perspective explicitly, so it fell through - no perspective owned the benchmark-threshold question, illustrating a gap in the perspective-to-subquestion mapping.",
+   "The scoping presupposes as a premise that a single 'corrected effect size' number exists and is retrievable, but never included a fallback sub-question for 'is there in fact a consensus corrected estimate, or do Mertens/Maier/Szaszi report materially different numbers that cannot be collapsed into one figure' - when the primary sources could not be found, the plan had no contingency to pivot toward at least summarizing secondary/tertiary commentary (e.g., blog posts, journal replies, PsyArXiv preprints) that likely discuss the actual numbers."
+  ],
+  "rationales": [
+   "The research process failed to retrieve any primary-source numeric data for 6 of the 8 checklist questions (Q1-Q6, Q8), including the central deliverable the question asked for - 'what the corrected effect size actually is.' Two of the six planned perspectives (Independent re-analyst on Szaszi et al., and Rebuttal author on Mertens et al.'s response) contributed zero claims to the verified pool despite being explicitly scoped, and this silent failure is not diagnosed as a process problem. The ex…",
+   "The executive summary and findings are largely internally consistent with the (very thin) claim pool and appropriately hedge the central numeric question - to its credit, the summary explicitly flags that no corrected point estimate, CI, or method was found for Mertens, Maier, or Szaszi, and does not fabricate numbers. However, the underlying research process fails on almost every substantive checklist item: 5 of 8 scoping sub-questions (Mertens' original estimate, Maier's specific method/numeri…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "The study was a large-scale, multi-institution collaboration testing multiple nudge interventions in a real-world field setting (pharmacies) rather than in a lab or online survey context.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "why": "The supporting quote provided (designed research; K.L.M., L.G., M.S.P., H.N.G., D.M.G., H. Ho, J.S.K., T.W.L., and J.R. performed research) is merely an author-contribution statement fragment. It contains no information about the study being a large-scale, multi-institution collaboration, no mention of multiple nudge interventions, and no mention of pharmacies or any real-world field setting versus lab/online context. None of the specific factual assertions in the claim (scale, institutional col…"
+  },
+  {
+   "claim": "A meta-analysis of unpublished nudging studies conducted by nudge units, covering over 23 million individuals across the UK and US, found that nudges were effective but with substantially weaker effects than published studies indicate.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "why": "The claim states nudges were effective (unqualified, general statement), but the source quote hedges this to found effectiveness in some nudges — a scope-limited claim (only some nudges were effective, not nudges generally). The claim drops this some qualifier, generalizing beyond what the quote supports. Additionally, the claim text is a paraphrase, not verbatim: it says A meta-analysis of unpublished nudging studies conducted by nudge units versus the quote's A meta-analysis of all unpublished…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "quality": "secondary",
+   "perspective": "Field megastudy practitioner",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.thenudge.org/",
+   "quality": "unreliable",
+   "perspective": "Field megastudy practitioner",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "quality": "primary",
+   "perspective": "Megastudy comparison",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8157982/",
+   "quality": "primary",
+   "perspective": "Megastudy comparison",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/358331395_A_680000-person_megastudy_of_nudges_to_encourage_vaccination_in_pharmacies",
+   "quality": "unreliable",
+   "perspective": "Megastudy comparison",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T4"
+  },
+  {
+   "url": "https://www.gsb.stanford.edu/faculty-research/publications/680000-person-megastudy-nudges-encourage-vaccination-pharmacies",
+   "quality": "primary",
+   "perspective": "Megastudy comparison",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2202928119",
+   "quality": "unreliable",
+   "perspective": "rescue3",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.semanticscholar.org/paper/Reply-to-Maier-et-al.%2C-Szaszi-et-al.%2C-and-Bakdash-Mertens-Herberz/001348ebb848ae0374a41dcd5bc9868525232d6a",
+   "quality": "unreliable",
+   "perspective": "rescue3",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://psycnet.apa.org/record/2023-08873-005",
+   "quality": "unreliable",
+   "perspective": "rescue3",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/362143296_Reply_to_Maier_et_al_Szaszi_et_al_and_Bakdash_and_Marusich_The_present_and_future_of_choice_architecture_research",
+   "quality": "unreliable",
+   "perspective": "rescue3",
+   "wave": "rescue",
+   "claims": 0,
+   "tier": "T4"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 10,
+  "claimsExtracted": 12,
+  "urlDupes": 1,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 39,
+    "ok": 39,
+    "fail": 0,
+    "results": 240
+   }
+  },
+  "sourceTiers": {
+   "T2": 3,
+   "T3": 3,
+   "T1": 2,
+   "T4": 2
+  },
+  "agentCalls": 112,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 263277,
+  "outputTokens": 60935,
+  "wallSeconds": 297.7,
+  "claimsVerified": 12,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 2,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}

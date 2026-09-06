@@ -1,0 +1,991 @@
+{
+ "question": "Does test-driven development actually reduce defect rates compared with writing tests after the code? Weigh the controlled experiments against the industrial case studies, and state the effect sizes.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No pooled effect sizes, CIs, or I² heterogeneity figures from Munir 2014, Rafique & Misic 2013, or Bissi et al. 2016 have been retrieved yet."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No actual effect sizes reported for Erdogmus, Fucci, Müller, George & Williams controlled experiments; only tangential mentions (Latorre thesis) exist."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "Williams/Maximilien/Vouk IBM case study and Wilkerson TDD-vs-inspection study identified, but no actual defect density numbers or confound discussion (team seniority, extra time, code review) extracted yet."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "One qualitative NZ thesis suggests test effort/coverage (not ordering) drives benefits, but no quantitative studies equalizing test effort between arms have been found."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Latorre 2014 touches on experience-level moderation, but no data on project size, domain, or TDD adherence fidelity as moderators."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No evidence gathered on concentration of case studies in Microsoft/IBM or independent replications outside those firms."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No side-by-side comparison of standardized effect sizes between experiments and case studies has been assembled."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No cost-effectiveness or productivity-tradeoff studies (TDD vs code review/static analysis) found."
+  }
+ ],
+ "contradictions": [
+  "The NZ qualitative thesis attributes TDD's perceived benefits to test coverage/refactoring confidence rather than test-first ordering itself, while the Williams/Maximilien/Vouk (2003, IBM) and Wilkerson et al. (2011/2012) studies are conventionally cited in the broader literature as evidence that TDD's test-first ordering itself drives defect reduction - but neither this panel's evidence nor the audits actually extracted a finding from those two studies that directly asserts ordering (not just coverage) matters, so the contradiction is more a gap than a resolved conflict.",
+  "The NZ thesis states that few prior published empirical studies of TDD's benefits were conducted in an industrial setting, yet the same evidence base includes at least two studies explicitly framed as industrial/professional-practitioner case studies (Williams/Maximilien/Vouk at IBM 2003, and the EMSE 2016 study with 24 professionals across three sites) - suggesting the NZ thesis's characterization of the literature (written in 2009) may be dated or the panel's evidence pool is not representative of 'existing published studies' as a whole.",
+  "The NZ thesis (primary, qualitative) claims TDD's perceived benefits stem from test coverage/refactoring confidence rather than test-first ordering, while the Williams/Maximilien/Vouk (2003) and Wilkerson et al. (2011) industrial/controlled studies are typically cited as showing TDD itself (the test-first practice) reduces defects — these framings are in tension and no source yet reconciles whether ordering vs. effort is the causal driver.",
+  "The thesis states most prior empirical studies supporting TDD's quality benefits are not conducted in industrial settings, yet the gathered evidence includes at least two industrial/practitioner-facing studies (Williams et al. 2003 at IBM, Wilkerson et al. 2011) that are presented as controlled/industrial comparisons — suggesting the thesis's characterization may be overstated or predate these studies' influence; this needs adjudication with a fuller literature count."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "\"Defect rates\" means pre-release/post-release defect density (defects per KLOC or per function point) as reported in primary studies, not subjective code quality or maintainability",
+   "Scope covers peer-reviewed controlled/quasi-experiments (student and professional subjects) and industrial case studies (e.g., Microsoft, IBM) published roughly 2003-2023, primarily in software engineering venues (IEEE TSE, ICSE, EMSE)",
+   "TDD is defined as the canonical red-green-refactor unit-test-first cycle, not generic 'test-first' or general test automation practices",
+   "'Reduce' means a statistically or practically meaningful decrease in defect density relative to a test-last/test-after control group, not merely a correlation observed in uncontrolled field data",
+   "No specific industry, language, or team-size context is assumed unless a study specifies it; findings will be pooled across contexts but context (e.g., team experience, project size) will be flagged as a moderator",
+   "Effect sizes will be reported as originally computed by study authors (e.g., Cohen's d, percentage defect reduction, risk ratio) without re-deriving a meta-analytic pooled estimate unless an existing meta-analysis is found"
+  ],
+  "decisionAtStake": "Whether a software engineering organization or team lead should mandate/invest in TDD training and process change specifically to reduce defect rates, versus adopting a lighter-weight or test-after approach and investing resources elsewhere (e.g., code review, static analysis)",
+  "keyQuestion": "Across controlled experiments and industrial case studies, does adopting TDD (versus test-after development) produce a consistent, meaningfully-sized reduction in defect density, or do the two literatures disagree in direction/magnitude such that no reliable causal effect can be claimed?",
+  "whatWouldChangeTheAnswer": [
+   "A rigorous meta-analysis or systematic review (e.g., Munir et al., Rafique & Misic) showing pooled effect size near zero or with wide confidence intervals crossing zero would flip 'TDD reduces defects' to 'inconclusive'",
+   "If controlled experiments consistently show small/no effect while industrial case studies show large effects (or vice versa), the answer must be reframed as 'depends on study design/rigor' rather than a single verdict",
+   "Evidence that observed defect reductions in industrial case studies are confounded by increased testing effort/time-on-task rather than TDD's test-first ordering per se would shift conclusion from 'TDD causes fewer defects' to 'more testing causes fewer defects, TDD is incidental'",
+   "Discovery that effect sizes shrink or vanish in studies controlling for developer experience/practice fidelity (i.e., TDD compliance) would change the answer to 'effect is conditional on adherence, not TDD per se'",
+   "If most industrial case studies are from a single vendor (e.g., Microsoft/IBM) with potential publication or selection bias, and independent replications fail to reproduce the effect, the answer should downgrade confidence sharply"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "TDD produces a robust, moderate-to-large reduction in defect density that is consistent across both controlled experiments and industrial case studies (convergent evidence)",
+    "killCriterion": "Finding that controlled experiments show near-zero/non-significant effect sizes (e.g., d < 0.2) while case studies show large effects, or a meta-analysis reporting high heterogeneity (I² > 75%) with non-overlapping confidence intervals between study types"
+   },
+   {
+    "hypothesis": "TDD shows a real but small-to-modest defect reduction in controlled experiments, while industrial case studies report larger reductions likely inflated by confounds (extra testing time, Hawthorne effects, selection bias, lack of control group)",
+    "killCriterion": "Finding that well-controlled industrial studies (with matched control groups and effort-controlled comparisons) show effect sizes comparable to lab experiments, undermining the confound explanation"
+   },
+   {
+    "hypothesis": "TDD shows no reliable defect-rate benefit once study quality/rigor is controlled for; apparent benefits in both literatures are explained by increased test coverage/effort rather than the test-first practice itself",
+    "killCriterion": "Finding of multiple high-quality RCTs or quasi-experiments with matched testing effort between TDD and test-after groups that still show statistically significant defect reduction favoring TDD"
+   },
+   {
+    "hypothesis": "The effect of TDD on defects is highly conditional (moderated by developer experience, project size, or TDD adherence fidelity) such that no single pooled effect size is meaningful — the true answer is 'it depends'",
+    "killCriterion": "Finding that a well-powered meta-analysis or multi-site study shows a consistent effect size across all major moderator subgroups (experience level, project size, domain) with low heterogeneity, indicating a generalizable main effect rather than conditional one"
+   }
+  ]
+ },
+ "perspectives": [
+  {
+   "label": "Meta-analyst / systematic reviewer",
+   "lens": "A quantitative research synthesist who distrusts any single study and wants pooled effect sizes, forest plots, and heterogeneity statistics (I²), citing Munir et al., Rafique & Misic, Bissi et al.",
+   "query": "TDD test-driven development meta-analysis defect density effect size systematic review"
+  },
+  {
+   "label": "Controlled-experiment purist (academic RCT researcher)",
+   "lens": "An empirical software engineering professor who distrusts industrial case studies as confounded and uncontrolled, trusting only randomized/counterbalanced lab or classroom experiments with student or professional subjects",
+   "query": "randomized controlled experiment test-driven development defect rate students professionals effect size"
+  },
+  {
+   "label": "Industrial case-study steelman (TDD advocate practitioner)",
+   "lens": "A practitioner/consultant who has seen TDD work at scale (e.g., Microsoft/IBM case studies by Nagappan et al.) and builds the strongest honest case that industrial deployment shows large, real defect reductions despite confounds",
+   "query": "Microsoft IBM industrial case study test-driven development defect density reduction Nagappan"
+  },
+  {
+   "label": "Confound-hunting skeptic (methodologist)",
+   "lens": "A research methodologist/statistician who distrusts effect-size claims not adjusted for testing effort, time-on-task, Hawthorne effects, or publication bias, actively hunting the strongest counter-evidence and failed replications",
+   "query": "test-driven development confound testing effort time-on-task Hawthorne replication failure critique"
+  },
+  {
+   "label": "Cost-benefit / ROI analyst",
+   "lens": "An engineering-economics analyst comparing TDD training/adoption costs and productivity effects against alternative investments like code review or static analysis, distrusting defect-rate numbers that ignore cost and schedule impact",
+   "query": "cost effectiveness test-driven development versus code review static analysis defect reduction ROI productivity"
+  },
+  {
+   "label": "Moderator/heterogeneity data auditor",
+   "lens": "A meta-regression specialist who distrusts single pooled numbers and searches for moderators—developer experience, project size, TDD adherence/fidelity, domain—that could make a single effect size meaningless",
+   "query": "test-driven development effect moderators developer experience project size adherence fidelity subgroup analysis"
+  }
+ ],
+ "answerFirst": "The evidence gathered CANNOT actually answer whether TDD reduces defect rates versus test-after development, and it CANNOT provide effect sizes on either side. What survived the panel is almost entirely bibliographic/provenance metadata (titles, authors, venues, years) for the relevant studies, not the quantitative results themselves — no defect density numbers, no effect sizes, no confidence intervals, no meta-analytic pooled estimates were retrieved for any of the named controlled experiments (George & Williams, Erdogmus, Fucci, Müller) or industrial case studies (Bhat & Nagappan, Williams/Maximilien/Vouk at IBM, Williams/Kudrjavets/Nagappan at Microsoft). The one paper that does report a quantitative finding (Fucci et al./Erdogmus-line, EMSE 2016) found NO statistically significant difference in external quality between TDD and incremental test-last development in a 24-professional industry experiment, and showed the effect was obscured by task complexity — this is evidence against a robust TDD defect-reduction effect, not for one. All four pre-registered hypotheses are either untested (no pooled effect sizes exist in the evidence) or, where testable, trend toward H2/H4 rather than H1/H3, but none can be confirmed or fully killed on this evidence base.",
+ "baseRate": "No outside-view base rate for \"software process change X reduces defects by Y%\" is present in the evidence. The broader software-engineering meta-analysis literature (Munir et al. 2014, Rafique & Misic 2013, Bissi et al. 2016 — none retrieved here) is known to report small-to-moderate, heterogeneous effects with quality gains larger in industrial settings and mixed/near-null results in controlled experiments, but since those pooled figures were not retrieved in this run, that context is flagged as absent rather than asserted as evidence.",
+ "findings": [
+  {
+   "claim": "The one study in the evidence base that actually reports a comparative outcome measure (industry experiment, 24 professionals, 3 sites, TDD vs. incremental test-last development) found NO statistically significant difference in external quality between the two approaches.",
+   "confidence": "medium",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "https://doi.org/10.1007/s10664-016-9490-0"
+   ],
+   "evidence": "Quote: 'We did not observe a statistical difference between the quality of the work done by subjects in both treatments.'",
+   "vote": "2-1",
+   "citationCheck": "unreachable - the fetched page returned only bibliographic metadata (no abstract), so the audit could not independently confirm the quoted finding; it rests on the panel's supporting quote rather than a directly verified page fetch."
+  },
+  {
+   "claim": "Task complexity moderates and can obscure TDD's apparent effect: the same study found subjects more productive with TDD on a simple task, but productivity dropped significantly when TDD was applied to a complex brownfield task, and the authors state task complexity 'significantly obscured' any TDD effect.",
+   "confidence": "high",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "https://doi.org/10.1007/s10664-016-9490-0"
+   ],
+   "evidence": "Quote: 'the productivity drops significantly when applying TDD to a complex brownfield task. So, the task complexity significantly obscured the effect of TDD.'",
+   "vote": "3-0",
+   "citationCheck": "supported - the abstract directly confirms both the simple-task productivity result and the complex-task drop, matching the statement without added inflation."
+  },
+  {
+   "claim": "The same authors note that experimental design choices, particularly which tasks are used, can dominate and confound findings across the wider TDD experimental literature, helping explain inconsistent conclusions between studies.",
+   "confidence": "medium",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "https://doi.org/10.1007/s10664-016-9490-0"
+   ],
+   "evidence": "Quote: 'We found that experimental factors such as selection of tasks could dominate the findings in TDD studies.'",
+   "vote": "2-1",
+   "citationCheck": "unreachable - only metadata was fetchable; the methodological-confound statement rests on the panel-supplied quote, not an independently verified page fetch."
+  },
+  {
+   "claim": "Existing empirical studies on TDD report differing conclusions about its effects on quality and productivity, and very few are controlled experiments conducted with software professionals (as opposed to students) in industry — indicating the evidence base is thin and heterogeneous rather than convergent.",
+   "confidence": "high",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "https://doi.org/10.1007/s10664-016-9490-0"
+   ],
+   "evidence": "Quote: 'Existing empirical studies on test-driven development (TDD) report different conclusions about its effects on quality and productivity. Very few of those studies are experiments conducted with software professionals in industry.'",
+   "vote": "3-0",
+   "citationCheck": "unreachable at fetch, but the claim is a near-verbatim paraphrase of the panel-supplied quote with only a reasonable added parenthetical (as opposed to students); no numeric or causal inflation."
+  },
+  {
+   "claim": "A 2009 qualitative case study (5 interviews, one Auckland NZ company) suggests that TDD's perceived quality benefits are attributed by practitioners to broader test coverage and increased refactoring confidence — i.e., test effort/coverage — rather than to the test-first ordering itself, and this thesis separately notes that few prior published TDD studies were conducted in industrial settings.",
+   "confidence": "medium",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "inference",
+   "sources": [
+    "http://hdl.handle.net/10292/775"
+   ],
+   "evidence": "Quote: 'The main underlying factors contributing to these benefits...can be summarised as: increased confidence in refactoring and modifying code, broader test coverage...'; and 'few of these are in an industrial setting.'",
+   "vote": "2-1 / 3-0 / 2-1",
+   "citationCheck": "partial - the abstract confirms the underlying-factors list but does NOT itself frame this as 'rather than the mere test-first ordering' - that contrast is an inference added by the claim, not stated on the page. Also this is a single-case qualitative interview study (n=5), not a controlled or industrial defect-rate measurement, so it cannot support a quantitative claim either way."
+  },
+  {
+   "claim": "Several named, peer-reviewed controlled experiments and industrial case studies on TDD exist and are correctly attributed (venue/year/authors verified): George & Williams (IST, 2004, structured experiment), Bhat & Nagappan (Microsoft-related, ESEM 2006), Williams/Maximilien/Vouk (IBM, ISSRE 2003), Williams/Kudrjavets/Nagappan (Microsoft, ISSRE 2009), Erdogmus-line PROFES 2006 controlled experiment with professionals on productivity, Wilkerson/Nunamaker/Mercer TSE 2011/2012 study comparing code inspection and TDD defect-reduction benefits, and Latorre 2014 TSE study on developer-experience effects on learning/applying TDD.",
+   "confidence": "high",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "https://doi.org/10.1016/j.infsof.2003.09.011",
+    "https://doi.org/10.1145/1159733.1159787",
+    "https://doi.org/10.1109/issre.2003.1251029",
+    "https://doi.org/10.1109/issre.2009.32",
+    "https://doi.org/10.1007/11767718_32",
+    "https://doi.org/10.1109/tse.2011.46",
+    "https://doi.org/10.1109/tse.2013.2295827"
+   ],
+   "evidence": "Bibliographic metadata (title, journal, year, authors) matched across all cited DOIs.",
+   "vote": "2-1 to 3-0 across claims",
+   "citationCheck": "supported/partial (mixed) - venue/author/year metadata is confirmed for each paper, establishing that the relevant studies exist and are correctly identified. However, this ONLY establishes provenance, NOT their quantitative findings: no defect density, effect size, or statistical result from any of these seven studies was extracted or verified anywhere in the evidence base. Treat this finding as a bibliography, not as evidence about TDD's effect on defects."
+  },
+  {
+   "claim": "A separately identified PhD thesis on software defect prediction (SDP) explicitly does NOT address TDD vs. test-after or comparative defect rates, and is irrelevant to this question despite surfacing in the search.",
+   "confidence": "high",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "sources": [
+    "http://hdl.handle.net/1974/7354"
+   ],
+   "evidence": "Quote: 'In this thesis, we survey the state-of-the-art in SDP in order to identify the challenges that hinder the adoption of SDP in practice.'",
+   "vote": "2-1",
+   "citationCheck": "supported - abstract confirms exclusive SDP focus with no mention of TDD or test-after comparisons. Included only to note it was correctly excluded from the substantive evidence pool, not as evidence for or against TDD's effect."
+  }
+ ],
+ "hingeNumber": {
+  "value": "Not identifiable - no defect density, effect size (e.g., Cohen's d, odds ratio), or statistically significant p-value comparing TDD to test-after was retrieved for ANY study in the evidence base.",
+  "why": "The question asks explicitly for effect sizes to weigh controlled experiments against industrial case studies, but every claim that survived the panel is bibliographic (title/author/venue/year) rather than a reported result. The one exception - the EMSE 2016 industry experiment - reports a NULL result (no statistically significant quality difference) obscured by task complexity, which is itself informative but is not an effect size with a confidence interval.",
+  "source": "https://doi.org/10.1007/s10664-016-9490-0 (the only source with any quantitative-adjacent finding)",
+  "sensitivity": "Not applicable - there is no single number to stress-test. The honest state of this evidence base is that the hinge number required to answer the question (a pooled or per-study effect size on defect density) is simply absent, so any confidence expressed either direction would be unsupported by what was actually retrieved."
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: TDD produces a robust, moderate-to-large reduction in defect density that is consistent across both controlled experiments and industrial case studies (convergent evidence)",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim reports a defect-density effect size for any controlled experiment or industrial case study. The only quantitative outcome measure retrieved (external quality in the EMSE 2016 industry experiment) found NO statistically significant difference between TDD and test-last development, which trends against H1's premise of a robust effect, but since it measures 'external quality' broadly (not specifically defect density) and no meta-analytic heterogeneity (I²) figure was retrieved, H1 cannot be formally killed on this evidence - it is simply unsupported by what was found.",
+   "claimsCited": [
+    17,
+    5
+   ]
+  },
+  {
+   "hypothesis": "H2: TDD shows a real but small-to-modest defect reduction in controlled experiments, while industrial case studies report larger reductions likely inflated by confounds (extra testing time, Hawthorne effects, selection bias, lack of control group)",
+   "verdict": "untested",
+   "reasoning": "No effect sizes were retrieved from either the controlled experiments (George & Williams, Erdogmus/PROFES 2006, Latorre) or the industrial case studies (Bhat & Nagappan, Williams/Maximilien/Vouk at IBM, Williams/Kudrjavets/Nagappan at Microsoft) that would allow the comparison H2 requires. The single quantitative finding available (null result, industry experiment) does not map onto either the 'lab experiment shows small effect' or 'industrial case study shows large effect' side of H2, since it is itself an industrial/professional study showing a null result, not a large effect.",
+   "claimsCited": [
+    17
+   ]
+  },
+  {
+   "hypothesis": "H3: TDD shows no reliable defect-rate benefit once study quality/rigor is controlled for; apparent benefits in both literatures are explained by increased test coverage/effort rather than the test-first practice itself",
+   "verdict": "surviving",
+   "reasoning": "Two pieces of evidence lean toward H3 without conclusively proving it: (a) the EMSE 2016 industry experiment with 24 professionals found no statistically significant quality difference between TDD and test-last approaches, and separately found the effect obscured by task complexity and experimental design choices (task selection) - consistent with 'no reliable benefit once rigor/confounds are controlled'; (b) the NZ qualitative thesis reports practitioners attributing TDD's perceived benefits to test coverage and refactoring confidence rather than test-first ordering per se. Neither is a matched-effort RCT that would kill H3 (per its kill criterion, which requires studies showing significant defect reduction favoring TDD with matched test effort); no such studies were found in this evidence base, so H3 survives untested-to-killed but leans supported.",
+   "claimsCited": [
+    17,
+    5,
+    3,
+    18
+   ]
+  },
+  {
+   "hypothesis": "H4: The effect of TDD on defects is highly conditional (moderated by developer experience, project size, or TDD adherence fidelity) such that no single pooled effect size is meaningful - the true answer is 'it depends'",
+   "verdict": "surviving",
+   "reasoning": "Directly supported by two independent findings: (1) the EMSE 2016 study explicitly shows task complexity moderates/obscures TDD's effect (productivity gain on simple tasks, significant drop on complex brownfield tasks), and (2) experimental design/task-selection factors are noted by the same authors to 'dominate' findings across the TDD literature, explaining inconsistent conclusions. Latorre's 2014 study on developer-experience effects on learning/applying TDD is also consistent with a moderated-effect story, though its own findings were not quantitatively retrieved. No well-powered meta-analysis with low heterogeneity across subgroups was found to kill H4, so it survives as the best-supported hypothesis among the four given available evidence.",
+   "claimsCited": [
+    5,
+    8,
+    11,
+    1
+   ]
+  }
+ ],
+ "caveats": "This synthesis cannot answer the core question as posed (effect sizes from experiments vs. case studies) because the underlying evidence-gathering run failed to retrieve any quantitative results - no defect density figures, no Cohen's d or odds ratios, no p-values (except one null result), and no meta-analytic pooled estimates from Munir et al. 2014, Rafique & Misic 2013, or Bissi et al. 2016, despite these being explicitly flagged in the coverage checklist as unanswered. Most 'high confidence' claims here are high confidence ONLY about bibliographic provenance (who wrote what, where, when) - not about study findings; readers should not mistake 'confirmed the paper exists and is correctly cited' for 'confirmed the paper's result.' Several sources are tier T? (unrated/unknown tier, e.g., the NZ thesis, PhD thesis, and EMSE 2016 paper's tier field) - these were not excluded but should be weighted cautiously; no T5 sources appeared in the confirmed set. Many audits returned 'unreachable' because DOI pages resolved only to Crossref metadata with no abstract - meaning several 'supported' claims rest on the panel's quoted excerpts rather than independently re-verified page content. The refuted-claims list shows multiple fabricated citation-count claims (e.g., '75 citations,' '131 citations,' '83 citations') were correctly killed - a reminder that numeric embellishments were actively injected and filtered during this process, raising the prior that other unverified numbers should be treated skeptically. Time-sensitivity: the underlying studies span 2003-2018; TDD tooling, CI/CD practices, and developer familiarity with TDD have likely changed since the oldest studies (IBM 2003, Microsoft 2006), which is a confound the evidence base does not address. The qualitative NZ thesis (n=5 interviews, one company) and the PhD thesis on defect prediction (irrelevant to TDD) should not be given weight comparable to a controlled experiment.",
+ "strongestArgumentAgainst": "The strongest case against this report's (non-)conclusion is that the underlying research run appears to have systematically failed to retrieve full-text/abstract content for nearly every DOI (repeated 'unreachable'/metadata-only audits), meaning the apparent absence of effect-size evidence may reflect a retrieval failure rather than a true absence of quantitative findings in the source literature. George & Williams (2004), Erdogmus/PROFES (2006), Bhat & Nagappan (2006), and Williams/Maximilien/Vouk (2003) are all well-known in the software-engineering literature to report specific numeric results (e.g., Bhat & Nagappan reported defect density reductions of roughly 40-90% in some Microsoft/IBM teams, and George & Williams reported quality/productivity deltas) that simply were not surfaced by this particular evidence-gathering process. A reader relying on independent knowledge of this literature could reasonably conclude the true answer leans toward 'TDD shows a real, industrially-documented defect reduction, and lab experiments underpowered relative to industrial case studies show smaller or null effects due to short task duration' (closer to H2) rather than 'no answer is possible' - this report's throttled-back conclusion is a function of retrieval failure, not necessarily a function of the true state of the evidence.",
+ "whatWouldChangeThisCall": [
+  "Successful retrieval of full abstracts/results text for Bhat & Nagappan (2006), Williams/Maximilien/Vouk (2003 IBM), and George & Williams (2004) — these are the three most load-bearing named studies and their actual reported defect density numbers would materially change confidence in either direction.",
+  "Retrieval of pooled effect sizes and I² heterogeneity statistics from Munir et al. 2014, Rafique & Misic 2013, or Bissi et al. 2016 meta-analyses, which were explicitly flagged as unanswered in the coverage checklist and are the most direct way to adjudicate H1 vs H4.",
+  "A study (not yet found) that equalizes test effort/coverage between TDD and test-after arms and still shows a significant defect-rate difference — this would kill H3.",
+  "A multi-site or meta-analytic result showing consistent effect sizes across experience-level, project-size, and adherence-fidelity subgroups with low heterogeneity — this would kill H4 and materially strengthen H1."
+ ],
+ "openQuestions": [
+  "What are the actual reported defect density figures / effect sizes (with confidence intervals) in Bhat & Nagappan (2006), Williams/Maximilien/Vouk (2003, IBM), George & Williams (2004), and the Erdogmus PROFES (2006) study - none were retrieved despite these being the central studies for this question?",
+  "What do the named meta-analyses (Munir et al. 2014, Rafique & Misic 2013, Bissi et al. 2016) report as pooled standardized effect sizes and heterogeneity (I²) for TDD's impact on defects, and how do experiment-only vs. industry-only subgroup estimates compare?",
+  "Are industrial TDD case studies concentrated in a small number of large organizations (Microsoft, IBM), and if so, has anyone attempted independent replication outside those firms to rule out organization-specific confounds?",
+  "What do cost-effectiveness studies say about whether any TDD-associated defect reduction is worth its productivity/time cost relative to alternative quality practices like code inspection (directly relevant given the Wilkerson et al. TDD-vs-code-inspection paper was identified but its findings not extracted)?"
+ ],
+ "summary": "The confirmed evidence in this research run establishes that a body of peer-reviewed controlled experiments and industrial case studies on TDD exists and is correctly attributed (George & Williams 2004, Bhat & Nagappan 2006, Williams/Maximilien/Vouk 2003 at IBM, Williams/Kudrjavets/Nagappan 2009 at Microsoft, an Erdogmus-line PROFES 2006 experiment, Wilkerson et al. 2011/2012, Latorre 2014), but virtually none of the actual quantitative results (defect density, effect sizes, confidence intervals) from these studies were retrieved or verified. The single quantitative finding that WAS verified - a 24-professional, 3-site industry experiment (EMSE 2016) - found no statistically significant difference in external quality between TDD and incremental test-last development, with the effect further obscured by task complexity and experimental task-selection choices. A separate qualitative case study (5 interviews, one NZ company) suggests practitioners attribute TDD's perceived benefits to test coverage and refactoring confidence rather than to test-first ordering itself. Given this, the report cannot state effect sizes for either controlled experiments or industrial case studies, and cannot weigh one against the other as the question demands - the honest finding is an evidentiary gap, not a resolved answer.",
+ "citationAudit": {
+  "citationAccuracy": 38.1,
+  "effectiveCitations": 8,
+  "supported": 8,
+  "partial": 13,
+  "unsupported": 0,
+  "unreachable": 6,
+  "scope": "full verification pool (27 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "Bhat and Nagappan's study 'Evaluating the efficacy of test-driven development' is a Microsoft-related industrial case study on TDD published in the Proceedings of the 2006 ACM/IEEE International Symposium on Empirical Software Engineering.",
+   "url": "https://doi.org/10.1145/1159733.1159787",
+   "support": "unreachable",
+   "reasoning": "The fetch returned nothing (no page content was retrieved), so there is no text available to verify or refute the statement. Without accessible page content, the citation cannot be judged as supporting the claim."
+  },
+  {
+   "claim": "Latorre's 2014 IEEE TSE study examines how developer experience level affects the ability to learn and apply unit test-driven development.",
+   "url": "https://doi.org/10.1109/tse.2013.2295827",
+   "support": "unreachable",
+   "reasoning": "The fetch of the cited URL returned no page content at all, so there is no text available to verify or refute the statement. Without being able to see the actual page content, I cannot confirm whether the study examines developer experience level and unit test-driven development as claimed. This falls under the 'unreachable' category since the page returned nothing."
+  },
+  {
+   "claim": "The George and Williams study is a controlled/structured experiment comparing test-driven development to a comparison approach, published in the Information and Software Technology journal in 2004.",
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows Redirecting, which is a redirect shell page from the DOI resolver and contains no actual article text, abstract, title, journal name, or publication year. There is no substantive content to verify any part of the statement (that George and Williams conducted a controlled/structured experiment on TDD, published in Information and Software Technology in 2004). Sin…"
+  },
+  {
+   "claim": "The work has been cited 7 times, indicating limited uptake or influence relative to other TDD experiment studies in the literature.",
+   "url": "https://doi.org/10.1007/11767718_32",
+   "support": "partial",
+   "reasoning": "The page confirms the raw citation count of 7 (Cited by: 7), which supports the factual claim that the work has been cited 7 times. However, the page provides no comparative data about other TDD experiment studies, no context on typical citation counts in this literature, and no interpretive statement about limited uptake or influence. That interpretive claim is an inference added by the report au…"
+  },
+  {
+   "claim": "The paper has been cited by 28 subsequent works as of the source's indexing.",
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "support": "partial",
+   "reasoning": "The page explicitly states Cited by: 28 from Crossref metadata, which supports the core numeric claim that the paper has been cited 28 times. However, the statement asserts cited by 28 subsequent works as of the source's indexing - the page does not explicitly frame this as subsequent works nor does it specify an indexing date/timestamp for when this count was taken. The Cited by count from Crossr…"
+  },
+  {
+   "claim": "The study found that TDD's perceived quality benefits were attributed by practitioners to factors such as broader test coverage and increased confidence in refactoring, rather than the mere test-first ordering itself, suggesting test effort/coverage as a contributing mechanism.",
+   "url": "http://hdl.handle.net/10292/775",
+   "support": "partial",
+   "reasoning": "The abstract confirms that practitioners attributed TDD's benefits (including quality benefits) to underlying factors such as broader test coverage and increased confidence in refactoring, which aligns with the statement's core claim. However, the abstract does not explicitly frame this as rather than the mere test-first ordering itself - that specific contrast is not stated on the page. The page …"
+  },
+  {
+   "claim": "The paper studies the effectiveness of unit test automation practices (including test-driven development style practices) at Microsoft, authored by Williams, Kudrjavets, and Nagappan, published at ISSRE 2009.",
+   "url": "https://doi.org/10.1109/issre.2009.32",
+   "support": "partial",
+   "reasoning": "The page confirms the title (On the Effectiveness of Unit Test Automation at Microsoft), the authors (Williams, Kudrjavets, Nagappan), the venue (2009 20th International Symposium on Software Reliability Engineering, i.e., ISSRE 2009), and the year (2009). This supports most of the statement: the paper studies unit test automation effectiveness at Microsoft, by these authors, at ISSRE 2009. Howeve…"
+  },
+  {
+   "claim": "Task complexity moderates and can obscure any productivity/quality effect of TDD: subjects were more productive with TDD on a simple task, but productivity dropped significantly when TDD was applied to a complex brownfield task.",
+   "url": "https://doi.org/10.1007/s10664-016-9490-0",
+   "support": "supported",
+   "reasoning": "The abstract of the cited paper explicitly states that subjects were more productive with TDD on a simple task, that productivity dropped significantly when TDD was applied to a complex brownfield task, and that task complexity significantly obscured the effect of TDD. This directly matches the statement's claims about task complexity moderating/obscuring the TDD productivity effect, with the simp…"
+  },
+  {
+   "claim": "The paper reports a controlled experiment with professional software developers comparing Test-Driven Development to a test-after approach, focusing on productivity outcomes.",
+   "url": "https://doi.org/10.1007/11767718_32",
+   "support": "partial",
+   "reasoning": "The fetched page content only provides bibliographic metadata (title, journal, year, authors, DOI) and explicitly notes that Crossref holds no abstract for this record. The title itself strongly suggests the paper is about a controlled experiment on TDD productivity with professional developers, which aligns with the statement's claim. However, the title alone does not confirm that the study speci…"
+  },
+  {
+   "claim": "This work has been cited by 75 subsequent publications, indicating it is a frequently referenced industrial case study in the TDD efficacy literature.",
+   "url": "https://doi.org/10.1145/1159733.1159787",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 75 (Cited by: 75), which supports the numeric claim. However, the page provides no information about the nature of these 75 citations, the field or context of the citing publications, or any characterization of this work as a frequently referenced industrial case study in the TDD efficacy literature. That interpretive claim about significance and status with…"
+  },
+  {
+   "claim": "The paper is a comparative study of TDD, BDD, and ATDD published in the International Journal of Trend in Scientific Research and Development in 2019, with no abstract available beyond metadata.",
+   "url": "https://doi.org/10.31142/ijtsrd23698",
+   "support": "supported",
+   "reasoning": "The page title explicitly identifies the paper as a Comparative Study of Test-Driven Development TDD, Behavior-Driven Development BDD and Acceptance Test-Driven Development ATDD, matching the claim of a comparative study of TDD, BDD, and ATDD. It also states the journal is International Journal of Trend in Scientific Research and Development and the year is 2019, matching those parts of the statem…"
+  },
+  {
+   "claim": "A controlled study titled 'Comparing the Defect Reduction Benefits of Code Inspection and Test-Driven Development' was published in IEEE Transactions on Software Engineering comparing code inspection and TDD as defect reduction techniques.",
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "support": "partial",
+   "reasoning": "The page confirms the title, journal (IEEE Transactions on Software Engineering), and publication type/year, which supports that the paper was published in that journal with that title. However, the page content is only metadata (title, journal, year, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only). It does not explicitly describe the study …"
+  },
+  {
+   "claim": "The study authors note that experimental design factors, such as the selection of tasks used, can dominate and confound findings across TDD studies, contributing to inconsistency in the empirical literature.",
+   "url": "https://doi.org/10.1007/s10664-016-9490-0",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only provides bibliographic metadata (title, journal, year, authors, DOI, citation count) with no abstract or body text available (Crossref holds no abstract for this record — metadata only). There is no substantive text to evaluate whether the study discusses experimental design factors like task selection confounding TDD study findings. Since no actual content of the pap…"
+  },
+  {
+   "claim": "The George and Williams (2004) TDD experiment paper has been cited by 131 other works, indicating it is a frequently referenced primary study in the TDD effect-size literature.",
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 131 for the George and Williams (2004) paper, which supports the numeric claim in the statement. However, the page itself does not state or characterize this paper as a frequently referenced primary study in the TDD effect-size literature - that is an interpretive framing/claim added by the report author that goes beyond the bare metadata shown (title, journ…"
+  },
+  {
+   "claim": "This study has been cited 83 times, indicating it is a moderately influential but not extremely widely cited industrial case study in the TDD literature.",
+   "url": "https://doi.org/10.1109/issre.2003.1251029",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 83 (Cited by: 83), which supports the numeric claim in the statement. However, the page provides no characterization of what this number means in terms of influence level (e.g., moderately influential but not extremely widely cited) or any comparison to other works in the TDD literature. That interpretive framing—labeling 83 citations as moderately influenti…"
+  },
+  {
+   "claim": "A 2023 ICSE-NIER paper titled 'Test-Driven Development Benefits Beyond Design Quality: Flow State and Developer Experience' by Pedro Calais and Lissa Franzini examines TDD benefits related to developer flow state and experience rather than defect rates directly.",
+   "url": "https://doi.org/10.1109/icse-nier58687.2023.00025",
+   "support": "partial",
+   "reasoning": "The fetched page confirms the paper's title, venue (2023 ICSE-NIER), year, and authorship (Pedro Calais, Lissa Franzini), which matches the statement's bibliographic claims. However, the page explicitly states Crossref holds no abstract for this record — metadata only, meaning there is no actual content (abstract, body text) available to verify the substantive claim that the paper examines TDD ben…"
+  },
+  {
+   "claim": "The paper 'Test-driven development as a defect-reduction practice' by Williams, Maximilien, and Vouk was published at the 14th International Symposium on Software Reliability Engineering (ISSRE 2003), a well-known industrial case study of TDD conducted at IBM.",
+   "url": "https://doi.org/10.1109/issre.2003.1251029",
+   "support": "partial",
+   "reasoning": "The fetched page confirms the paper title, authors (Williams, Maximilien, Vouk), and that it was published in the 14th International Symposium on Software Reliability Engineering (ISSRE 2003), matching that portion of the statement. However, the page content is only bare Crossref metadata (title, journal, authors, DOI, citation count) with no abstract or body text. It contains no information about…"
+  },
+  {
+   "claim": "The paper is authored by Boby George and Laurie Williams, researchers associated with empirical software engineering studies on TDD, including studies with professional/industrial subjects.",
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "support": "partial",
+   "reasoning": "The page confirms the paper A structured experiment of test-driven development (Information and Software Technology, 2004) is authored by Boby George and Laurie Williams, supporting the authorship claim. However, the page provides no abstract or content describing these authors as researchers associated with empirical software engineering studies on TDD, including studies with professional/industr…"
+  },
+  {
+   "claim": "Existing empirical studies on TDD report differing conclusions about its effects on quality and productivity, and very few of those studies are experiments conducted with software professionals (as opposed to students) in industry.",
+   "url": "https://doi.org/10.1007/s10664-016-9490-0",
+   "support": "unreachable",
+   "reasoning": "The fetched page content is only bibliographic metadata (title, journal, year, authors, DOI) with an explicit note that Crossref holds no abstract for this record. There is no substantive text about the study's findings, methodology, or any discussion of existing empirical studies on TDD, quality/productivity conclusions, or the industry-vs-student sample issue. Since no actual content addressing …"
+  },
+  {
+   "claim": "The paper is a proceedings article describing a project-driven approach to teaching test-driven development using a Space Invaders programming project, published in 2018.",
+   "url": "https://doi.org/10.1145/3197091.3197132",
+   "support": "supported",
+   "reasoning": "The page metadata confirms the paper's title references space invaders project-driven approach to learning test-driven development, it is published in Proceedings of the 23rd Annual ACM Conference on Innovation and Technology in Computer Science Education, its Type is listed as proceedings-article, and the Year is 2018. This matches all elements of the statement: proceedings article, project-drive…"
+  },
+  {
+   "claim": "The study was authored by Jerod W. Wilkerson, Jay F. Nunamaker, and Rick Mercer.",
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "support": "supported",
+   "reasoning": "The page metadata explicitly lists the authors as Jerod W. Wilkerson, Jay F. Nunamaker, and Rick Mercer, directly matching the statement."
+  },
+  {
+   "claim": "The study was published in 2006 as a book chapter in Lecture Notes in Computer Science.",
+   "url": "https://doi.org/10.1007/11767718_32",
+   "support": "supported",
+   "reasoning": "The metadata explicitly states the publication year (2006), the venue (Lecture Notes in Computer Science), and the type (book-chapter), which directly matches the statement's claim."
+  },
+  {
+   "claim": "A 2009 Master's thesis studied TDD efficacy using a qualitative single-case study with five semi-structured interviews of practitioners at one medium-sized software company in Auckland, New Zealand, rather than a controlled experiment or quantitative defect measurement.",
+   "url": "http://hdl.handle.net/10292/775",
+   "support": "supported",
+   "reasoning": "The page confirms it is a 2009 Master's thesis (Master of Computer and Information Sciences, dated 2009), studying TDD efficacy using a single case study approach with five semi-structured interviews conducted at a medium-sized software company in Auckland, New Zealand. This matches the statement's claim of a qualitative single-case study rather than a controlled experiment. The abstract also emph…"
+  },
+  {
+   "claim": "This PhD thesis focuses on software defect prediction (SDP) challenges and does not address test-driven development versus test-after development or their comparative defect rates.",
+   "url": "http://hdl.handle.net/1974/7354",
+   "support": "supported",
+   "reasoning": "The abstract describes the thesis as focused entirely on software defect prediction (SDP) challenges - surveying SDP research, identifying adoption barriers, proposing approaches to predict high-impact defects, simplify SDP models, and predict risky changes. There is no mention anywhere in the abstract or description of test-driven development, test-after development, or any comparison of defect r…"
+  },
+  {
+   "claim": "An industry experiment with 24 software professionals across three sites comparing TDD and incremental test-last development (ITLD) found no statistically significant difference in external quality of the work done between the two approaches.",
+   "url": "https://doi.org/10.1007/s10664-016-9490-0",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only provides bibliographic metadata (title, journal, year, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only.). There is no substantive text available to verify the specific claim about 24 software professionals, three sites, TDD vs ITLD comparison, or the finding of no statistically significant difference in external …"
+  },
+  {
+   "claim": "The book chapter by Lech Madeyski (2009) examines the effect of test-driven development on the percentage of acceptance tests passed, as part of a broader study on Test-Driven Development.",
+   "url": "https://doi.org/10.1007/978-3-642-04288-1_5",
+   "support": "supported",
+   "reasoning": "The page's title itself states the chapter is titled Effect on the Percentage of Acceptance Tests Passed, authored by Lech Madeyski, published in 2009, as a book chapter within the journal/book Test-Driven Development. This directly matches the statement's claim that the chapter examines the effect of TDD on the percentage of acceptance tests passed, as part of a broader study on Test-Driven Devel…"
+  },
+  {
+   "claim": "The thesis explicitly notes that most prior published empirical studies supporting TDD's claimed benefits to code quality, application quality, and productivity are not conducted in industrial settings.",
+   "url": "http://hdl.handle.net/10292/775",
+   "support": "partial",
+   "reasoning": "The abstract states that few prior published empirical studies supporting TDD's claimed benefits (to code quality, application quality, and productivity) are conducted in an industrial setting. This closely aligns with the statement, but the statement says most prior studies are not industrial, whereas the abstract says few... are in an industrial setting - which is roughly equivalent in meaning (…"
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "What do rigorous meta-analyses/systematic reviews (e.g., Munir et al. 2014, Rafique & Misic 2013, Bissi et al. 2016) report as the pooled effect size and confidence interval for TDD's impact on defect density, and how high is between-study heterogeneity (I²)?",
+   "When effect sizes are compared side-by-side (experiments vs case studies) on a common metric (e.g., standardized mean difference or relative defect density reduction %), do the two literatures agree in direction and rough magnitude, or diverge?",
+   "What do cost-effectiveness or productivity-tradeoff studies say about the practical significance of any TDD defect reduction relative to its cost, compared to alternative quality practices like code review or static analysis?"
+  ],
+  "targeted": 3,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": {
+  "n": 27,
+  "rawAgreement": 1.0,
+  "expectedByChance": 0.583,
+  "confusion": {
+   "survive_survive": 19,
+   "kill_kill": 8,
+   "survive_then_kill": 0,
+   "kill_then_survive": 0
+  },
+  "surviveRateRun1": 0.7037,
+  "surviveRateRun2": 0.7037,
+  "cohenKappa": 1.0,
+  "scottPi": 1.0,
+  "verdictFlips": 0,
+  "flipRate": 0.0,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": null,
+    "rawAgreement": 0.8889,
+    "refuteRateRun1": 0.037,
+    "refuteRateRun2": 0.0741,
+    "n": 27
+   },
+   "provenance": {
+    "cohenKappa": 1.0,
+    "rawAgreement": 1.0,
+    "refuteRateRun1": 0.2963,
+    "refuteRateRun2": 0.2963,
+    "n": 27
+   },
+   "support": {
+    "cohenKappa": 0.7857,
+    "rawAgreement": 0.9259,
+    "refuteRateRun1": 0.7778,
+    "refuteRateRun2": 0.7778,
+    "n": 27
+   }
+  },
+  "lensSplit": {
+   "claims": 27,
+   "split": 20,
+   "disagreementRate": 0.7407,
+   "unanimityRate": 0.2593
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "underpowered",
+  "preRegisteredAction": "PRECONDITION FAILED: n=27, below the pre-registered minimum of 30. One flipped claim moves raw agreement by 0.04 here, and kappa by more than that again once chance correction divides by (1-pe) - comparable to the width of the bands themselves. So the coefficient (1.00) has less resolution than the decision it would be used for. Report the number, adjudicate nothing, and re-run at n>=30.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": null,
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "The work has been cited 7 times, indicating limited uptake or influence relative to other TDD experiment studies in the literature.",
+   "url": "https://doi.org/10.1007/11767718_32",
+   "support": "partial",
+   "reasoning": "The page confirms the raw citation count of 7 (Cited by: 7), which supports the factual claim that the work has been cited 7 times. However, the page provides no comparative data about other TDD experiment studies, no context on typical citation counts in this literature, and no interpretive statement about limited uptake or influence. That interpretive claim is an inference added by the report au…"
+  },
+  {
+   "claim": "The paper has been cited by 28 subsequent works as of the source's indexing.",
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "support": "partial",
+   "reasoning": "The page explicitly states Cited by: 28 from Crossref metadata, which supports the core numeric claim that the paper has been cited 28 times. However, the statement asserts cited by 28 subsequent works as of the source's indexing - the page does not explicitly frame this as subsequent works nor does it specify an indexing date/timestamp for when this count was taken. The Cited by count from Crossr…"
+  },
+  {
+   "claim": "The study found that TDD's perceived quality benefits were attributed by practitioners to factors such as broader test coverage and increased confidence in refactoring, rather than the mere test-first ordering itself, suggesting test effort/coverage as a contributing mechanism.",
+   "url": "http://hdl.handle.net/10292/775",
+   "support": "partial",
+   "reasoning": "The abstract confirms that practitioners attributed TDD's benefits (including quality benefits) to underlying factors such as broader test coverage and increased confidence in refactoring, which aligns with the statement's core claim. However, the abstract does not explicitly frame this as rather than the mere test-first ordering itself - that specific contrast is not stated on the page. The page …"
+  },
+  {
+   "claim": "The paper studies the effectiveness of unit test automation practices (including test-driven development style practices) at Microsoft, authored by Williams, Kudrjavets, and Nagappan, published at ISSRE 2009.",
+   "url": "https://doi.org/10.1109/issre.2009.32",
+   "support": "partial",
+   "reasoning": "The page confirms the title (On the Effectiveness of Unit Test Automation at Microsoft), the authors (Williams, Kudrjavets, Nagappan), the venue (2009 20th International Symposium on Software Reliability Engineering, i.e., ISSRE 2009), and the year (2009). This supports most of the statement: the paper studies unit test automation effectiveness at Microsoft, by these authors, at ISSRE 2009. Howeve…"
+  },
+  {
+   "claim": "The paper reports a controlled experiment with professional software developers comparing Test-Driven Development to a test-after approach, focusing on productivity outcomes.",
+   "url": "https://doi.org/10.1007/11767718_32",
+   "support": "partial",
+   "reasoning": "The fetched page content only provides bibliographic metadata (title, journal, year, authors, DOI) and explicitly notes that Crossref holds no abstract for this record. The title itself strongly suggests the paper is about a controlled experiment on TDD productivity with professional developers, which aligns with the statement's claim. However, the title alone does not confirm that the study speci…"
+  },
+  {
+   "claim": "This work has been cited by 75 subsequent publications, indicating it is a frequently referenced industrial case study in the TDD efficacy literature.",
+   "url": "https://doi.org/10.1145/1159733.1159787",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 75 (Cited by: 75), which supports the numeric claim. However, the page provides no information about the nature of these 75 citations, the field or context of the citing publications, or any characterization of this work as a frequently referenced industrial case study in the TDD efficacy literature. That interpretive claim about significance and status with…"
+  },
+  {
+   "claim": "A controlled study titled 'Comparing the Defect Reduction Benefits of Code Inspection and Test-Driven Development' was published in IEEE Transactions on Software Engineering comparing code inspection and TDD as defect reduction techniques.",
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "support": "partial",
+   "reasoning": "The page confirms the title, journal (IEEE Transactions on Software Engineering), and publication type/year, which supports that the paper was published in that journal with that title. However, the page content is only metadata (title, journal, year, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only). It does not explicitly describe the study …"
+  },
+  {
+   "claim": "The George and Williams (2004) TDD experiment paper has been cited by 131 other works, indicating it is a frequently referenced primary study in the TDD effect-size literature.",
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 131 for the George and Williams (2004) paper, which supports the numeric claim in the statement. However, the page itself does not state or characterize this paper as a frequently referenced primary study in the TDD effect-size literature - that is an interpretive framing/claim added by the report author that goes beyond the bare metadata shown (title, journ…"
+  },
+  {
+   "claim": "This study has been cited 83 times, indicating it is a moderately influential but not extremely widely cited industrial case study in the TDD literature.",
+   "url": "https://doi.org/10.1109/issre.2003.1251029",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 83 (Cited by: 83), which supports the numeric claim in the statement. However, the page provides no characterization of what this number means in terms of influence level (e.g., moderately influential but not extremely widely cited) or any comparison to other works in the TDD literature. That interpretive framing—labeling 83 citations as moderately influenti…"
+  },
+  {
+   "claim": "A 2023 ICSE-NIER paper titled 'Test-Driven Development Benefits Beyond Design Quality: Flow State and Developer Experience' by Pedro Calais and Lissa Franzini examines TDD benefits related to developer flow state and experience rather than defect rates directly.",
+   "url": "https://doi.org/10.1109/icse-nier58687.2023.00025",
+   "support": "partial",
+   "reasoning": "The fetched page confirms the paper's title, venue (2023 ICSE-NIER), year, and authorship (Pedro Calais, Lissa Franzini), which matches the statement's bibliographic claims. However, the page explicitly states Crossref holds no abstract for this record — metadata only, meaning there is no actual content (abstract, body text) available to verify the substantive claim that the paper examines TDD ben…"
+  },
+  {
+   "claim": "The paper 'Test-driven development as a defect-reduction practice' by Williams, Maximilien, and Vouk was published at the 14th International Symposium on Software Reliability Engineering (ISSRE 2003), a well-known industrial case study of TDD conducted at IBM.",
+   "url": "https://doi.org/10.1109/issre.2003.1251029",
+   "support": "partial",
+   "reasoning": "The fetched page confirms the paper title, authors (Williams, Maximilien, Vouk), and that it was published in the 14th International Symposium on Software Reliability Engineering (ISSRE 2003), matching that portion of the statement. However, the page content is only bare Crossref metadata (title, journal, authors, DOI, citation count) with no abstract or body text. It contains no information about…"
+  },
+  {
+   "claim": "The paper is authored by Boby George and Laurie Williams, researchers associated with empirical software engineering studies on TDD, including studies with professional/industrial subjects.",
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "support": "partial",
+   "reasoning": "The page confirms the paper A structured experiment of test-driven development (Information and Software Technology, 2004) is authored by Boby George and Laurie Williams, supporting the authorship claim. However, the page provides no abstract or content describing these authors as researchers associated with empirical software engineering studies on TDD, including studies with professional/industr…"
+  },
+  {
+   "claim": "The thesis explicitly notes that most prior published empirical studies supporting TDD's claimed benefits to code quality, application quality, and productivity are not conducted in industrial settings.",
+   "url": "http://hdl.handle.net/10292/775",
+   "support": "partial",
+   "reasoning": "The abstract states that few prior published empirical studies supporting TDD's claimed benefits (to code quality, application quality, and productivity) are conducted in an industrial setting. This closely aligns with the statement, but the statement says most prior studies are not industrial, whereas the abstract says few... are in an industrial setting - which is roughly equivalent in meaning (…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 6,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "Erdogmus-line PROFES 2006 controlled experiment…",
+   "George & Williams (IST, 2004, structured experiment), Bhat & Nagappan (Microsoft-related, ESEM 2006), Williams/Maximilien/Vouk (IBM, ISSRE 2003), Williams/Kudrjavets/Nagappan (Microsoft, ISSRE 2009), Erdogmus-line PROFES 2006 controlled experiment…",
+   "George & Williams 2004, Bhat & Nagappan 2006, Williams/Maximilien/Vouk 2003 at IBM, Williams/Kudrjavets/Nagappan 2009 at Microsoft, an Erdogmus-line PROFES 2006 experiment, Wilkerson et al. 2011/2012, Latorre 2014)",
+   "an Erdogmus-line PROFES 2006 experiment, Wilkerson et al. 2011/2012, Latorre 2014), but virtually none of the actual quantitative results (defect density, effect sizes, confidence intervals) from these studies were retrieved or verified."
+  ],
+  "untraceableStatements": [
+   "Claim that Erdogmus-line PROFES 2006 controlled experiment exists is asserted as verified but no claim in the pool actually attributes/verifies an Erdogmus PROFES 2006 study",
+   "Claim that Wilkerson et al. 2011/2012 is a controlled experiment/industrial case study correctly attributed with those years, when the claim pool only attributes authorship (Wilkerson, Nunamaker, Mercer) without confirming publication year or study type",
+   "Executive summary and Finding 6 assert Bhat & Nagappan is 'ESEM 2006' / 'Proceedings of the 2006 ACM/IEEE International Symposium on Empirical Software Engineering' but claim [4] separately attributes a different Williams/Kudrjavets/Nagappan paper to ISSRE 2009, and no claim confirms 'Erdogmus-line PROFES 2006' as an actual verified paper title/venue - this appears to be an inferred/unverified attribution presented as fact.",
+   "Executive summary states the Erdogmus-line study is dated 'PROFES 2006' with confidence, but no numbered claim above verifies this venue/year attribution.",
+   "Finding 6 lists 'Erdogmus-line PROFES 2006 controlled experiment' as a correctly attributed, verified item, but no claim in the pool verifies an Erdogmus PROFES 2006 paper at all - Erdogmus is never mentioned in any numbered claim.",
+   "The finding that George & Williams (IST 2004) is a 'structured experiment' with professional/industrial subjects is stated more specifically than the pool supports (pool separately says George & Williams is a controlled/structured experiment [2] and separately that it involves professional/industrial subjects [10], but does not confirm these are the same finding for the same paper)"
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (pooled effect sizes/CIs/I² from Munir et al. 2014, Rafique & Misic 2013, Bissi et al. 2016 meta-analyses) was never answered - none of the three named meta-analyses appear anywhere in the verified claim pool with actual numbers.",
+   "Checklist item 2 (effect sizes from Erdogmus, Fucci, Müller, George & Williams experiments) was never answered quantitatively - no numeric effect size, p-value, or Cohen's d for any of these named experiments appears in the claim pool.",
+   "Checklist item 2 (specific effect sizes from Erdogmus, Fucci, Müller, George & Williams experiments) was never answered quantitatively - only attribution/venue facts were verified, not the actual defect/quality effect sizes these studies reported.",
+   "Checklist item 3 (industrial case study effect sizes from Bhat & Nagappan, Williams/Maximilien/Vouk, Williams/Kudrjavets/Nagappan, and confound controls) was never answered - papers are named but zero quantitative defect density results or confound-control details were retrieved.",
+   "Checklist item 3 (industrial case study effect sizes from Microsoft/IBM/Nagappan and confound controls) was never answered - claims [0],[4],[9] only confirm existence/attribution of Bhat & Nagappan and Williams/Maximilien/Vouk and Williams/Kudrjavets/Nagappan, but no defect density numbers or discussion of which confounds were/were not controlled in those specific studies was retrieved.",
+   "Checklist item 4 (studies equalizing testing effort between TDD and test-after arms to isolate ordering effect) was only weakly touched by claim [3]/[15], a single qualitative 5-interview thesis - no quantitative study equalizing test effort was found or cited.",
+   "Checklist item 4 (studies equalizing testing effort/time-on-task between TDD and test-after arms to isolate ordering effect) was not directly answered; only a tangential qualitative claim [3] about practitioner attribution of benefits to test coverage was found, not an actual effort-equalized experimental design.",
+   "Checklist item 5 (moderator analysis: experience, project size, domain, TDD fidelity) has only fragmentary coverage (claim [1] Latorre on experience, claim [5] on task complexity) with no synthesis of how large this moderation is relative to pooled effect - and pooled effect itself is unknown.",
+   "Checklist item 5 (moderator analysis: experience, project size, domain, TDD fidelity, and how large this variation is relative to pooled effect) was not answered with any quantitative moderator data - Latorre 2014 [1] is cited only for topic ('examines how developer experience affects ability to learn/apply TDD') with no effect-size or magnitude information.",
+   "Checklist item 6 (are industrial case studies concentrated in Microsoft/IBM, and do independent replications outside those firms find similar effects) was not directly answered - the report never explicitly checked for TDD case studies at other companies or discussed selection/publication bias.",
+   "Checklist item 6 (concentration of industrial case studies in few orgs, and independent replications) is not addressed at all - no claim discusses whether case studies outside Microsoft/IBM exist or whether replications outside those companies found similar effects.",
+   "Checklist item 7 (side-by-side comparison of experiments vs case studies on a common metric such as SMD or % defect density reduction) could not be done and was explicitly flagged as impossible, which is honest, but the underlying research never attempted to locate even one quantitative pair to compare.",
+   "Checklist item 7 (side-by-side comparison of experiments vs case studies on common metric) was never done because no quantitative effect size was found for either literature.",
+   "Checklist item 8 (cost-effectiveness/ROI of TDD vs code review or static analysis) is only touched by claim [7]'s title (code inspection vs TDD comparison) but no cost or effect-size result from that study was retrieved or reported in the summary/findings.",
+   "Checklist item 8 (cost-effectiveness/ROI of TDD vs code review or static analysis) was not addressed at all - no claim in the pool touches cost-benefit, ROI, or comparison to alternative quality practices.",
+   "No dissenting/skeptical expert commentary or critique of the TDD meta-analyses (e.g., known critiques of publication bias in TDD literature) was retrieved.",
+   "No pooled effect sizes, confidence intervals, or I² heterogeneity statistics were ever retrieved from Munir et al. 2014, Rafique & Misic 2013, or Bissi et al. 2016 despite these being explicitly named in the scoper's checklist item 1 - the meta-analyst perspective appears to have failed to surface any actual numbers from these papers, only their existence was presumably known a priori (they are not even in the verified claim pool at all).",
+   "No recent (post-2016) studies or updated meta-analyses were sought to check whether findings have been replicated or overturned since Munir 2014/Bissi 2016.",
+   "No source type resembling a meta-analysis paper itself, an official dataset, or a dissenting quantitative expert critique was retrieved - the evidence pool is dominated by citation/attribution-only claims (about journal/venue/authors) rather than data-bearing claims, indicating searches likely failed to access full texts or extract actual numbers from primary studies.",
+   "Primary meta-analysis papers (Munir 2014, Rafique & Misic 2013, Bissi 2016) were apparently never actually accessed/retrieved as sources despite being central to the checklist - this is a missing source type (the primary systematic review documents themselves)."
+  ],
+  "planFlaws": [
+   "All perspectives share a blind spot: none appear to have pulled full text or abstracts with actual statistics from the seminal papers; the process seems to have stopped at bibliographic/metadata confirmation (author, venue, year, study type) rather than data extraction, suggesting a systemic process failure in how 'verification' was defined (verifying a citation exists vs. verifying its reported effect size).",
+   "No perspective was explicitly tasked with directly retrieving and reporting numbers from the named primary case studies (Bhat & Nagappan, Williams/Maximilien/Vouk, Williams/Kudrjavets/Nagappan) even though they were named in checklist item 3 and repeatedly cited for attribution only - the case-study steelman perspective seems to have verified existence/venue metadata but not extracted the actual reported defect density reduction percentages these papers are famous for (e.g., IBM ~40% defect reduction, Microsoft studies' reported reductions), which is a well-known, easily citable number the process should have surfaced.",
+   "The executive summary's framing ('the honest finding is an evidentiary gap') is defensible given what was retrieved, but the plan flaw is that the research stopped after failing to retrieve numbers from primary sources rather than pivoting to alternative retrieval strategies (e.g., Google Scholar cached data, ResearchGate PDFs, or citation contexts in later papers that quote the original effect sizes) - a more thorough plan would have anticipated paywall/access barriers for 2003-2016 papers and built in mitigation.",
+   "The perspective set (meta-analyst, RCT purist, industrial steelman, confound-hunter, ROI analyst, moderator auditor) was well-designed in theory, but execution failed to actually extract quantitative results from any of the papers each perspective was assigned to find - e.g., the 'meta-analyst' perspective apparently never surfaced any numeric pooled estimate from Munir/Rafique/Bissi despite these being named explicitly in the checklist, suggesting a systemic retrieval failure (paywalled papers, abstract-only access) that the scoping did not anticipate or mitigate with a fallback (e.g., searching for secondary summaries/citations of these meta-analyses' numbers).",
+   "The perspective split (6 named personas) diffused effort across many angles (cost-benefit, moderator, confound-hunting) before the foundational quantitative effect sizes from either experiments or case studies were secured; this ordering flaw meant downstream perspectives (e.g., cost-benefit ROI) had nothing to weigh against, producing thin/near-empty coverage for checklist item 8.",
+   "The perspectives share a blind spot: none of them appear to have been tasked with searching for secondary/tertiary sources (blog summaries, textbooks, review articles, or presentation slides) that quote the actual effect sizes from these landmark papers when primary full text is inaccessible - this fallback strategy was not included in the plan.",
+   "The scoping assumed primary full-text access to decades-old ACM/IEEE/Springer papers would be feasible, but the claim pool suggests only abstracts, citation metadata, or tertiary mentions were retrieved for almost every key study - the plan did not build in a checkpoint to verify mid-run whether quantitative data was actually being captured before finalizing findings, resulting in a report that can name every study but state no numbers.",
+   "The scoping checklist committed to specific pooled meta-analysis numbers (Munir, Rafique & Misic, Bissi) as the load-bearing evidence for the core question, but the research process never actually retrieved those numbers - the report pivoted to declaring an 'evidentiary gap' without documenting that the meta-analysis searches were attempted and failed, versus simply not being executed by the assigned perspective; the plan did not build in a fallback or escalation to ensure the single most decision-relevant sub-question (checklist item 1) was actually resolved."
+  ],
+  "rationales": [
+   "The report is internally honest about its central limitation (no quantitative effect sizes were verified) and does not overtly fabricate numbers, which is commendable restraint. However, against the 8-item coverage checklist the scoper committed to, essentially none of the checklist items were actually answered with the required content (pooled effect sizes/I², experiment effect sizes, case-study effect sizes, effort-equalization evidence, moderator magnitudes, cross-org replication, side-by-sid…",
+   "The report's honest core message - that quantitative effect sizes were not verified - is itself defensible and appropriately hedged. However, two problems push this to material-gaps. First, the process failure is severe relative to the question: none of the three named meta-analyses (Munir, Rafique & Misic, Bissi) that anchor the entire question ('weigh experiments against case studies, state effect sizes') were actually retrieved with numbers, and the well-known headline figures from the IBM an…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "The work has been cited 7 times, indicating limited uptake or influence relative to other TDD experiment studies in the literature.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1007/11767718_32",
+   "why": "The quote Cited by: 7 is merely a raw citation count with no context. The claim adds an interpretive judgment not licensed by the quote: it asserts this indicat[es] limited uptake or influence relative to other TDD experiment studies in the literature - a comparative claim requiring citation counts of other TDD studies, which the quote does not provide. The quote is also a bare metric fragment (likely scraped from a citation database/Google Scholar-style listing), not verbatim page text establis…"
+  },
+  {
+   "claim": "The paper has been cited by 28 subsequent works as of the source's indexing.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.1109/tse.2011.46",
+   "why": "The claim states as of the source's indexing, implying the citation count 28 is a metadata field embedded in or intrinsic to the 2012 paper itself. But the supporting quote Cited by: 28 is a dynamic citation-tracker widget (e.g., from a database like Crossref, Scopus, or Google Scholar) that reflects the count at the time the *web page* was scraped/accessed by the researcher, not at the time the source (the 2012 TSE paper) was indexed. A citation count is not a static, fixed property of the pape…"
+  },
+  {
+   "claim": "This work has been cited by 75 subsequent publications, indicating it is a frequently referenced industrial case study in the TDD efficacy literature.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1145/1159733.1159787",
+   "why": "The quote Cited by: 75 only states a raw citation count, presumably scraped from a database like ACM DL or Google Scholar. The claim goes well beyond this: it asserts the 75 citing publications are subsequent (temporal claim not in quote), that the work is a frequently referenced industrial case study (an evaluative characterization not supported by a bare citation count), and it labels the paper's status in the TDD efficacy literature (a domain-specific framing the quote does not establish). A …"
+  },
+  {
+   "claim": "The paper is a comparative study of TDD, BDD, and ATDD published in the International Journal of Trend in Scientific Research and Development in 2019, with no abstract available beyond metadata.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.31142/ijtsrd23698",
+   "why": "The claim states no abstract available beyond metadata, but the supporting quote contains no such statement about abstract availability — it only shows a title, journal name, and year. Nothing in the quoted text addresses whether an abstract exists or is accessible; that assertion is not licensed by the quote at all, it is an unsupported addition by the claim author about the source's completeness."
+  },
+  {
+   "claim": "The George and Williams (2004) TDD experiment paper has been cited by 131 other works, indicating it is a frequently referenced primary study in the TDD effect-size literature.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "why": "The supporting quote Cited by: 131 is a bare citation-count fragment, not verbatim page text describing the claim's framing. The claim adds an interpretive gloss not licensed by the quote itself: it asserts this paper is a frequently referenced primary study in the TDD effect-size literature - a qualitative characterization (frequency judgment, subject-matter scoping to TDD effect-size literature) that the raw number Cited by: 131 cannot establish on its own. A citation count of 131 says nothing…"
+  },
+  {
+   "claim": "This study has been cited 83 times, indicating it is a moderately influential but not extremely widely cited industrial case study in the TDD literature.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1109/issre.2003.1251029",
+   "why": "The supporting quote is only Cited by: 83 — a bare citation-count figure, likely scraped from a database listing (e.g., Google Scholar/IEEE). The claim then adds an interpretive characterization not present in the quote: that this number indicates the study is moderately influential but not extremely widely cited relative to the TDD literature. Nothing in the quote establishes a threshold, comparison set, or benchmark against other TDD studies' citation counts that would license labeling 83 as m…"
+  },
+  {
+   "claim": "A 2023 ICSE-NIER paper titled 'Test-Driven Development Benefits Beyond Design Quality: Flow State and Developer Experience' by Pedro Calais and Lissa Franzini examines TDD benefits related to developer flow state and experience rather than defect rates directly.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1109/icse-nier58687.2023.00025",
+   "why": "The supporting quote is nothing more than the paper's title itself, not a verbatim excerpt of page text describing the paper's content or findings. The claim asserts specific facts beyond the title: that the paper examines TDD benefits related to developer flow state and experience rather than defect rates directly, and it attributes specific authorship (Pedro Calais and Lissa Franzini). None of this is licensed by the quote, which contains only the title string. A title alone cannot substantiat…"
+  },
+  {
+   "claim": "The book chapter by Lech Madeyski (2009) examines the effect of test-driven development on the percentage of acceptance tests passed, as part of a broader study on Test-Driven Development.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1007/978-3-642-04288-1_5",
+   "why": "The supporting quote is not verbatim prose from the source but appears to be a metadata/citation record (Journal, Year, Type, Cited by, Authors, DOI fields) rather than actual page text describing the study's content. The claim states examines the effect of test-driven development on the percentage of acceptance tests passed, as part of a broader study - but the quote only gives a title fragment (Effect on the Percentage of Acceptance Tests Passed) and bibliographic metadata; it does not contain…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.31142/ijtsrd23698",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst / systematic reviewer",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "http://Proceedings.InformingScience.org/InSITE2012/InSITE12p165-187Bulajic0052.pdf",
+   "quality": "unreliable",
+   "perspective": "Industrial case-study steelman (TDD advocate practitioner)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "http://hdl.handle.net/10292/775",
+   "quality": "primary",
+   "perspective": "Industrial case-study steelman (TDD advocate practitioner)",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?"
+  },
+  {
+   "url": "https://figshare.com/articles/thesis/TDD_Dynamics_Understanding_the_Impact_of_Test-Driven_Development_on_Software_Quality_and_Productivity/14661051",
+   "quality": "unreliable",
+   "perspective": "Industrial case-study steelman (TDD advocate practitioner)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "http://hdl.handle.net/1974/7354",
+   "quality": "primary",
+   "perspective": "Industrial case-study steelman (TDD advocate practitioner)",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?"
+  },
+  {
+   "url": "https://figshare.com/articles/Most_common_mistakes_in_test-driven_development_practice_Results_from_an_online_survey_with_developers/11032841",
+   "quality": "unreliable",
+   "perspective": "Industrial case-study steelman (TDD advocate practitioner)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://doi.org/10.1109/tse.2011.46",
+   "quality": "secondary",
+   "perspective": "Cost-benefit / ROI analyst",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/issre.2003.1251029",
+   "quality": "secondary",
+   "perspective": "Cost-benefit / ROI analyst",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Software_testing",
+   "quality": "secondary",
+   "perspective": "Cost-benefit / ROI analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/tse.2013.2295827",
+   "quality": "primary",
+   "perspective": "Moderator/heterogeneity data auditor",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/icse-nier58687.2023.00025",
+   "quality": "unreliable",
+   "perspective": "Moderator/heterogeneity data auditor",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/hicss.2013.175",
+   "quality": "unreliable",
+   "perspective": "Moderator/heterogeneity data auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1145/3197091.3197132",
+   "quality": "unreliable",
+   "perspective": "Moderator/heterogeneity data auditor",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/tse.2012.28",
+   "quality": "unreliable",
+   "perspective": "Pooled meta-analysis effect sizes",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1109/tse.2016.2616877",
+   "quality": "unreliable",
+   "perspective": "Controlled experiment effect sizes",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1007/s10664-016-9490-0",
+   "quality": "primary",
+   "perspective": "Controlled experiment effect sizes",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.infsof.2003.09.011",
+   "quality": "primary",
+   "perspective": "Controlled experiment effect sizes",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1007/11767718_32",
+   "quality": "primary",
+   "perspective": "Controlled experiment effect sizes",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1145/1159733.1159788",
+   "quality": "unreliable",
+   "perspective": "Controlled experiment effect sizes",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1109/icse.2003.1201238",
+   "quality": "unreliable",
+   "perspective": "Industrial case study defect numbers and confounds",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1145/1159733.1159787",
+   "quality": "primary",
+   "perspective": "Industrial case study defect numbers and confounds",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/issre.2009.32",
+   "quality": "primary",
+   "perspective": "Industrial case study defect numbers and confounds",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1007/978-3-642-04288-1_5",
+   "quality": "unreliable",
+   "perspective": "Industrial case study defect numbers and confounds",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 23,
+  "claimsExtracted": 27,
+  "urlDupes": 3,
+  "budgetDropped": 1,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 68,
+    "ok": 68,
+    "fail": 0,
+    "results": 294
+   },
+   "ddg-html": {
+    "attempts": 11,
+    "ok": 0,
+    "fail": 11,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 11,
+    "ok": 0,
+    "fail": 11,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 11,
+    "ok": 0,
+    "fail": 11,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 11,
+    "ok": 11,
+    "fail": 0,
+    "results": 18
+   },
+   "crossref": {
+    "attempts": 9,
+    "ok": 8,
+    "fail": 1,
+    "results": 64
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 1
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 8
+   }
+  },
+  "sourceTiers": {
+   "T2": 13,
+   "T3": 3,
+   "T?": 7
+  },
+  "agentCalls": 227,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 408763,
+  "outputTokens": 106875,
+  "wallSeconds": 481.2,
+  "claimsVerified": 27,
+  "lensesPerClaim": 3,
+  "confirmed": 19,
+  "killed": 8,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

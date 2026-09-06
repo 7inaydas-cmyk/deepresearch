@@ -42,8 +42,18 @@ engines:
     disabled: false
   - name: mojeek
     disabled: false
+  # DISABLED 2026-09-06 after it was caught returning FABRICATED results. Every
+  # qwant hit on this instance was a nonsense domain with a gibberish title —
+  # http://dawedep.hu/cunfone "Uno nudge publication bias effect", http://ug.pn/jikuvioha
+  # "Bo cedlamceh nudge publication bias", http://robe.ir/wit "Ot sisum fozziop comcejvi"
+  # — interleaved one-for-one with Bing's genuine results, so half of every result page
+  # was invented. The picker correctly rejected them, which is why 11 of 15 pick calls
+  # in one run returned nothing and the run finished with 12 claims instead of 30.
+  #
+  # A search engine injecting fabricated sources into a tool built for factual
+  # correctness is the worst failure available here. Leave this off.
   - name: qwant
-    disabled: false
+    disabled: true
   - name: wikipedia
     disabled: false
   - name: wikidata

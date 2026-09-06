@@ -1,0 +1,26 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does raising the minimum wage reduce employment? Weigh the Card and Krueger tradition against Neumark and Wasc
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Does the best available bias-corrected evidence show that minimum wage increases in the ranges typic
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Primary-literature academic | Meta-analysis data auditor | Steelman for disemployment effects | Modern quasi-experimental constructor | Heterogeneity investigator | Policy institution assessor
+  [w1] Modern quasi-experimental constructor: 8 hits -> 4 picked
+  [w1] Steelman for disemployment effects: 8 hits -> 4 picked
+  [w1] Meta-analysis data auditor: 8 hits -> 4 picked
+  [w1] Primary-literature academic: 8 hits -> 4 picked
+  [w1] Heterogeneity investigator: 8 hits -> 4 picked
+  [w1] Policy institution assessor: 8 hits -> 4 picked
+[w1] 16 sources, 31 claims
+Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups
+  [w2] Institutional/policy estimate: 8 hits -> 3 picked
+  [w2] Bias-corrected meta-analysis elasticity: 8 hits -> 3 picked
+  [pick:Seattle large-hike case study] recovered a double-encoded array: the field arrived as a JSON STRING holding 5 item(s), not as an array
+  [w2] Seattle large-hike case study: 8 hits -> 5 picked
+  [w2] Monopsony theoretical mechanism: 8 hits -> 6 picked
+  [w2] NW critique of CK94: 8 hits -> 5 picked
+[w2] 10 sources, 14 claims
+EXCLUDED 4 claim(s) from non-citable sources (T5 content farms): academia.edu
+NOTE: 15 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 9 distinct sub-question buckets (of 8)
+Total: 26 sources -> 45 claims -> verifying 30
