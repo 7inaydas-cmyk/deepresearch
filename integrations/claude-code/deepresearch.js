@@ -159,6 +159,10 @@ const TIER_RULES = [
   ['T4', /(^|\.)(indeed\.[\w.]+|glassdoor\.[\w.]+|levels\.fyi|linkedin\.com|ziprecruiter\.com|g2\.com|capterra\.com|trustpilot\.com|producthunt\.com|crunchbase\.com|payscale\.com|comparably\.com)$/i],
 ]
 const FARM_TELLS = /\b(top \d+ best|ultimate guide|you won'?t believe|listicle|sponsored content|affiliate link)\b/i
+// Key on claim + source URL. Identical claim text extracted from two different
+// URLs is two different citations; keying on the text alone let one audit
+// verdict silently govern both.
+const auditKey = (claim, url) => String(claim) + '\u0000' + String(url)
 const TIER_RANK = { T1: 0, T2: 1, 'T?': 2, T3: 3, T4: 4, T5: 5 }
 const CITABLE = new Set(['T1', 'T2', 'T?', 'T3'])   // T4 discovery-only, T5 excluded
 const hostOf = u => { const m = String(u).match(URL_HOST_PATTERN); return m ? m[1].toLowerCase() : '' }
@@ -581,7 +585,20 @@ const qualRank = { primary: 0, secondary: 1, blog: 2, forum: 3, unreliable: 4 }
 // entire verify budget while another gets zero slots — which is exactly how a whole
 // part of a question ends up unanswered. Round-robin by sub-question instead: every
 // sub-question is verified once before any is verified twice.
-const byRank = (a, b) => (impRank[a.importance] - impRank[b.importance]) || (qualRank[a.sourceQuality] - qualRank[b.sourceQuality])
+// Deterministic tier first: it is a pure function of the host, where
+// `importance` and `sourceQuality` are the extractor grading its own work.
+const tierRankOf = c => (TIER_RANK[c.tier] === undefined ? 3 : TIER_RANK[c.tier])
+const byRank = (a, b) => (tierRankOf(a) - tierRankOf(b)) ||
+  (impRank[a.importance] - impRank[b.importance]) ||
+  (qualRank[a.sourceQuality] - qualRank[b.sourceQuality])
+// T4 is discovery-only and T5 is a content farm: neither may be cited as fact,
+// so neither belongs in the pool that produces cited findings. Report the
+// exclusion rather than performing it silently.
+const citableOnly = claims => {
+  const keep = [], dropped = []
+  for (const c of claims) (CITABLE.has(c.tier || 'T3') ? keep : dropped).push(c)
+  return { keep, dropped }
+}
 // One canonical bucket key, used by BOTH the balancer and the rescue check so
 // they can never disagree about which sub-question a claim belongs to.
 const sqKey = c => {
@@ -614,7 +631,11 @@ function coverageBalanced(claims, cap) {
   }
   return out
 }
-const rankedClaims = coverageBalanced(allClaims, T.maxVerify)
+const { keep: citableClaims, dropped: nonCitable } = citableOnly(allClaims)
+if (nonCitable.length) {
+  log('EXCLUDED ' + nonCitable.length + ' claim(s) from non-citable sources (T4 aggregators / T5 content farms)')
+}
+const rankedClaims = coverageBalanced(citableClaims, T.maxVerify)
 log('Verify pool spans ' + new Set(rankedClaims.map(sqKey)).size + ' distinct sub-question buckets (of ' + SUBQ.length + ')')
 if (allClaims.length > rankedClaims.length) {
   log('NOTE: ' + (allClaims.length - rankedClaims.length) + ' lower-ranked claims dropped before verification (cap ' + T.maxVerify + ') — NOT covered by this report')
@@ -640,6 +661,7 @@ const baseStats = extra => Object.assign({
   urlDupes: dupes.length,
   budgetDropped: budgetDropped.length,
   claimsDroppedBeforeVerify: DROPPED_BEFORE_VERIFY,
+  claimsExcludedNonCitable: nonCitable.length,
 }, extra)
 
 if (rankedClaims.length === 0) {
@@ -837,10 +859,10 @@ if (T.factAudit) {
   // The panel judges whether the ARGUMENT holds. The audit judges whether the
   // cited PAGE actually says it. A claim needs both. A survivor whose citation
   // comes back unsupported is demoted here rather than printed with a footnote.
-  const unsupported = new Set(factRows.filter(f => f.support === 'unsupported').map(f => f.claim))
-  const demoted = confirmed.filter(c => unsupported.has(c.claim))
+  const unsupported = new Set(factRows.filter(f => f.support === 'unsupported').map(f => auditKey(f.claim, f.url)))
+  const demoted = confirmed.filter(c => unsupported.has(auditKey(c.claim, c.sourceUrl)))
   if (demoted.length > 0) {
-    confirmed = confirmed.filter(c => !unsupported.has(c.claim))
+    confirmed = confirmed.filter(c => !unsupported.has(auditKey(c.claim, c.sourceUrl)))
     killed = killed.concat(demoted.map(c => ({ ...c, killedBy: (c.killedBy ? c.killedBy + '+' : '') + 'citation-audit' })))
     log('AUDIT DEMOTED ' + demoted.length + ' claim(s): the panel passed them but the cited page does not support them')
   }
@@ -857,14 +879,14 @@ if (confirmed.length === 0) {
     sources: sourceRows(), stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverifiedCount: unverified.length }),
   }
 }
-const factByClaim = new Map(factRows.map(f => [f.claim, f]))
+const factByClaim = new Map(factRows.map(f => [auditKey(f.claim, f.url), f]))
 
 // ═══ Phase 7: Synthesize ════════════════════════════════════════════════════
 phase('Synthesize')
 const confRank = { high: 0, medium: 1, low: 2 }
 const block = confirmed.map((c, i) => {
   const best = c.verdicts.filter(v => !v.refuted).sort((a, b) => confRank[a.confidence] - confRank[b.confidence])[0] || { confidence: 'low', evidence: '' }
-  const f = factByClaim.get(c.claim)
+  const f = factByClaim.get(auditKey(c.claim, c.sourceUrl))
   return '### [' + i + '] ' + webText(c.claim) + '\n' +
     'Vote: ' + (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes +
     ' · Source: ' + webText(c.sourceUrl) + ' (tier ' + webText(c.tier || '?') + ', ' + webText(c.sourceQuality) + ', ' + webText(c.publishDate || 'undated') + ')\n' +

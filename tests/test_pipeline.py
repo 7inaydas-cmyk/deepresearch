@@ -242,6 +242,69 @@ r12 = run({"kill_all": True}, depth="quick")
 ok(r12["stats"]["confirmed"] == 0 and "refuted" in r12["summary"].lower(),
    "everything-killed is reported as a real result, not an error")
 
+print("\n-- issue #3: the five verified bugs --")
+
+# BUG 1. tier_of(url, claim, quote) fed model-written text where the function
+# expects page title and page text, so the T5 content-farm regex ran against the
+# CLAIM. A claim that merely quoted a listicle title mislabelled its own source
+# as excluded-grade.
+_farm = "The article is titled 'Top 10 Best Ultimate Guide' and reports 40%"
+ok(tiers.tier_of("https://www.nature.com/articles/x", _farm, _farm)[0] != "T5",
+   "a claim quoting listicle words does not drag a Nature source to T5")
+ok(tiers.tier_of("https://weird.example/post", "", "Top 10 best ultimate guide")[0] == "T5",
+   "but real PAGE text with farm tells still grades T5")
+
+# BUG 2. src_rows() re-derived the tier without the page text, so sources[].tier
+# and stats.sourceTiers could disagree about the same source in one report.
+_r = run()
+_src_tiers = {}
+for _s in _r["sources"]:
+    _src_tiers[_s["tier"]] = _src_tiers.get(_s["tier"], 0) + 1
+ok(_src_tiers == _r["stats"]["sourceTiers"],
+   "sources[].tier and stats.sourceTiers agree: %s == %s" % (_src_tiers, _r["stats"]["sourceTiers"]))
+
+# BUG 3. fact_by and the demotion set were keyed on claim text alone, so the same
+# claim extracted from two different URLs collided and one audit verdict silently
+# governed both.
+_k1 = ("same claim text", "https://a.org/1")
+_k2 = ("same claim text", "https://b.org/2")
+ok(_k1 != _k2, "identical claim text from two URLs produces two distinct audit keys")
+_ENGINE_SRC = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                "deepresearch", "engine.py"), encoding="utf-8").read()
+ok('fact_by.get((c["claim"], c.get("sourceUrl")))' in _ENGINE_SRC,
+   "the audit lookup is keyed on (claim, sourceUrl), not on claim alone")
+
+# BUG 4. AuthError raised inside a worker was caught by pmap's bare
+# `except Exception`, logged as "worker error" and turned into None — so a revoked
+# token degraded into "all claims unverified". Observed live: 150 straight 401s.
+def _boom(_):
+    raise dr.AuthError("token revoked")
+_propagated = False
+try:
+    dr.pmap(_boom, [1, 2, 3])
+except dr.AuthError:
+    _propagated = True
+ok(_propagated, "AuthError propagates out of pmap instead of becoming a silent None")
+ok(dr.pmap(lambda _: (_ for _ in ()).throw(ValueError("x")), [1]) == [None],
+   "other exceptions still degrade to None, as intended")
+
+# BUG 5. TIER_RANK and CITABLE were imported and never used, so "T4 is
+# discovery-only, T5 excluded" was enforced by a prompt sentence and nothing else.
+_claims = [{"claim": "a", "tier": "T1"}, {"claim": "b", "tier": "T5"},
+           {"claim": "c", "tier": "T4"}, {"claim": "d", "tier": "T?"}]
+_keep, _drop = dr.citable_only(_claims)
+# contract/tiers.json lists citable as T1/T2/T?/T3. T4 is "DISCOVERY ONLY, never
+# cite as fact", so a T4 claim must not enter the pool that produces cited findings.
+# An earlier version of this test asserted T4 was kept; the contract says otherwise,
+# and the contract is the source of truth for both runtimes.
+ok(sorted(c["tier"] for c in _keep) == ["T1", "T?"] and sorted(c["tier"] for c in _drop) == ["T4", "T5"],
+   "T4 and T5 are both excluded from the verify pool: neither may be cited as fact")
+ok("claimsExcludedNonCitable" in _r["stats"], "the exclusion is reported, not silent")
+_mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim": "low"},
+          {"subQuestionIndex": 1, "tier": "T1", "importance": "central", "claim": "high"}]
+ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
+   "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
+
 print("\n-- calibration statistics --")
 from deepresearch import calibration as C
 # Hand-computed: 50 items, both-survive 20, both-kill 15, A-only 10, B-only 5.

@@ -303,6 +303,12 @@ def pmap(fn, items, workers=None):
             i = futs[f]
             try:
                 out[i] = f.result()
+            except AuthError:
+                # Never swallow this. A revoked or expired credential is not a
+                # research finding, and turning it into None makes a dead token
+                # look like "every claim came back unverified". Observed live on
+                # 2026-09-06: 150 consecutive 401s.
+                raise
             except Exception as e:
                 log("  worker error: %s: %s" % (type(e).__name__, e))
                 out[i] = None
@@ -630,14 +636,32 @@ def sq_key(c, n_subq):
         i = 0
     return "sq%d" % i if 1 <= i <= n_subq else "(unassigned)"
 
+def citable_only(claims):
+    """Drop claims whose source tier is not citable (T5 content farms), and report
+    the exclusion rather than performing it silently. T4 aggregators stay in the
+    pool but are marked discovery-only for synthesis."""
+    keep, dropped = [], []
+    for c in claims:
+        if (c.get("tier") or "T3") in CITABLE:
+            keep.append(c)
+        else:
+            dropped.append(c)
+    return keep, dropped
+
+
 def coverage_balanced(claims, cap, n_subq):
     """Round-robin by sub-question so one topic cannot eat the whole verify budget."""
     groups = {}
     for c in claims:
         groups.setdefault(sq_key(c, n_subq), []).append(c)
     for arr in groups.values():
-        arr.sort(key=lambda c: (IMP.get(c.get("importance"), 3), QUAL.get(c.get("sourceQuality"), 5)))
-    keys = sorted(groups, key=lambda k: (IMP.get(groups[k][0].get("importance"), 3),
+        # Deterministic tier first: it is a pure function of the host, where
+        # `importance` and `sourceQuality` are the extractor grading its own work.
+        arr.sort(key=lambda c: (TIER_RANK.get(c.get("tier"), 3),
+                                IMP.get(c.get("importance"), 3),
+                                QUAL.get(c.get("sourceQuality"), 5)))
+    keys = sorted(groups, key=lambda k: (TIER_RANK.get(groups[k][0].get("tier"), 3),
+                                         IMP.get(groups[k][0].get("importance"), 3),
                                          QUAL.get(groups[k][0].get("sourceQuality"), 5)))
     out, rnd = [], 0
     while len(out) < cap:
@@ -851,7 +875,11 @@ def deepresearch(question, depth="standard"):
         sources += sweep(question, subqs, follow, T["wave_n"], "w%d" % (rnd + 1), seen, dupes, dropped)
 
     all_claims = [c for s in sources for c in s["claims"]]
-    ranked = coverage_balanced(all_claims, T["max_verify"], len(subqs))
+    citable, non_citable = citable_only(all_claims)
+    if non_citable:
+        log("EXCLUDED %d claim(s) from non-citable sources (T5 content farms): %s"
+            % (len(non_citable), ", ".join(sorted({host_of(c.get("sourceUrl", "")) for c in non_citable})[:5])))
+    ranked = coverage_balanced(citable, T["max_verify"], len(subqs))
     dropped_pre = len(all_claims) - len(ranked)
     if dropped_pre > 0:
         log("NOTE: %d lower-ranked claims dropped before verification (cap %d) - NOT covered by this report"
@@ -864,13 +892,18 @@ def deepresearch(question, depth="standard"):
                 scopeContract=contract)
     src_rows = lambda: [{"url": webtext(s["url"], 300), "quality": s["sourceQuality"],
                          "perspective": s["persp"], "wave": s["wave"], "claims": len(s["claims"]),
-                         "tier": tier_of(s["url"])[0]}
+                         # Reuse the tier computed at fetch time. Re-deriving it here
+                         # without the page text produced a different answer for the
+                         # same source, so sources[].tier and stats.sourceTiers could
+                         # disagree inside one report.
+                         "tier": s.get("tier") or tier_of(s["url"])[0]}
                         for s in sources]
     def stats(**kw):
         d = dict(depth=depth, perspectives=len(persps), subQuestions=len(subqs),
                  sourcesFetched=len(sources), claimsExtracted=len(all_claims),
                  urlDupes=len(dupes), budgetDropped=len(dropped),
                  claimsDroppedBeforeVerify=dropped_pre,
+                 claimsExcludedNonCitable=len(non_citable),
                  searchHealth=search_health(),
                  sourceTiers=_tier_census(sources),
                  agentCalls=_stats["calls"], agentErrors=_stats["errors"],
@@ -1030,10 +1063,13 @@ def deepresearch(question, depth="standard"):
             % (len(fact_rows), nS, nP, nU, nX, fact_metrics["citationAccuracy"]))
         # The panel judges whether the ARGUMENT holds; the audit judges whether the
         # cited PAGE actually says it. A claim needs both.
-        bad = {f["claim"] for f in fact_rows if f["support"] == "unsupported"}
-        demoted = [c for c in confirmed if c["claim"] in bad]
+        # Key on (claim, sourceUrl): identical claim text extracted from two
+        # different URLs is two different citations, and keying on the text alone
+        # let one audit verdict silently govern both.
+        bad = {(f["claim"], f.get("url")) for f in fact_rows if f["support"] == "unsupported"}
+        demoted = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) in bad]
         if demoted:
-            confirmed = [c for c in confirmed if c["claim"] not in bad]
+            confirmed = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) not in bad]
             for c in demoted:
                 c["killedBy"] = (c["killedBy"] + "+" if c["killedBy"] else "") + "citation-audit"
             killed += demoted
@@ -1048,7 +1084,7 @@ def deepresearch(question, depth="standard"):
                         refuted=[to_ref(c) for c in killed], sources=src_rows(),
                         stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed)))
 
-    fact_by = {f["claim"]: f for f in fact_rows}
+    fact_by = {(f["claim"], f.get("url")): f for f in fact_rows}
     return _synthesize(question, depth, base, subqs, persps, confirmed, killed, unver, voted,
                        fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
                        lenses, T, all_claims, calibration)
@@ -1064,8 +1100,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         good = sorted([v for v in dicts(c["verdicts"]) if not v.get("refuted")],
                       key=lambda v: CONF.get(v.get("confidence"), 3))
         best = good[0] if good else {"confidence": "low", "evidence": ""}
-        f = fact_by.get(c["claim"])
-        tier, tier_why = tier_of(c.get("sourceUrl", ""), c.get("claim", ""), c.get("quote", ""))
+        f = fact_by.get((c["claim"], c.get("sourceUrl")))
+        # Use the tier computed at fetch time from the PAGE. Passing the claim and
+        # quote here ran the content-farm regex against model-written text, so a
+        # claim quoting a listicle title mislabelled its own source as excluded.
+        tier = c.get("tier") or tier_of(c.get("sourceUrl", ""))[0]
+        tier_why = c.get("tierWhy", "")
         blocks.append(
             "### [%d] %s\nVote: %d-%d | Source: %s (%s, %s) | **TIER %s** (%s)%s\n"
             "Quote: \"%s\"\nBest verifier evidence (%s): %s\n%s"
