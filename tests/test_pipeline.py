@@ -334,6 +334,16 @@ _mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim"
 ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
    "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
 
+print("\n-- issue #4: strike or flag? --")
+ok(r["processCritique"]["policy"] == "flag", "default policy is flag: nothing is deleted on an unmeasured judgement")
+ok(r["processCritique"]["struckFromSummary"] == [], "and nothing was struck under the default")
+dr.UNTRACEABLE_POLICY = "strike"
+_rs = run()
+ok(_rs["processCritique"]["policy"] == "strike", "DR_UNTRACEABLE=strike switches the behaviour")
+ok(isinstance(_rs["processCritique"]["struckFromSummary"], list),
+   "whatever is struck is recorded, so a deletion is never invisible")
+dr.UNTRACEABLE_POLICY = "flag"
+
 print("\n-- issue #12: honest limits travel with the report --")
 _hl = r.get("honestLimits") or {}
 ok(set(_hl) >= {"falseKillRateUnmeasured", "reliabilityNotValidity", "confirmedMeans"},

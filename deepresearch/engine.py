@@ -68,6 +68,14 @@ CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
 # Filled in at ranking time so synthesis can disclose the coverage limit.
 DROP_N = DROP_TOTAL = DROP_PCT = 0
 SAMPLE_DROPPED_N = int(os.environ.get("DR_SAMPLE_DROPPED", "0"))
+# What to do with summary sentences the critic says trace to no verified claim.
+#   "flag"   report them and leave the text intact (default)
+#   "strike" remove them from the summary and record what was removed
+# Default is "flag" deliberately: the critic is itself a model, its precision has
+# never been measured, and deleting sentences on an unmeasured judgement can
+# remove correct material. But leaving it to the reader is a human-in-the-loop
+# step presented as automation, so "strike" exists and is one flag away.
+UNTRACEABLE_POLICY = os.environ.get("DR_UNTRACEABLE", "flag")
 
 _print_lock = threading.Lock()
 def log(msg):
@@ -1308,7 +1316,25 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             "this run saw a scholarly-only slice of the web and its coverage gaps are a "
             "search artefact rather than evidence that nothing exists."),
     }
-    out["processCritique"] = {"verdict": verdict, "untraceableStatements": uniq("untraceableStatements"),
+    _untraceable = uniq("untraceableStatements")
+    _struck = []
+    if UNTRACEABLE_POLICY == "strike" and _untraceable:
+        # Strike only sentences we can actually locate. A fuzzy match would delete
+        # text the critic did not object to, which is worse than leaving it.
+        _summary = out.get("summary") or ""
+        for _u in _untraceable:
+            _frag = _u.split('"')[1] if '"' in _u else ""
+            if _frag and len(_frag) > 25 and _frag in _summary:
+                _summary = _summary.replace(_frag, "")
+                _struck.append(_frag)
+        if _struck:
+            out["summary"] = re.sub(r"\s{2,}", " ", _summary).strip()
+            log("STRUCK %d untraceable statement(s) from the summary (DR_UNTRACEABLE=strike)"
+                % len(_struck))
+    out["processCritique"] = {"verdict": verdict,
+                              "policy": UNTRACEABLE_POLICY,
+                              "struckFromSummary": _struck,
+                              "untraceableStatements": _untraceable,
                               "coverageGaps": uniq("coverageGaps"), "planFlaws": uniq("planFlaws"),
                               "rationales": [webtext(c.get("rationale", ""), 500) for c in crits]}
     out["refuted"] = [to_ref(c) for c in killed]
