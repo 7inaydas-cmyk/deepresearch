@@ -334,6 +334,29 @@ _mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim"
 ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
    "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
 
+print("\n-- issues #10 / #11: injected-defect probes --")
+from deepresearch import probes as P
+_c = [{"claim": "Sitting time fell by 64 minutes per day.", "sourceUrl": "https://doi.org/10.1/a"},
+      {"claim": "The blood pressure effect was not significant.", "sourceUrl": "https://doi.org/10.1/b"},
+      {"claim": "Standing correlated with less discomfort.", "sourceUrl": "https://doi.org/10.1/c"}]
+_pr = P.make_audit_probes(_c, 3)
+ok(len(_pr) == 3 and all(x["expected"] == "unsupported" for x in _pr),
+   "audit probes are claims the cited page provably does NOT support")
+ok(all(x["claim"] != x["original"] for x in _pr), "every probe actually mutates its claim")
+ok(P.score_audit_probes([dict(x, support="supported") for x in _pr])["catchRate"] == 0.0,
+   "an auditor that waves all defects through scores 0.0, not a flattering number")
+_s = P.score_audit_probes([dict(x, support="unsupported") for x in _pr])
+ok(_s["catchRate"] == 1.0 and "catches defects of this kind" in _s["reading"],
+   "and a perfect catch is reported as 'of this kind', never as validity")
+_deg, _pl = P.make_critic_probes("A summary.", _c)
+ok(len(_pl) == 3 and all(p["text"] in _deg for p in _pl),
+   "critic probes append fabricated sentences that trace to no claim")
+_cs = P.score_critic_probes(_pl, [], "material-gaps", "material-gaps")
+ok(_cs["verdictMoved"] is False and "saturated" in _cs["reading"],
+   "a verdict that does not move when 3 fabrications are added is reported as saturated (#10)")
+ok(P.score_critic_probes(_pl, [], "minor-gaps", "material-gaps")["verdictMoved"] is True,
+   "and a verdict that does move is reported as responsive")
+
 print("\n-- issue #4: strike or flag? --")
 ok(r["processCritique"]["policy"] == "flag", "default policy is flag: nothing is deleted on an unmeasured judgement")
 ok(r["processCritique"]["struckFromSummary"] == [], "and nothing was struck under the default")
