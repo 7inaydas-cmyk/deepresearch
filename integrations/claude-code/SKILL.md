@@ -88,6 +88,18 @@ premises into sub-questions to *test*, not to assume — but only if it can see 
 Expect roughly 15 minutes at `quick`, 30-50 at `standard`, 60-90 at `exhaustive`.
 Concurrency is capped at `min(16, CPUs - 2)` per workflow, so agents queue.
 
+## Measuring the tool rather than the topic
+
+`args: {question, depth, calibrate: N}` re-runs the panel on N claims and reports Cohen's
+kappa, Scott's pi, per-lens agreement and a pre-registered gate verdict. It roughly
+doubles the verify cost for those N claims, so do not add it to an ordinary research
+request. **The gate needs N ≥ 30** — below that it returns `underpowered` on purpose,
+because one flipped claim moves kappa by about the width of the bands at that size.
+
+Read `calibration.gateVerdict` with `calibration.perLens` beside it. A clean aggregate
+with one lens below 0.4 is capped at `usable but noisy`, because a 2-of-3 vote can turn
+unstable raters into a stable-looking verdict.
+
 ## Before you trust a thin result: check search coverage
 
 `stats.searchHealth` gives per-backend attempt and result counts. DuckDuckGo and Mojeek

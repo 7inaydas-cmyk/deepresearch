@@ -1,0 +1,5 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does using a standing desk instead of a sitting desk improve health outcomes or productivity for office worker
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+  [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (1/5)
+  [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (2/5)

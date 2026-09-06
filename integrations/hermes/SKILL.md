@@ -67,6 +67,21 @@ drop the variable and SAY in your report that coverage was scholarly-only.
 It prints JSON immediately: `pid`, `log`, `report`, `poll`, and an `expect` duration.
 Use a distinct `--out` filename per run if two could overlap.
 
+**Optional flags, for measuring the tool rather than the topic.** Do not add these to an
+ordinary research request - they roughly double the cost of the verify phase.
+
+| Flag | Env | What it does |
+|---|---|---|
+| `--calibrate N` | `DR_CALIBRATE` | Re-runs the panel on N claims and reports Cohen's kappa, Scott's pi, per-lens agreement and a pre-registered gate verdict. **Needs N >= 30**; below that the gate returns `underpowered` on purpose. |
+| `--sample-dropped N` | `DR_SAMPLE_DROPPED` | Verifies N claims the budget discarded and reports how often they would have survived. |
+| `DR_UNTRACEABLE=strike` | | Removes untraceable sentences instead of flagging them. Default `flag`. |
+
+**Preflight.** `python3 -m deepresearch --selftest` now exits `0` healthy, `1` failed,
+`2` auth failed, `3` DEGRADED - every dependency works but no general-web backend
+returns anything, so the run would be scholarly-only. On `3`, start the SearXNG
+container before launching; if you cannot, run anyway and SAY in your report that
+coverage was scholarly-only.
+
 **Step 2 - poll.** Returns instantly, well inside the timeout. Relay the interesting lines
 as they appear (perspectives chosen, claims killed, RESCUE firing, citation accuracy) so a
 long run does not look like a hang:

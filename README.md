@@ -147,6 +147,28 @@ Beyond findings and citations, the report is a decision document:
 - **`whatWouldChangeThisCall`** — concrete findings that would flip it.
 - **`findings[].factOrInference`** — `fact` / `inference` / `assumption`, so inference cannot wear the costume of fact.
 - **`stats.sourceTiers`** — the tier census.
+- **`hypothesisVerdicts`** — every hypothesis from the framing contract, marked `killed`, `surviving` or `untested`, with back-references to the claims that decided it. The contract is adjudicated, not just written.
+- **`honestLimits`** — the caveats, shipped *inside* the payload. A limitation that lives only in a README is one the person reading a pasted JSON blob never sees.
+- **`citationPartials`** — claims the blind re-fetch rated `partial`. These are **kept**, so read them before quoting a number or an attribution.
+- **`processCritique.untraceableCount`** — read this, not `verdict`. The verdict was measured not to move when three fabricated sentences were added.
+
+### Flags for measuring the tool itself
+
+These exist because the tool's own claims needed testing, and they are the same
+instruments the numbers below were produced with.
+
+| Flag | Env | What it does |
+|---|---|---|
+| `--calibrate N` | `DR_CALIBRATE` | Re-runs the panel on N verified claims and reports Cohen's kappa, Scott's pi, per-lens agreement, the confusion matrix and a pre-registered gate verdict. Doubles the verify cost for those N claims. **The gate needs N ≥ 30.** |
+| `--sample-dropped N` | `DR_SAMPLE_DROPPED` | Verifies N claims the budget discarded and reports how often they would have survived. Turns "most of the evidence is never checked" from a worry into a number. |
+| — | `DR_UNTRACEABLE=strike` | Removes untraceable sentences from the summary instead of flagging them. Default is `flag`, because the critic's precision is unmeasured and deleting on an unmeasured judgement is the unearned confidence this tool exists to catch. |
+| `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded** — everything works but no general-web backend returns anything, so the run would be scholarly-only. |
+
+```bash
+python3 -m deepresearch.probes --report runs/your-run.json --out runs/probes.json
+```
+
+Injects known defects into a finished report and measures whether the citation auditor and the process critic catch them. See below for what it found.
 
 ## Source tiering is code, not vibes
 
