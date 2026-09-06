@@ -1,0 +1,15 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Do behavioural 'nudge' interventions produce meaningful real-world effect sizes once publication bias is corre
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: After applying the publication-bias corrections proposed by Maier et al. (2022) and Szaszi et al. to
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Primary-literature academic | Steelman defender of original nudge effect | Data auditor / constructor from raw dataset | Skeptic hunting the strongest null case | Practitioner / behavioral-insights unit | Domain-heterogeneity investigator
+  [w1] Domain-heterogeneity investigator: 8 hits -> 0 picked
+  [w1] Skeptic hunting the strongest null case: 8 hits -> 1 picked
+  [w1] Steelman defender of original nudge effect: 8 hits -> 0 picked
+  [w1] Practitioner / behavioral-insights unit: 8 hits -> 1 picked
+  [w1] Data auditor / constructor from raw dataset: 8 hits -> 2 picked
+  [w1] Primary-literature academic: 8 hits -> 0 picked
+[w1] 4 sources, 4 claims
+Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups

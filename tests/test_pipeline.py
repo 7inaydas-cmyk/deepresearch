@@ -468,5 +468,36 @@ ok('"-m", "deepresearch"' in _src,
 ok("cwd=pkg_parent" in _src, "and from the package parent, so the import resolves")
 ok("deepresearch.py --question" not in _src, "the done_when hint matches the real process name")
 
+print("\n-- empty required arrays are a schema violation, not an answer (#16) --")
+_short = dr._schema_shortfall(dr.S_FRAMING, {
+    "decisionAtStake": "x", "keyQuestion": "y",
+    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": []})
+ok(len(_short) == 3, "an empty framing contract is caught on all three required arrays, not accepted")
+ok(any("hypotheses=0" in x for x in _short), "and the log names which array and by how much: %r" % _short[:1])
+ok(dr._schema_shortfall(dr.S_FRAMING, {
+    "decisionAtStake": "x", "keyQuestion": "y",
+    "assumptions": ["a", "b"], "whatWouldChangeTheAnswer": ["c", "d"],
+    "hypotheses": [{"hypothesis": "h1", "killCriterion": "k1"},
+                   {"hypothesis": "h2", "killCriterion": "k2"}]}) == [],
+   "a contract that meets its own minItems passes untouched")
+ok(dr._schema_shortfall(dr.S_PLAN, {"strategy": "s", "subQuestions": ["a"], "perspectives": []})
+   and len(dr._schema_shortfall(dr.S_PLAN, {"strategy": "s", "subQuestions": ["a"], "perspectives": []})) == 2,
+   "the guard is general: a truncated PLAN response is caught the same way")
+ok(dr._schema_shortfall(dr.S_PICK, {"results": []}) == [],
+   "schemas with no minItems are left alone - an empty pick list is a real answer")
+ok(dr._schema_shortfall(dr.S_FRAMING, "<UNKNOWN>") == [],
+   "a non-dict response is left to the sentinel guard rather than double-reported")
+ok(dr.S_FRAMING["properties"]["assumptions"].get("minItems") == 2,
+   "S_FRAMING now DECLARES the minimum it needs - the guard can only enforce what the schema states")
+# dr.agent is stubbed by this suite, so read the file rather than the live object.
+_engine_src = open(dr.__file__, encoding="utf-8").read()
+_agent_src = _engine_src.split("def agent(", 1)[1].split("\ndef ", 1)[0]
+ok("_schema_shortfall" in _agent_src and "retrying" in _agent_src,
+   "and agent() retries on it, so every structured call is covered, not just framing")
+_dr_src = _insp.getsource(dr.deepresearch)
+ok("NOTHING will be adjudicated" in _dr_src,
+   "a run that ends with no hypotheses says so loudly - empty hypothesisVerdicts otherwise "
+   "reads identically to 'every hypothesis survived'")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

@@ -207,6 +207,17 @@ import fs2 from 'node:fs'
   ok(out.processCritique.policy === 'flag' && Array.isArray(out.processCritique.struckFromSummary),
      'strike/flag policy is present and defaults to flag (#4)')
 }
+{
+  const { out, logs } = await run('T18 an empty framing contract is retried, not accepted (#16)',
+    { question: 'Q', depth: 'standard' }, { short_framing_once: true })
+  ok(logs.some(l => l.includes('violates its own schema')),
+     'zero assumptions and zero hypotheses is caught as a schema violation, not read as an answer')
+  ok(logs.some(l => l.includes('hypotheses=0')),
+     'and the log names the offending array, so the next reader is not debugging blind')
+  ok(Array.isArray(out.hypothesisVerdicts) && out.hypothesisVerdicts.length === 2,
+     'the retry recovers a real contract, so hypotheses are adjudicated after all')
+  ok(!out.error, 'and the run completes normally')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

@@ -221,6 +221,38 @@ def _has_unknown_sentinel(obj, depth=0):
     return False
 
 
+def _schema_shortfall(schema, obj):
+    """Required arrays that came back shorter than the schema's own minItems.
+
+    The tool-call layer checks types but lets an empty array through where
+    `minItems` says it must not be, and an empty array is not a sentinel, so the
+    <UNKNOWN> guard above never sees it. Measured 2026-09-06: framing returned
+    `assumptions: []` and `hypotheses: []` on live runs, so every later phase that
+    reads the contract silently had nothing to read. The report still printed, and
+    the headline promise - falsifiable kill criteria written before searching -
+    simply had not happened, with nothing anywhere saying so.
+
+    An empty required array is a schema violation, not an answer. Treat it the way
+    the sentinel is treated: retry, and say why in the log.
+    """
+    if not isinstance(obj, dict):
+        return []
+    props = schema.get("properties") or {}
+    short = []
+    for name in schema.get("required") or []:
+        spec = props.get(name) or {}
+        if spec.get("type") != "array":
+            continue
+        need = spec.get("minItems")
+        if not need:
+            continue
+        got = obj.get(name)
+        n = len(got) if isinstance(got, list) else 0
+        if n < need:
+            short.append("%s=%d (schema requires %d)" % (name, n, need))
+    return short
+
+
 def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5):
     """One independent subagent. Returns the validated structured object, or None."""
     body = {
@@ -267,6 +299,14 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                     if _has_unknown_sentinel(got) and attempt < retries - 1:
                         log("  [%s] API returned an <UNKNOWN> sentinel instead of the "
                             "structured fields; retrying (%d/%d)" % (label, attempt + 1, retries))
+                        time.sleep(delay); delay *= 2
+                        break
+                    short = _schema_shortfall(schema, got)
+                    if short and attempt < retries - 1:
+                        with _stats_lock:
+                            _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
+                        log("  [%s] response violates its own schema: %s; retrying (%d/%d)"
+                            % (label, ", ".join(short), attempt + 1, retries))
                         time.sleep(delay); delay *= 2
                         break
                     return got
@@ -341,8 +381,8 @@ S_FRAMING = {
     "properties": {
         "decisionAtStake": {"type": "string"},
         "keyQuestion": {"type": "string"},
-        "assumptions": {"type": "array", "items": {"type": "string"}},
-        "whatWouldChangeTheAnswer": {"type": "array", "items": {"type": "string"}},
+        "assumptions": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "whatWouldChangeTheAnswer": {"type": "array", "minItems": 2, "items": {"type": "string"}},
         "hypotheses": {"type": "array", "minItems": 2, "maxItems": 4, "items": {
             "type": "object", "required": ["hypothesis", "killCriterion"],
             "properties": {"hypothesis": {"type": "string"}, "killCriterion": {"type": "string"}}}},
@@ -877,6 +917,13 @@ def deepresearch(question, depth="standard"):
         globals()["HYPOTHESES"] = dicts(contract.get("hypotheses"))
         log("Assumptions stated: %d | hypotheses w/ kill criteria: %d"
             % (len(as_str_list(contract.get("assumptions"))), len(dicts(contract.get("hypotheses")))))
+    if not HYPOTHESES:
+        # Say it loudly here as well as in the report. A run with no hypotheses is
+        # not doing the thing this tool leads with, and the only previous signal was
+        # an empty `hypothesisVerdicts` in the JSON, which reads identically to
+        # "every hypothesis survived".
+        log("WARNING: no hypotheses survived framing, so NOTHING will be adjudicated. "
+            "This run is an ordinary literature summary, not a discriminated one.")
 
     REQ = ["strategy", "subQuestions", "perspectives"]
     plan, subqs, persps = None, [], []
@@ -1374,6 +1421,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             "this run saw a scholarly-only slice of the web and its coverage gaps are a "
             "search artefact rather than evidence that nothing exists."),
     }
+    if not HYPOTHESES:
+        out["honestLimits"]["noFramingContract"] = (
+            "The framing agent returned no hypotheses, so nothing was adjudicated. "
+            "`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT "
+            "because every hypothesis survived - the two look identical in this JSON and "
+            "mean opposite things. Read this report as an ordinary literature summary.")
     _untraceable = uniq("untraceableStatements")
     _struck = []
     if UNTRACEABLE_POLICY == "strike" and _untraceable:

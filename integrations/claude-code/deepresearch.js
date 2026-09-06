@@ -117,11 +117,41 @@ const hasUnknownSentinel = (o, d = 0) => {
 // the ones someone remembered to guard.
 // A wrapper with its own name, not a reassignment: `agent` may be a const binding
 // in the workflow runtime, and reassigning it would throw at load time.
+// Required arrays that came back shorter than the schema's own minItems. The
+// tool-call layer checks types but lets an empty array through where minItems says
+// it must not be, and an empty array is not a sentinel, so the guard above never
+// sees it. Measured in the Python build on 2026-09-06: framing returned zero
+// assumptions and zero hypotheses, so every later phase that reads the contract
+// silently had nothing to read and the report still printed. An empty required
+// array is a schema violation, not an answer — retry it like the sentinel.
+const schemaShortfall = (schema, obj) => {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return []
+  const props = (schema && schema.properties) || {}
+  const out = []
+  for (const name of (schema && schema.required) || []) {
+    const spec = props[name] || {}
+    if (spec.type !== 'array' || !spec.minItems) continue
+    const got = obj[name]
+    const n = Array.isArray(got) ? got.length : 0
+    if (n < spec.minItems) out.push(name + '=' + n + ' (schema requires ' + spec.minItems + ')')
+  }
+  return out
+}
 const agentChecked = async (prompt, opts) => {
+  const schema = (opts && opts.schema) || {}
   for (let attempt = 1; attempt <= 3; attempt++) {
     const got = await agent(prompt, opts)
-    if (!hasUnknownSentinel(got)) return got
-    log('[' + ((opts && opts.label) || 'agent') + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
+    const label = (opts && opts.label) || 'agent'
+    if (hasUnknownSentinel(got)) {
+      log('[' + label + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
+      continue
+    }
+    const short = schemaShortfall(schema, got)
+    if (short.length && attempt < 3) {
+      log('[' + label + '] response violates its own schema: ' + short.join(', ') + '; retrying (' + attempt + '/3)')
+      continue
+    }
+    return got
   }
   return null
 }
@@ -186,8 +216,8 @@ const FRAMING_SCHEMA = {
   properties: {
     decisionAtStake: { type: 'string' },
     keyQuestion: { type: 'string' },
-    assumptions: { type: 'array', items: { type: 'string' } },
-    whatWouldChangeTheAnswer: { type: 'array', items: { type: 'string' } },
+    assumptions: { type: 'array', minItems: 2, items: { type: 'string' } },
+    whatWouldChangeTheAnswer: { type: 'array', minItems: 2, items: { type: 'string' } },
     hypotheses: { type: 'array', minItems: 2, maxItems: 4, items: {
       type: 'object', required: ['hypothesis', 'killCriterion'],
       properties: { hypothesis: { type: 'string' }, killCriterion: { type: 'string' } } } },

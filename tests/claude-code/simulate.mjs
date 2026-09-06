@@ -24,8 +24,15 @@ function makeAgent(cfg) {
 
     if (L === 'framing') {
       if (cfg.no_framing) return null
+      // An EMPTY framing contract: type-valid, schema-invalid, and invisible until
+      // the report came out with nothing adjudicated. Fires once, then behaves. (#16)
+      if (cfg.short_framing_once && !cfg._shortFired) {
+        cfg._shortFired = true
+        return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: [],
+                 whatWouldChangeTheAnswer: [], hypotheses: [] }
+      }
       return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
-               whatWouldChangeTheAnswer: ['w1'],
+               whatWouldChangeTheAnswer: ['w1', 'w2'],
                hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }] }
     }
     if (L.startsWith('plan')) {

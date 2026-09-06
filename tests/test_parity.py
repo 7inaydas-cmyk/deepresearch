@@ -32,6 +32,7 @@ SHARED = {
     "framing/plan split":        ("S_FRAMING", "FRAMING_SCHEMA"),
     "validation adapter":        ("def as_list", "const asList"),
     "<UNKNOWN> sentinel retry":  ("_UNKNOWN_SENTINEL", "hasUnknownSentinel"),
+    "empty-array schema retry":  ("_schema_shortfall", "schemaShortfall"),
     "deterministic tiering":     ("def tier_of", "const tierOf"),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),
     "citable enforcement":       ("citable_only", "citableOnly"),
