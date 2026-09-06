@@ -42,6 +42,19 @@ jobs:
       - run: node --check integrations/claude-code/deepresearch.js
       - run: cd tests/claude-code && node test-workflow.mjs
 
+  parity:
+    # The two runtimes share contract/tiers.json and nothing else, so parity is a
+    # property nobody observes unless something checks. They have drifted three
+    # times, silently, each time costing a hand-port of a feature nobody noticed
+    # was missing. This is that something.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tests/test_parity.py
+
   contract:
     # The tier rules are shared between the Python engine and the Claude Code
     # workflow. If this file drifts or stops parsing, both runtimes grade

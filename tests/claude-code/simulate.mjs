@@ -107,6 +107,11 @@ function makeAgent(cfg) {
                findings: [{ claim: 'Merged 1', confidence: 'high', sources: ['https://a.org/1'], evidence: 'ev',
                             vote: '3-0', citationCheck: 'supported', sourceTier: 'T1', factOrInference: 'fact' }],
                contradictions: ['synth contradiction'],
+               hypothesisVerdicts: [
+                 { hypothesis: 'h1', verdict: 'killed', killCriterion: 'k1',
+                   reasoning: 'claim [0] triggers it', claimsCited: [0] },
+                 { hypothesis: 'h2', verdict: 'untested', killCriterion: 'k2',
+                   reasoning: 'no confirmed claim bears on it' }],
                strongestArgumentAgainst: 'the crux was never evidenced',
                whatWouldChangeThisCall: ['a real RCT'],
                caveats: 'caveats', openQuestions: ['OQ1'] }

@@ -262,7 +262,8 @@ const FACT_SCHEMA = {
   },
 }
 const REPORT_SCHEMA = {
-  type: 'object', required: ['answerFirst', 'summary', 'findings', 'caveats', 'strongestArgumentAgainst', 'whatWouldChangeThisCall'],
+  type: 'object', required: ['answerFirst', 'summary', 'findings', 'caveats', 'strongestArgumentAgainst',
+             'whatWouldChangeThisCall', 'hypothesisVerdicts'],
   properties: {
     answerFirst: { type: 'string' },
     hingeNumber: { type: 'string' },
@@ -279,6 +280,14 @@ const REPORT_SCHEMA = {
         factOrInference: { enum: ['fact', 'inference', 'assumption'] },
       } } },
     contradictions: { type: 'array', items: { type: 'string' } },
+    hypothesisVerdicts: { type: 'array', items: {
+      type: 'object', required: ['hypothesis', 'verdict', 'reasoning'],
+      properties: {
+        hypothesis: { type: 'string' },
+        verdict: { enum: ['killed', 'surviving', 'untested'] },
+        killCriterion: { type: 'string' },
+        reasoning: { type: 'string' },
+        claimsCited: { type: 'array', items: { type: 'integer' } } } } },
     strongestArgumentAgainst: { type: 'string' },
     whatWouldChangeThisCall: { type: 'array', items: { type: 'string' } },
     caveats: { type: 'string' },
@@ -641,6 +650,9 @@ if (allClaims.length > rankedClaims.length) {
   log('NOTE: ' + (allClaims.length - rankedClaims.length) + ' lower-ranked claims dropped before verification (cap ' + T.maxVerify + ') — NOT covered by this report')
 }
 const DROPPED_BEFORE_VERIFY = allClaims.length - rankedClaims.length
+const DROP_N = DROPPED_BEFORE_VERIFY
+const DROP_TOTAL = allClaims.length
+const DROP_PCT = Math.round(100 * DROP_N / Math.max(1, DROP_TOTAL))
 log('Total: ' + allSources.length + ' sources → ' + allClaims.length + ' claims → verifying top ' + rankedClaims.length)
 
 const sourceRows = () => allSources.map(s => ({ url: webText(s.url), quality: s.sourceQuality, angle: s.angle, wave: s.wave, claimCount: s.claims.length }))
@@ -918,6 +930,27 @@ const report = await agentChecked(
   confirmed.length + ' claims survived a ' + activeLenses.length + '-lens adversarial panel' +
   (T.factAudit ? ' and a blind citation-support audit' : '') + '.\n\n' +
   '## Confirmed claims\n' + WEB_NOTE + block + coverageBlock + contraBlock + killedBlock + unverifiedBlock + droppedBlock + '\n\n' +
+  (HYP.length
+    ? '## Hypotheses to adjudicate\n' +
+      'These were written BEFORE any evidence was gathered, each with the finding that would ' +
+      'eliminate it. Return a verdict for EVERY one in hypothesisVerdicts.\n' +
+      HYP.map((h, i) => '  H' + (i + 1) + ': ' + webText(h.hypothesis || '', 300) +
+                        '\n      killed by: ' + webText(h.killCriterion || '', 300)).join('\n') + '\n\n' +
+      'Rules:\n' +
+      '- **killed** only if a confirmed claim above actually triggers its killCriterion. Cite those ' +
+      'claims by their [n] index in claimsCited.\n' +
+      '- **untested** if no confirmed claim bears on it either way. This is not a failure to report — ' +
+      'an untested hypothesis is often the most honest output of a degraded run, and hiding it makes ' +
+      'the answer look better-supported than it is.\n' +
+      '- **surviving** only if evidence bears on it and does NOT trigger its kill criterion. ' +
+      'Surviving is not the same as proven.\n\n'
+    : '') +
+  ((DROP_PCT >= 50)
+    ? '## Coverage limit you MUST disclose\n' + DROP_N + ' of ' + DROP_TOTAL + ' extracted claims (' +
+      DROP_PCT + '%) were never verified — the panel budget stops at ' + T.maxVerify + '. The sample ' +
+      'was ranked by source tier first, but a claim the extractor rated "tangential" is invisible here ' +
+      'even if it would have overturned the answer. State this in answerFirst, not only in caveats.\n\n'
+    : '') +
   '## Instructions\n' +
   '0. **answerFirst** — Pyramid Principle. Open with the ANSWER in 1-2 sentences, not with background. If the ' +
   'evidence does not support an answer, the answer is "this evidence does not settle it" and you say that first.\n' +
@@ -985,6 +1018,8 @@ const critiques = (await parallel(Array.from({ length: T.critics }, (_, k) => ()
   )
 ))).filter(Boolean)
 
+const UNTRACEABLE_POLICY = 'flag'   // set to 'strike' to remove untraceable sentences
+const struck = []
 const worst = ['sound', 'minor-gaps', 'material-gaps']
 const critVerdict = critiques.length
   ? critiques.map(c => c.verdict).sort((a, b) => worst.indexOf(b) - worst.indexOf(a))[0]
@@ -1004,8 +1039,24 @@ return {
   citationAudit: factMetrics,
   rescue: rescueStats,
   calibration,
+  // These limits travel WITH the report. A caveat that only exists in the README
+  // is one the person reading a pasted JSON blob never sees.
+  honestLimits: {
+    falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
+    reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
+    confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
+    killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
+    searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
+  },
   citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
-  processCritique: { verdict: critVerdict, untraceableStatements: untraceable, coverageGaps: gaps, planFlaws, rationales: critiques.map(c => webText(c.rationale || '')) },
+  processCritique: { verdict: critVerdict,
+                     // 'flag' (default) reports them and leaves the summary intact.
+                     // 'strike' removes them and records what was removed. Default is
+                     // flag because the critic is itself a model whose precision has
+                     // never been measured, and deleting on an unmeasured judgement is
+                     // the same unearned confidence this tool exists to catch.
+                     policy: UNTRACEABLE_POLICY, struckFromSummary: struck,
+                     untraceableStatements: untraceable, coverageGaps: gaps, planFlaws, rationales: critiques.map(c => webText(c.rationale || '')) },
   refuted: killed.map(toRefuted),
   unverified: unverified.map(toUnverified),
   sources: sourceRows(),

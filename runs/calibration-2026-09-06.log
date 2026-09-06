@@ -17,3 +17,200 @@ Round 1: 6/8 sub-questions still open, 2 contradictions, 5 follow-ups
   [w2] Comparative DES interventions: 8 hits -> 5 picked
   [w2] Single high-quality RCT deep dive: 8 hits -> 0 picked
   [w2] Mechanism/action spectrum evidence: 8 hits -> 4 picked
+[w2] 7 sources, 12 claims
+NOTE: 13 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 9 distinct sub-question buckets (of 8)
+Total: 23 sources -> 43 claims -> verifying 30
+  OK          2-1  This Cochrane systematic review included 17 RCTs comparing blue-light filtering spectacle …
+  OK          3-0  The Cochrane review concluded there may be no difference in subjective visual fatigue (eye…
+  OK          2-1  Adherence to the 20-20-20 rule was a significant independent predictor of symptom relief (…
+  OK          2-1  The authors explicitly acknowledge the study's design limitation: as a cross-sectional, se…
+  OK          3-0  None of the 17 included RCTs had a low risk of bias across all seven Cochrane RoB 1 domain…
+  OK          2-1  The paper cites experimental evidence proposing that blue light (415-455 nm) induces oxida…
+  OK          3-0  This is a meta-analysis of blue-light blocking glasses' effect on sleep (not eye strain), …
+  OK          2-1  A study introduced a metric called melanopic daylight filtering density (mDFD) and found t…
+  OK          2-1  The journal article titled 'Digital eye strain and lens-based prescribing: exploring the g…
+  OK          3-0  The review's authors concluded that blue-light filtering spectacle lenses may not attenuat…
+  OK          2-1  This study is a cross-sectional, self-reported, questionnaire-based study (not a randomise…
+  KILLED[support+provenance] 1-2  This RCT tested sports vision training (not blue-light lenses) against a control receiving…
+  OK          2-1  The study design was prospective and quasi-experimental, not a randomised controlled trial…
+  OK          2-1  85.0% (158/186) of long-term BLF lens users self-reported improvement in at least one digi…
+  OK          3-0  The proposed mechanism for blue light's biological effect is that wavelengths in the 460-4…
+  KILLED[support+provenance] 1-2  The article was published in the journal Cureus in 2025.
+  OK          3-0  A 2018 Australian survey found that 75% of 372 responding optometrists prescribed blue-lig…
+  OK          3-0  The review found that blue-light filtering lenses probably have little or no effect on bes…
+  OK          2-1  The study is a questionnaire-based (non-randomised, self-report) study on long-term blue l…
+  KILLED[support+provenance] 1-2  In a 200-participant RCT (100 per arm), CVS-positive prevalence in the SVT group fell from…
+  OK          2-1  The review reports that all 4 authors disclosed no competing interests.
+  OK          2-1  This quasi-experimental study found screen brightness (200/400/600 lux) significantly affe…
+  OK          3-0  The article title indicates the Advertising Standards Authority ruled advertising for a bl…
+  OK          2-1  A cited Cochrane review found inconclusive evidence on blue-light blocking glasses, with r…
+  OK          3-0  This is an Evidence-Based Practice journal article (title format indicates a critically ap…
+  KILLED[support+counter+provenance] 0-3  The control group's 20-20-20 rule intervention alone produced only small, non-significant …
+  KILLED[support+provenance] 1-2  The study concludes that accommodation lag, caused by low screen brightness relative to am…
+  OK          3-0  The paper was published in the Journal of Population Therapeutics and Clinical Pharmacolog…
+  OK          3-0  A Cochrane systematic review analyzed 17 randomised controlled trials from six countries e…
+  OK          2-1  The study enrolled only 46 participants (screened from 324) in a single hospital setting, …
+SAMPLING 6 dropped claims to measure what the cap discarded
+  OK          3-0  The Cochrane review concluded there may be no short-term advantage of blue-light filtering…
+  OK          2-1  The certainty of evidence in the Cochrane review was limited by the quality and short dura…
+  OK          3-0  Blue-light filtering lenses typically filter out only about 10-25% of blue light, and scre…
+  OK          2-1  A review of clinical and experimental studies found that blue-light-filtering spectacle le…
+  OK          2-1  The review concludes that most visual-fatigue and task-performance studies of blue-light-f…
+  OK          2-1  The paper states that subjective sleep improvements attributed to blue-light-filtering len…
+SAMPLING: 6/6 dropped claims survived (100%) vs 83% of kept claims
+CALIBRATION: re-running the panel on 10 claims to measure reliability
+  OK          2-1  This Cochrane systematic review included 17 RCTs comparing blue-light filtering spectacle …
+  OK          3-0  The Cochrane review concluded there may be no difference in subjective visual fatigue (eye…
+  KILLED[support+provenance] 1-2  Adherence to the 20-20-20 rule was a significant independent predictor of symptom relief (…
+  OK          2-1  The authors explicitly acknowledge the study's design limitation: as a cross-sectional, se…
+  OK          3-0  None of the 17 included RCTs had a low risk of bias across all seven Cochrane RoB 1 domain…
+  OK          2-1  The paper cites experimental evidence proposing that blue light (415-455 nm) induces oxida…
+  OK          3-0  This is a meta-analysis of blue-light blocking glasses' effect on sleep (not eye strain), …
+  OK          2-1  A study introduced a metric called melanopic daylight filtering density (mDFD) and found t…
+  KILLED[support+provenance] 1-2  The journal article titled 'Digital eye strain and lens-based prescribing: exploring the g…
+  OK          3-0  The review's authors concluded that blue-light filtering spectacle lenses may not attenuat…
+CALIBRATION: n=10 raw=0.800 cohenKappa=0.0 scottPi=-0.1111 flips=2 -> noise
+Verify: 25 confirmed, 5 refuted, 0 unverified | kills by lens: {'support': 5, 'provenance': 5, 'counter': 1}
+Citation audit (full pool of 30): 24 supported, 4 partial, 1 UNSUPPORTED, 1 unreachable -> 82.8%
+AUDIT DEMOTED 1 claim(s): the panel passed them but the cited page does not support them
+Process critique: material-gaps | 11 untraceable, 13 coverage gaps, 10 plan flaws
+Report written to runs/calibration-2026-09-06.json
+{
+ "summary": "A 2023 Cochrane review pooling 17 RCTs found no meta-analysis was possible due to heterogeneity, but individual-trial data show no significant difference in subjective visual fatigue/eye-strain scores between blue-light filtering and non-filtering lenses at under one week of follow-up (low-certainty evidence), and little/no effect on visual acuity (moderate-certainty). The review's own authors concluded blue-light lenses \"may not attenuate symptoms of eye strain with computer use\" in the short term. This contrasts with large real-world prescribing (75% of Australian optometrists surveyed in 2018) and with a non-randomised, self-report study finding 85% of long-term wearers perceived symptom improvement — but that latter finding is explicitly confounded by lack of blinding, control group, and recall bias, and adherence to the 20-20-20 rule (not lens type) was itself an independent predictor of relief. Proposed biological mechanisms (ipRGC/melanopsin-mediated melatonin suppression; ROS/NLRP3-mediated ocular surface stress) exist but have not been linked via RCT evidence to actual clinical eye-strain benefit from blocking lenses, and a separate meta-analysis found blue-light lenses have no significant effect on objective sleep outcomes either. Overall, the RCT evidence available does not support a real, clinically meaningful effect of blue-light blocking glasses on digital eye strain, though the trial base is too thin and low-quality to fully rule out a benefit.",
+ "citationAudit": {
+  "citationAccuracy": 82.8,
+  "effectiveCitations": 24,
+  "supported": 24,
+  "partial": 4,
+  "unsupported": 1,
+  "unreachable": 1,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 1
+ },
+ "processCritique": {
+  "verdict": "material-gaps",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableStatements": [
+   "Executive summary and Finding 1 state Cochrane 'reviewed 17 RCTs' with follow-up 'less than one day to 5 weeks' and conclude short-term null effect, but no claim specifies whether the 5-week-follow-up trials also showed null results or were even measured for eye strain — the summary's blanket 'short-term' framing may not represent the full follow-up range described in [0].",
+   "Executive summary and Finding 1 state the Cochrane review 'concluded blue-light lenses may not attenuate symptoms' — accurately sourced to [9], but the summary's framing 'The review's own authors concluded' combined with the earlier low-certainty/single-RCT caveat is not fully reconciled; a reader could think this is a firm multi-trial pooled conclusion rather than a qualitative narrative conclusion drawn from sparse data.",
+   "Executive summary/Finding 1: 'no significant difference in subjective visual fatigue/eye-strain scores... at under one week of follow-up' is stated as if it applies broadly/robustly, but claim [1] shows this rests on a single RCT (n=120, MD 9.76, 95% CI -33.95 to 53.47) with a very wide CI — the summary omits the CI width and single-study basis, inflating apparent certainty.",
+   "Executive summary: '...though the trial base is too thin and low-quality to fully rule out a benefit' is a reasonable synthesis but is presented as the review's own hedge; it is the report-writer's inference, not directly attributed to any claim — borderline acceptable but should be flagged as synthesis, not a quoted conclusion.",
+   "Executive summary: '75% of Australian optometrists surveyed in 2018' is presented as being in tension/contrast ('This contrasts with') with the Cochrane conclusion — the framing implies the survey and RCT evidence are being juxtaposed as evidence-practice gap, which is a reasonable inference but the causal/contrastive framing ('contrasts with') is an added interpretive gloss not stated in claim [13] itself.",
+   "Executive summary: 'A 2023 Cochrane review' — the year 2023 is not supported by any claim in the pool (claims [0],[22] describe the review but give no publication year).",
+   "Executive summary: 'A 2023 Cochrane review' — the year 2023 is not supported by any claim in the pool; claims [0],[22] describe the review but never date it.",
+   "Executive summary: 'a separate meta-analysis found blue-light lenses have no significant effect on objective sleep outcomes either' — claim [6] describes the intervention as 'blue-light blocking glasses' and outcome sleep, which is accurately represented, but the summary's rhetorical use of 'either' implies this reinforces the eye-strain conclusion, which conflates two different endpoints (sleep vs eye strain) not directly logically connected by any claim.",
+   "Finding 7's mechanism sentence ('do not translate into a demonstrated clinical...') trails off/is truncated in the provided findings list, making it impossible to verify full traceability of its final clause.",
+   "Finding 8: cites 'a separately cited Cochrane review characterization (\"roughly half of trials showed bene...\")' referring to claim [19], but claim [19] appears to describe a DIFFERENT/possibly duplicate or contradictory Cochrane-attributed claim ('inconclusive... roughly half showing benefit and half showing none') that conflicts with claims [0]/[1]/[9] (no meta-analysis possible, low-certainty no-difference finding). This contradiction between [19] and [0]/[1]/[9] is not flagged or reconciled anywhere in the summary or findings — it is only vaguely gestured at in Finding 8 without resolving the inconsistency, effectively burying a source conflict rather than addressing it.",
+   "Finding 8: mentions 'a separately cited Cochrane review characterization (\"roughly half of trials showed benefit...\")' from claim [19], but claim [19] appears to describe a DIFFERENT Cochrane review or a garbled/inconsistent characterization than claim [0]/[1]/[9]/[22] (which say no meta-analysis was possible and low-certainty no-difference finding, not 'half showed benefit'). The findings never reconcile or explain this contradiction between [19] and [0]/[1]/[9] — it's cited as corroborating when it may actually be a conflicting or erroneous secondary source."
+  ],
+  "coverageGaps": [
+   "Checklist item 3 (mechanism specific to blue light vs. general screen use/blink rate/accommodation) is answered only partially and with an unaddressed conflict: claim [17]/[23] present accommodation/pupillary dynamics (not blue light) as the actual mechanism in a quasi-experimental screen-brightness study, directly undercutting the blue-light-specific ROS/ipRGC mechanisms presented in claims [5]/[12]. This countervailing evidence is omitted entirely from the summary and findings, giving one-sided mechanistic coverage.",
+   "Checklist item 3's screen-emission/action-spectra sub-question is weakly covered: claims [17] and [23] argue AGAINST blue light as mechanism (implicating accommodation/brightness instead), and this counter-evidence is never surfaced in the summary or findings, which cite only the pro-mechanism claims [5],[12] — a one-sided mechanism narrative.",
+   "Checklist item 4 (individual RCTs showing statistically/clinically significant benefit, with sample size, blinding, funding/manufacturer sponsorship) is NOT answered at all — no claim in the pool identifies any single positive RCT with its funding source; the report implicitly assumes all RCTs were null/negative, but claim [19] ('roughly half of trials showing benefit') suggests otherwise and this is never investigated.",
+   "Checklist item 4 (individual RCTs with statistically/clinically significant benefit, their sample sizes, blinding, funding including manufacturer sponsorship) is NOT answered: no claim identifies a single positive RCT with details on sample size/blinding/funding source. Claim [16] only states the Cochrane review's own 4 authors had no competing interests — it says nothing about the funding sources of the 17 underlying trials themselves, which was the actual ask (manufacturer sponsorship of primary trials, outcome-switching, trial registration details beyond the aggregate '35% pre-registered').",
+   "Checklist item 5 (AAO/professional body guidance and whether it aligns with RCT evidence) is not addressed — no claim cites AAO or a named optometric association's official patient-facing position statement; only a prescribing-behavior survey [13] and an evidence-practice-gap article title [8] are present, neither of which reports actual guideline text.",
+   "Checklist item 5 (guidance from AAO or major optometric associations, and alignment/divergence with RCT evidence) is not answered — only an Australian optometrist prescribing survey [13] and a general 'evidence-practice gap' journal article title [8] are present; no claim quotes or characterizes actual AAO or ophthalmology/optometry association official patient guidance.",
+   "Checklist item 6 (comparison against alternative interventions: 20-20-20, artificial tears, blinking exercises, ergonomics) is only partially covered — only 20-20-20 rule appears (via a confounded non-RCT study, claim [2]/[6-finding]); artificial tears, blinking exercises, and screen ergonomics are entirely absent from the claim pool and the report.",
+   "Checklist item 6 (head-to-head or comparative evidence of blue-light glasses vs 20-20-20/artificial tears/ergonomics as an RCT-level comparison) is only partially covered via a confounded observational OR from a non-RCT self-report study [2]; no RCT or systematic review directly compares intervention effect sizes.",
+   "Checklist item 7 (regulatory/ASA/FTC/court findings on misleading blue-light glasses marketing) is NOT covered — claim [18] explicitly is about a blood test ASA ruling, unrelated to blue-light glasses, meaning the Consumer-industry-skeptic perspective returned a negative/irrelevant result and this gap is silently dropped from the summary and findings rather than reported as 'no evidence found.'",
+   "Checklist item 7 (regulatory/advertising-standards/court findings on blue-light glasses marketing claims) is NOT answered — the only related claim [18] explicitly states the ASA ruling found was about a blood test, NOT blue-light glasses, meaning this sub-question returned a null/negative result that was silently dropped from the summary and findings rather than reported as 'no regulatory action found in this search.'",
+   "Checklist item 8 (explicit falsification/kill-criteria for the efficacy claim) is never addressed by any claim or finding — no discussion of what trial design or effect size would count as confirming or refuting benefit.",
+   "Checklist item 8 (falsification/kill criteria for efficacy vs no-effect) is never addressed by any claim or finding — no discussion of what trial design or outcome would count as confirming or ruling out an effect.",
+   "No dataset or manufacturer spec (e.g., actual screen blue-light emission levels vs sunlight, per claim [7] on mDFD filter variability) is used to assess the premise that screens emit meaningful/harmful blue light in the first place — claim [7] exists in the pool but is entirely unused in the findings/summary."
+  ],
+  "planFlaws": [
+   "Claim [19] ('roughly half of trials showing benefit and half showing none') appears to be a second, contradictory characterization of Cochrane review findings that conflicts with the primary claims [0],[1],[9] (no significant difference, low certainty, no meta-analysis possible). No perspective/agent seems to have reconciled or investigated this discrepancy — it looks like either a citation error or a different source being mislabeled as 'a cited Cochrane review'; this was not caught by the Trial-data-auditor role despite that being precisely its mandate.",
+   "Perspectives collectively accepted the premise that 'blue light causes eye strain' is the central testable mechanism without adequately weighting the counter-mechanism evidence (screen brightness/accommodation, claims [17],[23]) found seemingly incidentally; no perspective was explicitly tasked to steelman the NON-blue-light mechanistic explanation, creating a blind spot shared across the perspective set on checklist item 3.",
+   "The Alternative-interventions-comparator perspective only surfaced 20-20-20 rule data embedded within an unrelated confounded self-report study [2]/[10], not a dedicated head-to-head comparison of blue-light lenses vs. artificial tears/ergonomics/blinking exercises as the checklist demanded — suggesting the perspective's searches were steered by whatever the other perspectives already found rather than independently sourcing comparator-intervention trial data.",
+   "The Clinical-practitioner perspective (meant to cover checklist item 5, clinical guidance from bodies like AAO) surfaced only an optometrist-prescribing survey and a generic 'evidence-practice gap' article title, not actual guideline text/statements from AAO or optometric associations — the perspective's search evidently substituted 'practitioner behavior' for 'practitioner guidance,' answering an adjacent but different question than the one scoped.",
+   "The Clinical-practitioner perspective did not yield any actual guideline/position-statement text from AAO or optometric associations (checklist item 5) — only a prescribing survey [13] and a gap-analysis title [8] — meaning this perspective's core assignment (clinical guidelines vs RCT evidence) was not fulfilled, but the report proceeds to make claims about 'the evidence-practice gap' using indirect proxies instead.",
+   "The Consumer-industry-skeptic perspective failed to find any on-point regulatory ruling (claim [18] is about an unrelated blood-test ad) yet the final report simply omits this checklist item rather than reporting the negative finding as a gap — this is a process flaw: a null result from a search perspective should be explicitly surfaced, not silently dropped.",
+   "The Steelman-for-blue-light-glasses perspective, tasked with building the strongest case FOR the glasses, produced only mechanistic plausibility claims ([5],[12]) and a confounded self-report study ([10],[11]) — it never surfaced even one RCT with a positive, statistically significant finding, despite checklist item 4 explicitly asking whether such RCTs exist. Either no such RCT exists (which itself should have been stated explicitly as a finding) or the steelman search was insufficiently thorough; the report doesn't clarify which.",
+   "The Trial-data-auditor perspective's brief (funding sources, outcome-switching, individual RCT registrations) is essentially unfulfilled in the claim pool — no claim gives funding/sponsorship of any specific trial (checklist item 4), suggesting this searched perspective did not actually retrieve the primary trial-level data it was tasked to find, and the report proceeds as if the Cochrane-level synthesis substitutes for that missing primary-source audit.",
+   "The claim pool contains an apparent contradiction between [19] ('roughly half of trials showing benefit') and [0]/[1]/[9] (low-certainty no-difference, no meta-analysis possible) that was never reconciled by any perspective — this suggests either a mis-scoped or duplicate/confused source was accepted into the pool without verification, a quality-control failure in the research process.",
+   "The perspective set never included a 'regulatory/legal researcher' who could search specifically for FTC or ASA/CMA rulings on blue-light glasses marketing (the Consumer-industry-skeptic persona was tasked with this per checklist item 7, but only returned a claim [18] confirming a search miss — the harness did not flag this as an unresolved gap or route a follow-up search, so the sub-question silently disappears from the final report)."
+  ],
+  "rationales": [
+   "The summary and findings are mostly well-traced to the claim pool and appropriately hedge the headline conclusion (no clinically meaningful RCT-demonstrated benefit, low-certainty, high risk of bias). However, several checklist items the scoper committed to are left completely unanswered in the final deliverable (individual positive-RCT funding/sponsorship analysis, AAO/professional guideline text, regulatory/ASA rulings specific to blue-light glasses, and explicit falsification criteria), and o…",
+   ""
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 23,
+  "claimsExtracted": 43,
+  "urlDupes": 10,
+  "budgetDropped": 5,
+  "claimsDroppedBeforeVerify": 13,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 57,
+    "ok": 0,
+    "fail": 57,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 57,
+    "ok": 3,
+    "fail": 54,
+    "results": 24
+   },
+   "ddg-lite": {
+    "attempts": 54,
+    "ok": 0,
+    "fail": 54,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 54,
+    "ok": 0,
+    "fail": 54,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 54,
+    "ok": 54,
+    "fail": 0,
+    "results": 26
+   },
+   "crossref": {
+    "attempts": 51,
+    "ok": 50,
+    "fail": 1,
+    "results": 271
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 8
+   }
+  },
+  "sourceTiers": {
+   "T1": 5,
+   "T3": 3,
+   "T2": 11,
+   "T4": 1,
+   "T?": 3
+  },
+  "agentCalls": 204,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 442448,
+  "outputTokens": 110269,
+  "wallSeconds": 677.6,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 24,
+  "killed": 6,
+  "unverifiedCount": 0,
+  "afterSynthesis": 8
+ }
+}

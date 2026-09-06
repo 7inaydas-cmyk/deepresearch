@@ -196,6 +196,17 @@ import fs2 from 'node:fs'
   ok(!out.error, 'a transient <UNKNOWN> sentinel is retried away rather than failing the run')
   ok(out.stats.confirmed > 0, 'and the run completes normally afterwards')
 }
+{
+  const { out } = await run('T17 parity with the python engine', { question: 'Q', depth: 'standard' })
+  ok(Array.isArray(out.hypothesisVerdicts) && out.hypothesisVerdicts.length === 2,
+     'hypotheses are adjudicated here too, not just in the python build (#6)')
+  ok(out.hypothesisVerdicts.some(h => h.verdict === 'untested'),
+     'untested is a first-class verdict')
+  ok(out.honestLimits && out.honestLimits.falseKillRateUnmeasured,
+     'honestLimits travel with the JS report as well (#12)')
+  ok(out.processCritique.policy === 'flag' && Array.isArray(out.processCritique.struckFromSummary),
+     'strike/flag policy is present and defaults to flag (#4)')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)
