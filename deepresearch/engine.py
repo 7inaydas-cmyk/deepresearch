@@ -64,6 +64,7 @@ REFUTATIONS_REQUIRED = 2
 RESCUE_MAX_SUBQ, RESCUE_FETCH = 4, 8
 MAX_CONCURRENCY = int(os.environ.get("DR_CONCURRENCY", "8"))
 MODEL = os.environ.get("DR_MODEL", "claude-sonnet-5")
+CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
 
 _print_lock = threading.Lock()
 def log(msg):
@@ -106,6 +107,7 @@ def host_of(u):
     return m.group(1).lower() if m else ""
 
 # --- Source tiering (shared contract, see contract/tiers.json) ---------------
+from . import calibration as _cal
 from .tiers import (RESOLVERS, RANK as TIER_RANK, CITABLE,
                     tier_of as _shared_tier_of, census as _tier_census)
 
@@ -764,6 +766,21 @@ def run_panel(q, claims, lenses):
     return voted
 
 
+def _lens_vectors(voted, lenses):
+    """{lens_name: [refuted_bool per claim]} — a lens that errored on a claim is
+    recorded as False (did not refute) so the vectors stay aligned; the count of
+    such gaps is reported separately rather than silently imputed."""
+    out = {name: [] for name, _t, _d in lenses}
+    gaps = 0
+    for c in voted:
+        seen = {v.get("lens"): bool(v.get("refuted")) for v in c.get("verdicts", []) if v}
+        for name, _t, _d in lenses:
+            if name not in seen:
+                gaps += 1
+            out[name].append(seen.get(name, False))
+    return out, gaps
+
+
 # --- Main pipeline ----------------------------------------------------------
 def deepresearch(question, depth="standard"):
     T = TIERS.get(depth) or TIERS["standard"]
@@ -894,6 +911,44 @@ def deepresearch(question, depth="standard"):
     confirmed = [c for c in voted if c["survives"]]
     killed = [c for c in voted if c["isRefuted"]]
     unver = [c for c in voted if not c["survives"] and not c["isRefuted"]]
+    # --- Calibration: is this panel a filter or a coin? --------------------
+    # Re-run the SAME claims through an independent panel and measure whether the
+    # survive/kill verdict repeats. Measures reliability, never validity.
+    calibration = None
+    if CALIBRATE_N > 0 and voted:
+        subset = voted[:min(CALIBRATE_N, len(voted))]
+        claims_again = [{k: v for k, v in c.items()
+                         if k not in ("verdicts", "refutedVotes", "erroredVotes",
+                                      "survives", "isRefuted", "killedBy")}
+                        for c in subset]
+        log("CALIBRATION: re-running the panel on %d claims to measure reliability" % len(claims_again))
+        voted2 = run_panel(question, claims_again, lenses)
+        by_claim = {c["claim"]: c for c in voted2}
+        a, b, keep = [], [], []
+        for c in subset:
+            d = by_claim.get(c["claim"])
+            if d is None:
+                continue
+            a.append(bool(c["survives"])); b.append(bool(d["survives"])); keep.append((c, d))
+        if a:
+            la, ga = _lens_vectors([x for x, _ in keep], lenses)
+            lb, gb = _lens_vectors([y for _, y in keep], lenses)
+            calibration = _cal.agreement(a, b)
+            calibration["perLens"] = _cal.per_lens_agreement(la, lb)
+            calibration["lensSplit"] = _cal.lens_disagreement_rate(
+                [[v.get("refuted") for v in c.get("verdicts", [])] for c in voted])
+            calibration["missingLensVerdicts"] = ga + gb
+            verdict, action = _cal.interpret(calibration["cohenKappa"])
+            calibration["gateVerdict"] = verdict
+            calibration["preRegisteredAction"] = action
+            calibration["thresholds"] = {"noise": "< 0.4", "noisy": "0.4-0.6", "calibrated": ">= 0.6",
+                                         "note": "fixed 2026-09-06 before this instrument was built"}
+            log("CALIBRATION: n=%d raw=%.3f cohenKappa=%s scottPi=%s flips=%d -> %s"
+                % (calibration["n"], calibration["rawAgreement"], calibration["cohenKappa"],
+                   calibration["scottPi"], calibration["verdictFlips"], verdict))
+        else:
+            log("CALIBRATION: second panel returned nothing comparable; no number produced")
+
     tally = {}
     for c in killed:
         for v in c["verdicts"]:
@@ -996,14 +1051,14 @@ def deepresearch(question, depth="standard"):
     fact_by = {f["claim"]: f for f in fact_rows}
     return _synthesize(question, depth, base, subqs, persps, confirmed, killed, unver, voted,
                        fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                       lenses, T, all_claims)
+                       lenses, T, all_claims, calibration)
 
 
 CONF = {"high": 0, "medium": 1, "low": 2}
 
 def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                lenses, T, all_claims):
+                lenses, T, all_claims, calibration=None):
     blocks = []
     for i, c in enumerate(confirmed):
         good = sorted([v for v in dicts(c["verdicts"]) if not v.get("refuted")],
@@ -1152,6 +1207,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                               "support": f["support"], "reasoning": webtext(f.get("reasoning", ""), 400)}
                              for f in fact_by.values()]
     out["rescue"] = rescue
+    out["calibration"] = calibration
     out["processCritique"] = {"verdict": verdict, "untraceableStatements": uniq("untraceableStatements"),
                               "coverageGaps": uniq("coverageGaps"), "planFlaws": uniq("planFlaws"),
                               "rationales": [webtext(c.get("rationale", ""), 500) for c in crits]}
@@ -1203,12 +1259,17 @@ def main():
     ap.add_argument("--out", "-o", help="write the full JSON report here")
     ap.add_argument("--model", "-m", default=MODEL)
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)
+    ap.add_argument("--calibrate", type=int, default=0, metavar="N",
+                    help="Re-run the panel on N verified claims and report Cohen's kappa, "
+                         "Scott's pi, per-lens agreement and the confusion matrix. Doubles "
+                         "the verify cost for those N claims. Measures reliability, not validity.")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--bg", action="store_true",
                     help="Detach and run in the background, printing the log and report paths "
                          "immediately. Use this from any agent harness with a command timeout.")
     a = ap.parse_args()
     MODEL, MAX_CONCURRENCY = a.model, a.concurrency
+    globals()['CALIBRATE_N'] = a.calibrate
     if a.selftest:
         sys.exit(0 if selftest() else 1)
     if not a.question or not a.question.strip():

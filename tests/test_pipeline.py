@@ -242,6 +242,37 @@ r12 = run({"kill_all": True}, depth="quick")
 ok(r12["stats"]["confirmed"] == 0 and "refuted" in r12["summary"].lower(),
    "everything-killed is reported as a real result, not an error")
 
+print("\n-- calibration statistics --")
+from deepresearch import calibration as C
+# Hand-computed: 50 items, both-survive 20, both-kill 15, A-only 10, B-only 5.
+# po=.70 pA=.6 pB=.5 -> Cohen pe=.50 k=.4000 ; Scott m=.55 pe=.505 pi=.3939
+_a = [True]*20 + [False]*15 + [True]*10 + [False]*5
+_b = [True]*20 + [False]*15 + [False]*10 + [True]*5
+_r = C.agreement(_a, _b)
+ok(abs(_r["cohenKappa"] - 0.4) < 1e-9, "Cohen's kappa matches the hand-computed 0.4000")
+ok(abs(_r["scottPi"] - 0.3939) < 1e-3, "Scott's pi matches the hand-computed 0.3939")
+ok(_r["verdictFlips"] == 15, "verdict flips counted (15 of 50)")
+ok(C.agreement([True]*30, [True]*30)["cohenKappa"] is None,
+   "perfect agreement on a one-sided base rate is UNDEFINED, not 1.0 - the correction divides by zero")
+import random as _rnd
+_rnd.seed(7)
+_sa = [_rnd.random() > 0.07 for _ in range(200)]
+_sb = [_rnd.random() > 0.07 for _ in range(200)]
+_sr = C.agreement(_sa, _sb)
+ok(_sr["rawAgreement"] > 0.8 and abs(_sr["cohenKappa"]) < 0.1,
+   "two INDEPENDENT panels on a 7%% kill rate score %.2f raw but kappa %.3f - why raw agreement is not reported alone"
+   % (_sr["rawAgreement"], _sr["cohenKappa"]))
+ok(C.interpret(0.72)[0] == "calibrated" and C.interpret(0.5)[0] == "usable but noisy"
+   and C.interpret(0.2)[0] == "noise" and C.interpret(None)[0] == "undefined",
+   "the pre-registered gate maps kappa to the fixed verdicts")
+_ls = C.lens_disagreement_rate([[1,1,1],[1,0,1],[0,0,0],[1,1,0]])
+ok(_ls["disagreementRate"] == 0.5, "lens split rate computed (2 of 4 claims split)")
+try:
+    C.agreement([True], [True, False]); _raised = False
+except ValueError:
+    _raised = True
+ok(_raised, "mismatched run lengths raise rather than silently truncating")
+
 print("\n-- --bg self-detach --")
 import inspect as _insp
 _src = _insp.getsource(dr.main)

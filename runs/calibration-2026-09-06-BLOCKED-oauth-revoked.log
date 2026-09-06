@@ -1,0 +1,225 @@
+Question: Do blue-light blocking glasses reduce digital eye strain, and what does the trial evidence show?
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Based on randomized controlled trial evidence, do blue-light blocking lenses/filters produce a clini
+Assumptions stated: 7 | hypotheses w/ kill criteria: 4
+Plan attempt 1 unusable (0 sub-questions, 0 perspectives) - keys present: ['strategy', 'subQuestions'] | missing/empty required: ['perspectives']
+NOTE: planner returned 7 perspectives; capped to 6 for depth=standard
+Checklist: 8 sub-questions
+Perspectives: Cochrane Review Auditor | Primary RCT Constructor | Industry Steelman Advocate | Conflict-of-Interest Auditor | Consumer Cost-Benefit Analyst | Regulatory & Clinical Guideline Reviewer
+  [w1] Cochrane Review Auditor: 8 hits -> 4 picked
+  [w1] Industry Steelman Advocate: 8 hits -> 5 picked
+  [w1] Primary RCT Constructor: 8 hits -> 5 picked
+  [w1] Conflict-of-Interest Auditor: 8 hits -> 5 picked
+  [w1] Regulatory & Clinical Guideline Reviewer: 8 hits -> 0 picked
+  [w1] Consumer Cost-Benefit Analyst: 8 hits -> 0 picked
+[w1] 16 sources, 32 claims
+Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups
+  [w2] MCID for eye strain scales: 8 hits -> 3 picked
+  [w2] Objective vs subjective outcome dissociation: 8 hits -> 5 picked
+  [w2] Cochrane review primary findings: 8 hits -> 5 picked
+  [w2] Regulatory/professional body statements: 8 hits -> 5 picked
+  [w2] Cost-effectiveness vs low-cost interventions: 8 hits -> 0 picked
+[w2] 10 sources, 22 claims
+NOTE: 24 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 8 distinct sub-question buckets (of 8)
+Total: 26 sources -> 54 claims -> verifying 30
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  OK          3-0  The trial concluded that blue-light blocking filter glasses produced greater symptom impro…
+  UNVERIFIED  0-1  A randomized controlled trial of 36 participants (18 per group) at Ayesha Saddiqua Trust H…
+  UNVERIFIED  0-0  The study is a primary research article examining the effect of blue light-reducing eyegla…
+  UNVERIFIED  0-0  Despite research showing no evidence supporting blue-blocking filters as a clinical treatm…
+  UNVERIFIED  0-0  Wikipedia's blue light spectrum article states that blue light-filtering glasses (with coa…
+  UNVERIFIED  0-0  The UK's Advertising Standards Authority fined Boots Opticians £40,000 over unsubstantiate…
+  UNVERIFIED  0-0  The study has been cited by 26 other works as of data collection.
+  UNVERIFIED  0-0  The paper illustrates a methodology for deriving an anchor-based MCID (using ROC/Youden In…
+  UNVERIFIED  0-0  The Cochrane systematic review on blue-light filtering spectacle lenses (CD013244) was pub…
+  UNVERIFIED  0-0  At baseline the mean difference between blue-blocking and anti-glare groups was 0.402 and …
+  UNVERIFIED  0-0  Studies indicate blue-light-filtering spectacle lenses have minimal or no significant impa…
+  UNVERIFIED  0-0  This is an industry-authored study (funded/authored by individuals affiliated with a conta…
+  UNVERIFIED  0-0  All tested blue-blocking spectacle and contact lenses had luminous transmittance values hi…
+  UNVERIFIED  0-0  In July 2022, the UK Advertising Standards Authority banned a Gamer Advantage advert for c…
+  UNVERIFIED  0-0  This study is about the Cervicogenic Headache Severity Questionnaire (CeH-SeQ) and is not …
+  UNVERIFIED  0-0  This is a general introductory book chapter on the concept of Minimal Clinically Important…
+  UNVERIFIED  0-0  The Cochrane systematic review on blue-light filtering spectacle lenses for visual perform…
+  UNVERIFIED  0-0  While some research suggests minor benefits of blue-light-filtering lenses in reducing dig…
+  UNVERIFIED  0-0  For eye dryness measured with the Schirmer test, the baseline mean difference between grou…
+  UNVERIFIED  0-0  The article 'Industry-funded research bias and conflicts of interest' by David B. Elliott …
+  UNVERIFIED  0-0  The ACUVUE OASYS MAX 1-Day lens filters HEV light (380-500 nm) similarly to four of the se…
+  UNVERIFIED  0-0  The study has been cited by 62 subsequent works as of the metadata record.
+  UNVERIFIED  0-0  The Cochrane 2023 systematic review by Singh et al. examined blue-light filtering spectacl…
+  UNVERIFIED  0-0  The study used the OSDI questionnaire and Schirmer test as outcome instruments to assess d…
+  UNVERIFIED  0-0  The study was authored by Takeshi Ide, Ikuko Toda, Emiko Miki, and Kazuo Tsubota.
+  UNVERIFIED  0-0  The article defines the blue light spectrum as wavelengths of approximately 400-480 nm (so…
+  UNVERIFIED  0-0  This is an Evidence-Based Practice journal article (2022) addressing the clinical question…
+  UNVERIFIED  0-0  Blue light has been proposed as a cause of digital eye strain, but there is no robust evid…
+  UNVERIFIED  0-0  A double-blind, two-arm parallel randomized controlled trial protocol was published to eva…
+  UNVERIFIED  0-0  Subjective sleep quality improvements attributed to blue-light-filtering lenses are often …
+CALIBRATION: re-running the panel on 10 claims to measure reliability
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  UNVERIFIED  0-0  The trial concluded that blue-light blocking filter glasses produced greater symptom impro…
+  UNVERIFIED  0-0  A randomized controlled trial of 36 participants (18 per group) at Ayesha Saddiqua Trust H…
+  UNVERIFIED  0-0  The study is a primary research article examining the effect of blue light-reducing eyegla…
+  UNVERIFIED  0-0  Despite research showing no evidence supporting blue-blocking filters as a clinical treatm…
+  UNVERIFIED  0-0  Wikipedia's blue light spectrum article states that blue light-filtering glasses (with coa…
+  UNVERIFIED  0-0  The UK's Advertising Standards Authority fined Boots Opticians £40,000 over unsubstantiate…
+  UNVERIFIED  0-0  The study has been cited by 26 other works as of data collection.
+  UNVERIFIED  0-0  The paper illustrates a methodology for deriving an anchor-based MCID (using ROC/Youden In…
+  UNVERIFIED  0-0  The Cochrane systematic review on blue-light filtering spectacle lenses (CD013244) was pub…
+  UNVERIFIED  0-0  At baseline the mean difference between blue-blocking and anti-glare groups was 0.402 and …
+CALIBRATION: n=10 raw=0.900 cohenKappa=0.0 scottPi=-0.0526 flips=1 -> noise
+Verify: 1 confirmed, 0 refuted, 29 unverified | kills by lens: -
+RESCUE: 7 sub-question(s) have ZERO surviving claims - re-searching 4
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  [rescue] rescue4: search returned NOTHING
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+[rescue] 0 sources, 0 claims
+RESCUE: no new claims found - these sub-questions remain genuinely unanswered
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+  worker error: AuthError: Anthropic rejected the OAuth credential (401): {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been revoked."},"request_id":null}
+Citation audit (full pool of 0): 0 supported, 0 partial, 0 UNSUPPORTED, 0 unreachable -> None%
+{
+ "error": "Anthropic rejected the OAuth credential (401): {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"OAuth access token has been revoked.\"},\"request_id\":null}"
+}
