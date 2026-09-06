@@ -17,6 +17,12 @@ from deepresearch import search as searchmod   # noqa: E402
 
 PASS = FAIL = 0
 
+# The engine source, read once: several tests assert on the SHAPE of the code
+# (that a guard exists, that a rule is enforced) rather than on its behaviour.
+_ENG = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                         "deepresearch", "engine.py"), encoding="utf-8").read()
+
+
 
 def ok(cond, msg):
     global PASS, FAIL
@@ -119,6 +125,11 @@ def install(cfg):
                     "baseRate": "none in evidence", "summary": "S",
                     "findings": [{"claim": "F1", "confidence": "high", "sources": ["u"], "evidence": "e",
                                   "sourceTier": "T1", "factOrInference": "fact"}],
+                    "hypothesisVerdicts": [
+                        {"hypothesis": "h1", "verdict": "killed", "killCriterion": "k1",
+                         "reasoning": "claim [0] triggers it", "claimsCited": [0]},
+                        {"hypothesis": "h2", "verdict": "untested", "killCriterion": "k2",
+                         "reasoning": "no confirmed claim bears on it"}],
                     "strongestArgumentAgainst": "the crux was never evidenced",
                     "whatWouldChangeThisCall": ["a real RCT"],
                     "caveats": "c", "openQuestions": ["o"]}
@@ -133,6 +144,7 @@ def install(cfg):
 
 def run(cfg=None, depth="standard", q="Test question?"):
     install(cfg or {})
+    dr.preflight = lambda: "stub"   # the stubs replace the network; nothing to preflight
     dr._stats.update(calls=0, errors=0, ratelimited=0, in_tok=0, out_tok=0)
     return dr.deepresearch(q, depth)
 
@@ -298,9 +310,7 @@ ok(_src_tiers == _r["stats"]["sourceTiers"],
 _k1 = ("same claim text", "https://a.org/1")
 _k2 = ("same claim text", "https://b.org/2")
 ok(_k1 != _k2, "identical claim text from two URLs produces two distinct audit keys")
-_ENGINE_SRC = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                                "deepresearch", "engine.py"), encoding="utf-8").read()
-ok('fact_by.get((c["claim"], c.get("sourceUrl")))' in _ENGINE_SRC,
+ok('fact_by.get((c["claim"], c.get("sourceUrl")))' in _ENG,
    "the audit lookup is keyed on (claim, sourceUrl), not on claim alone")
 
 # BUG 4. AuthError raised inside a worker was caught by pmap's bare
@@ -333,6 +343,24 @@ _mixed = [{"subQuestionIndex": 1, "tier": "T3", "importance": "central", "claim"
           {"subQuestionIndex": 1, "tier": "T1", "importance": "central", "claim": "high"}]
 ok(dr.coverage_balanced(_mixed, 1, 4)[0]["claim"] == "high",
    "claims are ranked by the DETERMINISTIC tier, not by the extractor's self-rating")
+
+print("\n-- issue #5: fail fast on a dead credential --")
+ok("def preflight" in _ENG, "a preflight probe runs before any research work")
+ok("150 requests before" in _ENG,
+   "and the comment records why: a revoked token cost 150 calls before the run gave up")
+ok("revoked server-side" in _ENG,
+   "the error explains that a local credential file cannot detect a server-side revocation")
+
+print("\n-- issue #6: hypotheses are adjudicated, not decorative --")
+_hv = r.get("hypothesisVerdicts") or []
+ok(len(_hv) == 2, "every hypothesis written before the search gets a verdict")
+ok({h["verdict"] for h in _hv} == {"killed", "untested"},
+   "verdicts distinguish killed / surviving / untested")
+ok(_hv[0].get("claimsCited") == [0], "a kill cites the confirmed claim that triggered its criterion")
+ok("hypothesisVerdicts" in _ENG and "HYPOTHESES" in _ENG,
+   "the contract's hypotheses reach synthesis instead of dying after phase 2")
+ok("untested" in _ENG and "most honest output of a degraded run" in _ENG,
+   "untested is treated as a reportable result, not a gap to hide")
 
 print("\n-- issues #10 / #11: injected-defect probes --")
 from deepresearch import probes as P
@@ -377,8 +405,6 @@ ok("not whether it is right" in _hl.get("reliabilityNotValidity", ""),
    "kappa is never allowed to masquerade as accuracy")
 
 print("\n-- issue #9: the dropped-claim majority --")
-_ENG = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                         "deepresearch", "engine.py"), encoding="utf-8").read()
 ok("Coverage limit you MUST disclose" in _ENG,
    "synthesis is told to disclose the coverage limit in answerFirst, not only in caveats")
 ok("if DROP_PCT >= 50" in _ENG,

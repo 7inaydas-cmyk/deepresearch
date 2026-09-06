@@ -67,6 +67,9 @@ MODEL = os.environ.get("DR_MODEL", "claude-sonnet-5")
 CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
 # Filled in at ranking time so synthesis can disclose the coverage limit.
 DROP_N = DROP_TOTAL = DROP_PCT = 0
+# Filled in at framing time. The whole point of writing kill criteria before
+# searching is that something later adjudicates them; nothing did until now.
+HYPOTHESES = []
 SAMPLE_DROPPED_N = int(os.environ.get("DR_SAMPLE_DROPPED", "0"))
 # What to do with summary sentences the critic says trace to no verified claim.
 #   "flag"   report them and leave the text intact (default)
@@ -415,6 +418,14 @@ S_REPORT = {
             "properties": {"value": {"type": "string"}, "why": {"type": "string"},
                            "sensitivity": {"type": "string"}, "source": {"type": "string"}},
         },
+        "hypothesisVerdicts": {"type": "array", "items": {
+            "type": "object", "required": ["hypothesis", "verdict", "reasoning"],
+            "properties": {
+                "hypothesis": {"type": "string"},
+                "verdict": {"enum": ["killed", "surviving", "untested"]},
+                "killCriterion": {"type": "string"},
+                "reasoning": {"type": "string"},
+                "claimsCited": {"type": "array", "items": {"type": "integer"}}}}},
         "strongestArgumentAgainst": {"type": "string"},
         "whatWouldChangeThisCall": {"type": "array", "items": {"type": "string"}},
         "baseRate": {"type": "string"},
@@ -817,9 +828,38 @@ def _lens_vectors(voted, lenses):
 
 
 # --- Main pipeline ----------------------------------------------------------
+def preflight():
+    """Fail in two seconds rather than after 150 calls.
+
+    A local credential file can look perfectly healthy and still be dead: on
+    2026-09-06 an OAuth token was revoked server-side while ~/.claude/.credentials
+    .json still reported valid until the following day, with a refresh token
+    present. Nothing local could predict it, and the run made 150 requests before
+    giving up. One cheap call up front turns that into an immediate, actionable
+    error.
+    """
+    scheme, _ = credential()
+    probe = agent("Return the word ok in the field reply.",
+                  {"type": "object", "required": ["reply"],
+                   "properties": {"reply": {"type": "string"}}},
+                  label="preflight", max_tokens=64, retries=1)
+    if probe is None:
+        raise AuthError(
+            "Preflight failed: the credential loaded (%s) but the API would not answer. "
+            "If this is an OAuth credential it may have been revoked server-side - the "
+            "local file cannot tell you that. Re-authenticate Claude Code, or set %s to "
+            "remove the dependency entirely." % (scheme, API_KEY_ENV))
+    return scheme
+
+
 def deepresearch(question, depth="standard"):
     T = TIERS.get(depth) or TIERS["standard"]
     t0 = time.time()
+    scheme = preflight()
+    log("Credential: %s%s" % (scheme,
+        "" if scheme == "api-key" else
+        " (local Claude Code login; set %s to avoid a server-side revocation "
+        "taking a run down mid-flight)" % API_KEY_ENV))
     log("Question: " + question[:110])
     log("Depth: %s (%d perspectives, %d deepening round(s), %d-lens verify, citation audit %s)"
         % (depth, T["perspectives"], T["deepen"], T["lenses"], "ON" if T["audit"] else "off"))
@@ -834,6 +874,7 @@ def deepresearch(question, depth="standard"):
     else:
         if contract.get("keyQuestion"):
             log("Key question: " + str(contract["keyQuestion"])[:100])
+        globals()["HYPOTHESES"] = dicts(contract.get("hypotheses"))
         log("Assumptions stated: %d | hypotheses w/ kill criteria: %d"
             % (len(as_str_list(contract.get("assumptions"))), len(dicts(contract.get("hypotheses")))))
 
@@ -1192,6 +1233,23 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
           "is invisible here even if it would have overturned the answer. "
           "State this in answerFirst, not only in caveats.\n\n"
           % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_PCT >= 50 else "") +
+        (("## Hypotheses to adjudicate\n"
+          "These were written BEFORE any evidence was gathered, each with the finding that "
+          "would eliminate it. Return a verdict for EVERY one in hypothesisVerdicts.\n"
+          + "\n".join("  H%d: %s\n      killed by: %s"
+                      % (i + 1, webtext(h.get("hypothesis", ""), 300),
+                         webtext(h.get("killCriterion", ""), 300))
+                      for i, h in enumerate(HYPOTHESES)) + "\n\n"
+          "Rules:\n"
+          "- **killed** only if a confirmed claim above actually triggers its killCriterion. "
+          "Cite those claims by their [n] index in claimsCited.\n"
+          "- **untested** if no confirmed claim bears on it either way. This is not a failure to "
+          "report — an untested hypothesis is often the most honest output of a degraded run, and "
+          "hiding it makes the answer look better-supported than it is.\n"
+          "- **surviving** only if evidence bears on it and does NOT trigger its kill criterion. "
+          "Surviving is not the same as proven.\n"
+          "- If every hypothesis is untested, say so in answerFirst.\n\n")
+         if HYPOTHESES else "") +
         "## Instructions\n"
         "1. Merge claims that say the same thing; combine their sources.\n"
         "2. Group into findings that each answer part of the question. Order by how much they matter.\n"
