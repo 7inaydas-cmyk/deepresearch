@@ -32,7 +32,7 @@
     ],
     [
       "T2",
-      "(^|\\.)(nature\\.com|europepmc\\.org|semanticscholar\\.org|cochranelibrary\\.com|nejm\\.org|jamanetwork\\.com|thelancet\\.com|plos\\.org|frontiersin\\.org|mdpi\\.com|tandfonline\\.com|sagepub\\.com|cambridge\\.org|oup\\.com|elsevier\\.com|arxiv-sanity\\.com|lemonde\\.fr|faz\\.net|spiegel\\.de|elpais\\.com|corriere\\.it|nrc\\.nl|asahi\\.com|nikkei\\.com|scmp\\.com|thehindu\\.com|abc\\.net\\.au|cbc\\.ca|npr\\.org|propublica\\.org|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$"
+      "(^|\\.)(nature\\.com|pnas\\.org|europepmc\\.org|semanticscholar\\.org|cochranelibrary\\.com|nejm\\.org|jamanetwork\\.com|thelancet\\.com|plos\\.org|frontiersin\\.org|mdpi\\.com|tandfonline\\.com|sagepub\\.com|cambridge\\.org|oup\\.com|elsevier\\.com|arxiv-sanity\\.com|lemonde\\.fr|faz\\.net|spiegel\\.de|elpais\\.com|corriere\\.it|nrc\\.nl|asahi\\.com|nikkei\\.com|scmp\\.com|thehindu\\.com|abc\\.net\\.au|cbc\\.ca|npr\\.org|propublica\\.org|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$"
     ],
     [
       "T3",

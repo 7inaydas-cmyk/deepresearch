@@ -1,0 +1,21 @@
+# Fixes the largest known limitation in this tool: when DuckDuckGo and Mojeek
+# challenge your IP, every general-web backend returns zero and the run silently
+# degrades to a scholarly-only slice of the web (issue #8).
+#
+#   cd contrib/searxng && docker compose up -d
+#   export DR_SEARXNG_URL=http://127.0.0.1:8888
+#
+# Bound to 127.0.0.1 on purpose. This instance has its rate limiter off and its
+# json format on; both are fine for a local single user and neither is fine on a
+# public address.
+services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - ./settings.yml:/etc/searxng/settings.yml:ro
+    environment:
+      - BASE_URL=http://127.0.0.1:8888/

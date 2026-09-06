@@ -48,3 +48,181 @@ RESCUE: 6 sub-question(s) have ZERO surviving claims - re-searching 4
   [rescue] rescue2: 8 hits -> 0 picked
   [rescue] rescue3: 8 hits -> 0 picked
 [rescue] 2 sources, 2 claims
+  OK          2-1  This record is the supplemental material to the Maier et al. (2022) Psychological Methods …
+  OK          2-1  This paper is a short informal review summarizing how conventional publication bias correc…
+RESCUE: +2 sources, 2 claims re-verified, 2 survived
+Citation audit (full pool of 11): 6 supported, 1 partial, 0 UNSUPPORTED, 4 unreachable -> 85.7%
+Process critique: material-gaps | 8 untraceable, 20 coverage gaps, 10 plan flaws
+Report written to runs/calibration-nudge-2026-09-06.json
+{
+ "summary": "This research run could not establish the actual corrected effect size for nudge interventions after publication-bias adjustment: no confirmed, audited claim reports Mertens et al.'s (2022) original pooled effect size, nor Maier et al.'s or Szaszi et al.'s corrected numeric estimates, so the question's central empirical ask is unanswered by this evidence set. What is confirmed is only scaffolding: (1) a title-level claim that a publication-bias-adjusted analysis found evidence AGAINST social comparison specifically (not nudges generally) as an effective behaviour-change technique; (2) confirmation that a companion tutorial paper teaches PET-PEESE, selection models, and RoBMA (which combines the first two) as the standard bias-correction toolkit; and (3) bibliographic confirmation that the Maier et al. (2022) Psychological Methods paper exists under its stated title. A previously-logged claim that these correction methods are 'established, state-of-the-art' and generally valid was itself refuted, indicating the methodology is contested, not settled. Given the near-total absence of numeric findings, all four pre-registered hypotheses are effectively untested, with H3 (negligible/near-zero corrected effect) receiving only weak, indirect, title-level support and no other hypothesis receiving any support or refutation.",
+ "citationAudit": {
+  "citationAccuracy": 85.7,
+  "effectiveCitations": 6,
+  "supported": 6,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 4,
+  "scope": "full verification pool (11 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "verdict": "material-gaps",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableStatements": [
+   "Executive summary: 'A previously-logged claim that these correction methods are established, state-of-the-art and generally valid was itself refuted' — no numbered claim documents a refutation of methods' validity; claims [3],[5],[7] describe the methods neutrally/descriptively, none asserts or refutes a 'state-of-the-art' characterization. This sentence fabricates a dialectical event (claim made, then refuted) not present in the evidence pool.",
+   "Executive summary: 'commonly cited elsewhere as d≈0.43' (finding 7 and prose) — this specific numeric value (0.43) is never sourced from any of the numbered claims [0]-[7]; it appears to be injected from the analyst's/questioner's outside knowledge, not from the verified claim pool.",
+   "Executive summary: reference to 'H1-H4 pre-registered hypotheses' and specifically 'H3 (negligible/near-zero corrected effect) receiving only weak, indirect, title-level support' — no hypotheses H1-H4 are defined anywhere in the claim pool or checklist provided; this entire hypothesis-testing frame appears unsupported/untraceable to the given evidence.",
+   "Finding 1 and Finding 2 together assert the paper is 'load-bearing' evidence about nudges broadly being contradicted only for social comparison — this interpretive framing ('as the original question frames it') inserts an editorial gloss beyond what claim [0] and [2] literally state (which are just about title-level content and scope).",
+   "Summary phrase 'the methodology is contested, not settled' is an interpretive leap not licensed by any claim; no claim compares proponent vs critic positions on method validity.",
+   "Summary sentence: 'A previously-logged claim that these correction methods are established, state-of-the-art and generally valid was itself refuted' - no claim in [0]-[7] documents a refutation of this assertion; claims [3] and [5] merely describe what the tutorial/review papers teach, they do not refute or validate the methods' reliability. This is an inserted narrative event not traceable to the claim pool.",
+   "Summary sentence: 'commonly cited elsewhere as d≈0.43' (Finding 7) introduces the specific numeric figure 0.43 that appears nowhere in the verified claim pool [0]-[7]; it is asserted as an external fact not traceable to any numbered claim, even though flagged as 'commonly cited elsewhere' it is still an unsourced insertion into the evidence-based findings.",
+   "Summary's framing that 'all four pre-registered hypotheses are effectively untested, with H3 ... receiving only weak, indirect, title-level support' references 'H3' and 'four pre-registered hypotheses' that do not appear anywhere in the claim pool or checklist provided - this hypothesis-numbering scheme is untraceable to the given materials."
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (Mertens et al. 2022 pooled effect size, CI, methods/inclusion criteria) — completely unanswered; no primary-source retrieval of the actual Mertens paper occurred.",
+   "Checklist item 1 (Mertens et al. pooled effect size and CI) - completely unanswered; no claim retrieved the actual number, methods, or inclusion criteria.",
+   "Checklist item 2 (Maier et al. PET-PEESE/selection-model numeric estimates vs 0.43) - completely unanswered; only bibliographic existence of the paper confirmed, no numbers.",
+   "Checklist item 2 (Maier et al. specific PET-PEESE/selection-model numeric estimates vs 0.43) — completely unanswered despite Maier et al.'s paper and its supplemental material ([4],[6]) being identified; the supplemental material itself (which likely contains the numeric tables) was never actually opened/extracted.",
+   "Checklist item 3 (Szaszi et al. corrected estimates) - Szaszi is never mentioned in any of the 8 claims at all; this source/perspective appears to have never been searched or retrieved despite being named explicitly in the question and checklist.",
+   "Checklist item 3 (Szaszi et al. reanalysis numbers) — Szaszi et al. is not represented by a single claim in the entire pool; this source appears to have never been searched or retrieved at all, a total coverage failure for a named source in the original question.",
+   "Checklist item 4 (convergence/divergence across correction methods numerically) — unanswered; no numeric comparison exists in the pool.",
+   "Checklist item 4 (convergence/divergence across correction methods) - unanswered; no numeric comparison exists in the claim pool.",
+   "Checklist item 5 (Mertens rebuttal defending original estimate) - unanswered; no claim addresses any author response or rebuttal.",
+   "Checklist item 5 (Mertens rebuttal/response) — unanswered; no claim addresses any rebuttal from Mertens or original authors.",
+   "Checklist item 6 (heterogeneity by nudge type/domain) - partially touched only insofar as claim [0]/[2] show one narrow sub-analysis (social comparison), but no broader domain-by-domain comparison (defaults, framing, etc.) was found.",
+   "Checklist item 6 (heterogeneity by nudge type/domain) — partially touched only via the social-comparison-specific paper [0]/[2], but no comparison across multiple nudge types (defaults vs. framing vs. norms) with actual numbers was found; the 'Domain-heterogeneity investigator' perspective's assigned question was not meaningfully answered.",
+   "Checklist item 7 (post-2022 large-scale field trials/mega-studies) — completely unanswered; no claim mentions any field trial, mega-study, or real-world program outcome data at all, meaning the practitioner/behavioral-insights perspective's core informational need was entirely unmet.",
+   "Checklist item 7 (post-2022 mega-studies/field trials corroborating or contradicting corrected estimate) - completely unaddressed; no claim references any field trial or mega-study.",
+   "Checklist item 8 (validation of PET-PEESE/selection models via simulation studies for this literature type) - only tangentially touched by claim [1] (Friese & Frankenbach simulation on p-hacking+publication bias generally), but this is not specific to nudge literature or to PET-PEESE/selection-model validity, so the question remains substantially unanswered.",
+   "Checklist item 8 (validation of PET-PEESE/selection models via simulation studies for this literature type) — only glancingly touched by [1] (Friese & Frankenbach simulation on p-hacking+publication bias) but that paper is not about PET-PEESE/selection-model validity specifically nor about nudge-type heterogeneous small-sample literature; the specific methodological-critique angle remains unaddressed.",
+   "Claim [4] documents an outright failed retrieval ('OSF' text only, no content) yet no follow-up or alternative source retrieval is recorded to compensate for this dead end.",
+   "No claim in the pool actually contains a number (percentage, Cohen's d, correlation, CI) anywhere — every single checklist item requiring a quantitative answer failed; the research process seems to have retrieved only titles/metadata/abstracts-level facts rather than actual paper content/data (e.g., PDFs, tables, OSF datasets) despite a 'data auditor' perspective supposedly being assigned to reconstruct raw funnel plots/regressions from source data — that perspective's work is entirely absent from the claim pool.",
+   "No primary data source (e.g., OSF repository, raw dataset, Maier et al. supplementary material full text) was actually opened for numbers, despite claim [6] confirming a supplemental materials record exists - the actual supplementary numeric content was apparently never extracted.",
+   "The 'Data auditor / constructor from raw dataset' perspective, tasked with reconstructing funnel plots/PET-PEESE regressions, appears to have produced zero claims with actual numeric content, suggesting this search perspective failed or was not executed to completion."
+  ],
+  "planFlaws": [
+   "No claim addresses real-world field-trial evidence (checklist item 7) despite a dedicated 'Practitioner/behavioral-insights unit' perspective being defined specifically to surface this angle - this perspective's search results are entirely absent from the claim pool, another undisclosed execution gap.",
+   "No control/premise-check step existed to verify the widely-cited d≈0.43 figure from Mertens et al. before the executive summary casually invokes it as 'commonly cited elsewhere' -- this is a premise accepted without being tested against any retrieved claim, exactly the kind of leading-premise problem the audit should catch.",
+   "Szaszi et al., explicitly named in the original question and checklist item 3, never appears in the claim pool at all - no perspective seems to have searched for this specific author/reanalysis, despite it being central to the question's framing ('weigh Mertens against Maier AND Szaszi'). This is a direct scoping-to-execution gap: the plan named the source but no search evidently targeted it.",
+   "Szaszi et al., named explicitly in the original question and the coverage checklist (items 3, 4), has zero representation anywhere in the 8 verified claims — this is not a partial gap but a complete blind spot, indicating the search strategy/queries never targeted this named source, a basic search-execution failure rather than a scoping problem per se, but the scoping also did not build in a checkpoint to verify each named source (Mertens, Maier, Szaszi) was actually retrieved before synthesis.",
+   "The claim pool is dominated by bibliographic/title-level and methods-tutorial content (claims 3,5,6) rather than substantive numeric findings, suggesting searches surfaced secondary/adjacent documents (tutorials, supplementary-material index pages, unrelated simulation papers) instead of drilling into the primary papers' results sections or abstracts - a systematic shortfall across most perspectives, not just one.",
+   "The perspective list includes a 'Data auditor / constructor from raw dataset' meant to pull actual regression outputs, but none of the 8 verified claims contain any such reconstructed statistic - indicating this perspective's search either wasn't executed or wasn't captured in the claim pool, a silent process failure not disclosed in the summary.",
+   "The perspective panel included a 'Data auditor / constructor from raw dataset' explicitly tasked with reconstructing funnel plots/regressions from underlying data, yet none of the 7 findings or 8 claims reflect any raw-data extraction, OSF dataset inspection, or numeric regression output — this perspective's assigned work product is entirely missing from the final claim pool, suggesting either the search failed silently or was never actually executed, and this wasn't flagged as a critical failure in the process rather than just as a 'gap'.",
+   "The research process accepted title-level and bibliographic-existence-level findings (e.g., claim [0]'s title assertion, claim [6]'s bibliographic confirmation) as if they were substantive findings, without a plan step requiring actual full-text/numeric verification before proceeding to synthesis -- this let the process declare 'the central empirical ask is unanswered' rather than triggering a mandatory deeper-retrieval loop (e.g., fetching the Maier supplemental material [6] itself, which was identified but not opened).",
+   "The scoping checklist appropriately targeted the right sub-questions, but the research execution failed to retrieve even the single most basic, widely-public figure (Mertens et al.'s d≈0.43 pooled effect and CI), which is available directly in the abstract of a highly-cited 2022 meta-analysis - this suggests a retrieval/search execution flaw rather than a scoping flaw, but the report should have flagged this as a process failure rather than folding an unsourced '0.43' into a finding while simultaneously claiming no numbers were found (internal inconsistency: Finding 7 states no numeric estimate was found yet cites 0.43 as 'commonly cited elsewhere').",
+   "The scoping's sub-question 7 (post-2022 field trials/mega-studies) was assigned to the 'Practitioner' perspective, but no search results for this perspective appear at all in the claim pool -- the practitioner's real-world/field-trial angle, which is central to the question's framing ('meaningful real-world effect sizes'), was dropped without any documented search attempt or explanation."
+  ],
+  "rationales": [
+   "The executive summary is largely honest about the core failure (no numeric corrected effect size was found), which is commendable, but it still contains untraceable insertions: the specific figure 'd≈0.43' appears nowhere in the verified claim pool yet is stated as fact ('commonly cited elsewhere'), and the summary asserts a 'previously-logged claim... was itself refuted' and references 'four pre-registered hypotheses'/'H3' that have no basis in the provided claims or checklist. More importantly…",
+   "The report is honest in its headline conclusion (that the central numeric question is unanswered), which is commendable self-awareness, but the process underlying it has severe execution failures, not just minor gaps. Every single checklist item requiring a number (pooled effect size, corrected estimates, CIs, convergence across methods) came back empty despite the fact that at least one of the exact needed documents (Maier et al.'s paper and its supplemental material, claim [6]) was identified …"
+  ]
+ },
+ "rescue": {
+  "wipedSubQuestions": [
+   "What is the exact pooled effect size (with CI) reported by Mertens et al. (2022) before any publication-bias correction, and what methods/inclusion criteria produced it?",
+   "What specific corrected effect-size estimates do Maier et al. (2022) report using PET-PEESE, selection models, and other bias-correction techniques applied to the same or an updated nudge dataset, and how do they compare numerically to the original 0.43?",
+   "What corrected estimates does Szaszi et al. report (e.g., from their own reanalysis or critique), and do their methods/numbers agree with, diverge from, or extend Maier et al.'s findings?",
+   "Do the different correction methods (PET-PEESE, selection models, p-curve, top-decile/preregistered-only subsets) converge on a similar corrected value, or do they diverge substantially, and by how much?",
+   "Has Mertens et al. or other original authors published a rebuttal or response defending their estimate and disputing the validity/appropriateness of the correction methods used by Maier/Szaszi?",
+   "What do independent, large-scale preregistered field trials or mega-studies (post-2022) of nudge interventions show about real-world effect sizes, and do they corroborate the corrected meta-analytic estimate or the original higher estimate?"
+  ],
+  "targeted": 4,
+  "sourcesAdded": 2,
+  "claimsReVerified": 2,
+  "claimsSaved": 2
+ },
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 16,
+  "claimsExtracted": 11,
+  "urlDupes": 0,
+  "budgetDropped": 1,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 35,
+    "ok": 35,
+    "fail": 0,
+    "results": 15
+   },
+   "crossref": {
+    "attempts": 35,
+    "ok": 26,
+    "fail": 9,
+    "results": 151
+   },
+   "europepmc": {
+    "attempts": 9,
+    "ok": 9,
+    "fail": 0,
+    "results": 17
+   },
+   "openalex": {
+    "attempts": 7,
+    "ok": 5,
+    "fail": 2,
+    "results": 16
+   },
+   "pubmed": {
+    "attempts": 6,
+    "ok": 6,
+    "fail": 0,
+    "results": 8
+   },
+   "arxiv": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "results": 37
+   }
+  },
+  "sourceTiers": {
+   "T?": 3,
+   "T2": 6,
+   "T3": 4,
+   "T1": 3
+  },
+  "agentCalls": 105,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 197917,
+  "outputTokens": 60104,
+  "wallSeconds": 720.3,
+  "claimsVerified": 11,
+  "lensesPerClaim": 3,
+  "confirmed": 8,
+  "killed": 3,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

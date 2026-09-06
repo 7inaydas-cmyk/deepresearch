@@ -1,0 +1,687 @@
+{
+ "question": "Do behavioural 'nudge' interventions produce meaningful real-world effect sizes once publication bias is corrected for? Weigh the Mertens et al. (2022) meta-analysis against the Maier et al. (2022) and Szaszi et al. re-analyses, and state what the corrected effect size actually is.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No specific data extracted on Mertens et al.'s pooled effect size (d=0.43), CI, k studies, or inclusion criteria."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "Gathered evidence is only a methods tutorial describing PET-PEESE/selection models/RoBMA in general; no actual Maier et al. corrected numeric estimates (e.g., d~0.08) retrieved."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "unanswered",
+   "note": "No Szaszi et al. specific findings or numbers found at all; unclear if the retrieved tutorial paper is even by Szaszi et al."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "unanswered",
+   "note": "No comparison of convergence/divergence across correction methods with actual figures."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No evidence gathered on any Mertens et al. rebuttal or response."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No breakdown by nudge type/domain found."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No post-2022 mega-study or field trial evidence gathered."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "Only general methodological framing (tutorial calls methods 'state-of-the-art') plus one tangential simulation study on p-hacking/publication bias interaction; no direct simulation study validating PET-PEESE/selection models specifically for small heterogeneous nudge-type literatures."
+  }
+ ],
+ "contradictions": [
+  "A previously logged claim asserting the tutorial paper (osf.io/75bqn) frames PET-PEESE and selection models as 'established, state-of-the-art techniques' implying general validity was explicitly REFUTED/killed by counter-evidence and provenance check - meaning the methodological validity of these correction techniques for this literature is itself contested, not settled, which undercuts confidence in any downstream 'corrected effect size' regardless of what number is eventually produced.",
+  "A claim asserting a specific document was 'a formal reply by Szaszi and colleagues to Bartoš and colleagues' was refuted - meaning the actual relationship between the Szaszi and Maier/Bartoš analyses (whether one is a response to, extension of, or independent replication of the other) remains factually unclear from confirmed evidence, contradicting the framing in the original question that treats them as a coherent joint 'reanalysis' camp.",
+  "None identified yet - the evidence base gathered so far is too thin (mostly one methods tutorial and one unrelated simulation paper) to contain any comparable numeric claims that could conflict.",
+  "Potential latent tension flagged but unconfirmed: the tutorial paper 'frames PET-PEESE and selection models as established, state-of-the-art techniques' implying general validity, which may contradict methodological critiques (not yet retrieved) arguing these methods perform poorly under high heterogeneity typical of nudge literature - this needs sourcing before it can be called a real contradiction."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "Scope is limited to the nudge literature as captured by the Mertens et al. (2022) meta-analysis (n≈447 effects, 212 studies) and the two known re-analyses/critiques of it: Maier et al. (2022, meta-analysis of meta-analyses / PET-PEESE and multi-method bias correction) and Szaszi et al. (a re-analysis, likely the 2018 Szaszi et al. review of choice-architecture nudges or a re-examination of Mertens' data) - if the actual Szaszi paper referenced differs in scope, this framing may need revision.",
+   "'Real-world' effect size is interpreted as the bias-corrected effect after applying publication-bias correction methods (e.g., PET-PEESE, selection models, p-curve, top-10 studies) rather than the raw uncorrected pooled effect.",
+   "'Meaningful' is treated as a judgment call requiring an explicit standardized effect size threshold (e.g., Cohen's d or odds ratio) benchmarked against typical behavioral-science or public-policy intervention effect sizes (e.g., d ~0.1–0.2 considered small-but-actionable at population scale; d < 0.1 considered negligible) - the user did not define 'meaningful' numerically.",
+   "Time horizon: literature through 2022-2023 (the original meta-analysis and its immediate re-analyses/rebuttals); more recent 2023-2024 replies or follow-up corrections are in scope if found but not assumed to exist.",
+   "Geography/domain: not restricted - nudge studies span health, finance, environment, and prosocial behavior domains pooled together in Mertens et al.; no sub-domain restriction assumed unless the corrected estimate differs meaningfully by domain.",
+   "The reader is a policy-adjacent or academic decision-maker (e.g., evaluating whether to fund/scale nudge-based interventions) rather than a lay reader wanting a general summary."
+  ],
+  "decisionAtStake": "Whether an organization (policymaker, funder, or behavioral-insights practitioner) should continue investing significant resources in designing and scaling nudge interventions as a primary lever, or should downgrade expectations/reallocate resources toward stronger interventions, given that the publication-bias-corrected effect size may be much smaller than the original headline estimate (Mertens et al. reported d≈0.43).",
+  "hypotheses": [
+   {
+    "hypothesis": "The original Mertens et al. effect (d≈0.43) survives correction largely intact (corrected estimate still moderate, e.g., d>0.3): publication bias exists but is minor, and nudges remain a meaningfully effective policy tool.",
+    "killCriterion": "Maier et al. or Szaszi's bias-corrected estimate (via PET-PEESE, selection models, or top-cited-studies-only analysis) falls below ~0.3 SD, or shows a statistically significant reduction of more than ~30% from the original estimate."
+   },
+   {
+    "hypothesis": "Publication bias is substantial and the corrected effect is small but still non-zero and plausibly actionable at scale (e.g., d roughly 0.10-0.20, consistent with Maier et al.'s reported ~0.43→0.08-0.15 range or similar), meaning nudges have modest but real effects - big claims were oversold, but the tool isn't useless, especially for low-cost/high-reach interventions.",
+    "killCriterion": "If corrected estimates converge tightly on either near-zero (<0.05, non-significant) or remain above 0.25-0.3, this middle hypothesis is eliminated in favor of hypothesis 1 or 3."
+   },
+   {
+    "hypothesis": "The bias-corrected effect is negligible or statistically indistinguishable from zero once publication bias and p-hacking are accounted for, meaning the 'nudge effect' as measured in this literature is largely an artifact of selective publication, and claims of broad real-world efficacy are not supported by this evidence base.",
+    "killCriterion": "If Maier et al./Szaszi corrected estimates remain reliably above ~0.15-0.2 SD with confidence intervals excluding zero across multiple correction methods (PET-PEESE, selection model, top-10%, p-curve), this hypothesis is eliminated."
+   },
+   {
+    "hypothesis": "The debate is unresolved/method-dependent: different correction techniques (PET-PEESE vs. selection models vs. p-curve vs. restricting to preregistered/top-journal studies) yield substantially divergent estimates (ranging from near-zero to moderate), so no single 'corrected effect size' can be stated with confidence - the honest answer is a range with high uncertainty, and domain/intervention-type heterogeneity matters more than a single pooled number.",
+    "killCriterion": "If the major correction methods actually converge (within a narrow band, e.g., all falling in 0.10-0.20) and Mertens/Maier/Szaszi camps substantially agree in follow-up commentary, this hypothesis is eliminated in favor of a single-estimate hypothesis (1, 2, or 3)."
+   }
+  ],
+  "keyQuestion": "After applying the publication-bias corrections proposed by Maier et al. (2022) and Szaszi et al. to the Mertens et al. (2022) nudge meta-analysis dataset, does the corrected pooled effect size remain large enough (commonly interpreted threshold: d≥0.2) to justify treating nudges as a meaningfully effective real-world intervention class, or does it fall to a small/negligible magnitude that undermines that claim?",
+  "whatWouldChangeTheAnswer": [
+   "The actual numeric corrected effect size(s) reported by Maier et al. (2022) and Szaszi et al. (e.g., specific PET-PEESE, selection-model, or top-decile estimates) - this is the core fact the whole answer hinges on.",
+   "Whether Mertens et al. or other authors published a rebuttal defending the original estimate and disputing the correction methods' validity (e.g., arguing PET-PEESE is biased downward for heterogeneous literatures) - this would shift from a single-answer to a contested-answer framing.",
+   "Whether the corrected effect varies substantially by nudge type/domain (e.g., default effects remain large while social-norm nudges shrink to zero) - this would change the answer from a single pooled verdict to a differentiated, domain-specific one.",
+   "Evidence on whether the correction methods themselves are validated/appropriate for this literature (simulation studies on PET-PEESE performance with high heterogeneity) - if the correction methods are shown to be unreliable in this context, confidence in ANY corrected number drops and the answer becomes 'we don't know.'",
+   "Independent large-scale preregistered replication data (e.g., large multi-site nudge trials post-2022) showing real-world effect sizes directly, which would be more decisive than any bias-correction technique applied to the existing biased literature.",
+   "Whether 'meaningful' is redefined using a cost-effectiveness lens rather than a pure effect-size threshold - a small d could still be judged 'meaningful' if the intervention is near-zero-cost and scalable to millions of people, changing the practical conclusion even if the effect-size number itself doesn't change."
+  ]
+ },
+ "answerFirst": "The research pipeline that fed this synthesis failed to actually retrieve any numeric effect-size data: no confirmed claim above states the Mertens et al. (2022) pooled effect size, no confirmed claim states Maier et al.'s (2022) or Szaszi et al.'s corrected effect-size estimates, and no claim compares them. Therefore the specific question - \"what is the corrected effect size\" - CANNOT be answered from the evidence gathered here; all four pre-registered hypotheses (H1-H4) are untested. What the evidence does establish is only the methodological architecture of the debate: there exists a publication-bias-focused reanalysis targeting social-comparison/nudge-type behaviour-change techniques (likely the Maier/Szaszi line of work), and a companion methods tutorial explaining how PET-PEESE, selection models, and RoBMA are used to adjust meta-analytic estimates - but the actual numbers this framework produced were never captured.",
+ "baseRate": "No outside-view base rate is present in the gathered evidence. For context (not evidence retrieved here, and therefore not to be treated as a finding): the broader open-science literature (e.g., Many Labs, replication project effect-size shrinkage patterns) generally shows 30-70% shrinkage of published psychological effect sizes upon correction/replication, which is the general phenomenon this debate is presumably about - but no claim above quantifies this for nudges specifically, so this base rate is flagged as ABSENT from the confirmed evidence, not supplied by it.",
+ "findings": [
+  {
+   "claim": "A publication-bias-adjustment paper exists whose title asserts evidence AGAINST social comparison as an effective behaviour-change technique 'across the behavioural sciences' once publication bias is corrected for.",
+   "confidence": "medium",
+   "sources": [
+    "https://osf.io/jtv5d_v1/download"
+   ],
+   "evidence": "Quote is verbatim the paper's title: 'Adjusting for Publication Bias Reveals Evidence Against Social Comparison As a Behaviour Change Technique Across the Behavioural Sciences.'",
+   "sourceTier": "T1 (but source itself flagged unreliable/undated by the harness, and citation audit could not confirm body content - only the title string was verifiable)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "unreachable - blind audit could not load any body text beyond the title; the qualitative direction (evidence against efficacy) is supported only at the title level, not with body-text corroboration.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "This bias-adjustment work is scoped specifically to social comparison / social-norm nudges, not to nudges or behavioural interventions in general - so it cannot by itself be read as 'the' corrected effect size for nudges broadly (as the original question frames it).",
+   "confidence": "medium",
+   "sources": [
+    "https://osf.io/jtv5d_v1/download"
+   ],
+   "evidence": "Title explicitly restricts scope to 'Social Comparison As a Behaviour Change Technique,' not nudges in general.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "unreachable - no body text retrievable to confirm scope beyond the title itself.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "A separate, methodologically load-bearing paper is a tutorial (not a nudge meta-analysis) that teaches how to apply the three main publication-bias correction techniques - PET-PEESE, selection models, and Robust Bayesian Meta-Analysis (RoBMA) - using JASP and R, and explicitly introduces RoBMA as a Bayesian method that simultaneously combines PET-PEESE and selection-model reasoning.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.31234/osf.io/75bqn"
+   ],
+   "evidence": "Abstract: 'In this tutorial, we demonstrate how to conduct a publication bias adjusted meta-analysis in JASP & R...' and 'we introduce robust Bayesian meta-analysis (RoBMA), a Bayesian approach that simultaneously considers both PET-PEESE and selection models.'",
+   "sourceTier": "T? (primary preprint, self-describing)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - audit confirmed this is a tutorial covering all three named techniques with JASP/R, with no nudge-specific content, consistent with it not being a meta-analysis itself.",
+   "vote": "2-1 / 3-0"
+  },
+  {
+   "claim": "The Maier et al. (2022) paper being discussed is confirmed to exist under the title 'Estimating the Change in Meta-Analytic Effect Size Estimates After the Application of Publication Bias Adjustment Methods,' published in Psychological Methods (2022) - but NO numeric corrected effect size, confidence interval, or comparison to a pre-correction estimate was retrieved from it.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1037/met0000470.supp"
+   ],
+   "evidence": "Supplemental-material metadata: 'Supplemental Material for Estimating the Change in Meta-Analytic Effect Size Estimates After the Application of Publication Bias Adjustment Methods... Journal: Psychological Methods Year: 2022.'",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (metadata only) - confirms paper's existence/title/venue but contains no substantive numeric findings; this is bibliographic confirmation, not evidentiary content.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "A related short, informal, never-formally-published review paper exists that summarizes how PET-PEESE and selection-model correction methods work generally (methodological background only, no nudge-specific results).",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.31234/osf.io/gv4tw"
+   ],
+   "evidence": "'In this short review I summarized how some conventional publication bias correction methods work. The paper was never meant for publication but this way it can be cited.'",
+   "sourceTier": "T? (blog/informal preprint)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - audit confirms it is exactly this kind of informal methods explainer, not a data source.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "There is a general methodological precedent (unrelated to nudges specifically) showing that p-hacking interacting with publication bias distorts meta-analytic effect-size estimates, which is background support for why correction matters but is NOT evidence about nudge effect sizes themselves.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.1037/met0000246"
+   ],
+   "evidence": "Title: 'p-Hacking and publication bias interact to distort meta-analytic effect size estimates,' Psychological Methods, 2020.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "unreachable - page blocked by bot protection; only title/metadata verifiable, no content on magnitude of distortion.",
+   "vote": "3-0"
+  },
+  {
+   "claim": "No confirmed claim in this evidence set states the Mertens et al. (2022) pre-correction pooled effect size (commonly cited elsewhere as d≈0.43), nor any Maier/Szaszi post-correction numeric estimate. This is a critical, unresolved gap.",
+   "confidence": "low",
+   "sources": [],
+   "evidence": "Coverage checklist explicitly lists these as 'unanswered' with no data extracted.",
+   "sourceTier": "N/A - absence of evidence",
+   "factInferenceAssumption": "assumption",
+   "citationCheck": "not applicable - no source to audit; this is a documented gap, not a claim.",
+   "vote": "n/a"
+  }
+ ],
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Original d≈0.43 survives correction largely intact (still >0.3), nudges remain meaningfully effective.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim reports any corrected numeric effect size from Maier et al. or Szaszi et al., nor the original Mertens et al. pooled estimate. The kill criterion (corrected estimate falling below ~0.3 or dropping >30%) cannot be evaluated because no such number was retrieved.",
+   "claimsCited": []
+  },
+  {
+   "hypothesis": "H2: Corrected effect is small but non-zero and actionable (~0.10-0.20).",
+   "verdict": "untested",
+   "reasoning": "Same gap: no numeric corrected estimate was found in any confirmed claim. The title-only claim [0]/[2] indicates a qualitative direction ('evidence against' efficacy) but supplies no magnitude, so it cannot confirm or kill a specific numeric band hypothesis.",
+   "claimsCited": [
+    0,
+    2
+   ]
+  },
+  {
+   "hypothesis": "H3: Corrected effect is negligible/indistinguishable from zero; nudge effect is largely a publication-bias artifact.",
+   "verdict": "surviving",
+   "reasoning": "The one title-level claim retrieved ([0], [2]) is directionally consistent with this hypothesis - the paper's very title asserts 'evidence AGAINST social comparison as a behaviour change technique' after adjusting for publication bias, which is more consistent with a near-zero/negligible corrected effect than with a moderate one. However, this is weak, single-source, title-only evidence (no body text, no numeric CI, and audit was 'unreachable' for substance), and it covers only social-comparison nudges, not nudges broadly. This survives only in the weak sense that no evidence contradicts it and one thin data point leans this way - it is not confirmed.",
+   "claimsCited": [
+    0,
+    2
+   ]
+  },
+  {
+   "hypothesis": "H4: Debate is unresolved/method-dependent; correction methods diverge substantially.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim compares numeric outputs across PET-PEESE, selection models, RoBMA, or p-curve for nudge data specifically. We only confirmed that RoBMA methodologically 'combines' PET-PEESE and selection-model logic ([5]), which is a methods-design fact, not evidence about whether real applications of these methods converge or diverge numerically on nudge data. The refuted claim log also shows a methodological-validity claim about PET-PEESE/selection models being 'state-of-the-art' was explicitly killed by counter-evidence, suggesting genuine unresolved methodological contestation exists - but no direct convergence/divergence data on nudges was captured.",
+   "claimsCited": [
+    5
+   ]
+  }
+ ],
+ "hingeNumber": {
+  "value": "UNKNOWN - no single load-bearing number was retrieved in confirmed evidence",
+  "source": "None - the coverage checklist explicitly lists the Mertens et al. pooled d, the Maier et al. corrected d, and the Szaszi et al. corrected d as all 'unanswered'",
+  "why": "The entire question hinges on comparing a pre-correction pooled effect size (rumored elsewhere as d≈0.43) against post-correction estimates (rumored elsewhere in the 0.08-0.15 range) - but neither number appears in any confirmed, audited claim above. Any number stated with confidence in a final answer would be fabricated relative to this evidence set.",
+  "sensitivity": "Cannot assess sensitivity without a base value. If future retrieval confirms Maier/Szaszi's actual corrected estimate, the entire verdict set (H1-H4) would need to be re-run against that number: a value >0.3 kills H2/H3, a value <0.05 with CI crossing zero would strongly support H3, and a value 0.1-0.2 would support H2. Until then, this is an open coin flip, not a finding."
+ },
+ "strongestArgumentAgainst": "The strongest case against this synthesis's (non-)conclusion is that the underlying research process demonstrably failed at its core task - it repeatedly hit paywalled, bot-blocked (Incapsula), or JavaScript-only pages and never actually read the Mertens et al. (2022), Maier et al. (2022), or Szaszi et al. papers' results sections or abstracts with numeric content. All that survived adversarial review are peripheral facts (titles, journal metadata, methodological tutorial content) rather than the substantive findings the question asks about. This is a process failure, not a finding of genuine scientific ambiguity - a competent literature search would very likely surface the actual numbers (which are publicly reported in these well-known 2022 papers), so reporting 'untested' risks understating how answerable this question actually is with proper access, even though it honestly reflects what THIS evidence run produced. There is also survivorship bias risk in the claim set itself: only claims that survived a 3-lens adversarial panel and audit are shown, which systematically filtered out exactly the numeric, hardest-to-verify claims (likely because sources were blocked), leaving a residue of safe, low-information metadata claims that create a false impression of thorough coverage.",
+ "whatWouldChangeThisCall": [
+  "Successful retrieval of the actual Mertens et al. (2022) abstract/results reporting the pre-correction pooled effect size (d and CI) and k number of studies.",
+  "Successful retrieval of Maier et al. (2022) results section or supplemental tables reporting PET-PEESE/selection-model/RoBMA corrected point estimates and CIs.",
+  "Successful retrieval of Szaszi et al.'s specific corrected numeric estimate(s) and confirmation of whether their work is independent from, a reply to, or an extension of Maier et al.'s.",
+  "Clarification of the actual relationship between the 'social comparison' paper (jtv5d_v1) and the broader 'nudges in general' literature the original question asks about - is this the same dataset as Mertens et al., a subset, or an entirely different meta-analysis?",
+  "Any post-2022 rebuttal from Mertens et al. or independent replication/mega-study data that would validate or challenge whichever corrected estimate is eventually confirmed."
+ ],
+ "summary": "This research run could not establish the actual corrected effect size for nudge interventions after publication-bias adjustment: no confirmed, audited claim reports Mertens et al.'s (2022) original pooled effect size, nor Maier et al.'s or Szaszi et al.'s corrected numeric estimates, so the question's central empirical ask is unanswered by this evidence set. What is confirmed is only scaffolding: (1) a title-level claim that a publication-bias-adjusted analysis found evidence AGAINST social comparison specifically (not nudges generally) as an effective behaviour-change technique; (2) confirmation that a companion tutorial paper teaches PET-PEESE, selection models, and RoBMA (which combines the first two) as the standard bias-correction toolkit; and (3) bibliographic confirmation that the Maier et al. (2022) Psychological Methods paper exists under its stated title. A previously-logged claim that these correction methods are 'established, state-of-the-art' and generally valid was itself refuted, indicating the methodology is contested, not settled. Given the near-total absence of numeric findings, all four pre-registered hypotheses are effectively untested, with H3 (negligible/near-zero corrected effect) receiving only weak, indirect, title-level support and no other hypothesis receiving any support or refutation.",
+ "caveats": "Weak/unreliable sources: three findings rest on sources the harness itself flagged as \"unreliable\" or with unresolved tier (\"T?\"), and one (osf.io/jtv5d_v1) had a blind audit result of \"unreachable\" for its substantive content - only the title string was verifiable. Two additional sources (met0000246, met0000470.supp) returned bot-blocked or metadata-only content with no findings text. Dropped/refuted claims: three claims were explicitly refuted during adversarial review and are reported for transparency - (a) that a document was a formal Szaszi reply to Bartoš/Maier, (b) that a psyarxiv page was truly empty, (c) that the tutorial paper frames PET-PEESE/selection models as fully validated state-of-the-art methods. Unanswered sub-questions (7 of 8 on the coverage checklist): the exact Mertens et al. pooled effect size and CI; Maier et al.'s and Szaszi et al.'s specific corrected numeric estimates; whether correction methods converge or diverge numerically; any Mertens rebuttal; effect-size variation by nudge type; and post-2022 mega-study corroboration. Time-sensitivity: this is a fast-moving methodological debate (2020-2022 papers, likely ongoing commentary/rebuttals since); any answer here would need re-verification against the most current published exchange between the Mertens and Maier/Szaszi camps. No T4 aggregator sources were used as sole support for any finding (none flagged), and no T5 sources were encountered, so no exclusions were required on those grounds - the core problem is not source tier so much as retrieval failure of the load-bearing numeric content itself.",
+ "openQuestions": [
+  "What is the exact pre-correction pooled effect size (d, CI, k) reported by Mertens et al. (2022), and what interventions/domains does it cover (nudges broadly vs. specific techniques)?",
+  "What are the specific PET-PEESE, selection-model, and RoBMA corrected point estimates reported by Maier et al. (2022), and how much do they diverge from each other?",
+  "What is Szaszi et al.'s specific relationship to Maier et al. (independent replication, extension, or formal reply), and what corrected numeric estimate(s) did they report?",
+  "Does the corrected effect size vary meaningfully across nudge subtypes (e.g., defaults vs. social norms vs. framing), such that a single pooled 'corrected effect size' would misrepresent the literature?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 85.7,
+  "effectiveCitations": 6,
+  "supported": 6,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 4,
+  "scope": "full verification pool (11 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "The paper title indicates it presents evidence against social comparison as an effective behaviour change technique across the behavioural sciences once publication bias is adjusted for.",
+   "url": "https://osf.io/jtv5d_v1/download",
+   "support": "unreachable",
+   "reasoning": "The fetched page content is just OSF with no actual paper title, abstract, or body text. There is no accessible textual content to verify the claim about the paper's title or findings regarding social comparison as a behaviour change technique. Since the download link did not yield any substantive content (only the bare OSF placeholder), there is nothing to compare against the statement."
+  },
+  {
+   "claim": "This document is a formal reply by Szaszi and colleagues to Bartoš and colleagues (likely referencing Maier et al.'s Bartoš-led PET-PEESE/selection model reanalysis) concerning publication bias adjustment methods applied to social comparison nudge meta-analysis.",
+   "url": "https://osf.io/sh6tu_v1/download",
+   "support": "unreachable",
+   "reasoning": "The fetched page content is simply OSF, which indicates the download link did not return the actual document content (likely a placeholder, redirect page, or JavaScript-rendered shell that wasn't captured). There is no textual content available to verify any claims about the document being a reply by Szaszi and colleagues to Bartoš and colleagues, nor any mention of Maier et al., PET-PEESE/selecti…"
+  },
+  {
+   "claim": "Friese and Frankenbach (2020) published a methodological simulation study titled 'p-Hacking and publication bias interact to distort meta-analytic effect size estimates' in Psychological Methods, examining how p-hacking combined with publication bias affects meta-analytic effect estimates.",
+   "url": "https://doi.org/10.1037/met0000246",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only returns an Incapsula bot-protection error message (Request unsuccessful. Incapsula incident ID: ...) with no actual article text, abstract, or metadata. There is no substantive content available to verify or refute the statement about Friese and Frankenbach (2020) and their study on p-hacking and publication bias. Since the page is essentially an error/block shell rat…"
+  },
+  {
+   "claim": "The page content returned is only the placeholder text 'OSF' with no actual article text, abstract, or data accessible.",
+   "url": "https://psyarxiv.com/kvsp7/download",
+   "support": "supported",
+   "reasoning": "The fetched page content consists solely of the text OSF with nothing else - no article text, abstract, or data. This directly matches the statement's claim that the page returns only placeholder text 'OSF' with no actual content accessible. The statement is a direct, accurate description of what was fetched."
+  },
+  {
+   "claim": "The work is a publication-bias-corrected analysis focused specifically on social comparison/social norm nudges rather than nudges in general.",
+   "url": "https://osf.io/jtv5d_v1/download",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows OSF with no actual body text, article content, or metadata retrievable. This appears to be a JavaScript-rendered page or a download link that did not return readable text content. Without any substantive text from the page, there is no way to verify whether the work is a publication-bias-corrected analysis focused on social comparison/social norm nudges. The pag…"
+  },
+  {
+   "claim": "This is a methods tutorial paper (not a nudge meta-analysis itself) demonstrating how to apply PET-PEESE, selection models, and Robust Bayesian Meta-Analysis (RoBMA) for publication bias adjustment using JASP and R.",
+   "url": "https://doi.org/10.31234/osf.io/75bqn",
+   "support": "supported",
+   "reasoning": "The abstract explicitly identifies the paper as a tutorial (not a meta-analysis of nudges) demonstrating how to apply PET-PEESE, selection models, and RoBMA for publication bias adjustment, using JASP and R. This directly matches the statement's claims: it's a methods tutorial, covers all three named techniques, and uses JASP/R. There is no mention of nudge studies, consistent with it not being a …"
+  },
+  {
+   "claim": "The page content provided is minimal (only 'OSF' text), with no substantive quotable findings about construal level theory or nudge effect sizes accessible from the given content.",
+   "url": "https://psyarxiv.com/r8nyu/download",
+   "support": "supported",
+   "reasoning": "The fetched page content consists solely of the text OSF with nothing else. This confirms the statement that the page content is minimal, containing only OSF text, and there is no substantive information about construal level theory or nudge effect sizes present in the content. The statement is essentially describing the observed page content accurately."
+  },
+  {
+   "claim": "The paper introduces Robust Bayesian Meta-Analysis (RoBMA) as a technique that simultaneously combines both PET-PEESE and selection model approaches to bias correction.",
+   "url": "https://doi.org/10.31234/osf.io/75bqn",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that RoBMA is introduced in the paper as a Bayesian approach that simultaneously considers both PET-PEESE and selection models for bias correction, which directly matches the statement's claim."
+  },
+  {
+   "claim": "The tutorial frames PET-PEESE and selection models as established, state-of-the-art techniques for mitigating publication bias in meta-analyses, implying their general methodological validity when correctly applied.",
+   "url": "https://doi.org/10.31234/osf.io/75bqn",
+   "support": "partial",
+   "reasoning": "The abstract explicitly calls PET-PEESE and selection models state-of-the-art techniques for publication bias adjustment, supporting the state-of-the-art framing. However, the paper's stated purpose is to introduce these two methods alongside a third approach (RoBMA) that simultaneously considers both PET-PEESE and selection models, suggesting the authors see RoBMA as an improvement/complement rat…"
+  },
+  {
+   "claim": "This record is the supplemental material to the Maier et al. (2022) Psychological Methods paper (met0000470) titled 'Estimating the Change in Meta-Analytic Effect Size Estimates After the Application of Publication Bias Adjustment Methods', published in 2022.",
+   "url": "https://doi.org/10.1037/met0000470.supp",
+   "support": "supported",
+   "reasoning": "The fetched page explicitly identifies itself as Supplemental Material for Estimating the Change in Meta-Analytic Effect Size Estimates After the Application of Publication Bias Adjustment Methods, published in Journal: Psychological Methods in Year: 2022, with DOI 10.1037/met0000470.supp. This directly matches the statement's claim that the record is supplemental material to the Maier et al. (202…"
+  },
+  {
+   "claim": "This paper is a short informal review summarizing how conventional publication bias correction methods (e.g., PET-PEESE, selection models) work, and was never intended for formal publication.",
+   "url": "https://doi.org/10.31234/osf.io/gv4tw",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the paper is a short review summarizing conventional publication bias correction methods, and explicitly states it was never meant for publication. This matches the statement closely, including the mention of PET-PEESE and selection models being examples of such methods commonly discussed in this literature (though not named explicitly in the abstract, the title C…"
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "What is the exact pooled effect size (with CI) reported by Mertens et al. (2022) before any publication-bias correction, and what methods/inclusion criteria produced it?",
+   "What specific corrected effect-size estimates do Maier et al. (2022) report using PET-PEESE, selection models, and other bias-correction techniques applied to the same or an updated nudge dataset, and how do they compare numerically to the original 0.43?",
+   "What corrected estimates does Szaszi et al. report (e.g., from their own reanalysis or critique), and do their methods/numbers agree with, diverge from, or extend Maier et al.'s findings?",
+   "Do the different correction methods (PET-PEESE, selection models, p-curve, top-decile/preregistered-only subsets) converge on a similar corrected value, or do they diverge substantially, and by how much?",
+   "Has Mertens et al. or other original authors published a rebuttal or response defending their estimate and disputing the validity/appropriateness of the correction methods used by Maier/Szaszi?",
+   "What do independent, large-scale preregistered field trials or mega-studies (post-2022) of nudge interventions show about real-world effect sizes, and do they corroborate the corrected meta-analytic estimate or the original higher estimate?"
+  ],
+  "targeted": 4,
+  "sourcesAdded": 2,
+  "claimsReVerified": 2,
+  "claimsSaved": 2
+ },
+ "calibration": {
+  "n": 9,
+  "rawAgreement": 0.7778,
+  "expectedByChance": 0.5556,
+  "confusion": {
+   "survive_survive": 5,
+   "kill_kill": 2,
+   "survive_then_kill": 1,
+   "kill_then_survive": 1
+  },
+  "surviveRateRun1": 0.6667,
+  "surviveRateRun2": 0.6667,
+  "cohenKappa": 0.5,
+  "scottPi": 0.5,
+  "verdictFlips": 2,
+  "flipRate": 0.2222,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": 0.7692,
+    "rawAgreement": 0.8889,
+    "refuteRateRun1": 0.4444,
+    "refuteRateRun2": 0.3333,
+    "n": 9
+   },
+   "provenance": {
+    "cohenKappa": 0.7805,
+    "rawAgreement": 0.8889,
+    "refuteRateRun1": 0.4444,
+    "refuteRateRun2": 0.5556,
+    "n": 9
+   },
+   "support": {
+    "cohenKappa": null,
+    "rawAgreement": 0.7778,
+    "refuteRateRun1": 0.1111,
+    "refuteRateRun2": 0.3333,
+    "n": 9
+   }
+  },
+  "lensSplit": {
+   "claims": 9,
+   "split": 6,
+   "disagreementRate": 0.6667,
+   "unanimityRate": 0.3333
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "usable but noisy",
+  "preRegisteredAction": "MIDDLE BAND: publish the number, then add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, and diversify the model rather than the prompt.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "note": "fixed 2026-09-06 before this instrument was built"
+  }
+ },
+ "droppedSample": null,
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "processCritique": {
+  "verdict": "material-gaps",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableStatements": [
+   "Executive summary: 'A previously-logged claim that these correction methods are established, state-of-the-art and generally valid was itself refuted' — no numbered claim documents a refutation of methods' validity; claims [3],[5],[7] describe the methods neutrally/descriptively, none asserts or refutes a 'state-of-the-art' characterization. This sentence fabricates a dialectical event (claim made, then refuted) not present in the evidence pool.",
+   "Executive summary: 'commonly cited elsewhere as d≈0.43' (finding 7 and prose) — this specific numeric value (0.43) is never sourced from any of the numbered claims [0]-[7]; it appears to be injected from the analyst's/questioner's outside knowledge, not from the verified claim pool.",
+   "Executive summary: reference to 'H1-H4 pre-registered hypotheses' and specifically 'H3 (negligible/near-zero corrected effect) receiving only weak, indirect, title-level support' — no hypotheses H1-H4 are defined anywhere in the claim pool or checklist provided; this entire hypothesis-testing frame appears unsupported/untraceable to the given evidence.",
+   "Finding 1 and Finding 2 together assert the paper is 'load-bearing' evidence about nudges broadly being contradicted only for social comparison — this interpretive framing ('as the original question frames it') inserts an editorial gloss beyond what claim [0] and [2] literally state (which are just about title-level content and scope).",
+   "Summary phrase 'the methodology is contested, not settled' is an interpretive leap not licensed by any claim; no claim compares proponent vs critic positions on method validity.",
+   "Summary sentence: 'A previously-logged claim that these correction methods are established, state-of-the-art and generally valid was itself refuted' - no claim in [0]-[7] documents a refutation of this assertion; claims [3] and [5] merely describe what the tutorial/review papers teach, they do not refute or validate the methods' reliability. This is an inserted narrative event not traceable to the claim pool.",
+   "Summary sentence: 'commonly cited elsewhere as d≈0.43' (Finding 7) introduces the specific numeric figure 0.43 that appears nowhere in the verified claim pool [0]-[7]; it is asserted as an external fact not traceable to any numbered claim, even though flagged as 'commonly cited elsewhere' it is still an unsourced insertion into the evidence-based findings.",
+   "Summary's framing that 'all four pre-registered hypotheses are effectively untested, with H3 ... receiving only weak, indirect, title-level support' references 'H3' and 'four pre-registered hypotheses' that do not appear anywhere in the claim pool or checklist provided - this hypothesis-numbering scheme is untraceable to the given materials."
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (Mertens et al. 2022 pooled effect size, CI, methods/inclusion criteria) — completely unanswered; no primary-source retrieval of the actual Mertens paper occurred.",
+   "Checklist item 1 (Mertens et al. pooled effect size and CI) - completely unanswered; no claim retrieved the actual number, methods, or inclusion criteria.",
+   "Checklist item 2 (Maier et al. PET-PEESE/selection-model numeric estimates vs 0.43) - completely unanswered; only bibliographic existence of the paper confirmed, no numbers.",
+   "Checklist item 2 (Maier et al. specific PET-PEESE/selection-model numeric estimates vs 0.43) — completely unanswered despite Maier et al.'s paper and its supplemental material ([4],[6]) being identified; the supplemental material itself (which likely contains the numeric tables) was never actually opened/extracted.",
+   "Checklist item 3 (Szaszi et al. corrected estimates) - Szaszi is never mentioned in any of the 8 claims at all; this source/perspective appears to have never been searched or retrieved despite being named explicitly in the question and checklist.",
+   "Checklist item 3 (Szaszi et al. reanalysis numbers) — Szaszi et al. is not represented by a single claim in the entire pool; this source appears to have never been searched or retrieved at all, a total coverage failure for a named source in the original question.",
+   "Checklist item 4 (convergence/divergence across correction methods numerically) — unanswered; no numeric comparison exists in the pool.",
+   "Checklist item 4 (convergence/divergence across correction methods) - unanswered; no numeric comparison exists in the claim pool.",
+   "Checklist item 5 (Mertens rebuttal defending original estimate) - unanswered; no claim addresses any author response or rebuttal.",
+   "Checklist item 5 (Mertens rebuttal/response) — unanswered; no claim addresses any rebuttal from Mertens or original authors.",
+   "Checklist item 6 (heterogeneity by nudge type/domain) - partially touched only insofar as claim [0]/[2] show one narrow sub-analysis (social comparison), but no broader domain-by-domain comparison (defaults, framing, etc.) was found.",
+   "Checklist item 6 (heterogeneity by nudge type/domain) — partially touched only via the social-comparison-specific paper [0]/[2], but no comparison across multiple nudge types (defaults vs. framing vs. norms) with actual numbers was found; the 'Domain-heterogeneity investigator' perspective's assigned question was not meaningfully answered.",
+   "Checklist item 7 (post-2022 large-scale field trials/mega-studies) — completely unanswered; no claim mentions any field trial, mega-study, or real-world program outcome data at all, meaning the practitioner/behavioral-insights perspective's core informational need was entirely unmet.",
+   "Checklist item 7 (post-2022 mega-studies/field trials corroborating or contradicting corrected estimate) - completely unaddressed; no claim references any field trial or mega-study.",
+   "Checklist item 8 (validation of PET-PEESE/selection models via simulation studies for this literature type) - only tangentially touched by claim [1] (Friese & Frankenbach simulation on p-hacking+publication bias generally), but this is not specific to nudge literature or to PET-PEESE/selection-model validity, so the question remains substantially unanswered.",
+   "Checklist item 8 (validation of PET-PEESE/selection models via simulation studies for this literature type) — only glancingly touched by [1] (Friese & Frankenbach simulation on p-hacking+publication bias) but that paper is not about PET-PEESE/selection-model validity specifically nor about nudge-type heterogeneous small-sample literature; the specific methodological-critique angle remains unaddressed.",
+   "Claim [4] documents an outright failed retrieval ('OSF' text only, no content) yet no follow-up or alternative source retrieval is recorded to compensate for this dead end.",
+   "No claim in the pool actually contains a number (percentage, Cohen's d, correlation, CI) anywhere — every single checklist item requiring a quantitative answer failed; the research process seems to have retrieved only titles/metadata/abstracts-level facts rather than actual paper content/data (e.g., PDFs, tables, OSF datasets) despite a 'data auditor' perspective supposedly being assigned to reconstruct raw funnel plots/regressions from source data — that perspective's work is entirely absent from the claim pool.",
+   "No primary data source (e.g., OSF repository, raw dataset, Maier et al. supplementary material full text) was actually opened for numbers, despite claim [6] confirming a supplemental materials record exists - the actual supplementary numeric content was apparently never extracted.",
+   "The 'Data auditor / constructor from raw dataset' perspective, tasked with reconstructing funnel plots/PET-PEESE regressions, appears to have produced zero claims with actual numeric content, suggesting this search perspective failed or was not executed to completion."
+  ],
+  "planFlaws": [
+   "No claim addresses real-world field-trial evidence (checklist item 7) despite a dedicated 'Practitioner/behavioral-insights unit' perspective being defined specifically to surface this angle - this perspective's search results are entirely absent from the claim pool, another undisclosed execution gap.",
+   "No control/premise-check step existed to verify the widely-cited d≈0.43 figure from Mertens et al. before the executive summary casually invokes it as 'commonly cited elsewhere' -- this is a premise accepted without being tested against any retrieved claim, exactly the kind of leading-premise problem the audit should catch.",
+   "Szaszi et al., explicitly named in the original question and checklist item 3, never appears in the claim pool at all - no perspective seems to have searched for this specific author/reanalysis, despite it being central to the question's framing ('weigh Mertens against Maier AND Szaszi'). This is a direct scoping-to-execution gap: the plan named the source but no search evidently targeted it.",
+   "Szaszi et al., named explicitly in the original question and the coverage checklist (items 3, 4), has zero representation anywhere in the 8 verified claims — this is not a partial gap but a complete blind spot, indicating the search strategy/queries never targeted this named source, a basic search-execution failure rather than a scoping problem per se, but the scoping also did not build in a checkpoint to verify each named source (Mertens, Maier, Szaszi) was actually retrieved before synthesis.",
+   "The claim pool is dominated by bibliographic/title-level and methods-tutorial content (claims 3,5,6) rather than substantive numeric findings, suggesting searches surfaced secondary/adjacent documents (tutorials, supplementary-material index pages, unrelated simulation papers) instead of drilling into the primary papers' results sections or abstracts - a systematic shortfall across most perspectives, not just one.",
+   "The perspective list includes a 'Data auditor / constructor from raw dataset' meant to pull actual regression outputs, but none of the 8 verified claims contain any such reconstructed statistic - indicating this perspective's search either wasn't executed or wasn't captured in the claim pool, a silent process failure not disclosed in the summary.",
+   "The perspective panel included a 'Data auditor / constructor from raw dataset' explicitly tasked with reconstructing funnel plots/regressions from underlying data, yet none of the 7 findings or 8 claims reflect any raw-data extraction, OSF dataset inspection, or numeric regression output — this perspective's assigned work product is entirely missing from the final claim pool, suggesting either the search failed silently or was never actually executed, and this wasn't flagged as a critical failure in the process rather than just as a 'gap'.",
+   "The research process accepted title-level and bibliographic-existence-level findings (e.g., claim [0]'s title assertion, claim [6]'s bibliographic confirmation) as if they were substantive findings, without a plan step requiring actual full-text/numeric verification before proceeding to synthesis -- this let the process declare 'the central empirical ask is unanswered' rather than triggering a mandatory deeper-retrieval loop (e.g., fetching the Maier supplemental material [6] itself, which was identified but not opened).",
+   "The scoping checklist appropriately targeted the right sub-questions, but the research execution failed to retrieve even the single most basic, widely-public figure (Mertens et al.'s d≈0.43 pooled effect and CI), which is available directly in the abstract of a highly-cited 2022 meta-analysis - this suggests a retrieval/search execution flaw rather than a scoping flaw, but the report should have flagged this as a process failure rather than folding an unsourced '0.43' into a finding while simultaneously claiming no numbers were found (internal inconsistency: Finding 7 states no numeric estimate was found yet cites 0.43 as 'commonly cited elsewhere').",
+   "The scoping's sub-question 7 (post-2022 field trials/mega-studies) was assigned to the 'Practitioner' perspective, but no search results for this perspective appear at all in the claim pool -- the practitioner's real-world/field-trial angle, which is central to the question's framing ('meaningful real-world effect sizes'), was dropped without any documented search attempt or explanation."
+  ],
+  "rationales": [
+   "The executive summary is largely honest about the core failure (no numeric corrected effect size was found), which is commendable, but it still contains untraceable insertions: the specific figure 'd≈0.43' appears nowhere in the verified claim pool yet is stated as fact ('commonly cited elsewhere'), and the summary asserts a 'previously-logged claim... was itself refuted' and references 'four pre-registered hypotheses'/'H3' that have no basis in the provided claims or checklist. More importantly…",
+   "The report is honest in its headline conclusion (that the central numeric question is unanswered), which is commendable self-awareness, but the process underlying it has severe execution failures, not just minor gaps. Every single checklist item requiring a number (pooled effect size, corrected estimates, CIs, convergence across methods) came back empty despite the fact that at least one of the exact needed documents (Maier et al.'s paper and its supplemental material, claim [6]) was identified …"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "This document is a formal reply by Szaszi and colleagues to Bartoš and colleagues (likely referencing Maier et al.'s Bartoš-led PET-PEESE/selection model reanalysis) concerning publication bias adjustment methods applied to social comparison nudge meta-analysis.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://osf.io/sh6tu_v1/download",
+   "why": "The claim asserts this is a reply to Bartoš and colleagues concerning Maier et al.'s Bartoš-led PET-PEESE/selection model reanalysis of the Mertens et al. (2022) nudge meta-analysis. However, the actual OSF abstract text retrieved in the search results (doi.org/10.31219/osf.io/sh6tu_v1) describes the paper's own subject matter as: we examined the efficacy of social comparison as a behaviour change technique (SC-BCT) across behavioural sciences. Our findings indicate that SC-BCT can effectively i…"
+  },
+  {
+   "claim": "The page content returned is only the placeholder text 'OSF' with no actual article text, abstract, or data accessible.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://psyarxiv.com/kvsp7/download",
+   "why": "The claim under review is not a substantive scientific finding about nudge effect sizes at all—it merely asserts that a PsyArXiv download link returned placeholder text ('OSF') with no accessible content. The provided 'counter-evidence' search results (on email security, text simplification corpora, and an AAAS article classification page) are entirely irrelevant to nudge interventions, publication bias, or the Mertens/Maier/Szaszi meta-analyses, so none of them can confirm or refute the claim o…"
+  },
+  {
+   "claim": "The tutorial frames PET-PEESE and selection models as established, state-of-the-art techniques for mitigating publication bias in meta-analyses, implying their general methodological validity when correctly applied.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.31234/osf.io/75bqn",
+   "why": "The claim under review asserts the tutorial (Mertens et al., Adjusting for Publication Bias in JASP and R) frames PET-PEESE and selection models as established, state-of-the-art techniques with general methodological validity. However, the actual quoted text is far more limited: it says these methods are state-of-the-art only in the narrow sense of being implemented accessibly in JASP/R for non-programmers—a claim about tooling/accessibility, not a blanket endorsement of general methodological v…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.31234/osf.io/75bqn",
+   "quality": "primary",
+   "perspective": "Data auditor / constructor from raw dataset",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.7717/peerj.360/fig-4",
+   "quality": "unreliable",
+   "perspective": "Data auditor / constructor from raw dataset",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1037/met0000246",
+   "quality": "secondary",
+   "perspective": "Skeptic hunting the strongest null case",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC11449432",
+   "quality": "unreliable",
+   "perspective": "Practitioner / behavioral-insights unit",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quality": "unreliable",
+   "perspective": "Mertens 2022 original estimate",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/jrsm.1594",
+   "quality": "unreliable",
+   "perspective": "Maier et al. 2022 corrected estimate",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://psyarxiv.com/kvsp7/download",
+   "quality": "unreliable",
+   "perspective": "Maier et al. 2022 corrected estimate",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T3"
+  },
+  {
+   "url": "https://psyarxiv.com/r8nyu/download",
+   "quality": "unreliable",
+   "perspective": "Maier et al. 2022 corrected estimate",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T3"
+  },
+  {
+   "url": "https://osf.io/3t7jb/download",
+   "quality": "unreliable",
+   "perspective": "Maier et al. 2022 corrected estimate",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://openalex.org/W3160763176",
+   "quality": "unreliable",
+   "perspective": "Maier et al. 2022 corrected estimate",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://osf.io/jtv5d_v1/download",
+   "quality": "unreliable",
+   "perspective": "Szaszi reanalysis of nudge literature",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T1"
+  },
+  {
+   "url": "https://osf.io/sh6tu_v1/download",
+   "quality": "unreliable",
+   "perspective": "Szaszi reanalysis of nudge literature",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T1"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC10495100",
+   "quality": "unreliable",
+   "perspective": "Szaszi reanalysis of nudge literature",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://psyarxiv.com/5wsna/download",
+   "quality": "unreliable",
+   "perspective": "Szaszi reanalysis of nudge literature",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://doi.org/10.1037/met0000470.supp",
+   "quality": "unreliable",
+   "perspective": "rescue1",
+   "wave": "rescue",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.31234/osf.io/gv4tw",
+   "quality": "blog",
+   "perspective": "rescue1",
+   "wave": "rescue",
+   "claims": 1,
+   "tier": "T?"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 16,
+  "claimsExtracted": 11,
+  "urlDupes": 0,
+  "budgetDropped": 1,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 35,
+    "ok": 0,
+    "fail": 35,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 35,
+    "ok": 35,
+    "fail": 0,
+    "results": 15
+   },
+   "crossref": {
+    "attempts": 35,
+    "ok": 26,
+    "fail": 9,
+    "results": 151
+   },
+   "europepmc": {
+    "attempts": 9,
+    "ok": 9,
+    "fail": 0,
+    "results": 17
+   },
+   "openalex": {
+    "attempts": 7,
+    "ok": 5,
+    "fail": 2,
+    "results": 16
+   },
+   "pubmed": {
+    "attempts": 6,
+    "ok": 6,
+    "fail": 0,
+    "results": 8
+   },
+   "arxiv": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "results": 37
+   }
+  },
+  "sourceTiers": {
+   "T?": 3,
+   "T2": 6,
+   "T3": 4,
+   "T1": 3
+  },
+  "agentCalls": 105,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 197917,
+  "outputTokens": 60104,
+  "wallSeconds": 720.3,
+  "claimsVerified": 11,
+  "lensesPerClaim": 3,
+  "confirmed": 8,
+  "killed": 3,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

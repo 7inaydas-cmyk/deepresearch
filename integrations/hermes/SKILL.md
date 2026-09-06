@@ -141,6 +141,20 @@ Report these six things. Do not bury them.
    nothing, which IS a real finding about coverage even though the per-backend counts are
    unreliable.
 
+   **THE FIX, verified working 2026-09-06.** A local SearXNG restores general-web
+   coverage on a challenged host. On the same query that returned 6 scholarly URLs
+   through the degraded chain, it returned 31 results including practitioner blogs the
+   scholarly tier structurally cannot reach:
+
+       cd contrib/searxng && docker compose up -d
+       export DR_SEARXNG_URL=http://127.0.0.1:8888
+       sh verify.sh
+
+   `searxng` is already first in the backend chain, so nothing else changes. If
+   `DR_SEARXNG_URL` is set and `searchHealth` still shows `searxng results=0`, the
+   container is up but not serving JSON — run `verify.sh`, do not assume the web is
+   empty.
+
 1. **`citationAudit.citationAccuracy`** - of every verified claim, the percentage whose
    cited page, re-fetched blind, actually supports it. **The single most important number.**
    Under ~70% means treat the report as provisional and say so. Also report

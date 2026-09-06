@@ -1,0 +1,30 @@
+# SearXNG settings for deepresearch.
+#
+# The single line that matters is `formats: [html, json]`. Every PUBLIC SearXNG
+# instance disables the json format precisely to stop automated use, which is why
+# pointing DR_SEARXNG_URL at someone else's instance does not work and would not
+# be polite if it did. Run your own; it is one container.
+use_default_settings: true
+
+server:
+  # Local-only instance bound to 127.0.0.1, so this is not protecting anything.
+  # If you expose this container to a network, replace it with a real random value.
+  secret_key: "deepresearch-local-only-not-a-shared-secret"
+  # The rate limiter exists to stop bots hammering a public instance. On a
+  # single-user local instance it only throttles your own research run.
+  limiter: false
+  image_proxy: false
+  bind_address: "0.0.0.0"
+
+search:
+  formats:
+    - html
+    - json
+  safe_search: 0
+  autocomplete: ""
+
+outgoing:
+  request_timeout: 8.0
+  max_request_timeout: 12.0
+  pool_connections: 100
+  pool_maxsize: 20

@@ -86,6 +86,18 @@ python3 -m deepresearch --question "your question" --depth standard --out report
 
 Optional: `pip install -e ".[better-extraction]"` adds `trafilatura` for cleaner page text. Nothing else is ever required.
 
+### Strongly recommended: your own search index
+
+DuckDuckGo and Mojeek challenge datacentre and VPN addresses. When they do, every general-web backend returns zero, the run falls back to Crossref and Wikipedia, and you get a **scholarly-only** report that looks complete. It will tell you an intervention raised accuracy from 81% to 86%; it cannot tell you what practitioners found when they tried it. That is [#8](https://github.com/7inaydas-cmyk/deepresearch/issues/8), and self-hosting is the only real fix — every public SearXNG instance disables `format=json` precisely to stop automated use.
+
+```bash
+cd contrib/searxng && docker compose up -d
+export DR_SEARXNG_URL=http://127.0.0.1:8888
+sh verify.sh          # proves it serves JSON, not just that it is up
+```
+
+Two minutes, one container. On a blocked host it is the difference between six sources and thirty-one, and between a literature review and actual research.
+
 ### The selftest, on a host where backends are blocked
 
 Not a cherry-picked green run — this is what it looks like when your IP is being challenged:
@@ -161,6 +173,7 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 - **It cannot make sources exist.** On a thin topic it returns a mostly-empty report and says so. That is correct behaviour, not a malfunction.
 - **The panel is harsh** and occasionally kills a true claim whose near-duplicate survives. Read `refuted` before concluding something is unsupported.
 - **Model cost is real.** Search is free; a standard run is a few hundred thousand tokens.
+- **A blocked host degrades quietly.** If DuckDuckGo and Mojeek challenge your IP the run becomes scholarly-only and still reads as complete. Check `stats.searchHealth`; fix it with [`contrib/searxng`](contrib/searxng).
 
 Each of these is tracked as an open issue with its evidence, so you can read the numbers
 rather than take the bullet on trust:

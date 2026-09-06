@@ -88,6 +88,23 @@ premises into sub-questions to *test*, not to assume — but only if it can see 
 Expect roughly 15 minutes at `quick`, 30-50 at `standard`, 60-90 at `exhaustive`.
 Concurrency is capped at `min(16, CPUs - 2)` per workflow, so agents queue.
 
+## Before you trust a thin result: check search coverage
+
+`stats.searchHealth` gives per-backend attempt and result counts. DuckDuckGo and Mojeek
+answer a challenged IP with a page that parses to **zero results while reporting `ok`**,
+so a run can quietly become scholarly-only and still read as complete. When every
+general-web backend shows 0, say so, and treat coverage gaps as a search artefact rather
+than evidence that nothing exists.
+
+The fix is a local search index, verified working 2026-09-06 — on the same query it took
+a degraded host from 6 scholarly URLs to 31 results including practitioner blogs:
+
+```bash
+cd contrib/searxng && docker compose up -d
+export DR_SEARXNG_URL=http://127.0.0.1:8888
+sh verify.sh
+```
+
 ## Reading the result
 
 Report these four things. Do not bury them.
