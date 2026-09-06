@@ -134,6 +134,12 @@ const schemaShortfall = (schema, obj) => {
   const out = []
   for (const name of (schema && schema.required) || []) {
     const spec = props[name] || {}
+    // A required key that is ABSENT is a violation whatever its type. Measured in the
+    // Python build 2026-09-06: a run wrote 4 hypotheses and came back with
+    // `hypothesisVerdicts` missing entirely — not empty, absent — so the contract was
+    // written and never adjudicated, with nothing saying so. An empty list stays legal;
+    // some required fields are legitimately empty.
+    if (!(name in obj)) { out.push(name + ' MISSING (required)'); continue }
     if (spec.type !== 'array' || !spec.minItems) continue
     const got = obj[name]
     const n = Array.isArray(got) ? got.length : 0

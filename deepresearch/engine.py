@@ -241,6 +241,16 @@ def _schema_shortfall(schema, obj):
     short = []
     for name in schema.get("required") or []:
         spec = props.get(name) or {}
+        # A required key that is ABSENT is a violation whatever its type. Measured
+        # 2026-09-06: a run wrote 4 hypotheses with kill criteria and then came back with
+        # `hypothesisVerdicts` missing entirely - not empty, absent - so the contract was
+        # written, never adjudicated, and nothing said so. 4 of 5 runs were fine, which is
+        # how a fault like this survives: it looks like a one-off until someone counts.
+        # An empty list stays legal here; only a missing key is caught, because some
+        # required fields (contradictions, say) are legitimately empty.
+        if name not in obj:
+            short.append("%s MISSING (required)" % name)
+            continue
         if spec.get("type") != "array":
             continue
         need = spec.get("minItems")

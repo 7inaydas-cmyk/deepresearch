@@ -580,6 +580,18 @@ ok(all(not c["survives"] for c in dr.calibration_sample(
 ok(len(dr.calibration_sample([], 12)) == 0 and len(dr.calibration_sample(_v, 0)) == 0,
    "empty pool and n=0 are handled")
 
+ok(dr._schema_shortfall({"type": "object", "required": ["a", "b"],
+                         "properties": {"a": {"type": "string"},
+                                        "b": {"type": "array"}}},
+                        {"a": "x"}) == ["b MISSING (required)"],
+   "a required key that is ABSENT is caught whatever its type: a run wrote 4 hypotheses "
+   "and returned no hypothesisVerdicts key at all, so the contract went unadjudicated silently")
+ok(dr._schema_shortfall({"type": "object", "required": ["a"],
+                         "properties": {"a": {"type": "array"}}},
+                        {"a": []}) == [],
+   "but an EMPTY required array with no minItems is still legal - contradictions is "
+   "legitimately empty, and rejecting that would retry every clean run")
+
 print("\n-- a rejected response is retried DIFFERENTLY, not identically --")
 ok("stop_reason" in _agent_src and "TRUNCATED" in _agent_src,
    "a truncated response is diagnosed as truncation: stop_reason separates 'cut off' from "

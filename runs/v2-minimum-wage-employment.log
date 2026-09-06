@@ -24,3 +24,237 @@ EXCLUDED 4 claim(s) from non-citable sources (T5 content farms): academia.edu
 NOTE: 15 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
 Verify pool spans 9 distinct sub-question buckets (of 8)
 Total: 26 sources -> 45 claims -> verifying 30
+  [counter] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  [provenance] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  OK          3-0  Standard supply-and-demand economic models predict minimum wages cause a labor surplus (un…
+  OK          3-0  The Congressional Budget Office in 2021 estimated that raising the federal minimum wage to…
+  OK          2-1  Opponents of the minimum wage argue it increases poverty and unemployment because some low…
+  KILLED[support+provenance] 1-2  As of the article's data, the U.S. federal minimum wage was $7.25 per hour, with most stat…
+  OK          3-0  Robust Bayesian meta-analysis (RoBMA) is presented as a technique that simultaneously comb…
+  KILLED[support+provenance] 1-2  The paper has been cited by 8 other works as of the metadata capture, indicating it is a r…
+  OK          3-0  Card and Krueger's study surveyed 410 fast food restaurants in New Jersey and Pennsylvania…
+  KILLED[counter+provenance] 1-2  Card and Krueger found that fast food restaurants in New Jersey increased employment by 13…
+  OK          2-1  The paper found no evidence of disemployment effects even when considering higher levels o…
+  OK          3-0  In monopsony labor market scenarios, minimum wages can increase both labor market efficien…
+  KILLED[support+counter+provenance] 0-3  The CBO's 2021 analysis projected the $15 minimum wage increase would lift approximately 9…
+  OK          3-0  The current U.S. federal minimum wage of $7.25 per hour, set in 2009, has not been increas…
+  OK          2-1  The authors note that publication bias adjustment techniques such as PET-PEESE and selecti…
+  OK          2-1  The document is Cengiz, Dube, Lindner, and Zipperer's NBER working paper 'The Effect of Mi…
+  OK          3-0  Card and Krueger used a difference-in-differences design comparing wage, employment, and p…
+  OK          3-0  The Neumark-Wascher panel data study was constructed using state-level minimum wage laws a…
+  OK          3-0  The paper finds no evidence of disemployment effects even when considering higher levels o…
+  KILLED[support+provenance] 1-2  Alan Manning's 2021 Journal of Economic Perspectives article 'The Elusive Employment Effec…
+  KILLED[support+counter+provenance] 0-3  The CBO estimated the $15 federal minimum wage increase would increase the federal budget …
+  OK          2-1  This paper is a methodological tutorial describing how to implement PET-PEESE, selection m…
+  OK          2-1  Cengiz, Dube, Lindner and Zipperer (2019) used 138 prominent state-level minimum wage chan…
+  OK          3-0  Neumark and Wascher's 1991 panel data study using state-level minimum wage laws found teen…
+  OK          3-0  The study found no evidence of disemployment effects even when considering higher levels o…
+  KILLED[support+provenance] 1-2  The IMF in June 2016 stated the US should tackle its high poverty rate by raising the mini…
+  KILLED[support+provenance] 1-2  Card and Krueger (1995) conducted a meta-analysis of time-series minimum wage studies find…
+  KILLED[support+counter] 1-2  The study found that the overall number of low-wage jobs remained essentially unchanged ov…
+  KILLED[counter+provenance] 1-2  Card and Krueger found that New Jersey stores unaffected by the new minimum wage law (alre…
+  OK          3-0  The study did find some evidence of reduced employment specifically in tradeable sectors, …
+  OK          2-1  This is an NBER working paper by Arindrajit Dube and Ben Zipperer titled 'Own-Wage Elastic…
+  KILLED[support+provenance] 1-2  Card and Krueger concluded that the time-series minimum wage literature likely suffered fr…
+SAMPLING 10 dropped claims to measure what the cap discarded
+  [counter] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  OK          2-1  This document is the original Card and Krueger fast-food industry case study PDF but its t…
+  OK          2-1  Card and Krueger noted that published t-ratios in the time-series minimum wage literature …
+  KILLED[support+provenance] 1-2  The Card and Krueger meta-analysis was motivated by the observation that more recent time-…
+  OK          2-1  Neumark and Wascher found that youth subminimum wage provisions enacted by state legislatu…
+  OK          3-0  The lack of observed job loss in the study was not explained by labor-labor substitution a…
+  OK          2-1  Using a bunching estimator applied to 138 prominent state-level minimum wage changes betwe…
+  OK          3-0  The study finds that the lack of job loss from minimum wage increases is not explained by …
+  OK          3-0  The authors argue that some conventional (non-bunching) minimum wage studies can produce m…
+  OK          2-1  Cengiz, Dube, Lindner and Zipperer (2019) examined 138 prominent state-level minimum wage …
+  KILLED[support+counter] 1-2  The study found that the overall number of low-wage jobs remained essentially unchanged ov…
+SAMPLING: 8/10 dropped claims survived (80%) vs 63% of kept claims
+CALIBRATION: re-running the panel on 30 claims to measure reliability
+  [counter] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  OK          2-1  Standard supply-and-demand economic models predict minimum wages cause a labor surplus (un…
+  KILLED[support+provenance] 1-2  As of the article's data, the U.S. federal minimum wage was $7.25 per hour, with most stat…
+  OK          2-1  The Congressional Budget Office in 2021 estimated that raising the federal minimum wage to…
+  KILLED[support+provenance] 1-2  The paper has been cited by 8 other works as of the metadata capture, indicating it is a r…
+  KILLED[support+provenance] 1-2  Opponents of the minimum wage argue it increases poverty and unemployment because some low…
+  KILLED[counter+provenance] 1-2  Card and Krueger found that fast food restaurants in New Jersey increased employment by 13…
+  OK          3-0  Robust Bayesian meta-analysis (RoBMA) is presented as a technique that simultaneously comb…
+  KILLED[support+counter+provenance] 0-3  The CBO's 2021 analysis projected the $15 minimum wage increase would lift approximately 9…
+  OK          3-0  Card and Krueger's study surveyed 410 fast food restaurants in New Jersey and Pennsylvania…
+  KILLED[support+provenance] 1-2  Alan Manning's 2021 Journal of Economic Perspectives article 'The Elusive Employment Effec…
+  OK          2-1  The paper found no evidence of disemployment effects even when considering higher levels o…
+  KILLED[support+counter+provenance] 0-3  The CBO estimated the $15 federal minimum wage increase would increase the federal budget …
+  OK          2-1  In monopsony labor market scenarios, minimum wages can increase both labor market efficien…
+  KILLED[support+provenance] 1-2  The IMF in June 2016 stated the US should tackle its high poverty rate by raising the mini…
+  OK          3-0  The current U.S. federal minimum wage of $7.25 per hour, set in 2009, has not been increas…
+  KILLED[support+provenance] 1-2  Card and Krueger (1995) conducted a meta-analysis of time-series minimum wage studies find…
+  OK          2-1  The authors note that publication bias adjustment techniques such as PET-PEESE and selecti…
+  KILLED[support+counter+provenance] 0-3  The study found that the overall number of low-wage jobs remained essentially unchanged ov…
+  OK          2-1  The document is Cengiz, Dube, Lindner, and Zipperer's NBER working paper 'The Effect of Mi…
+  KILLED[counter+provenance] 1-2  Card and Krueger found that New Jersey stores unaffected by the new minimum wage law (alre…
+  OK          3-0  Card and Krueger used a difference-in-differences design comparing wage, employment, and p…
+  KILLED[support+provenance] 1-2  Card and Krueger concluded that the time-series minimum wage literature likely suffered fr…
+  OK          3-0  The Neumark-Wascher panel data study was constructed using state-level minimum wage laws a…
+  OK          2-1  The paper finds no evidence of disemployment effects even when considering higher levels o…
+  OK          2-1  This paper is a methodological tutorial describing how to implement PET-PEESE, selection m…
+  OK          2-1  Cengiz, Dube, Lindner and Zipperer (2019) used 138 prominent state-level minimum wage chan…
+  OK          3-0  Neumark and Wascher's 1991 panel data study using state-level minimum wage laws found teen…
+  OK          3-0  The study found no evidence of disemployment effects even when considering higher levels o…
+  OK          3-0  The study did find some evidence of reduced employment specifically in tradeable sectors, …
+  KILLED[support+provenance] 1-2  This is an NBER working paper by Arindrajit Dube and Ben Zipperer titled 'Own-Wage Elastic…
+CALIBRATION: n=30 raw=0.933 cohenKappa=0.8618 scottPi=0.8611 flips=2 -> calibrated
+Verify: 19 confirmed, 11 refuted, 0 unverified | kills by lens: {'support': 9, 'provenance': 10, 'counter': 5}
+Citation audit (full pool of 30): 24 supported, 3 partial, 1 UNSUPPORTED, 2 unreachable -> 85.7%
+Process critique: material-gaps | 10 untraceable, 15 coverage gaps, 5 plan flaws
+Report written to runs/v2-minimum-wage-employment.json
+{
+ "citationAudit": {
+  "citationAccuracy": 85.7,
+  "effectiveCitations": 24,
+  "supported": 24,
+  "partial": 3,
+  "unsupported": 1,
+  "unreachable": 2,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "untraceableCount": 10,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A publication-bias-correction toolkit exists and is being actively developed/applied to meta-analysis generally (RoBMA combines PET-PEESE and selection models; the source paper is a methods tutorial, not itself a minimum-wage meta-analysis), and there is documented awareness in this literature that failing to correct for publication bias can compromise validity of pooled effect estimates. However,…",
+   "CBO's 2021 policy-simulation estimate (not a historical elasticity, but the most concrete institutional forward-looking figure available) projected that raising the federal minimum wage to $15/hour by 2025 would reduce employment by ~1.4 million while affecting 17 million workers.",
+   "Card and Krueger's 1992 New Jersey/Pennsylvania natural experiment (410 fast-food restaurants, diff-in-diff design) found no disemployment effect from raising NJ's minimum wage from $4.25 to $5.05/hour.",
+   "However,…",
+   "The two traditions have NOT been reconciled by any confirmed claim in this research run.",
+   "There is a flagged contradiction over the DIRECTION of publication bias in the minimum-wage literature itself: one meta-analysis (77 studies) reportedly found publication selection bias favors reporting negative employment effects, while Card and Krueger's own meta-analysis of the time-series literature found bias operating via specification searching producing spuriously significant negative t-ra…",
+   "This creates a direct empirical contradiction in the confirmed evidence: Neumark-Wascher's panel data (1991) find negative teen elasticities of -0.1 to -0.2, while Cengiz et al.'s more recent bunching design on overlapping 1979-2016 state variation finds elasticities near zero overall. The two traditions have NOT been reconciled by any confirmed claim in this research run.",
+   "one meta-analysis (77 studies) reportedly found publication selection bias favors reporting negative employment effects, while Card and Krueger's own meta-analysis of the time-series literature found bias operating via specification searching producing spuriously significant negative t-ra…"
+  ],
+  "untraceableStatements": [
+   "Card and Krueger's 1992 New Jersey/Pennsylvania natural experiment (410 fast-food restaurants, diff-in-diff design) found no disemployment effect from raising NJ's minimum wage from $4.25 to $5.05/hour. (labeled 1992, but claims [4] and [10] describe the study without a specific finding-of-no-disemployment claim being explicitly stated in the pool; the 'no disemployment effect' finding itself is not directly stated as a Card-Krueger result in any claim)",
+   "Finding 1 states the NJ minimum wage increase occurred in '1992' framed as the study year, but claim [4] gives the date as April 1, 1992 and describes the study as 'Card and Krueger's study' without specifying '1992' as part of the paper's title/year designation used in finding 1's framing ('Card and Krueger's 1992 New Jersey/Pennsylvania natural experiment') - the original question and claim pool reference 'Card and Krueger (1994/2000)' not 1992, so labeling it 'Card and Krueger's 1992...experiment' misattributes the publication year to the natural experiment year, a conflation not clarified in any claim.",
+   "Finding 4's characterization of the Neumark-Wascher vs Cengiz et al results as a 'direct empirical contradiction' that has 'NOT been reconciled' is an editorializing conclusion/interpretation not stated in any claim - no claim discusses reconciliation status or frames this as a contradiction requiring reconciliation.",
+   "Finding 4's characterization that the two traditions have 'NOT been reconciled by any confirmed claim in this research run' is an editorial/interpretive claim not sourced to any numbered claim",
+   "Finding 6 ends with a dangling incomplete sentence ('However,…') that trails off with no content, and the preceding assertion that there is 'documented awareness in this literature that failing to correct for publication bias can compromise validity of pooled effect estimates' overstates claim [8], which only says this 'implies' such awareness in a methods tutorial about meta-analysis generally, not specifically documented awareness within the minimum-wage literature.",
+   "Finding 6's ellipsis 'However,…' is cut off / incomplete, so its final assertion cannot be verified",
+   "Finding 7 references 'one meta-analysis (77 studies)' finding publication bias favors negative employment effects and a 'Card and Krueger meta-analysis of the time-series literature' finding bias via specification searching - neither the '77 studies' figure nor this specific charac711ization of a Card-Krueger meta-analysis appears anywhere in the numbered claim pool [0]-[18]; this appears to be fabricated/inserted detail with no traceable source.",
+   "Finding 7's claim about Card and Krueger's own meta-analysis of time-series literature finding bias via specification searching producing spuriously significant negative t-ratios is not present in the claim pool at all",
+   "Finding 7's claim about a '77 studies' meta-analysis finding publication selection bias favors reporting negative employment effects is not present in the claim pool at all",
+   "Finding 8 labels the CBO estimate as 'not a historical elasticity, but the most concrete institutional forward-looking figure available' - the qualifying framing 'most concrete institutional forward-looking figure available' is an inserted editorial judgment not present in claim [1]."
+  ],
+  "coverageGaps": [
+   "No current best-estimate elasticity number is given anywhere in the findings despite the question explicitly asking 'what is the current best estimate of the employment elasticity' - the Dube-Zipperer 2024 'Own-Wage Elasticity' paper [18] is in the claim pool but its actual elasticity finding is never extracted or reported in any finding.",
+   "Sub-question 1: Neumark and Wascher's specific methodological objections to Card-Krueger (survey vs. payroll data, sample selection, DiD validity) are never addressed - the claim pool contains no claim about the payroll-data critique, BLS employment data reanalysis, or sample-attrition objections that Neumark-Wascher actually raised against the NJ/PA study; findings only cite an unrelated 1991 Neumark-Wascher panel paper predating Card-Krueger, so the actual head-to-head methodological dispute (checklist item 1 and 2) is unanswered.",
+   "Sub-question 2 (modern replication of the original NJ/PA natural experiment specifically) is never answered - no claim addresses later reanalyses (e.g., using payroll data) of the original 1992 episode.",
+   "Sub-question 2 (re-examination of the original NJ/PA experiment with modern data/replication, e.g. Neumark-Wascher's payroll-data critique using their own survey vs. Card-Krueger's telephone survey, or later replications using BLS ES-202 payroll data) is never addressed - no claim in the pool discusses the actual data/methodology dispute (survey vs payroll data, sample selection) despite the checklist explicitly demanding it.",
+   "Sub-question 4 (does the meta-analytic literature show funnel-plot asymmetry / p-hacking clustering, and what elasticity remains after PET-PEESE/p-curve correction) is not actually answered - the only claims retrieved [3],[8],[13] are a generic methods tutorial on how to run RoBMA/PET-PEESE, not a substantive minimum-wage meta-analysis producing a bias-corrected elasticity number. No actual corrected point estimate is reported anywhere in the findings.",
+   "Sub-question 4 (meta-analytic publication bias specifically for minimum-wage employment effects, funnel-plot asymmetry, PET-PEESE/p-curve elasticity after correction) is not actually answered - the only sourced claims are about a generic PET-PEESE/RoBMA tutorial paper [13], not a substantive minimum-wage meta-analysis; no funnel-plot asymmetry finding or bias-corrected pooled elasticity number appears anywhere in the claim pool.",
+   "Sub-question 5 (heterogeneity by 'bite', monopsony power, or size of increase such as Seattle-style large city hikes) is only partially covered - tradeable-sector heterogeneity is mentioned, but city-level case studies (e.g., Seattle) and bite-based moderator regressions are never retrieved or discussed.",
+   "Sub-question 5 (heterogeneity by minimum-wage bite, monopsony power, or size of increase e.g. Seattle vs federal increases) is only thinly covered by a tradeable-sector heterogeneity note [12][16][17]; no claim addresses city-level large hikes (Seattle) or bite-based heterogeneity across labor markets, despite a dedicated 'Heterogeneity investigator' perspective supposedly being searched.",
+   "Sub-question 6 (OECD and Federal Reserve regional bank reviews) is not covered at all - only the CBO figure appears; no OECD or Fed regional bank review is in the claim pool or findings, so the 'policy-facing institutional reviews' plural is only represented by one institution.",
+   "Sub-question 6 (policy-institution consensus - CBO, OECD, Federal Reserve regional banks, and how they weight competing academic camps) is only partially covered by one CBO projection [1]; no OECD or Federal Reserve regional bank institutional review appears in the claim pool at all.",
+   "Sub-question 7 (credible mechanism such as monopsony, frictions, efficiency wages) is only thinly covered by a single monopsony claim [6]; efficiency wage and search/frictional models are never mentioned.",
+   "Sub-question 7 (theoretical mechanisms: monopsony, frictions, efficiency wages) is only partly covered - monopsony is mentioned (claim [6]) but labor market frictions and efficiency-wage mechanisms are never addressed.",
+   "Sub-question 8 (strongest current evidence FOR disemployment effects surviving bias-correction) is never answered with an actual current point estimate; only the outdated 1991 Neumark-Wascher elasticity and the CBO forward-looking simulation are offered, neither of which is a bias-corrected current estimate.",
+   "Sub-question 8 (the single strongest current evidence FOR disemployment effects, and whether it survives bias-corrected meta-analysis scrutiny) is never answered - findings present only the older 1991 Neumark-Wascher elasticity as the 'pro-disemployment' evidence, with no modern (post-2015) study defending significant negative effects, and no explicit test of whether that number survives bias correction.",
+   "The final requested deliverable - 'what is the current best estimate of the employment elasticity' - is never stated as a single number or range in the findings; Dube & Zipperer's 2024 'Own-Wage Elasticity' paper [18] is listed in the claim pool but never used or referenced in any finding despite being the most directly relevant and recent source for exactly this question."
+  ],
+  "planFlaws": [
+   "Finding 7 introduces two substantive claims (a 77-study meta-analysis and a Card-Krueger meta-analysis on t-ratio specification searching) that do not appear anywhere in the verified claim pool, indicating either a fabrication or an uncontrolled claim leaked in from outside the vetted pool - a serious process integrity flaw.",
+   "No dissenting/skeptical current voice (the 'Steelman for disemployment effects' perspective) produced any distinct sourced claim in the final findings - despite being explicitly commissioned, its perspective is invisible in the claim pool, suggesting either the search failed or its output was dropped during synthesis, leaving the report imbalanced toward the Cengiz/Card-Krueger side by omission rather than by evidence-weighing.",
+   "The 'Meta-analysis data auditor' perspective, meant to address publication bias specifically for minimum wage, surfaced only a generic methodological tutorial [13] and no actual minimum-wage meta-analysis results (no funnel plot findings, no PET-PEESE corrected elasticity specific to minimum wage) - the perspective was searched but did not yield the substantive evidence the checklist required, and the report presents this gap opaquely (finding 6 trails off mid-sentence) rather than flagging it as an unanswered question.",
+   "The report conflates a 1991 Neumark-Wascher study (pre-Card-Krueger, part of the 'old time-series consensus' per claim 15) with the ongoing modern N&W critique tradition, but never surfaces the actual 1990s/2000s Neumann-Wascher critique of Card-Krueger (payroll data reanalysis, e.g. their well-known 2000 AER exchange) that the checklist explicitly asked about in sub-question 1 - the scoping's chronological framing let a superseded 1991 estimate stand in for the dispute instead of the direct methodological critique of the NJ/PA experiment itself.",
+   "The scoping assumed the dispute could be resolved primarily by comparing Card-Krueger vs Neumark-Wascher and modern quasi-experimental papers, but the actual execution never retrieved or used the Dube-Zipperer 2024 'own-wage elasticity' paper [18], which is exactly the kind of current synthesis the question asks for - a retrieval/synthesis failure downstream of the plan, not just a scoping flaw, but the plan's checklist item 6 (policy institutional reviews) was under-resourced (only CBO, no OECD/Fed) suggesting the 'Policy institution assessor' perspective search was incomplete or its results were not integrated into findings."
+  ],
+  "rationales": [
+   "",
+   ""
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 45,
+  "urlDupes": 2,
+  "budgetDropped": 18,
+  "claimsDroppedBeforeVerify": 15,
+  "claimsExcludedNonCitable": 4,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 81,
+    "ok": 76,
+    "fail": 5,
+    "results": 398
+   },
+   "ddg-html": {
+    "attempts": 5,
+    "ok": 0,
+    "fail": 5,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 5,
+    "ok": 0,
+    "fail": 5,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 5,
+    "ok": 0,
+    "fail": 5,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "results": 16
+   },
+   "crossref": {
+    "attempts": 4,
+    "ok": 3,
+    "fail": 1,
+    "results": 24
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 8
+   }
+  },
+  "sourceTiers": {
+   "T3": 10,
+   "T2": 11,
+   "T4": 1,
+   "T1": 1,
+   "T?": 3
+  },
+  "agentCalls": 283,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 650024,
+  "outputTokens": 154692,
+  "wallSeconds": 527.1,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 19,
+  "killed": 11,
+  "unverifiedCount": 0,
+  "afterSynthesis": 8
+ }
+}

@@ -1,0 +1,8 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does screening mammography for women in their forties reduce breast-cancer mortality, and by how much? Weigh t
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Does starting routine mammography screening at age 40 (rather than 45 or 50) produce a mortality ben
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+  [plan] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  [plan] response violates its own schema: subQuestions=0 (schema requires 3), perspectives=0 (schema requires 3) (stop_reason=tool_use); retrying (2/5)
+  [plan] response violates its own schema: subQuestions=0 (schema requires 3), perspectives=0 (schema requires 3) (stop_reason=tool_use); retrying (3/5)
