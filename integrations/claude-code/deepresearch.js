@@ -100,6 +100,32 @@ const sourceLabelFor = source => {
   return hostLabel || (stripLabelChars(source.title).trim() && quotedLabel(source.title)) || 'unknown'
 }
 
+// The structured-output path intermittently serialises an array field as the
+// literal string "\n<UNKNOWN>\n" instead of the array. Measured in the Python
+// build on 2026-09-06: 2 of 4 identical plan calls came back with subQuestions
+// AND perspectives both set to that sentinel. Transient, not a model failure —
+// the same prompt returns a clean list on the next attempt. Detect and retry.
+const UNKNOWN_SENTINEL = '<UNKNOWN>'
+const hasUnknownSentinel = (o, d = 0) => {
+  if (d > 6) return false
+  if (typeof o === 'string') return o.includes(UNKNOWN_SENTINEL)
+  if (Array.isArray(o)) return o.some(x => hasUnknownSentinel(x, d + 1))
+  if (o && typeof o === 'object') return Object.values(o).some(x => hasUnknownSentinel(x, d + 1))
+  return false
+}
+// Wrap agentChecked() so every structured call in this workflow gets the retry, not just
+// the ones someone remembered to guard.
+// A wrapper with its own name, not a reassignment: `agent` may be a const binding
+// in the workflow runtime, and reassigning it would throw at load time.
+const agentChecked = async (prompt, opts) => {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const got = await agent(prompt, opts)
+    if (!hasUnknownSentinel(got)) return got
+    log('[' + ((opts && opts.label) || 'agent') + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
+  }
+  return null
+}
+
 // ═══ Validation adapter at the model seam ═══════════════════════════════════
 // A schema is what we ASKED for, not what we got. Ported from the Hermes build
 // after a live failure on 2026-09-06: `subQuestions` came back as a STRING, and
@@ -363,7 +389,7 @@ async function sweep(angles, fetchBudget, tag, subQuestions) {
   let slots = fetchBudget
   const rows = await pipeline(
     angles,
-    angle => agent(SEARCH_PROMPT(angle), {
+    angle => agentChecked(SEARCH_PROMPT(angle), {
       label: 'search:' + angle.label, phase: 'Search', schema: SEARCH_SCHEMA,
     }).then(r => {
       if (!r) return null
@@ -384,7 +410,7 @@ async function sweep(angles, fetchBudget, tag, subQuestions) {
       const filtered = sr.results.length - novel.length
       if (filtered > 0) log('[' + tag + '] ' + sr.angle + ': ' + novel.length + ' novel, ' + filtered + ' filtered (dupe/budget)')
       return parallel(novel.map(source => () =>
-        agent(FETCH_PROMPT(source, sr.angle, subQuestions), {
+        agentChecked(FETCH_PROMPT(source, sr.angle, subQuestions), {
           label: 'fetch:' + sourceLabelFor(source), phase: 'Fetch', schema: EXTRACT_SCHEMA,
         }).then(ext => {
           if (!ext) return null
@@ -415,7 +441,7 @@ log('Depth: ' + DEPTH + ' (' + T.perspectives + ' perspectives, ' + T.deepenRoun
     T.lenses + '-lens verify, citation audit ' + (T.factAudit ? 'ON' : 'off') + ')')
 
 // ── Framing (mega_research Phase 0): the contract, and nothing else ──────────
-const framing = await agent(
+const framing = await agentChecked(
   '## Research Framing (scope contract)\n\nResearch question:\n"' + QUESTION + '"\n\n' +
   'Write the contract BEFORE anything is searched. This costs a minute and prevents the most expensive failure ' +
   'mode: a beautifully sourced answer to the WRONG question. Return these five fields and nothing else.\n\n' +
@@ -458,7 +484,7 @@ let plan = null
 let SUBQ = []
 let PERSPECTIVES = []
 for (let attempt = 1; attempt <= 2; attempt++) {
-  plan = await agent(
+  plan = await agentChecked(
     '## Search Plan\n\nResearch question:\n"' + QUESTION + '"\n\n' + CONTRACT_CTX +
     '## Task A — the checklist\n' +
     'List the 4-8 SUB-QUESTIONS that must each be answered before this question can honestly be called answered. ' +
@@ -515,7 +541,7 @@ for (let round = 1; round <= T.deepenRounds; round++) {
   ).join('\n')
   if (!claimDigest) { log('Deepen round ' + round + ': nothing gathered yet, skipping'); break }
 
-  const gap = await agent(
+  const gap = await agentChecked(
     '## Coverage Gap Analyst (round ' + round + ' of ' + T.deepenRounds + ')\n\n' +
     'Research question: "' + QUESTION + '"\n\n' +
     '## Coverage checklist\n' + SUBQ.map((q, i) => (i + 1) + '. ' + q).join('\n') + '\n\n' +
@@ -631,7 +657,7 @@ async function runPanel(claims) {
   return (await parallel(
   claims.map(claim => () =>
     parallel(activeLenses.map((lens, i) => () =>
-      agent(VERIFY_PROMPT(claim, lens, i, activeLenses.length), {
+      agentChecked(VERIFY_PROMPT(claim, lens, i, activeLenses.length), {
         label: lens.key + ':' + quotedLabel(claim.claim), phase: 'Verify', schema: VERDICT_SCHEMA,
       }).then(v => (v ? { ...v, lens: lens.key } : null))
     )).then(verdicts => {
@@ -739,7 +765,7 @@ if (T.factAudit) {
   // still replay the verify agents from cache. Iterates `voted`, not
   // `rankedClaims`, so claims added by the rescue pass are audited too.
   factRows = (await parallel(voted.map(c => () =>
-    agent(FACT_PROMPT(c), { label: 'cite:' + sourceLabelFor({ url: c.sourceUrl, title: '' }), phase: 'Audit', schema: FACT_SCHEMA })
+    agentChecked(FACT_PROMPT(c), { label: 'cite:' + sourceLabelFor({ url: c.sourceUrl, title: '' }), phase: 'Audit', schema: FACT_SCHEMA })
       .then(f => (f ? { claim: c.claim, url: c.sourceUrl, survivedPanel: !!c.survives, ...f } : null))
   ))).filter(Boolean)
   const nSup = factRows.filter(f => f.support === 'supported').length
@@ -812,7 +838,7 @@ const droppedBlock = (allClaims.length - rankedClaims.length) > 0
   ? '\n## Coverage limit\n' + (allClaims.length - rankedClaims.length) + ' lower-ranked claims were never verified (cap ' + T.maxVerify + '). Say so in caveats.\n'
   : ''
 
-const report = await agent(
+const report = await agentChecked(
   '## Synthesis — final research report\n\n' +
   '**Question:** ' + QUESTION + '\n\n' +
   confirmed.length + ' claims survived a ' + activeLenses.length + '-lens adversarial panel' +
@@ -864,7 +890,7 @@ if (!report) {
 phase('Critique')
 const traceBlock = confirmed.map((c, i) => '[' + i + '] ' + webText(c.claim)).join('\n')
 const critiques = (await parallel(Array.from({ length: T.critics }, (_, k) => () =>
-  agent(
+  agentChecked(
     '## Process Critic ' + (k + 1) + '/' + T.critics + '\n\n' +
     'You are auditing the RESEARCH PROCESS, not re-doing the research. Critical errors hide in intermediate steps ' +
     'where end-to-end checks cannot see them, and most final-report errors originate at the synthesis step rather than in retrieval.\n\n' +

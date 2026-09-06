@@ -28,6 +28,20 @@ jobs:
       - name: Import cleanly with no network
         run: python -c "import deepresearch; print(deepresearch.__version__)"
 
+  workflow-js:
+    # The Claude Code workflow build has its own offline suite: it stubs the
+    # Workflow runtime's agent/parallel/pipeline primitives, so it needs no key
+    # and no network either. It exists because the two runtimes drifted five
+    # features apart when only one of them was tested.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node --check integrations/claude-code/deepresearch.js
+      - run: cd tests/claude-code && node test-workflow.mjs
+
   contract:
     # The tier rules are shared between the Python engine and the Claude Code
     # workflow. If this file drifts or stops parsing, both runtimes grade

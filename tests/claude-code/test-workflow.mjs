@@ -1,0 +1,201 @@
+import { run } from './simulate.mjs'
+let pass = 0, fail = 0
+const ok = (c, m) => { if (c) { pass++; console.log('  ✅ ' + m) } else { fail++; console.log('  ❌ FAIL: ' + m) } }
+
+// ── T1: happy path, standard depth ────────────────────────────────────────
+{
+  const { out, logs, calls } = await run('T1 standard depth, happy path', { question: 'Does X cause Y?', depth: 'standard' })
+  ok(out.depth === 'standard', 'depth resolved to standard')
+  ok(out.stats.perspectives === 6, 'standard = 6 perspectives (got ' + out.stats.perspectives + ')')
+  ok(out.stats.urlDupes >= 1, 'shared URL across 2 perspectives was deduped (dupes=' + out.stats.urlDupes + ')')
+  ok(out.stats.subQuestions === 4, 'sub-question checklist carried through')
+  ok(out.stats.lensesPerClaim === 3, 'standard uses 3 verification lenses')
+  ok(out.stats.killed > 0, 'adversarial panel actually killed claims (' + out.stats.killed + ')')
+  ok(out.stats.confirmed > 0, 'some claims survived (' + out.stats.confirmed + ')')
+  ok(out.citationAudit !== null, 'citation audit ran at standard depth')
+  ok(typeof out.citationAudit.citationAccuracy === 'number', 'citationAccuracy is a number: ' + out.citationAudit.citationAccuracy + '%')
+  ok(out.citationAudit.supported + out.citationAudit.partial + out.citationAudit.unsupported + out.citationAudit.unreachable === out.stats.claimsVerified,
+     'every VERIFIED claim got exactly one citation verdict (audit is independent of the panel, not downstream of it)')
+  ok(out.stats.confirmed + out.stats.killed + out.stats.unverifiedCount === out.stats.claimsVerified,
+     'claim accounting balances after demotion: confirmed + killed + unverified = verified')
+  const j = out.citationAudit.supported + out.citationAudit.partial + out.citationAudit.unsupported
+  ok(Math.abs(out.citationAudit.citationAccuracy - (out.citationAudit.supported / j) * 100) < 0.1,
+     'citationAccuracy math correct, unreachable excluded from denominator')
+  ok(out.processCritique.verdict === 'material-gaps', 'process critique takes the WORST verdict across critics')
+  ok(out.processCritique.untraceableStatements.length > 0, 'critic surfaced untraceable summary statements')
+  ok(out.coverage && out.coverage.length === 4, 'coverage checklist status returned')
+  ok(out.contradictions.length >= 2, 'contradictions merged from gap analysis AND synthesis')
+  ok(logs.some(l => l.includes('Round 1')), 'deepening round ran and logged')
+  ok(out.sources.some(s => s.wave === 'w2'), 'follow-up wave sources present')
+  ok(Object.keys(out.stats.killsByLens).length > 0, 'kills attributed per lens: ' + JSON.stringify(out.stats.killsByLens))
+  console.log('  ℹ agent calls: ' + calls)
+}
+
+// ── T2: depth tiers ───────────────────────────────────────────────────────
+{
+  const q = await run('T2a quick', { question: 'Q', depth: 'quick' })
+  ok(q.out.stats.perspectives === 4, 'quick CAPS an over-eager scoper (6 returned) down to 4 perspectives')
+  ok(q.out.stats.lensesPerClaim === 2, 'quick = 2 lenses')
+  ok(q.out.citationAudit === null, 'quick SKIPS the citation audit')
+  ok(!q.logs.some(l => l.includes('Round 1')), 'quick does no deepening round')
+  ok(q.out.processCritique.rationales.length === 1, 'quick = 1 process critic')
+
+  const e = await run('T2b exhaustive', { question: 'Q', depth: 'exhaustive' })
+  ok(e.out.stats.perspectives === 6, 'exhaustive keeps all 6 (under its cap of 9)')
+  ok(e.out.processCritique.rationales.length === 3, 'exhaustive = 3 process critics')
+  ok(e.calls > q.calls, 'exhaustive spends more agents than quick (' + e.calls + ' vs ' + q.calls + ')')
+  console.log('  ℹ agents — quick:' + q.calls + '  exhaustive:' + e.calls)
+}
+
+// ── T3: args parsing ──────────────────────────────────────────────────────
+{
+  const a = await run('T3a bare string', 'just a question string')
+  ok(a.out.depth === 'standard', 'bare string defaults to standard depth')
+  ok(a.out.question === 'just a question string', 'bare string used as question')
+
+  const b = await run('T3b prefixed string', 'exhaustive: what is the thing?')
+  ok(b.out.depth === 'exhaustive', 'prefix "exhaustive:" parsed as depth')
+  ok(b.out.question === 'what is the thing?', 'prefix stripped from question')
+
+  const c = await run('T3c bad depth', { question: 'Q', depth: 'turbo' })
+  ok(c.out.depth === 'standard', 'unknown depth falls back to standard, not crash')
+
+  const d = await run('T3d empty', { question: '   ' })
+  ok(!!d.out.error, 'empty question returns a clean error, not a crash')
+}
+
+// ── T4: security — host labels must never spoof ───────────────────────────
+{
+  const { labels } = await run('T4 host label spoofing', { question: 'Q', depth: 'quick' })
+  const fetchLabels = labels.filter(l => l.startsWith('fetch:'))
+  const spoof = fetchLabels.find(l => l.includes('trusted.org') && !l.includes('"'))
+  ok(!spoof, 'backslash-userinfo URL never renders as a bare trusted.org label')
+  const idn = fetchLabels.find(l => /аmazon/.test(l))
+  ok(!idn || idn.includes('"'), 'IDN homograph host is quoted, never bare')
+  console.log('  ℹ fetch labels: ' + fetchLabels.join('  |  '))
+}
+
+// ── T5: failure paths must degrade, not crash ─────────────────────────────
+{
+  const a = await run('T5a all verifiers die', { question: 'Q', depth: 'standard' }, { allVerifiersDie: true })
+  ok(a.out.findings.length === 0, 'no findings when every verifier errors')
+  ok(/INFRASTRUCTURE FAILURE/.test(a.out.summary), 'infra failure is NOT reported as "research found nothing"')
+
+  const b = await run('T5b every fetch empty', { question: 'Q', depth: 'standard' }, { emptyFetch: true })
+  ok(b.out.stats.claimsExtracted === 0, 'zero claims extracted')
+  ok(b.out.findings.length === 0 && !!b.out.summary, 'empty run returns a clean summary, not a crash')
+
+  const c = await run('T5c synthesis fails', { question: 'Q', depth: 'standard' }, { noSynth: true })
+  ok(c.out.confirmedRaw && c.out.confirmedRaw.length > 0, 'synthesis failure SALVAGES verified claims instead of discarding the run')
+
+  const d = await run('T5d gap analyst finds no gaps', { question: 'Q', depth: 'standard' }, { noFollowUps: true })
+  ok(d.logs.some(l => l.includes('Coverage complete')), 'stops deepening early when coverage is complete')
+  ok(!d.out.sources.some(s => s.wave === 'w2'), 'no wasted follow-up wave when there are no gaps')
+}
+
+
+// ══════════ NEW TESTS: fixes driven by the live end-to-end run ══════════
+import { SQ } from './simulate.mjs'
+import fsCap from 'node:fs'
+{
+  const { out, logs } = await run('T6 coverage-balanced claim selection', { question: 'Q', depth: 'standard' })
+  const capSrc = fsCap.readFileSync(new URL('../../integrations/claude-code/deepresearch.js', import.meta.url).pathname,'utf8')
+  const caps = Object.fromEntries([...capSrc.matchAll(/(quick|standard|exhaustive):\s*\{[^}]*maxVerify:\s*(\d+)/g)].map(m=>[m[1],+m[2]]))
+  ok(caps.standard === 30 && caps.exhaustive === 50 && caps.quick === 14,
+     'verify budgets raised: quick=' + caps.quick + ' standard=' + caps.standard + ' exhaustive=' + caps.exhaustive)
+  ok(out.stats.claimsVerified === Math.min(out.stats.claimsExtracted, caps.standard),
+     'every extracted claim verified when under cap (' + out.stats.claimsVerified + '/' + out.stats.claimsExtracted + ', cap ' + caps.standard + ')')
+  ok(out.stats.claimsDroppedBeforeVerify === Math.max(0, out.stats.claimsExtracted - caps.standard),
+     'drop count is accurate and reported, never silent')
+  ok(logs.some(l => /Verify pool spans [2-9] distinct sub-question buckets/.test(l)),
+     'verify pool spans MULTIPLE sub-question buckets — one topic cannot eat the whole budget')
+  console.log('  ℹ ' + logs.find(l => l.includes('Verify pool spans')))
+}
+{
+  // Kill every claim tagged SQ3 -> that sub-question is wiped -> rescue must fire.
+  const { out, logs } = await run('T7 rescue fires on a wiped-out sub-question',
+    { question: 'Q', depth: 'standard' }, { wipeSubQuestion: SQ[2], rescueTarget: SQ[2], rescueIndex: 3 })
+  ok(!!out.rescue, 'rescue block ran')
+  ok(logs.some(l => l.startsWith('RESCUE:')), 'rescue logged loudly')
+  ok(out.rescue.targeted > 0, 'rescue targeted ' + out.rescue.targeted + ' wiped sub-question(s)')
+  ok(out.rescue.sourcesAdded > 0, 'rescue pulled ' + out.rescue.sourcesAdded + ' NEW primary sources')
+  ok(out.rescue.claimsSaved > 0, 'rescue RECOVERED ' + out.rescue.claimsSaved + ' claim(s) that would otherwise be lost')
+  ok(out.sources.some(s => s.wave === 'rescue'), 'rescue sources tagged and merged into the source list')
+  console.log('  ℹ ' + logs.filter(l => l.startsWith('RESCUE:')).join(' | '))
+}
+{
+  const { out } = await run('T8 rescue disabled at quick depth', { question: 'Q', depth: 'quick' }, { wipeSubQuestion: SQ[2] })
+  ok(out.rescue === null || out.rescue === undefined, 'quick depth does NOT run the rescue pass')
+}
+{
+  const { out, logs } = await run('T9 rescue finds nothing', { question: 'Q', depth: 'standard' },
+    { wipeSubQuestion: SQ[2], emptyFetch: true })
+  ok(logs.some(l => /remain genuinely unanswered|no new claims/i.test(l)) || out.findings.length === 0,
+     'rescue that finds nothing says so rather than faking coverage')
+}
+{
+  const { out } = await run('T10 steelman + constructor mandated in scope prompt', { question: 'Q', depth: 'standard' })
+  ok(out.stats.perspectives === 6, 'scope still returns a capped perspective set')
+}
+import fs2 from 'node:fs'
+{
+  const src = fs2.readFileSync(new URL('../../integrations/claude-code/deepresearch.js', import.meta.url).pathname, 'utf8')
+  ok(/Mandatory steelman/.test(src), 'scope prompt contains the mandatory-steelman instruction')
+  ok(/Mandatory constructor/.test(src), 'scope prompt contains the mandatory-constructor instruction')
+}
+
+
+// ══════════ FIX 6: citation audit must be an independent filter ══════════
+{
+  const { out, logs } = await run('T11 audit scores the FULL pool and can demote', { question: 'Q', depth: 'standard' })
+  ok(out.citationAudit.supported + out.citationAudit.partial + out.citationAudit.unsupported + out.citationAudit.unreachable
+       === out.stats.claimsVerified,
+     'audit now covers EVERY verified claim (' + out.citationAudit.supported + '+' + out.citationAudit.partial + '+' +
+     out.citationAudit.unsupported + '+' + out.citationAudit.unreachable + ' = ' + out.stats.claimsVerified + '), not just survivors')
+  ok(out.citationAudit.citationAccuracy < 100,
+     'accuracy is now a REAL varying number, not a rubber stamp: ' + out.citationAudit.citationAccuracy + '%')
+  ok(out.citationAudit.unsupported > 0, 'unsupported citations are actually detected (' + out.citationAudit.unsupported + ')')
+  ok(typeof out.citationAudit.demotedBySurvivingPanel === 'number', 'demotion count reported')
+  ok(logs.some(l => l.startsWith('AUDIT DEMOTED')), 'demotion logged loudly')
+  ok(out.refuted.some(r => /citation-audit/.test(r.killedBy || '')),
+     'demoted claims appear in `refuted` attributed to citation-audit, not silently dropped')
+  console.log('  ℹ ' + logs.filter(l => /Citation audit|AUDIT DEMOTED/.test(l)).join('\n  ℹ '))
+}
+
+// ══ FIX 7: audit must cover claims the RESCUE pass added (found in live run 3) ══
+{
+  const { out } = await run('T12 rescue claims are citation-audited too',
+    { question: 'Q', depth: 'standard' }, { wipeSubQuestion: SQ[2], rescueTarget: SQ[2], rescueIndex: 3 })
+  const audited = out.citationAudit.supported + out.citationAudit.partial + out.citationAudit.unsupported + out.citationAudit.unreachable
+  ok(out.rescue && out.rescue.claimsReVerified > 0, 'rescue ran and re-verified claims')
+  ok(audited === out.stats.claimsVerified,
+     'EVERY verified claim is audited, rescue-added ones included (' + audited + ' audited / ' + out.stats.claimsVerified + ' verified)')
+}
+// ══ ported mega_research features + the seam guard ══
+{
+  const { out } = await run('T13 scope split, guard, tiering', { question: 'Q', depth: 'standard' })
+  ok(!!out.scopeContract && out.scopeContract.keyQuestion === 'k', 'framing contract carried into the report')
+  ok(out.scopeContract.hypotheses.length === 2, 'hypotheses with kill criteria present')
+  ok(!!out.answerFirst, 'answerFirst present (Pyramid Principle)')
+  ok(!!out.strongestArgumentAgainst, 'strongestArgumentAgainst is required and present')
+  ok(Array.isArray(out.whatWouldChangeThisCall), 'whatWouldChangeThisCall present')
+  ok(out.findings[0].factOrInference === 'fact', 'findings tag fact vs inference')
+  ok(!!out.stats.sourceTiers, 'tier census in stats: ' + JSON.stringify(out.stats.sourceTiers))
+}
+{
+  const { out } = await run('T14 subQuestions as a STRING', { question: 'Q', depth: 'standard' }, { plan_string_subq: true })
+  ok(!!out.error, 'string-where-list-expected is rejected, not iterated into fake items')
+  ok(/keys present/.test(out.error), 'error names what actually arrived')
+}
+{
+  const { out } = await run('T15 framing failure is survivable', { question: 'Q', depth: 'standard' }, { no_framing: true })
+  ok(!out.error, 'a failed framing no longer kills the run')
+}
+{
+  const { out } = await run('T16 <UNKNOWN> sentinel is retried, not surfaced', { question: 'Q', depth: 'standard' }, { unknown_sentinel_once: true })
+  ok(!out.error, 'a transient <UNKNOWN> sentinel is retried away rather than failing the run')
+  ok(out.stats.confirmed > 0, 'and the run completes normally afterwards')
+}
+console.log('\n════════ FINAL ════════')
+console.log(pass + ' passed, ' + fail + ' failed')
+process.exit(fail ? 1 : 0)
