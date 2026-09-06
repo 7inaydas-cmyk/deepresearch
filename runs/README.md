@@ -26,6 +26,32 @@ they should not be quoted as current numbers:
 - Runs older than 2026-09-06 also have `hypothesisVerdicts: null`, because nothing after
   the framing phase read the contract yet.
 
+## What the current regime measured
+
+Six runs, `--calibrate 30 --sample-dropped 10`, 2026-09-06/07. Regenerate with
+`python3 tools/compare_regimes.py`.
+
+| Run | Kill rate | Citation acc | kappa | n | Gate |
+|---|---|---|---|---|---|
+| `v2-minimum-wage-employment` | 37% | 85.7% | 0.86 | 30 | **calibrated** |
+| `v2-mammography-forties` | 17% | 82.9% | 0.71 | 30 | **calibrated** * |
+| `v2-standing-desks` | 11% | 80.0% | 0.53 | 30 | usable but noisy |
+| `v2-tdd-defect-rates` | 30% | 38.1% | 1.00 | 27 | underpowered |
+| `v2-ai-water-per-query` | 52% | 61.9% | 0.79 | 21 | underpowered |
+| `v2-nudge-publication-bias` | 17% | 90.0% | 0.75 | 12 | underpowered |
+
+\* `v2-mammography-forties` hit a bug: synthesis failed, and the fallback return path
+discarded the calibration and dropped-claim blocks that had already been computed and
+logged. Both were recovered from `v2-mammography-forties.log` and re-inserted, flagged with
+`recoveredFrom`. The per-lens table was not recoverable, so that `calibrated` verdict cannot
+be re-checked against the per-lens precondition. The bug is fixed; no other run is affected.
+
+`v2-nudge-publication-bias` ran while SearXNG had `qwant` enabled, which was returning
+**fabricated** results — nonsense domains with gibberish titles, interleaved 1:1 with real
+ones. Nothing fabricated was cited (the source picker rejected all of it), but it cost 11 of
+15 source-picks and the run finished with 12 verified claims instead of 30. Treat its
+numbers as compromised. Qwant is disabled from `v2-minimum-wage-employment` onward.
+
 ## The files
 
 | Prefix | What it is |
