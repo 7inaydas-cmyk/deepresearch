@@ -688,7 +688,9 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
     def do_fetch(s):
         text = web_fetch(s["url"])
         if not text.strip():
+            _t, _why = tier_of(s["url"], s["title"], "")
             return {"url": s["url"], "title": s["title"], "persp": s["persp"], "wave": tag,
+                    "tier": _t, "tierWhy": _why,
                     "sourceQuality": "unreliable", "publishDate": "", "claims": []}
         ext = agent(p_extract(q, subqs, s["url"], s["title"], text), S_EXTRACT,
                     label="extract:" + (host_of(s["url"]) or "?"), max_tokens=3000)

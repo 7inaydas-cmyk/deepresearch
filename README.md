@@ -1,5 +1,10 @@
 # deepresearch
 
+[![tests](https://github.com/7inaydas-cmyk/deepresearch/actions/workflows/tests.yml/badge.svg)](https://github.com/7inaydas-cmyk/deepresearch/actions/workflows/tests.yml)
+[![python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
+[![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](pyproject.toml)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **A research CLI that writes down what would kill each of its hypotheses before it searches — then tries to refute what it finds, and reports what survived.**
 
 Most research agents retrieve, summarise, and hand you the result. This one retrieves, then spends the rest of the run attacking what it found.
@@ -45,7 +50,23 @@ Its answer to that question was not the satisfying one:
 
 > *"Standing for part of the workday is not shown to be better for health than sitting — it is shown to be **achievable**."*
 
-Raw logs for these runs are in [`runs/`](runs/). Read the killed claims yourself.
+And this is the CLI in this repo answering the same question end to end — 25 sources,
+58 claims extracted, 30 verified, 159 agent calls, 9 minutes, no search key:
+
+```
+Standing desks reliably reduce sitting time at work (~100 min/day short-term,
+low-quality evidence), but there is no confirmed evidence in this review that they
+improve hard health outcomes (mortality, cardiovascular disease, cardiometabolic
+markers) — the sitting-time benefit itself fades by half within a year, and prolonged
+static standing carries its own documented harm (varicose veins, musculoskeletal
+discomfort).
+```
+
+Compare that against the Cochrane position on sit-stand desks: sitting time drops, the
+evidence is low-quality, health outcomes are unproven, and the effect fades. It landed on
+all four, including the fade — and it labelled its own evidence "low-quality" unprompted.
+
+Raw logs for every run quoted here are in [`runs/`](runs/). Read the killed claims yourself.
 
 ---
 

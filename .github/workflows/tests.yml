@@ -1,0 +1,58 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    # The suite stubs the model and the network, so it needs no API key and no
+    # internet. That is the point: anyone can verify the pipeline's behaviour
+    # without spending a token.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: No dependencies to install
+        run: python -c "import sys; print(sys.version)"
+      - name: Offline pipeline tests
+        run: python tests/test_pipeline.py
+      - name: Import cleanly with no network
+        run: python -c "import deepresearch; print(deepresearch.__version__)"
+
+  contract:
+    # The tier rules are shared between the Python engine and the Claude Code
+    # workflow. If this file drifts or stops parsing, both runtimes grade
+    # sources differently and nobody notices until a report is wrong.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: contract/tiers.json is valid and complete
+        run: |
+          python - <<'PY'
+          import json, re
+          c = json.load(open("contract/tiers.json"))
+          for key in ("resolvers", "rules", "farm_tells", "rank", "citable"):
+              assert key in c, "missing key: " + key
+          for tier, pat in c["rules"]:
+              re.compile(pat)                      # every rule must compile
+              assert tier in c["rank"], tier       # and be rankable
+          assert "doi.org" in c["resolvers"], "doi.org must be treated as a resolver"
+          assert c["rank"]["T1"] < c["rank"]["T3"], "tier ranking is inverted"
+          print("tiers.json OK: %d rules, %d resolvers" % (len(c["rules"]), len(c["resolvers"])))
+          PY
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - run: shellcheck install.sh

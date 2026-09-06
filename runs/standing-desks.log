@@ -21,3 +21,171 @@ Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups
 NOTE: 28 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
 Verify pool spans 9 distinct sub-question buckets (of 8)
 Total: 25 sources -> 58 claims -> verifying 30
+  OK          2-1  This Cochrane systematic review found low-quality evidence that sit-stand desks reduced si…
+  OK          2-1  The effect of sit-stand desks on reducing workplace sitting time diminished over time, fro…
+  OK          2-1  Short breaks (one to two minutes every half hour) reduced workplace sitting time by an ave…
+  OK          2-1  The overall body of evidence on workplace sitting interventions, including sit-stand desks…
+  OK          3-0  This is the SMArT Work study, a cluster randomised controlled trial evaluating the effecti…
+  OK          3-0  The SMArT Work trial is a primary RCT source relevant to whether standing desk interventio…
+  OK          2-1  A 12-year prospective cohort study of Danish workers found that employees whose jobs requi…
+  OK          2-1  The intervention produced significant increases in subjective self-rated health (p=0.002),…
+  OK          2-1  The study was published in the Journal of Exercise Science & Fitness, indexed with a 2026 …
+  OK          2-1  A randomized crossover trial compared hourly walking breaks and alternating walking-resist…
+  OK          3-0  In the same trial, leisure-time sitting increased by about 23.07 minutes in the interventi…
+  OK          2-1  In a qualitative study of 15 employees at two UK office-based workplaces, sit-stand desks …
+  OK          2-1  The project is coordinated by Mara Srl, a private furniture company that manufactures the …
+  KILLED[support+counter+provenance] 0-3  Hartman et al. (Circulation, 2025) conducted a three-arm randomized controlled trial in po…
+  OK          2-1  The page states that globally around 3 million deaths per year are attributed to physical …
+  OK          2-1  The study estimated that prolonged standing or walking at work accounts for an aetiologica…
+  KILLED[support+counter] 1-2  Employees' actual use of sit-stand desks was influenced by subjective perceptions of produ…
+  OK          3-0  The article was published in the International Journal of Behavioral Nutrition and Physica…
+  OK          2-1  A 3-month RCT of 74 Japanese desk workers (intervention n=36, control n=38) found the sit-…
+  OK          2-1  A six-month, seven-wave RCT of a sit-stand desk intervention with sedentary office employe…
+  OK          2-1  The extent of sit-stand desk use varies considerably between employees and across differen…
+  OK          2-1  The document is a peer-reviewed BMJ publication (cluster RCT), representing a well-powered…
+  OK          3-0  The paper is a systematic review and meta-analysis of device-measured physical activity, s…
+  OK          2-1  Among 254 prolonged standing workers at the University of Lahore, musculoskeletal discomfo…
+  OK          2-1  The study measured effects of sit-stand desk use on musculoskeletal complaints (intensity …
+  OK          2-1  This is a protocol paper for a not-yet-conducted RCT studying VR exergames (not standing d…
+  OK          2-1  A 6-month clustered RCT with 38 office workers found the sit-stand desk intervention group…
+  OK          2-1  The authors conclude that positive effects of sit-stand desk interventions on employee hea…
+  OK          3-0  A study found that office workers maintained reduced workplace sitting time long-term foll…
+  OK          2-1  The study authors state that in Japan standing while working is not yet commonplace and th…
+Verify: 28 confirmed, 2 refuted, 0 unverified | kills by lens: {'support': 2, 'counter': 2, 'provenance': 1}
+Citation audit (full pool of 30): 23 supported, 3 partial, 1 UNSUPPORTED, 3 unreachable -> 85.2%
+Process critique: material-gaps | 11 untraceable, 15 coverage gaps, 8 plan flaws
+Report written to runs/standing-desks.json
+{
+ "summary": "Sit-stand desks measurably cut workplace sitting time — about 100 minutes/day at short-term follow-up (up to 3 months), but this effect drops to 57 minutes/day at 3-12 months and no long-term data exist, with the overall evidence base rated low-to-very-low quality (Cochrane review). Some individual RCTs report sustained reductions and self-reported gains in health, vitality, and reduced neck/shoulder pain, but these are largely subjective/self-reported outcomes, not objective cardiometabolic or mortality data. Meanwhile, prolonged static standing itself carries documented harm: workers standing/walking ≥75% of work time have 78% higher relative risk of hospitalization for varicose veins, and prolonged standing is linked to substantial foot, leg, and back musculoskeletal discomfort. No study in this evidence set directly measured standing desks' effect on cardiometabolic markers, mortality, or cardiovascular disease, and comparably-sized effects on sitting time were achieved by short movement breaks alone, suggesting movement/break frequency — not standing per se — may be the active ingredient. Adherence and effect durability in real-world settings are inconsistent, and psychological/musculoskeletal benefits in some trials fade out by 24 months.",
+ "citationAudit": {
+  "citationAccuracy": 85.2,
+  "effectiveCitations": 23,
+  "supported": 23,
+  "partial": 3,
+  "unsupported": 1,
+  "unreachable": 3,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "verdict": "material-gaps",
+  "untraceableStatements": [
+   "Executive summary sentence 'and comparably-sized effects on sitting time were achieved by short movement breaks alone' - same overstatement issue as above; 40 vs 100 minutes is less than half, not comparable.",
+   "Executive summary: 'No study in this evidence set directly measured standing desks' effect on cardiometabolic markers, mortality, or cardiovascular disease' — reasonable per pool, but claim [20] mentions 'a systematic review and meta-analysis of device-measured physical activity, sedentary behaviour and cardiometabolic health/fitness outcomes across occupational groups' whose actual findings are never surfaced or reconciled; the summary asserts a gap without addressing what this cited review actually found, which is an untraceable omission (the claim is listed as evidence but its content/results are never reported).",
+   "Executive summary: 'Some individual RCTs report sustained reductions ... in health, vitality, and reduced neck/shoulder pain' - 'sustained' contradicts claim [17]/[25] which say benefits fade out by 24 months; the summary conflates a single 4-week study [7] with 'sustained' framing not supported by the evidence.",
+   "Executive summary: 'Some individual RCTs report sustained reductions...in health, vitality, and reduced neck/shoulder pain' — this conflates claim [7] (self-rated health, vitality/engagement improvements over 4 weeks, no mention of neck/shoulder pain) with claim [17]/[22] (which actually found fading/no significant effect on musculoskeletal complaints), creating a misleading impression that these are consistent positive findings rather than a mix of short-term gains and later null/fade-out results.",
+   "Executive summary: 'reduced neck/shoulder pain' is not supported by any numbered claim - claim [7] mentions self-rated health, vitality/engagement, work performance; claim [17]/[22] mention 'musculoskeletal complaints' generically, not specifically neck/shoulder pain. This is an inserted specific detail not licensed by the evidence pool.",
+   "Executive summary: 'reduced neck/shoulder pain' — no claim in the pool specifies neck/shoulder pain; claim [17] and [22] refer to general 'musculoskeletal complaints' not neck/shoulder specifically, and claim [17] found NO significant effect at 24 months, so citing it as an example of a positive self-reported gain misrepresents the source.",
+   "Finding 3 characterization 'a comparable-magnitude effect to some desk interventions' - 40 min/day (break) vs 100 min/day (desk) short-term is not clearly 'comparable magnitude'; this is an interpretive stretch beyond what claim [2] states, inflating the movement-breaks-rival-desks argument.",
+   "Finding 6: 'e.g., 32.97 min/day in a 6-month clustered RCT, n=38' is drawn from claim [24], which reports sitting time REDUCED by 32.97 min AND standing time increased by 27.88 min - fine - but the finding then attributes 'self-reported improvements in health, vitality/engagement, and neck/shoulder pain' to this same study, when claim [7]'s self-report data (health, vitality, performance) comes from a different, unspecified study (no study ID linking [7] to [24] or [16]), and neck/shoulder pain is not mentioned anywhere in the claim pool at all.",
+   "Finding 6: 'reductions in...neck/shoulder pain' — not supported by any claim in the pool; claims about musculoskeletal complaints (17, 22) do not specify neck/shoulder location, and the closest location-specific claim (21) is about foot/leg/back/hip discomfort from prolonged standing, not desk-intervention relief.",
+   "Finding 8: 'Some evidence also show...' is truncated/cut off in the provided findings text, making the final clause untraceable/unverifiable as presented.",
+   "Finding 9: 'A related trial did test movement (walking/resistance) breaks vs. prolonged sitting on 26-hour glucose response, but this...' is truncated, leaving an incomplete and unverifiable claim."
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (quantitative cardiometabolic effect sizes with CIs) is NOT answered — the report concludes it's a gap, but claim [20] (a systematic review/meta-analysis of cardiometabolic outcomes across occupational groups) is in the pool and its actual findings/effect sizes are never extracted or reported, despite being directly relevant. This looks like a search/extraction failure, not confirmation of a true evidence gap.",
+   "Checklist item 2 (direct hard-outcome evidence: mortality/CVD incidence for standing desks specifically) — the report correctly flags this as unaddressed, but no attempt appears to have been made to pull in the large sedentary-time mortality cohort literature (e.g., the epidemiologist perspective's target) to contrast with standing-desk-specific evidence; the pool contains no mortality cohort data at all, suggesting this searched perspective failed to surface any claims.",
+   "Checklist item 3 (dose-response relationship, thresholds like 4-6 hrs/day, plateau or reversal into harm) is never addressed by any claim in the pool or the findings. No dose-response data was found or reported at all.",
+   "Checklist item 5 (isolating standing-only from walking/movement interventions) is only partially addressed via claim [2] (short breaks) and [9]/[10] (walking/resistance breaks vs sitting) — but no study directly isolates standing (static, no walking) as its own arm compared to walking breaks within the same trial; the comparison in the summary is inferential/indirect, not a true isolation test as the checklist demanded.",
+   "Checklist item 6 (industry funding / risk-of-bias audit across the standing-desk literature) is very thinly covered — only one industry-funded project (claim [12], an EU-funded furniture company project unrelated to the RCT evidence actually cited) and one claim about the Cochrane review's overall low/very-low quality rating (claim [3]). No systematic accounting of what fraction of the *specific* standing-desk RCTs cited (SMArT Work, the Japanese RCT, the 6-month clustered RCT, etc.) are industry-funded or small n, despite this being an explicit checklist item and a dedicated searched perspective.",
+   "Checklist item 7 (cost/real-world ROI comparison with alternative interventions like walking breaks, ergonomic seating, movement reminders) is not answered with any cost or ROI data — only adherence variability (claim 18) and a preference/acceptability finding (claim 11) are reported. No dollar figures or comparative cost-effectiveness data appear anywhere in the pool.",
+   "No RCT or meta-analysis in the pool reports actual objective cardiometabolic biomarker changes (glucose, blood pressure, lipids) from a sit-stand intervention — the closest is [9]/[10], a walking/resistance-break glucose trial, which is explicitly NOT a standing-desk trial. This gap is stated but the underlying reason (a searched review [20] whose findings are never surfaced) is not investigated.",
+   "No claim/finding directly compares standing-only interventions to walking/movement-break interventions on the SAME outcome measure in a controlled isolatable design (sub-question 5) - the report infers 'movement may be the active ingredient' by juxtaposing two different studies (desk sitting-time reduction vs. break sitting-time reduction) rather than from a study that isolates standing vs. walking within the same design; the movement-isolation glucose RCT [9] is mentioned but its actual quantitative result is never reported (truncated), so the conclusion is asserted more strongly than the evidence shows.",
+   "No official public-health guideline body position (e.g., WHO, NHS, OSHA) was searched or cited to contextualize whether current clinical/regulatory guidance recommends standing desks - the entire claim pool is academic-journal-only with no health-authority source.",
+   "Sub-question 1 (quantitative effect sizes on cardiometabolic markers with CIs) is explicitly stated as unanswered (finding 9) - the checklist commitment was never fulfilled by search; no meta-analysis or RCT on glucose/lipids/BP from standing desks specifically was found, only a tangential movement-break glucose study [9]/[10] that does not isolate standing.",
+   "Sub-question 2 (hard outcomes: mortality, CVD incidence) is also explicitly a gap (finding 9) but the report never sought out the large cohort literature (e.g., Diaz et al. sedentary time mortality studies, or the widely-discussed Alter et al. 2024 JAMA study specifically on standing time and cardiovascular disease/orthostatic circulatory disease) that would be the obvious next source for the 'steelman epidemiologist' perspective - claim pool contains no cohort study directly linking standing time to mortality, an important recent (2024) primary study appears to have been missed entirely.",
+   "Sub-question 3 (dose-response relationship, plateau/threshold effects e.g. 4-6h/day) has NO claims addressing it at all - completely unaddressed in both claims and findings, despite being an explicit checklist item.",
+   "Sub-question 4 (cardiovascular strain from standing, e.g., orthostatic stress, venous pooling) is only partly covered via varicose veins [6],[14] and musculoskeletal discomfort [21]; no claim addresses cardiovascular strain (e.g., blood pressure/heart rate strain from prolonged standing) specifically, leaving part of this checklist item uncovered.",
+   "Sub-question 6 (funding bias / risk-of-bias proportions) is thinly covered - only one industry-funded example [12] (an EU-funded furniture company project unrelated to the core claim pool) and one aside noting BMJ RCT is 'well-powered independent' [19]; no systematic tally of how many standing-desk studies are industry-funded vs independent was produced, despite this being a full checklist item and a full perspective assigned to it.",
+   "Sub-question 7 (cost-benefit and real-world adherence vs alternative interventions) is only weakly touched via adherence variability [18] and desk-acceptability-perception [11]; no actual cost data, ROI analysis, or head-to-head comparison of cost-effectiveness between sit-stand desks and walking-break/ergonomic-seating programs appears in the claim pool despite an entire assigned perspective (cost-benefit/workplace decision analyst) for this."
+  ],
+  "planFlaws": [
+   "The 'Meta-analyst / Effect-size auditor' perspective produced claim [20] (a systematic review of cardiometabolic outcomes) but its actual quantitative results were never extracted into a claim or finding — the perspective was searched but its highest-value source's findings were dropped before reaching the report, a process failure in claim extraction/synthesis rather than a genuine absence of evidence.",
+   "The 'Research integrity / funding-bias data auditor' perspective produced almost no actual output (only one tangential EU-funded furniture example [12], and one incidental note about BMJ being independent [19]) - the plan allocated a full perspective to this but execution seems to have failed to retrieve funding/COI data for the actual standing-desk RCTs discussed elsewhere in the pool (SMArT Work, Japanese RCT, 6-month clustered RCT), so readers cannot assess whether the core intervention studies cited (claims 4,5,16,17,24) are industry-funded or independent - a significant miss given this was an explicit checklist item.",
+   "The dose-response sub-question (3) was seemingly dropped entirely from the search plan execution with zero claims retrieved - this suggests the query/search terms used for this perspective (likely folded into the mechanism-isolator or epidemiologist search) never explicitly targeted 'standing duration threshold' or 'dose-response' literature, a planning/execution gap rather than an absence of literature (such literature does exist, e.g. Alter 2024 JAMA Network Open on standing time and orthostatic circulatory disease with a plateau/reversal finding around 2h/day).",
+   "The industry-funding/bias-audit perspective surfaced only one tangential industry-funded project (an EU SME grant to a desk manufacturer, claim 12) that is not even one of the RCTs discussed elsewhere in the report (SMArT Work, Japanese RCT, 6-month clustered RCT) — the perspective did not actually audit funding/COI for the specific studies driving the report's conclusions, so checklist item 6 is answered with an irrelevant data point rather than a real audit of the cited trials.",
+   "The perspective set has a shared blind spot: none of the six perspectives is a 'clinical guideline / public health authority' angle (e.g., what do WHO/CDC/NHS actually recommend and why), so the report cannot address the practical 'so what should I do' framing a user asked about beyond raw effect sizes.",
+   "The report accepted the premise that 'reducing sitting time' is an adequate proxy for 'standing desk health benefit' throughout (e.g., leading with the 100min/57min sitting-time-reduction finding as the primary quantified 'effect'), without ever testing whether reduced sitting time itself causally maps to any health outcome in this evidence set — sitting-time reduction is a process/behavioral surrogate, not a health outcome, and conflating the two (as the executive summary's opening sentence does) risks misleading a reader into thinking a measured health effect size was found, when checklist item 1 (clinically meaningful health effect size) was actually never resolved.",
+   "The scoping's premise in sub-question 2 implicitly accepts that standing desk mortality evidence 'is only from observational sedentary-time cohorts extrapolated to standing desks' - but the research process never actually retrieved any such cohort study to test this premise; the gap was simply reported as an absence rather than confirming/refuting the extrapolation premise, so the sub-question was answered by default (absence of evidence) rather than by verifying the claimed extrapolation pattern exists in the literature.",
+   "The scoping/perspective set as a whole never secured any mortality or CVD-incidence cohort data despite dedicating an entire perspective ('Mortality/cohort epidemiologist steelman') to finding it — the claim pool contains zero mortality/CVD claims. This is a critical blind spot: the report answers checklist item 2 by declaring absence of evidence, but it's unclear whether that absence reflects a true literature gap or a failed/incomplete search by that perspective."
+  ],
+  "rationales": [
+   "The summary and findings are largely traceable and appropriately hedge on the biggest headline claim (no cardiometabolic/mortality data found), which is good practice. However, two of the eight scoped checklist questions (dose-response relationship, and cost/ROI comparison) are entirely unanswered with zero supporting claims in the pool, and a third (funding-bias audit) is answered with an irrelevant single data point rather than any real audit of the specific RCTs the report relies on. More ser…",
+   ""
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 25,
+  "claimsExtracted": 58,
+  "urlDupes": 3,
+  "budgetDropped": 1,
+  "claimsDroppedBeforeVerify": 28,
+  "searchHealth": {
+   "ddg-html": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 41,
+    "ok": 41,
+    "fail": 0,
+    "results": 44
+   },
+   "crossref": {
+    "attempts": 35,
+    "ok": 32,
+    "fail": 3,
+    "results": 178
+   },
+   "openalex": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 19
+   },
+   "hn": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   }
+  },
+  "sourceTiers": {
+   "T3": 1,
+   "?": 3,
+   "T2": 17,
+   "T?": 4
+  },
+  "agentCalls": 159,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 406773,
+  "outputTokens": 86372,
+  "wallSeconds": 540.5,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 28,
+  "killed": 2,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}
