@@ -141,10 +141,25 @@ const schemaShortfall = (schema, obj) => {
   }
   return out
 }
+// A blind retry re-sends the identical prompt, so a deterministic failure just repeats.
+// Watched live in the Python build on 2026-09-06: the framing call returned zero
+// assumptions and zero hypotheses on three consecutive attempts with the same input.
+// Two distinct causes, needing opposite fixes — the runtime hides stop_reason here, so
+// this build cannot tell them apart and does both: it names the offending fields AND
+// says the response may have been cut off.
+const SHORTFALL_CORRECTION = '\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED — READ THIS BEFORE RETRYING\n' +
+  'You returned: %s.\n' +
+  'Every one of those fields is REQUIRED and the schema states a minimum number of items for it. ' +
+  'An empty array is not an answer; it is a malformed response, and it silently breaks every later ' +
+  'stage that reads it. If your previous attempt was cut off before you finished, keep the items ' +
+  'SHORT this time so the whole response fits.\n' +
+  'If the question seems too broad, too narrow or badly posed, that is NOT a reason to return ' +
+  'nothing — state the difficulty as one of the assumptions and fill the fields anyway.'
 const agentChecked = async (prompt, opts) => {
   const schema = (opts && opts.schema) || {}
+  let correction = ''
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const got = await agent(prompt, opts)
+    const got = await agent(prompt + correction, opts)
     const label = (opts && opts.label) || 'agent'
     if (hasUnknownSentinel(got)) {
       log('[' + label + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
@@ -152,7 +167,8 @@ const agentChecked = async (prompt, opts) => {
     }
     const short = schemaShortfall(schema, got)
     if (short.length && attempt < 3) {
-      log('[' + label + '] response violates its own schema: ' + short.join(', ') + '; retrying (' + attempt + '/3)')
+      log('[' + label + '] response violates its own schema: ' + short.join(', ') + '; retrying (' + attempt + '/3) with a corrective prompt')
+      correction = SHORTFALL_CORRECTION.replace('%s', short.join('; '))
       continue
     }
     return got

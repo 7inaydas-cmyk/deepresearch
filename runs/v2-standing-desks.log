@@ -3,3 +3,26 @@ Question: Does using a standing desk instead of a sitting desk improve health ou
 Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
   [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (1/5)
   [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (2/5)
+  [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (3/5)
+  [framing] response violates its own schema: assumptions=0 (schema requires 2), whatWouldChangeTheAnswer=0 (schema requires 2), hypotheses=0 (schema requires 2); retrying (4/5)
+Key question: Compared to conventional sitting desks, do standing desks produce measurable, clinically or practica
+  [field] expected an array, got str ('\n<item>"Office workers" means adults in sedentary desk-based jobs in high-income countries (most trial evidence is from ') - treating as empty. This is NOT the model declining; it is a shape mismatch at the seam.
+Assumptions stated: 0 | hypotheses w/ kill criteria: 0
+WARNING: no hypotheses survived framing, so NOTHING will be adjudicated. This run is an ordinary literature summary, not a discriminated one.
+Checklist: 8 sub-questions
+Perspectives: RCT Meta-Analyst | Observational Epidemiologist (Steelman) | Trial Design Skeptic | Workplace Productivity Practitioner | Cost-Benefit Analyst | Data Auditor / Effect-Size Extractor
+  [w1] Trial Design Skeptic: 8 hits -> 5 picked
+  [pick:RCT Meta-Analyst] recovered a double-encoded array: the field arrived as a JSON STRING holding 5 item(s), not as an array
+  [w1] RCT Meta-Analyst: 8 hits -> 5 picked
+  [w1] Workplace Productivity Practitioner: 8 hits -> 5 picked
+  [w1] Cost-Benefit Analyst: 8 hits -> 6 picked
+  [w1] Observational Epidemiologist (Steelman): 8 hits -> 5 picked
+  [pick:Data Auditor / Effect-Size Extractor] recovered a double-encoded array: the field arrived as a JSON STRING holding 6 item(s), not as an array
+  [w1] Data Auditor / Effect-Size Extractor: 8 hits -> 6 picked
+[w1] 16 sources, 43 claims
+Round 1: 7/8 sub-questions still open, 3 contradictions, 5 follow-ups
+  [w2] Workplace productivity field studies: 8 hits -> 5 picked
+  [pick:Reconciling RCT vs cohort divergence on sitting and mortality] recovered a double-encoded array: the field arrived as a JSON STRING holding 6 item(s), not as an array
+  [w2] Reconciling RCT vs cohort divergence on sitting and mortality: 8 hits -> 6 picked
+  [w2] Cardiometabolic RCT meta-analysis: 8 hits -> 5 picked
+  [w2] Cost-effectiveness comparison of interventions: 8 hits -> 5 picked

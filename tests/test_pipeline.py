@@ -580,6 +580,20 @@ ok(all(not c["survives"] for c in dr.calibration_sample(
 ok(len(dr.calibration_sample([], 12)) == 0 and len(dr.calibration_sample(_v, 0)) == 0,
    "empty pool and n=0 are handled")
 
+print("\n-- a rejected response is retried DIFFERENTLY, not identically --")
+ok("stop_reason" in _agent_src and "TRUNCATED" in _agent_src,
+   "a truncated response is diagnosed as truncation: stop_reason separates 'cut off' from "
+   "'the model chose to return nothing', and they need opposite fixes")
+ok('body["max_tokens"] * 2' in _agent_src and "16000" in _agent_src,
+   "truncation grows the token budget on retry, capped, instead of re-sending the same "
+   "request that was already too small")
+ok("YOUR PREVIOUS RESPONSE WAS REJECTED" in _agent_src,
+   "a clean-but-empty response gets a corrective prompt naming the offending fields: a "
+   "blind retry re-sends the identical input, so a deterministic failure just repeats "
+   "(watched live doing exactly that, 3 attempts in a row)")
+ok("max_tokens=4000" in _engine_txt,
+   "and the framing call starts at a budget that was measured to be enough")
+
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
    "kappa=1.0 on n=10 no longer returns 'calibrated' - that verdict was the whole complaint")

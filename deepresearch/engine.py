@@ -283,8 +283,18 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
             "x-app": "cli",
         })
     delay = 2.0
+    # A blind retry re-sends the identical prompt, so a deterministic failure just
+    # repeats. Watched live 2026-09-06: the framing call returned zero assumptions and
+    # zero hypotheses on three consecutive attempts with the same input. Tell the model
+    # what was wrong with the last one.
+    correction = ""
     for attempt in range(retries):
         try:
+            if correction:
+                body["messages"] = [{"role": "user", "content": prompt + correction}]
+                data = json.dumps(body).encode()
+            elif body["max_tokens"] != max_tokens:
+                data = json.dumps(body).encode()
             req = urllib.request.Request(API_URL, data=data, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=180) as r:
                 out = json.loads(r.read().decode())
@@ -305,8 +315,39 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                     if short and attempt < retries - 1:
                         with _stats_lock:
                             _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
-                        log("  [%s] response violates its own schema: %s; retrying (%d/%d)"
-                            % (label, ", ".join(short), attempt + 1, retries))
+                        # stop_reason separates the two explanations: `max_tokens` means the
+                        # response was cut off and the budget is too small, anything else
+                        # means the model chose to return nothing. They need opposite fixes.
+                        stop = out.get("stop_reason")
+                        if stop == "max_tokens":
+                            # This is the whole explanation, and it is not the model's
+                            # judgement: the response was CUT OFF, and a truncated tool call
+                            # comes back with empty arrays rather than partial ones - which
+                            # is why it looked like "the model returned nothing" for so long.
+                            # Measured 2026-09-06 on the framing call at max_tokens=2500.
+                            # Scolding a truncated response achieves nothing; give it room.
+                            body["max_tokens"] = min(16000, int(body["max_tokens"] * 2))
+                            data = json.dumps(body).encode()
+                            log("  [%s] response was TRUNCATED (%s), so its required arrays came "
+                                "back empty: %s. Retrying with max_tokens=%d (%d/%d)"
+                                % (label, stop, ", ".join(short), body["max_tokens"],
+                                   attempt + 1, retries))
+                            time.sleep(1.0)
+                            break
+                        log("  [%s] response violates its own schema: %s (stop_reason=%s); "
+                            "retrying (%d/%d)"
+                            % (label, ", ".join(short), stop, attempt + 1, retries))
+                        correction = (
+                            "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
+                            "You returned: " + "; ".join(short) + ".\n"
+                            "Every one of those fields is REQUIRED and the schema states a minimum "
+                            "number of items for it. An empty array is not an answer; it is a "
+                            "malformed response, and it silently breaks every later stage that "
+                            "reads the contract.\n"
+                            "If the question seems too broad, too narrow or badly posed, that is "
+                            "NOT a reason to return nothing - state the difficulty as one of the "
+                            "assumptions and fill the fields anyway. Produce at least the minimum "
+                            "number of items for each, and keep them short if that helps.")
                         time.sleep(delay); delay *= 2
                         break
                     return got
@@ -1020,7 +1061,11 @@ def deepresearch(question, depth="standard"):
     # Phase 1 - Framing, then Plan. Two narrow interfaces rather than one wide one.
     # The framing contract no longer shares a response (or a token budget) with the
     # search plan, so a malformed contract can no longer take the perspectives with it.
-    framing = agent(p_framing(question), S_FRAMING, label="framing", max_tokens=2500)
+    # 2500 was measured too tight: the response hit max_tokens, was cut off, and came
+    # back with every required array empty - which reads identically to "the model
+    # returned nothing" and is why this took a live watch to diagnose. The retry now
+    # grows the budget on its own, but starting in the right place saves a whole call.
+    framing = agent(p_framing(question), S_FRAMING, label="framing", max_tokens=4000)
     contract = framing if isinstance(framing, dict) else {}
     if not contract:
         log("NOTE: framing agent failed - continuing without a scope contract")
