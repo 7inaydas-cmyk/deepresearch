@@ -28,3 +28,47 @@ outgoing:
   max_request_timeout: 12.0
   pool_connections: 100
   pool_maxsize: 20
+
+# One research run makes ~90 searches in a few minutes. The default engine set is four
+# providers that all rate-limit, and measured 2026-09-06 a single run suspended all of
+# them: brave and google cse "too many requests", duckduckgo "timeout", startpage
+# "CAPTCHA". The instance then answers 200 with an empty list, which reads as "the web
+# has nothing to say".
+#
+# So widen the pool and lengthen the memory. These engines do not share a rate limit, so
+# the load spreads instead of concentrating.
+engines:
+  - name: bing
+    disabled: false
+  - name: mojeek
+    disabled: false
+  - name: qwant
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: wikidata
+    disabled: false
+  - name: crossref
+    disabled: false
+  - name: openairedatasets
+    disabled: true
+  - name: semantic scholar
+    disabled: false
+  - name: pubmed
+    disabled: false
+  - name: arxiv
+    disabled: false
+  - name: github
+    disabled: false
+  - name: stackoverflow
+    disabled: false
+  - name: hackernews
+    disabled: false
+  - name: reddit
+    disabled: false
+  - name: startpage
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: brave
+    disabled: false

@@ -1,0 +1,850 @@
+{
+ "question": "How much water does a single ChatGPT or comparable large-language-model query actually consume? Trace the widely-circulated 500 ml figure to its source and state what that source actually claims.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "Identified arXiv:2304.03271 'Making AI Less Thirsty' as likely origin plus its CACM 2025 follow-up, but actual text of the preprint could not be extracted (only garbled PDF binary), so claim not yet verified by direct reading."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No exact quantity/unit/scope has been extracted from the primary source text yet; only PDF binary noise retrieved."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "unanswered",
+   "note": "Scope (single query vs training run vs datacenter) not yet confirmed from readable source text."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "unanswered",
+   "note": "On-site vs off-site (embedded) water distinction not yet addressed by any gathered evidence."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No evidence gathered on sensitivity analysis, PUE/WUE assumptions, or whether source gives range vs point estimate."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "CACM 2025 article and its 151 citations suggest ongoing engagement, but no specifics on corrections/contests/replications by OpenAI, Microsoft, Google, or journalists found."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No evidence yet on how/where the 500ml 'bottle' framing was first popularized in media vs the paper's own wording."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "arXiv:2505.09598 'How Hungry is AI?' benchmarks multiple LLMs' water/energy/carbon footprint but specific comparative figures not yet extracted from readable text."
+  }
+ ],
+ "contradictions": [
+  "Multiple proposed numeric estimates for LLM/AI water use were put forward during research (Gemini ~0.26 mL/prompt; GPT-3 training ~700,000L onsite vs ~5.4M L total; 500mL = 10-50 GPT-3 responses; Llama3-70B ~0.12L vs GPT-4 ~2.6L per email) but ALL were explicitly killed by the audit process for support/provenance/citation-audit failures - meaning the evidence base for 'how much water per query' is currently contradictory and unresolved, spanning many orders of magnitude with no adjudicated winner.",
+  "Two different primary papers are candidates for the '500 ml' origin - the Li/Ren 'Making AI Less Thirsty' line of work (2304.03271 -> CACM 2025) versus the separate Jegham et al. 2025 benchmarking paper (2505.09598) - and this research pass did not establish which (if either) actually contains the figure, so competing lineages remain unresolved."
+ ],
+ "scopeContract": {
+  "assumptions": [
+   "We are estimating water use for inference (a single user query/prompt-response) on a modern GPT-scale LLM (e.g., GPT-3/GPT-4 class or comparable), not training-phase water use, unless stated otherwise.",
+   "'Water consumption' includes both on-site datacenter cooling water (evaporative loss, 'consumed' not returned) and off-site/indirect water used to generate the electricity powering the query, since public claims often conflate these.",
+   "The widely-circulated '500 ml per query' figure originates from a specific academic paper or its media coverage (hypothesized: Li et al. 'Making AI Less Thirsty' / University of California Riverside preprint, 2023), and we assume the reader wants that source traced and its actual claim (context, model, assumptions) stated, not re-derived from scratch.",
+   "Geography/time: no specific region or year was given; we assume the estimate(s) in question pertain to US datacenter conditions circa 2022-2023 (the period the viral claim emerged), and note that water intensity varies enormously by datacenter location and grid mix.",
+   "'A single query' is assumed to mean one typical short conversational exchange (e.g., one prompt + response of a few hundred tokens), not a long multi-turn session or a batch of queries, and we assume the questioner wants the number as commonly cited (often '500 ml' or '10-50 queries = one bottle') rather than a bespoke recomputation for a specific current model."
+  ],
+  "decisionAtStake": "The reader wants to know whether to trust/repeat the viral '500 ml per ChatGPT query' water-use claim (e.g., when writing/citing it in an article, policy brief, or public debate about AI's environmental footprint) or whether they should correct/caveat it — this is primarily a fact-checking/citation decision, not an operational or purchasing decision.",
+  "hypotheses": [
+   {
+    "hypothesis": "The 500 ml figure is accurate and directly stated in the source as the water cost of one typical ChatGPT query under realistic/default conditions.",
+    "killCriterion": "The source's actual number for a single short query is materially different (e.g., stated as ~0.5 ml, ~5 ml, or requires aggregating many queries/tokens to reach 500 ml), or the source explicitly frames 500 ml as an extreme/worst-case rather than typical scenario."
+   },
+   {
+    "hypothesis": "The 500 ml figure is a real number from a credible source but has been misattributed/misapplied — e.g., it actually refers to training GPT-3 in a specific datacenter, or to some other quantity (a batch of 20-50 queries, a full conversation session, or a hypothetical 'next-gen' model), and viral repetition dropped that context.",
+    "killCriterion": "The source paper/press release explicitly states 500 ml (or the 10ml/query -> bottle-per-X-queries claim) as being per single inference query under stated assumptions, with no aggregation or different-context caveat — i.e., the number checks out as-cited."
+   },
+   {
+    "hypothesis": "There is no single authoritative empirical measurement of '500 ml per query'; the number is a rough extrapolation/estimate (not a direct measurement) built on assumptions (specific datacenter PUE/WUE, US average grid water intensity, GPT-3-scale model) that the original researchers themselves flagged as highly uncertain and non-generalizable to other models, hardware, or locations.",
+    "killCriterion": "The source presents 500 ml as a directly measured, high-confidence figure with narrow error bars and explicitly claims generalizability across models/regions/providers, with no sensitivity caveats."
+   },
+   {
+    "hypothesis": "The commonly cited 500 ml figure cannot be traced to any single primary academic source at all — it is an internet-telephone-game number that emerged from media paraphrase/compounding errors across multiple articles, and no original paper actually says '500 ml per ChatGPT query.'",
+    "killCriterion": "A specific, findable primary source (peer-reviewed paper, preprint, or corporate/vendor report) is located that explicitly states the 500 ml (or equivalent bottle) figure in connection with a single query, with a traceable citation chain from that source into the viral claim."
+   }
+  ],
+  "keyQuestion": "Does the peer-reviewed/original source behind the viral '500 ml (one bottle of water) per ChatGPT query' claim actually state that figure for a single query under realistic conditions, or does it refer to a different quantity, model, or scenario (e.g., training, a batch of queries, or a worst-case assumption)?",
+  "whatWouldChangeTheAnswer": [
+   "Finding the primary source (e.g., the UC Riverside/Li et al. 'Making AI Less Thirsty' paper or similar) and reading its exact wording and units for water-per-query — if it says 500 ml per single query as typical, the claim is validated as-cited; if it says something else (e.g., per 10-50 queries, per training run, or a hypothetical future scenario), the claim is debunked/needs correction.",
+   "Whether the estimate covers only on-site cooling water or also includes indirect water from electricity generation — including indirect water can inflate figures by 10x or more, which explains discrepancies between competing viral numbers (e.g., 500ml vs 10-50ml vs a few drops).",
+   "Which specific model and infrastructure the estimate assumes (GPT-3 in a Microsoft US datacenter vs. GPT-4 vs. a generic 'LLM query') — since compute cost per query varies by orders of magnitude across models, a figure computed for one model cannot be generalized to 'ChatGPT' broadly or to 'any LLM query' today.",
+   "Whether the water-use estimate has been updated or contested by follow-up research/journalism (e.g., Google/Microsoft sustainability reports, independent estimates, or corrections from the original authors) that revise the number up or down significantly, which would change whether 500 ml should still be treated as the best current approximation."
+  ]
+ },
+ "perspectives": [
+  {
+   "label": "Primary-source hunter",
+   "lens": "An academic-literature investigator who distrusts secondary paraphrase and wants the exact original sentence, units, and assumptions in the peer-reviewed/preprint source (e.g., Li et al. 'Making AI Less Thirsty').",
+   "query": "Li et al \"Making AI Less Thirsty\" GPT-3 water consumption per query preprint pdf"
+  },
+  {
+   "label": "Steelman defender",
+   "lens": "An advocate trying to build the strongest honest case that '500 ml per query' is a fair, defensible shorthand of the source's real numbers, checking if journalists/researchers who cite it did the math correctly (e.g., aggregating per-token or per-session water use to a plausible per-query figure).",
+   "query": "why does ChatGPT use 500 ml water per query explanation Washington Post New York Times AI Data Center"
+  },
+  {
+   "label": "Skeptical debunker",
+   "lens": "A fact-checker/mythbuster hunting for the strongest counter-evidence and corrections, actively distrusting viral science claims and looking for retractions, corrections, or rebuttal pieces.",
+   "query": "\"500 ml\" ChatGPT water myth debunked fact check misleading"
+  },
+  {
+   "label": "Cost/technical analyst",
+   "lens": "A data-center engineer/analyst who distrusts headline figures without engineering detail — cares about PUE, WUE, on-site vs off-site (embedded) water, cooling technology type, and how these vary by region/provider.",
+   "query": "data center water usage effectiveness (WUE) PUE cooling AI inference liters per kWh calculation"
+  },
+  {
+   "label": "Model-diversity comparator",
+   "lens": "A competitor-benchmarking analyst comparing GPT-3/GPT-4 vs other LLMs (Llama, Gemini, Claude) and vs typical short chat queries vs long-context queries, distrusting one-size-fits-all figures.",
+   "query": "water footprint comparison LLM inference GPT-4 Llama Gemini query energy consumption estimate"
+  },
+  {
+   "label": "Historian/timeline tracer",
+   "lens": "A media-historian tracing how the number propagated over time across outlets, press releases, and social media, distrusting any single citation without seeing the full citation chain.",
+   "query": "timeline history \"ChatGPT\" \"water\" \"bottle\" viral claim origin 2023 news coverage evolution"
+  }
+ ],
+ "answerFirst": "The research could NOT verify the actual numeric content of the \"500 ml per ChatGPT query\" claim — every attempt to read the primary sources (arXiv:2304.03271 \"Making AI Less Thirsty\" and its CACM 2025 follow-up, arXiv:2505.09598) either returned unreadable garbled PDF binary or only bibliographic/abstract-level text with no extracted figures. All four pre-registered hypotheses are therefore UNTESTED — not confirmed, not refuted. What IS established: the likely lineage of the figure runs through Li/Ren et al.'s \"Making AI Less Thirsty\" work (preprint 2304.03271 → CACM 2025 journal version) and a distinct, separate benchmarking paper (Jegham et al., arXiv:2505.09598), but no confirmed claim in this evidence set states an exact liters/ml-per-query number, so the 500 ml figure's exact wording, scope, and validity remain unconfirmed by this research pass.",
+ "baseRate": "No outside-view base rate is available in the evidence for \"how much water does one LLM query use\" — no confirmed claim states a validated per-query figure in any unit. One killed/refuted claim reported a Google 2025 estimate of ~0.26 mL median per Gemini prompt, and another refuted claim reported ~700,000 L for GPT-3 training onsite vs ~5.4M L including indirect electricity-water — but both were explicitly killed by the audit process (support+provenance or citation-audit failures) and cannot be relied upon as a base rate. This is itself a finding: published estimates for \"water per query\" appear to range across many orders of magnitude (sub-mL to hundreds of mL) depending on model, scope, and whether indirect electricity-water is included, but this research pass could not pin down a validated point estimate.",
+ "findings": [
+  {
+   "claim": "The likely primary-source lineage for the '500 ml' meme is the paper 'Making AI Less Thirsty' (arXiv:2304.03271, Li, Yang, Islam, Ren), which was later published as a peer-reviewed Communications of the ACM article in 2025 (doi:10.1145/3724499) under the theme 'uncovering and addressing the secret water footprint of AI models.'",
+   "confidence": "medium",
+   "sources": [
+    "https://arxiv.org/pdf/2304.03271",
+    "https://doi.org/10.1145/3724499"
+   ],
+   "evidence": "The CACM 2025 article's title/abstract directly states its central concern is the 'secret water footprint of AI models.' The arXiv preprint (2304.03271) is presumed to be the earlier version of the same work, but its PDF content only returned garbled binary and could not be read to confirm identical claims.",
+   "sourceTier": "T1/T2",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported (for the CACM article's thesis) / unsupported-unreadable (for the 2304.03271 preprint's actual content) — the link between the two as 'preprint → journal version of the same claim' is an inference, not confirmed by directly comparing their text.",
+   "vote": "2-1 / 2-1"
+  },
+  {
+   "claim": "The arXiv:2304.03271 PDF, which is presumed by researchers to be the origin of the 500 ml/bottle figure, could not be read: the fetched content was raw, garbled compressed PDF binary stream data, not extractable text.",
+   "confidence": "high",
+   "sources": [
+    "https://arxiv.org/pdf/2304.03271"
+   ],
+   "evidence": "Quote consists entirely of PDF binary markers (%PDF-1.5, stream/endstream, compressed byte sequences) with no readable prose, abstract, or figures.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - the audit confirms the page truly is unreadable binary, so no claim about this paper's actual numeric content can be verified from this fetch.",
+   "vote": "2-1"
+  },
+  {
+   "claim": "A separate, distinct primary research paper — 'How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference' (arXiv:2505.09598, Jegham et al.) — exists and is licensed CC-BY-4.0, indicating it is openly accessible primary research on LLM water/energy/carbon footprints, but its specific numeric findings were not extracted or confirmed in this research pass.",
+   "confidence": "medium",
+   "sources": [
+    "https://arxiv.org/pdf/2505.09598"
+   ],
+   "evidence": "Title/author page text confirms the paper's existence and scope (benchmarking energy, water, carbon footprint of LLM inference); footer link confirms CC-BY-4.0 licensing.",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact (existence/licensing only); no numeric findings verified",
+   "citationCheck": "supported (title/authorship, licensing) / partial (licensing claim also asserts this implies 'open, directly accessible primary research' - that inferential framing goes beyond what the license metadata alone proves)",
+   "vote": "3-0 / 2-1"
+  },
+  {
+   "claim": "Two general-audience Wikipedia articles (Generative AI; AI industry in the UK) discuss data-center water consumption/cooling as a sustainability concern in broad terms but do NOT cite, discuss, or attribute the specific '500 ml per query' or 'bottle of water' figure to any source.",
+   "confidence": "high",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Generative_AI",
+    "https://en.wikipedia.org/wiki/Artificial_intelligence_industry_in_the_United_Kingdom"
+   ],
+   "evidence": "Both articles' quoted text mentions fresh-water/cooling consumption generally, with no mention of 500 ml, a bottle-of-water metaphor, or any specific study attribution.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact (absence confirmed by audit)",
+   "citationCheck": "supported for both - audits confirm the specific figure and its source are simply absent from these pages, which is a claim of absence directly verifiable from the fetched text.",
+   "vote": "3-0 / 3-0"
+  },
+  {
+   "claim": "A separate, unrelated 2021 data-center engineering paper (doi:10.21203/rs.3.rs-769999/v1) models onsite/direct water use (PUE/WUE) of U.S. data centers by climate zone and cooling technology, explicitly distinguishing this from indirect (off-site, electricity-generation-related) water use, which it says could be quantified in future work — but this paper is NOT about LLM queries specifically and does not itself supply a '500 ml per query' figure.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.21203/rs.3.rs-769999/v1"
+   ],
+   "evidence": "Abstract text explicitly states the paper concerns 'onsite water use of data centers' distinct from 'indirect water use of DCs occurring in electrical power generating systems,' and that sensitivity analyses identify operational setpoints, free cooling, and cooling-tower factors as key determinants of best-achievable PUE/WUE.",
+   "sourceTier": "T?(unlabeled, treated as unverified-tier)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - directly confirmed in the abstract for both listed points (onsite-vs-indirect distinction and sensitivity-analysis variables).",
+   "vote": "3-0 / 3-0"
+  },
+  {
+   "claim": "None of the confirmed, audit-supported claims in this evidence set state an exact liters/milliliters figure for water consumed per single LLM query of any kind (ChatGPT or otherwise) under any explicitly stated set of assumptions.",
+   "confidence": "high",
+   "sources": [
+    "https://arxiv.org/pdf/2304.03271",
+    "https://arxiv.org/pdf/2505.09598",
+    "https://doi.org/10.1145/3724499"
+   ],
+   "evidence": "The 500 ml-related numeric claims that were proposed (e.g., 0.26 mL Gemini estimate, 700,000L/5.4M L GPT-3 training figures, 10-50 responses per 500mL, Shumba et al. per-email/report figures) were all explicitly KILLED in the refuted-claims list by support+provenance or citation-audit failures, meaning they could not be verified against their cited sources. The two papers most likely to contain the real number (2304.03271, 2505.09598) were only readable as binary noise or title/license metadata respectively.",
+   "sourceTier": "N/A - this is an absence-of-evidence finding",
+   "factInferenceAssumption": "inference (drawn from the pattern of what is present vs. absent in the confirmed-claims and refuted-claims lists)",
+   "citationCheck": "n/a - this finding characterizes the overall evidence set rather than a single audited page",
+   "vote": "n/a"
+  }
+ ],
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: The 500 ml figure is accurate and directly stated in the source as the water cost of one typical ChatGPT query under realistic/default conditions.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim in the evidence set states any exact ml/liter figure per single query from a readable primary source. The arXiv preprint most likely to contain this figure (2304.03271) was unreadable (only binary PDF stream data), and the CACM 2025 follow-up's abstract only describes the paper's theme, not its numeric result. The kill criterion (a materially different actual number, or an explicit 'extreme/worst-case' framing) was never triggered because the number was never located.",
+   "claimsCited": [
+    1,
+    6,
+    7
+   ]
+  },
+  {
+   "hypothesis": "H2: The 500 ml figure is a real number from a credible source but has been misattributed/misapplied (e.g., referring to training GPT-3 in a specific datacenter, a batch of queries, or a full session), and viral repetition stripped the caveat.",
+   "verdict": "untested",
+   "reasoning": "This hypothesis would be killed if the source explicitly confirmed 500 ml as a single-inference-query figure with no aggregation caveat - that confirmation never occurred because the underlying source text was unreadable. Conversely, no confirmed (non-killed) claim in this evidence set demonstrates misattribution either. Several plausible misattribution claims (e.g., '500 ml = 10-50 GPT-3 responses,' '700,000L vs 5.4M L for GPT-3 training') were proposed but explicitly KILLED by the citation audit, so they cannot be used as evidence for H2 either.",
+   "claimsCited": [
+    6,
+    7
+   ]
+  },
+  {
+   "hypothesis": "H3: There is no single authoritative empirical measurement of '500 ml per query'; it is a rough extrapolation built on assumptions (datacenter PUE/WUE, grid water intensity, GPT-3-scale model) that the researchers themselves flagged with caveats/sensitivity ranges.",
+   "verdict": "surviving",
+   "reasoning": "Indirect support: the confirmed claims [4] and [5] establish that the underlying water-footprint literature (distinct data-center engineering paper) explicitly treats water-use estimates as sensitive to climate zone, cooling technology, operational setpoints, and the onsite-vs-indirect distinction, and explicitly frames PUE/WUE as needing sensitivity analysis and future work to extend to indirect water use - consistent with the general pattern that such figures are model-dependent extrapolations rather than fixed universal measurements. However, this evidence is from a DIFFERENT paper (not the Li/Ren 'Making AI Less Thirsty' paper itself), so it does not directly confirm H3 for the specific 500ml figure - it only shows the broader field treats such estimates as assumption-sensitive. The kill criterion (source presents 500ml as a directly measured, narrow-error, universally generalizable figure) was never triggered because no such source-level claim was confirmed either way.",
+   "claimsCited": [
+    4,
+    5
+   ]
+  },
+  {
+   "hypothesis": "H4: The 500 ml figure cannot be traced to any single primary academic source at all - it is an internet-telephone-game number with no findable original paper.",
+   "verdict": "surviving",
+   "reasoning": "H4 would be killed if a specific primary source were located that explicitly states the 500ml/bottle figure in connection with a single query, with a traceable citation chain into the viral claim. Two candidate primary sources were identified (arXiv:2304.03271 / CACM 2025, and arXiv:2505.09598), narrowing down WHERE such a figure would likely live, but the actual text stating '500 ml' or an equivalent was never successfully extracted or confirmed from either source in this research pass. Since the kill criterion (finding + confirming the explicit statement) was not met, H4 survives - meaning it remains an open possibility that the figure is a distorted/compounded media number rather than a verbatim source statement, though the identification of plausible candidate sources somewhat weakens the strongest version of H4 (total absence of any candidate source).",
+   "claimsCited": [
+    0,
+    1,
+    6,
+    7
+   ]
+  }
+ ],
+ "hingeNumber": {
+  "value": "500 ml (the viral figure itself)",
+  "why": "The entire question hinges on locating this single number in a readable primary source, confirming its exact unit/scope (per query vs per training run, onsite vs onsite+indirect water, which model), and its underlying assumptions (PUE/WUE, datacenter location, grid water intensity). Every hypothesis (H1-H4) is a different theory about what this one number actually means and whether it's real, misattributed, or fabricated-by-repetition.",
+  "source": "Presumed to originate in arXiv:2304.03271 / CACM doi:10.1145/3724499 (unconfirmed) or arXiv:2505.09598 (unconfirmed)",
+  "sensitivity": "Total: the entire conclusion is undetermined because the number was never actually read from a primary source in this research pass. If the source states 500ml as a single-query point estimate, H1 wins; if it states 500ml as an aggregate (e.g., per 20-50 queries or per training run), H2 wins; if it's presented with wide caveated ranges, H3 wins; if no source states it at all, H4 wins. A ±10-20% move in the number itself is irrelevant here - what's undetermined is not the number's precision but its very existence, scope, and attribution in the primary literature."
+ },
+ "strongestArgumentAgainst": "The steelman case against this report's non-conclusion is that the research effort clearly identified the correct candidate primary sources (Li/Ren's 'Making AI Less Thirsty' preprint and CACM follow-up, plus the Jegham et al. benchmarking paper) — these are very likely the actual academic lineage of the 500ml/water-footprint discourse, and a more persistent extraction effort (e.g., using an HTML/abstract mirror instead of the raw PDF, or checking arXiv's abstract page rather than the PDF binary stream) would likely have surfaced the actual figure and resolved the hypotheses cleanly. The fact that the report ends in 'untested' for two hypotheses and only weak 'surviving' verdicts for the other two may reflect a tooling/extraction failure (PDF binary was never converted to text) rather than genuine ambiguity in what the source paper says. In other words, the answer may well be knowable and even well-documented in the literature (several secondary and Wikipedia sources reference specific numbers like 500ml per 10-50 queries), but this particular research pass's audit process was so strict that it discarded plausible, specific, and directly relevant claims (e.g., the '500 ml = 10-50 GPT-3 responses' claim) on citation-audit technicalities, potentially throwing out a broadly correct answer along with unreliable telephone-game noise.",
+ "whatWouldChangeThisCall": [
+  "Successfully extracting readable text (not binary) from arXiv:2304.03271's actual body/results section, confirming whether it states a per-query water figure and its exact units/scope.",
+  "Successfully extracting the CACM 2025 article's (doi:10.1145/3724499) full body text (beyond title/abstract) to see its own stated per-query or per-training-run water numbers.",
+  "Extracting the numeric results/tables from arXiv:2505.09598 (Jegham et al.) to see whether it independently corroborates or contradicts a ~500ml-scale figure for a single LLM query.",
+  "Finding a credible, audit-surviving secondary source (news article, corporate disclosure) that explicitly traces the 500ml meme's arithmetic back to a specific sentence in one of these two primary papers.",
+  "Re-running the citation audit on the currently-killed claims (e.g., '500ml = 10-50 GPT-3 responses') with a less strict provenance bar, since these came closest to directly answering the question."
+ ],
+ "summary": "This research pass could not confirm, with audit-supported evidence, the exact wording, unit, or scope of the widely-circulated '500 ml per ChatGPT query' claim. It narrowed the likely academic lineage to two candidate primary sources — Li/Ren et al.'s 'Making AI Less Thirsty' (arXiv:2304.03271, later published as a 2025 Communications of the ACM article under the theme of AI's 'secret water footprint') and a separate 2025 benchmarking paper by Jegham et al. (arXiv:2505.09598) — but the actual numeric content of the first could not be extracted (only unreadable binary PDF data was retrieved), and only title/licensing metadata was confirmed for the second. Several plausible numeric claims that would have directly answered the question (e.g., a Gemini per-prompt estimate, GPT-3 training water totals, and a '500ml = 10-50 queries' attribution) were proposed during research but explicitly killed by the citation/provenance audit, meaning they cannot be relied upon. Two general Wikipedia articles on AI's environmental impact discuss data-center water cooling in general terms but do not cite or discuss the 500ml figure at all. As a result, all four pre-registered hypotheses about the figure's accuracy, misattribution, extrapolation-with-caveats, or complete fabrication-by-repetition remain unresolved by confirmed evidence — two are 'untested' and two are 'surviving' only in the weak sense that they were not disproven, not that they were affirmatively demonstrated.",
+ "caveats": "Key unanswered sub-questions per the coverage checklist: (1) the exact quantity/unit/scope stated in the primary source was never extracted; (2) whether the figure refers to a single query vs. a training run vs. a batch of queries remains unconfirmed; (3) whether the estimate includes only onsite/direct cooling water or also indirect off-site electricity-generation water is unresolved for the specific 500ml claim (though a different, unrelated 2021 paper does explicitly distinguish these two categories for data centers generally); (4) sensitivity of the estimate to datacenter location/cooling technology/PUE-WUE assumptions is unaddressed for the 500ml figure specifically; (5) how/where the 'one bottle of water' media framing originated relative to the paper's own wording is unknown. Weak/dropped sources: the arXiv:2304.03271 PDF fetch returned only unreadable binary and could not be used as evidence for its own content; multiple numeric claims relevant to answering the question (Gemini 0.26mL estimate, GPT-3 training 700,000L/5.4M L figures, 500ml=10-50 queries attribution, Shumba et al. per-email figures) were explicitly killed by the audit and are reported above under refuted claims for transparency but must not be treated as established. One finding (data-center PUE/WUE paper, doi:10.21203/rs.3.rs-769999/v1) carries an unlabeled/unclear source tier (shown as 'T?' in the input) and was treated cautiously as unverified-tier rather than assumed T1. This topic is time-sensitive: AI water-footprint estimates are an active, rapidly-evolving research area (note the CACM 2025 publication and 2505.09598 preprint dates), so any figure - even if eventually confirmed - may already be superseded by newer benchmarking work.",
+ "openQuestions": [
+  "What is the exact sentence and numeric figure (with units) in arXiv:2304.03271 / CACM doi:10.1145/3724499 regarding water consumption per query or per training run, and can it be extracted via a non-PDF-binary route (HTML abstract page, Google Scholar cache, or secondary summary that itself passes citation audit)?",
+  "Does arXiv:2505.09598 (Jegham et al.) provide a directly comparable per-query water figure for ChatGPT/GPT-4/Gemini/Llama/Claude, and how does it compare in magnitude to the 500ml figure?",
+  "Where and when did the 'one bottle of water' / '500 ml' framing first appear in media coverage, and can that be traced back to a specific arithmetic operation performed on the primary source's raw numbers?",
+  "Have OpenAI, Microsoft, or Google published their own corrected or competing water-per-query estimates that could be used to independently corroborate or refute the 500ml figure?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 61.9,
+  "effectiveCitations": 13,
+  "supported": 13,
+  "partial": 4,
+  "unsupported": 4,
+  "unreachable": 0,
+  "scope": "full verification pool (21 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 3
+ },
+ "citationDetail": [
+  {
+   "claim": "The paper 'How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference' (arXiv:2505.09598) by Jegham, Abdelatti, Koh, Elmoubarki, and Hendawi is a primary research source benchmarking water consumption of LLM inference.",
+   "url": "https://arxiv.org/pdf/2505.09598",
+   "support": "supported",
+   "reasoning": "The fetched page is the raw PDF text of the arXiv paper itself (arXiv:2505.09598), showing the exact title How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference along with the author names Nidhal Jegham, Marwan Abdelatti, Chan Young Koh, Lassad Elmoubarki, and Abdeltawab Hendawi, matching the statement's claim about paper title and authorship. The title itself explici…"
+  },
+  {
+   "claim": "The article's central concern is the 'secret water footprint' of AI models, i.e., water consumption associated with training and operating large language models.",
+   "url": "https://doi.org/10.1145/3724499",
+   "support": "supported",
+   "reasoning": "The page title Making AI Less 'Thirsty' and its abstract Uncovering and addressing the secret water footprint of AI models directly confirm that the article's central concern is the secret water footprint of AI models, i.e., water consumption associated with AI. This matches the statement closely - the abstract explicitly uses the phrase secret water footprint of AI models and frames it as the pap…"
+  },
+  {
+   "claim": "The same source estimated GPT-3 training in Microsoft's US data centers consumed about 700,000 liters of onsite water alone, versus about 5.4 million liters total when offsite electricity-related (indirect) water use was included — nearly an 8-fold increase.",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "unsupported",
+   "reasoning": "The fetched page content discusses AI water usage broadly, citing IEA, Lawrence Berkeley National Laboratory, de Vries-Gao, and Li et al. estimates for aggregate global/US data center water use in 2023, 2027, and 2030. Nowhere does the page mention GPT-3 specifically, Microsoft's US data centers, or the specific figures of 700,000 liters onsite versus 5.4 million liters total (an 8-fold increase).…"
+  },
+  {
+   "claim": "A 2025 Google study reported a median per-text-prompt water-use estimate of about 0.26 mL for the Gemini assistant, orders of magnitude lower than the popularized 500 mL per-query figure.",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "partial",
+   "reasoning": "The page confirms a 2025 Google study on Gemini reported median per-prompt water-use estimates (among energy, emissions, water-use), and explicitly gives the median energy figure as 0.24 Wh per text prompt. However, the page text as fetched does NOT state a specific numeric value for the water-use estimate (no 0.26 mL figure appears anywhere in the text), nor does it mention any comparison to a 50…"
+  },
+  {
+   "claim": "The article has been cited 151 times, indicating it has been engaged with by subsequent researchers examining or building on the water-footprint estimate.",
+   "url": "https://doi.org/10.1145/3724499",
+   "support": "partial",
+   "reasoning": "The page confirms the raw citation count of 151, which supports the factual claim cited 151 times. However, the statement adds an interpretive claim—that this citation count indicates engagement by subsequent researchers examining or building on the water-footprint estimate—which the page does not state. The page only lists a bare citation count without any characterization of who cited it or why,…"
+  },
+  {
+   "claim": "The Wikipedia article mentions that data centre cooling water consumption has raised sustainability concerns in the UK AI industry context, but does not cite or discuss the specific '500 ml per query' figure or its primary source.",
+   "url": "https://en.wikipedia.org/wiki/Artificial_intelligence_industry_in_the_United_Kingdom",
+   "support": "supported",
+   "reasoning": "The page does mention data centre cooling water consumption as a sustainability concern in the UK AI industry context, matching the first part of the statement. However, there is no mention anywhere in the fetched text of a 500 ml per query figure or any primary source for such a figure, consistent with the second part of the statement claiming the article does not cite or discuss this specific fi…"
+  },
+  {
+   "claim": "This paper presents physics-based, climate- and technology-specific PUE and WUE (water usage effectiveness) predictions for U.S. data centers, addressing a lack of reported operator WUE values.",
+   "url": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the paper presents a physics-based model producing PUE and WUE values specific to U.S. data center archetypes and climate zones (which also implies technology-specific, since archetypes include cooling system type). It also explicitly states the motivation is the lack of reported WUE values by DC operators (due to lack of reported water usage effectiveness (WUE) valu…"
+  },
+  {
+   "claim": "The document is licensed under a Creative Commons Attribution 4.0 license, indicating open, directly accessible primary research rather than a paywalled or secondary report.",
+   "url": "https://arxiv.org/pdf/2505.09598",
+   "support": "partial",
+   "reasoning": "The PDF metadata does contain a link to the CC BY 4.0 license (http://creativecommons.org/licenses/by/4.0/), confirming the document is indeed licensed under Creative Commons Attribution 4.0. This part of the statement is directly supported by the page content. However, the statement goes further, asserting that this licensing indicates the document is open, directly accessible primary research ra…"
+  },
+  {
+   "claim": "The 500 mL water figure is attributed not to a single query but to 10-50 medium-length GPT-3 responses, according to Li and colleagues' estimate.",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "unsupported",
+   "reasoning": "The cited page's text about Li and colleagues discusses a global AI water withdrawal estimate for 2027 (4.2–6.6 billion cubic metres), not a 500 mL per-query figure or a claim that 500 mL corresponds to 10-50 medium-length GPT-3 responses. There is no mention anywhere on the page of a 500 mL figure, GPT-3 responses, or a range of 10-50 queries attributed to Li and colleagues. The statement appears…"
+  },
+  {
+   "claim": "The study models onsite (direct) water use of data centers, distinct from indirect water use from off-site electricity generation, which it notes could be quantified in future work using its PUE/WUE outputs.",
+   "url": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the study focuses on onsite water use of data centers, distinguishing it from indirect water use of DCs occurring in electrical power generating systems (i.e., off-site electricity generation). It also explicitly notes that the PUE and WUE values produced by this work may also be used in future work to quantify the indirect water use, matching the statement's claim a…"
+  },
+  {
+   "claim": "A study by Shumba et al. estimated that writing a medium-length email (120-200 words) could consume about 0.12 liters of water with Llama3-70B versus about 2.6 liters with GPT-4, and a ten-page report could use 0.6 liters versus 53 liters respectively, showing large variation between models and task…",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "unsupported",
+   "reasoning": "The fetched Wikipedia page text discusses various studies on AI energy and water use (Epoch AI, ACM FAccT benchmark, Google Gemini study, University of Michigan Llama 3.1 study, Scientific Reports comparisons, IEA and LBNL water reports, de Vries-Gao, Li et al.), but nowhere mentions a study by Shumba et al. or any figures about liters of water for writing a medium-length email or a ten-page repor…"
+  },
+  {
+   "claim": "The document content could not be extracted as readable text; only raw PDF binary/stream data was returned, making it impossible to verify specific figures from this page render.",
+   "url": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+   "support": "supported",
+   "reasoning": "The fetched page content consists entirely of raw PDF structural syntax (header, xref table, object definitions) and compressed/binary stream data (e.g., 'stream xc```b``g`2N00@ÍÆÀd²...') rather than any extracted human-readable text such as sentences, headings, or figures. This is exactly what the statement describes: an inability to extract readable text, leaving only raw PDF binary/stream data.…"
+  },
+  {
+   "claim": "The paper's sensitivity analyses identify variables such as operational setpoints, use of free cooling, and cooling tower equipment/operational factors as key determinants of best-achievable PUE and WUE by climate zone and cooling system type.",
+   "url": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "support": "supported",
+   "reasoning": "The abstract directly states that sensitivity analyses identify operational set points, use of free cooling, and cooling tower equipment/operational factors as the variables leading to best-achievable PUE and WUE values by climate zone and cooling system type, which matches the statement essentially verbatim in substance."
+  },
+  {
+   "claim": "The extracted page content is garbled binary PDF stream data (raw compressed PDF object streams) rather than readable text, so the actual claims of the paper 'Making AI Less Thirsty' (arXiv:2304.03271) cannot be directly read or extracted from this content.",
+   "url": "https://arxiv.org/pdf/2304.03271",
+   "support": "supported",
+   "reasoning": "The fetched page content consists entirely of raw PDF binary stream data (e.g., %PDF-1.5, stream ... endstream endobj markers, and compressed/garbled byte sequences like xÚ¥ZÉÜÆ½ó...), which is exactly the kind of unreadable, non-extractable compressed PDF object stream data the statement describes. There is no readable text, abstract, or claims from the paper Making AI Less Thirsty visible anywhe…"
+  },
+  {
+   "claim": "The PUE and WUE values are provided across a range of data center archetypes, climate zones, and operating conditions rather than as a single fixed point estimate.",
+   "url": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that PUE and WUE values are presented for a wide range of DC archetypes and climate zones, and under many different operating conditions (including operational setpoints), which directly supports the claim that these values are provided across a range of scenarios rather than as a single fixed point estimate."
+  },
+  {
+   "claim": "This Communications of the ACM 2025 journal article by Li, Yang, Islam, and Ren is the peer-reviewed publication (following up on the original preprint) about AI's water footprint, directly addressing the origin of water consumption estimates for AI models.",
+   "url": "https://doi.org/10.1145/3724499",
+   "support": "partial",
+   "reasoning": "The fetched page confirms basic bibliographic facts: it is a 2025 Communications of the ACM journal article titled Making AI Less 'Thirsty' by Li, Yang, Islam, and Ren, with an abstract mentioning Uncovering and addressing the secret water footprint of AI models. This supports that the article is about AI's water footprint and is a peer-reviewed CACM publication by these authors. However, the page…"
+  },
+  {
+   "claim": "The origin of the '500 mL' figure traces to a 2025 estimate by Li and colleagues (not the original 2023 Ren et al. UC Riverside paper) as cited in Wikipedia's environmental impact of AI article, distinct from earlier popularized versions.",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "unsupported",
+   "reasoning": "The Wikipedia article discusses several distinct water-use estimates: a 2025 IEA report (560 billion litres in 2023, rising to 12,000 billion by 2030), a 2024 Lawrence Berkeley National Laboratory report (800 billion litres indirect, 66 billion direct), a 2025 de Vries-Gao article (312.5–764.6 billion litres), and a Li et al. 2025 estimate of global AI water withdrawal of 4,200–6,600 billion litre…"
+  },
+  {
+   "claim": "This Wikipedia article does not identify or cite the specific '500 ml' or 'bottle of water' figure or its originating study; it only generally states that generative AI data centers consume fresh water for cooling.",
+   "url": "https://en.wikipedia.org/wiki/Generative_AI",
+   "support": "supported",
+   "reasoning": "The article text contains only one general statement about generative AI data centers consuming fresh water for cooling, with no mention of 500 ml, bottle of water, or any specific study attributing such a figure. This confirms the statement that the article does not identify or cite that specific figure or its originating study, while only generally noting fresh water consumption for cooling."
+  },
+  {
+   "claim": "This 2013 conference paper by Shaolei Ren, published in the proceedings of the 2013 International Conference on Cloud and Green Computing, is titled 'Optimizing Water Efficiency in Distributed Data Centers' but its abstract/content is not available from the metadata record retrieved.",
+   "url": "https://doi.org/10.1109/cgc.2013.19",
+   "support": "supported",
+   "reasoning": "The page confirms the title Optimizing Water Efficiency in Distributed Data Centers, the venue 2013 International Conference on Cloud and Green Computing, the year 2013, the author Shaolei Ren, and explicitly notes that Crossref holds no abstract for this record (metadata only), matching the claim that the abstract/content is not available from the metadata record retrieved. All elements of the st…"
+  },
+  {
+   "claim": "The Crossref metadata record for this DOI contains no abstract, preventing verification of any specific water-consumption figures or claims from this source.",
+   "url": "https://doi.org/10.1109/cgc.2013.19",
+   "support": "supported",
+   "reasoning": "The fetched page explicitly states that Crossref holds no abstract for this record, confirming the metadata contains no abstract. This directly supports the claim that the Crossref metadata record for this DOI contains no abstract, which would prevent verification of specific claims (such as water-consumption figures) from this source. The statement follows directly from the page content without a…"
+  },
+  {
+   "claim": "The paper 'Scalable workload management for water efficiency in data centers' by Lanchao Liu, Shaolei Ren, and Zhu Han was published in the proceedings of the 2014 IEEE Global Communications Conference.",
+   "url": "https://doi.org/10.1109/glocom.2014.7037184",
+   "support": "supported",
+   "reasoning": "The page metadata directly matches all elements of the statement: the exact paper title, the three authors in the same order (Lanchao Liu, Shaolei Ren, Zhu Han), the venue 2014 IEEE Global Communications Conference, and the year 2014. This is a direct, verbatim confirmation of the citation with no interpretive leap needed."
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "Does the source's figure refer to a single short inference query under typical/default conditions, or to something else (e.g., GPT-3 training, a specific Microsoft US datacenter, a batch/session of many queries, or a worst-case region)?",
+   "Have subsequent researchers, journalists, or the companies involved (OpenAI, Microsoft, Google) corrected, updated, contested, or independently replicated this water-consumption estimate?",
+   "How did the figure get translated into the popular '500 ml/one bottle per query' meme — was this arithmetic performed correctly by an early credible source, or is it a media-introduced distortion/compounding of multiple queries?"
+  ],
+  "targeted": 3,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": {
+  "n": 21,
+  "rawAgreement": 0.9048,
+  "expectedByChance": 0.551,
+  "confusion": {
+   "survive_survive": 13,
+   "kill_kill": 6,
+   "survive_then_kill": 0,
+   "kill_then_survive": 2
+  },
+  "surviveRateRun1": 0.619,
+  "surviveRateRun2": 0.7143,
+  "cohenKappa": 0.7879,
+  "scottPi": 0.7857,
+  "verdictFlips": 2,
+  "flipRate": 0.0952,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": 0.8293,
+    "rawAgreement": 0.9524,
+    "refuteRateRun1": 0.1905,
+    "refuteRateRun2": 0.1429,
+    "n": 21
+   },
+   "provenance": {
+    "cohenKappa": 0.7149,
+    "rawAgreement": 0.8571,
+    "refuteRateRun1": 0.4762,
+    "refuteRateRun2": 0.5238,
+    "n": 21
+   },
+   "support": {
+    "cohenKappa": 0.9041,
+    "rawAgreement": 0.9524,
+    "refuteRateRun1": 0.4762,
+    "refuteRateRun2": 0.4286,
+    "n": 21
+   }
+  },
+  "lensSplit": {
+   "claims": 21,
+   "split": 14,
+   "disagreementRate": 0.6667,
+   "unanimityRate": 0.3333
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "underpowered",
+  "preRegisteredAction": "PRECONDITION FAILED: n=21, below the pre-registered minimum of 30. One flipped claim moves raw agreement by 0.05 here, and kappa by more than that again once chance correction divides by (1-pe) - comparable to the width of the bands themselves. So the coefficient (0.79) has less resolution than the decision it would be used for. Report the number, adjudicate nothing, and re-run at n>=30.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": null,
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "A 2025 Google study reported a median per-text-prompt water-use estimate of about 0.26 mL for the Gemini assistant, orders of magnitude lower than the popularized 500 mL per-query figure.",
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "support": "partial",
+   "reasoning": "The page confirms a 2025 Google study on Gemini reported median per-prompt water-use estimates (among energy, emissions, water-use), and explicitly gives the median energy figure as 0.24 Wh per text prompt. However, the page text as fetched does NOT state a specific numeric value for the water-use estimate (no 0.26 mL figure appears anywhere in the text), nor does it mention any comparison to a 50…"
+  },
+  {
+   "claim": "The article has been cited 151 times, indicating it has been engaged with by subsequent researchers examining or building on the water-footprint estimate.",
+   "url": "https://doi.org/10.1145/3724499",
+   "support": "partial",
+   "reasoning": "The page confirms the raw citation count of 151, which supports the factual claim cited 151 times. However, the statement adds an interpretive claim—that this citation count indicates engagement by subsequent researchers examining or building on the water-footprint estimate—which the page does not state. The page only lists a bare citation count without any characterization of who cited it or why,…"
+  },
+  {
+   "claim": "The document is licensed under a Creative Commons Attribution 4.0 license, indicating open, directly accessible primary research rather than a paywalled or secondary report.",
+   "url": "https://arxiv.org/pdf/2505.09598",
+   "support": "partial",
+   "reasoning": "The PDF metadata does contain a link to the CC BY 4.0 license (http://creativecommons.org/licenses/by/4.0/), confirming the document is indeed licensed under Creative Commons Attribution 4.0. This part of the statement is directly supported by the page content. However, the statement goes further, asserting that this licensing indicates the document is open, directly accessible primary research ra…"
+  },
+  {
+   "claim": "This Communications of the ACM 2025 journal article by Li, Yang, Islam, and Ren is the peer-reviewed publication (following up on the original preprint) about AI's water footprint, directly addressing the origin of water consumption estimates for AI models.",
+   "url": "https://doi.org/10.1145/3724499",
+   "support": "partial",
+   "reasoning": "The fetched page confirms basic bibliographic facts: it is a 2025 Communications of the ACM journal article titled Making AI Less 'Thirsty' by Li, Yang, Islam, and Ren, with an abstract mentioning Uncovering and addressing the secret water footprint of AI models. This supports that the article is about AI's water footprint and is a peer-reviewed CACM publication by these authors. However, the page…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 9,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A separate, unrelated 2021 data-center engineering paper (doi:10.21203/rs.3.rs-769999/v1) models onsite/direct water use (PUE/WUE) of U.S. data centers by climate zone and cooling technology, explicitly distinguishing this from indirect (off-site, electricity-generation-related) water use, which it says could be quantified in future work — but this paper is NOT about LLM queries specifically and d…",
+   "As a result, all four pre-registered hypotheses about the figure's accuracy, misattribution, extrapolation-with-caveats, or complete fabrication-by-repetition remain unresolved by confirmed evidence — two are 'untested' and two are 'surviving' only in the weak sense that they were not disproven, not that they were affirmatively demonstrated.",
+   "Several plausible numeric claims that would have directly answered the question (e.g., a Gemini per-prompt estimate, GPT-3 training water totals, and a '500ml = 10-50 queries' attribution) were proposed during research but explicitly killed by the citation/provenance audit, meaning they cannot be relied upon.",
+   "This research pass could not confirm, with audit-supported evidence, the exact wording, unit, or scope of the widely-circulated '500 ml per ChatGPT query' claim."
+  ],
+  "untraceableStatements": [
+   "Executive summary claims 'Several plausible numeric claims... were proposed during research but explicitly killed by the citation/provenance audit' - no numbered claim documents a Gemini per-prompt estimate, a GPT-3 training water total, or a '500ml = 10-50 queries' attribution being proposed or killed; this entire episode is untraceable to the claim pool.",
+   "Finding 4 attributes the two Wikipedia articles as specifically 'Generative AI' and 'AI industry in the UK' - the claim pool only supports one being about UK AI industry [2]; the identity of the second Wikipedia article as 'Generative AI' is not established by any numbered claim (claim [8] does not name the article).",
+   "Finding 5 asserts the 2021 data-center paper (doi:10.21203/rs.3.rs-769999/v1) is 'unrelated' and about 'U.S. data centers' - claim [9] only identifies a different paper (Liu, Ren, Han 2014 IEEE GLOBECOM) with no DOI matching rs.3.rs-769999, and claim [4] (which discusses onsite/indirect water distinction) is attributed to the Jegham et al. 2025 paper, not a 2021 paper; the DOI and year for this finding do not trace to any claim in the pool.",
+   "Finding 5 states the 2021 data-center paper 'models onsite/direct water use (PUE/WUE) of U.S. data centers by climate zone and cooling technology' - claim [9] identifies this paper as 'Scalable workload management for water efficiency in data centers' by Liu, Ren, Han (2014 IEEE GLOBECOM), not the 2021 paper with doi:10.21203/rs.3.rs-769999/v1; claims [4] and [5] describe the onsite/indirect distinction and sensitivity analysis but these are attributed to the Jegham et al. paper [0] context, not clearly to a separate 2021 engineering paper - the finding conflates or misattributes the paper identity.",
+   "The claim that the arXiv:2304.03271 paper is 'the likely primary-source lineage for the 500 ml meme' overstates certainty beyond what claim [6] (garbled/unreadable PDF) supports - no claim in the pool actually links this paper's content to the 500ml figure specifically.",
+   "The executive summary's framing of 'four pre-registered hypotheses' (accuracy, misattribution, extrapolation-with-caveats, complete fabrication-by-repetition) and their status as 'untested'/'surviving' is not supported by any numbered claim - no claim discusses hypotheses at all.",
+   "The phrase 'Several plausible numeric claims that would have directly answered the question (e.g., a Gemini per-prompt estimate, GPT-3 training water totals, and a 500ml = 10-50 queries attribution) were proposed during research but explicitly killed by the citation/provenance audit' - none of the numbered claims [0]-[9] reference a Gemini per-prompt estimate, GPT-3 training water totals, or a '500ml = 10-50 queries' attribution being proposed or killed; this entire sentence is untraceable to the claim pool.",
+   "The phrase 'all four pre-registered hypotheses about the figure's accuracy, misattribution, extrapolation-with-caveats, or complete fabrication-by-repetition remain unresolved' references 'four pre-registered hypotheses' that do not appear anywhere in the claim pool - this is an inserted framework not evidenced by any claim.",
+   "The summary states 'Two general Wikipedia articles on AI's environmental impact discuss data-center water cooling in general terms but do not cite or discuss the 500ml figure at all' - this conflates/summarizes claims [2] and [8], but claim [8] refers to 'Generative AI' and 'AI industry in the UK' articles while claim [2] only mentions UK AI industry context; the executive summary's characterization of 'two general Wikipedia articles on AI's environmental impact' as a category is an inserted framing not directly stated in the claims."
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (can the primary source be directly located and read) was never actually resolved: the PDF for arXiv:2304.03271 was fetched only as garbled binary; no attempt is documented to use an alternate rendering (e.g., HTML version, Google cache, semantic scholar abstract, or the peer-reviewed ACM version's abstract/full text) to recover the actual sentence and number.",
+   "Checklist item 2 (exact quantity/unit/scope in the primary source) is completely unanswered - the report explicitly admits no liters/ml figure was confirmed for any source, meaning the report failed on the single most central sub-question of the entire task.",
+   "Checklist item 3 (single query vs. training run vs. batch vs. worst-case region) is unaddressed - no claim in the pool discusses this distinction for the Li/Ren paper specifically.",
+   "Checklist item 5 (sensitivity to assumptions, range vs point estimate) is only addressed for the Jegham et al. paper's general sensitivity variables (claim 5), not tied back to the actual 500ml figure or its source paper.",
+   "Checklist item 6 (corrections, updates, contestation, replication by OpenAI/Microsoft/Google or independent researchers) - no claim in the pool addresses this at all; this sub-question was apparently never searched despite a 'skeptical debunker' perspective being assigned to it.",
+   "Checklist item 7 (how the number became '500ml/one bottle' - correct arithmetic by a credible early source vs. media distortion) is never answered by any claim; the historian/timeline-tracer perspective's output does not appear anywhere in the claim pool.",
+   "Checklist item 8 (comparable estimates for GPT-4, Gemini, Llama, Claude, or long vs short queries) is not answered - the only near-relevant item (a 'Gemini per-prompt estimate') was allegedly proposed and then discarded per the summary, but no such claim is in the numbered pool.",
+   "No official company documentation, blog post, or statement from OpenAI/Microsoft/Google on water usage was retrieved despite this being sub-question 6's explicit ask.",
+   "No official documentation, blog post, or statement from OpenAI, Microsoft, or Google on water usage was retrieved or cited anywhere in the claim pool, despite this being a natural authoritative source category.",
+   "No primary media article (e.g., Washington Post, the original 2023 news piece that popularized '500ml') was searched or found in the claim pool - the historian/timeline-tracer perspective's core task (full citation chain from paper to press to social media) produced no claims at all.",
+   "Sub-question 1 (exact origin, directly locatable/readable) is unresolved: the key primary source arXiv:2304.03271 was never actually read (only garbled binary retrieved) - no alternate retrieval method (HTML version, Google cache, semantic scholar abstract, published CACM text) was attempted despite the CACM version being explicitly identified as available (claim 7).",
+   "Sub-question 2 (exact quantity/unit/scope) is completely unanswered - no numeric figure from any primary source was extracted anywhere in the evidence pool.",
+   "Sub-question 3 (single query vs training vs datacenter-day vs batch) is unanswered - no claim addresses what scope the 500ml figure actually refers to.",
+   "Sub-question 4 (onsite vs off-site/indirect water) is only partially covered via claim [4], which describes the Jegham paper's methodology in general terms but never states what the actual split or numbers are, nor how much this changes the headline figure.",
+   "Sub-question 5 (sensitivity to assumptions, range vs point estimate) is only generically covered by claim [5] (mentions variables like free cooling, setpoints) without any actual sensitivity range or quantitative output.",
+   "Sub-question 6 (corrections/updates/contestation by OpenAI, Microsoft, Google, or researchers) was never addressed - no claim in the pool discusses any company response, correction, or independent replication.",
+   "Sub-question 7 (how the figure got translated into the '500ml' meme, arithmetic correctness) is entirely unaddressed - no claim traces media articles, press coverage, or the arithmetic step from any primary number to '500ml'.",
+   "Sub-question 8 (comparable estimates for GPT-4, Gemini, Llama, Claude, short vs long queries) is unaddressed beyond a vague reference to 'a Gemini per-prompt estimate' in the summary that is itself untraceable to the claim pool - the Jegham et al. paper [0] is described as benchmarking multiple LLMs but no actual comparative figures were extracted.",
+   "The peer-reviewed 2025 Communications of the ACM version of the Li/Yang/Islam/Ren paper is mentioned (claim 7) but its content/abstract was never actually retrieved or quoted - only its existence and general theme are known, so the 'peer-reviewed' upgrade to claim traceability is nominal rather than substantive."
+  ],
+  "planFlaws": [
+   "No perspective or search step appears to have targeted OpenAI/Microsoft/Google official statements or press responses, despite checklist item 6 explicitly asking about company corrections/contestation - this is a blind spot shared across all six listed perspectives, none of which is a 'corporate communications/official statement' searcher.",
+   "No perspective was tasked with directly searching for and reading news articles that popularized '500ml/bottle of water' (e.g., searching for the exact phrase 'bottle of water' + ChatGPT in news archives) - the plan relied entirely on academic-paper-first strategy which failed, with no fallback to a claim-first (meme-first) reverse-search strategy.",
+   "The claim pool contains a stray, seemingly mismatched claim [9] (Liu/Ren/Han 2014 IEEE GLOBECOM paper on workload management for water efficiency) that doesn't clearly connect to any finding's stated DOI (rs.3.rs-769999/v1, 2021) in Finding 5, indicating a possible mixup or fabricated citation detail introduced at the synthesis stage rather than carried faithfully from evidence.",
+   "The claim pool includes an apparently irrelevant paper (claim 9, a 2014 GLOBECOM workload-management paper) that ended up seemingly conflated with a differently-dated 2021 paper in Finding 5, suggesting citation bookkeeping/attribution errors during synthesis - the plan did not include a verification step to cross-check paper identities (title, year, DOI) before drawing findings from them.",
+   "The executive summary introduces a narrative of 'four pre-registered hypotheses' that appears nowhere in the scoping checklist or claim pool, suggesting either an undocumented planning step occurred off-the-record or the summary is fabricating structure/rigor that wasn't actually part of the transparent research process.",
+   "The perspective set lacks a 'media/journalism-history' searcher with actual search results - despite the checklist committing to Q7 (meme formation) and a perspective titled 'Historian/timeline tracer' being defined, the claim pool contains zero evidence from this angle, indicating this perspective's searches were not executed or all failed silently, and the plan did not flag this as a critical gap requiring escalation or retry.",
+   "The plan conflated two potentially distinct primary papers (Li/Ren 'Making AI Less Thirsty' and Jegham et al. 'How Hungry is AI') as parallel 'candidate' sources for the same 500ml meme without evidence that either explicitly discusses that specific figure - the scoping did not include a step to verify which (if either) paper is actually cited by media as the 500ml source before treating both as candidates, risking false parallelism.",
+   "The report treats 'the PDF could not be parsed' as a dead end rather than a signal to retry via HTML/abstract page, Google Scholar cache, semantic scholar API, or the published ACM version - a single failed fetch method was allowed to block resolution of the single most important sub-question, indicating insufficient fallback strategy in the process.",
+   "The scoping and perspective assignments (primary-source hunter, historian/timeline tracer, skeptical debunker) all promised specific deliverables (exact original sentence, full citation chain, corrections/retractions) that are entirely absent from the final claim pool - suggesting the research plan was not actually executed to its own specification, or those searches failed silently without being flagged as a distinct, explicit gap in the summary.",
+   "The scoping and perspective set assumed a single identifiable 'ultimate origin' paper exists and is readable, but when the primary retrieval failed (garbled PDF), no perspective or step pivoted to alternative access routes (HTML mirror, published journal version at CACM, cached text, Semantic Scholar/Google Scholar snippet, secondary quotes of the paper's abstract) - this is a retrieval-strategy flaw, not just a coverage gap, since the CACM published version was explicitly identified as existing (claim 7) yet never fetched."
+  ],
+  "rationales": [
+   "",
+   ""
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "A 2025 Google study reported a median per-text-prompt water-use estimate of about 0.26 mL for the Gemini assistant, orders of magnitude lower than the popularized 500 mL per-query figure.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "why": "The claim states the quote as if verbatim page text (reported a median per-text-prompt water-use estimate of about 0.26 mL for the Gemini assistant, orders of magnitude lower than the popularized 500 mL per-query figure), but the actual supporting quote only says: the 2025 Google study on Gemini assistant serving reported a median text-prompt estimate of about 0.26 mL under its framework. The quote never mentions or compares this figure to the 500 mL per-query figure or characterizes it as order…"
+  },
+  {
+   "claim": "The article has been cited 151 times, indicating it has been engaged with by subsequent researchers examining or building on the water-footprint estimate.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1145/3724499",
+   "why": "The supporting quote is merely Cited by: 151 - a bare citation-count metric, likely from a publisher metrics widget/page element, not verbatim article text making any claim about engagement. The claim under review then interprets this raw number and asserts it indicat[es] it has been engaged with by subsequent researchers examining or building on the water-footprint estimate - this is an inferential gloss added on top of the number. A citation count alone does not establish the nature of that ci…"
+  },
+  {
+   "claim": "This paper presents physics-based, climate- and technology-specific PUE and WUE (water usage effectiveness) predictions for U.S. data centers, addressing a lack of reported operator WUE values.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "why": "The claim describes the 2021 preprint (rs-769999/v1, Research Square) as if it is the definitive/standing source, but this is only a non-peer-reviewed preprint version. The same authors/work was subsequently revised and published in peer-reviewed form as Ren et al., Resources, Conservation and Recycling (2022), doi:10.1016/j.resconrec.2022.106323, which is explicitly titled using a 'hybrid statistical and machine learning approach' rather than the purely 'physics-based' approach claimed in the p…"
+  },
+  {
+   "claim": "The document content could not be extracted as readable text; only raw PDF binary/stream data was returned, making it impossible to verify specific figures from this page render.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+   "why": "The claim under review is not actually a substantive factual assertion about water consumption—it is a meta-statement admitting that the escholarship.org PDF (qt1vx545q7) could not be parsed and only raw binary/stream artifacts (e.g., %PDF-1.6 %¿÷¢þ 1941 0 obj) were returned. This means the cited source provides zero verifiable content regarding the 500 ml ChatGPT water-use figure; it cannot confirm, deny, or qualify anything about that number, the Li et al. UC Riverside Making AI Less Thirsty p…"
+  },
+  {
+   "claim": "The PUE and WUE values are provided across a range of data center archetypes, climate zones, and operating conditions rather than as a single fixed point estimate.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "why": "The supporting quote says results let analysts analyze the onsite energy and water use of DCs by size class, cooling system type, and climate zone under many different operating conditions including operational setpoints — it speaks of size class, cooling system type, climate zone, and operating conditions/setpoints. The claim under review asserts PUE and WUE values are given across a range of data center archetypes, climate zones, and operating conditions. The term archetypes is not used in the…"
+  },
+  {
+   "claim": "The origin of the '500 mL' figure traces to a 2025 estimate by Li and colleagues (not the original 2023 Ren et al. UC Riverside paper) as cited in Wikipedia's environmental impact of AI article, distinct from earlier popularized versions.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "why": "The supporting quote is about Li et al.'s estimate of global AI water WITHDRAWAL in cubic metres (4.2-6.6 billion m3 in 2027) — a completely different metric than the 500 mL per query figure the claim is trying to trace. The quote contains no mention of 500 mL, no mention of a per-query water consumption figure, and does not link Li et al.'s work to the origin of the 500 mL number at all. The claim asserts the quote establishes Li et al. (2025) as the origin of the 500 mL figure distinct from ea…"
+  },
+  {
+   "claim": "This 2013 conference paper by Shaolei Ren, published in the proceedings of the 2013 International Conference on Cloud and Green Computing, is titled 'Optimizing Water Efficiency in Distributed Data Centers' but its abstract/content is not available from the metadata record retrieved.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1109/cgc.2013.19",
+   "why": "The claim under review is essentially a non-claim: it merely notes that a 2013 Shaolei Ren paper exists in a citation database (DOI 10.1109/cgc.2013.19) but that its abstract/content is not available from the metadata record retrieved. This is not evidence about the widely-circulated 500 ml/query figure at all—it is a placeholder citation stub lacking any substantive content connecting this 2013 paper to the 500ml ChatGPT water-consumption claim. The actual origin of the 500ml figure is well-doc…"
+  },
+  {
+   "claim": "The Crossref metadata record for this DOI contains no abstract, preventing verification of any specific water-consumption figures or claims from this source.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1109/cgc.2013.19",
+   "why": "The supporting quote (Abstract (Crossref holds no abstract for this record — metadata only.)) is not verbatim page text from the source; it is a fabricated/paraphrased placeholder note describing the absence of content, not an actual quotation from the DOI landing page or Crossref record. A quote-support check requires the cited text to be genuine text found at the source, and this is instead a meta-commentary invented to explain a null result. Additionally, the claim itself is a negative/absenc…"
+  },
+  {
+   "claim": "The same source estimated GPT-3 training in Microsoft's US data centers consumed about 700,000 liters of onsite water alone, versus about 5.4 million liters total when offsite electricity-related (indirect) water use was included — nearly an 8-fold increase.",
+   "killedBy": "support+citation-audit",
+   "vote": "2-1",
+   "source": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "why": "The claim states the nearly an 8-fold increase as if it were part of the source's own framing, and computes/asserts a precise ratio (700,000 → 5.4 million = ~7.7x) that is not present in the supporting quote at all. The quote only gives the two raw figures (700,000 litres onsite; 5.4 million litres total) without any stated multiplier or ratio language. Adding nearly an 8-fold increase is the claim-writer's own derived characterization, not something the quoted text licenses. Additionally, the c…"
+  },
+  {
+   "claim": "The 500 mL water figure is attributed not to a single query but to 10-50 medium-length GPT-3 responses, according to Li and colleagues' estimate.",
+   "killedBy": "citation-audit",
+   "vote": "3-0",
+   "source": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "why": ""
+  },
+  {
+   "claim": "A study by Shumba et al. estimated that writing a medium-length email (120-200 words) could consume about 0.12 liters of water with Llama3-70B versus about 2.6 liters with GPT-4, and a ten-page report could use 0.6 liters versus 53 liters respectively, showing large variation between models and task lengths.",
+   "killedBy": "provenance+citation-audit",
+   "vote": "2-1",
+   "source": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "why": "The claim is attributed to Wikipedia's Environmental impact of AI article, which itself cites Shumba et al. as a secondary paraphrase (An article by Shumba et al. ... suggest) rather than linking to or quoting the primary study directly with a verifiable citation (title, journal, year, methodology). Wikipedia is a tertiary/secondary aggregator, not a citable primary source for a specific quantitative estimate like this, and the underlying Shumba et al. paper is explicitly framed as being about w…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.1145/3724499",
+   "quality": "primary",
+   "perspective": "Primary-source hunter",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://arxiv.org/pdf/2304.03271",
+   "quality": "unreliable",
+   "perspective": "Cost/technical analyst",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T1"
+  },
+  {
+   "url": "https://arxiv.org/pdf/2505.09598",
+   "quality": "primary",
+   "perspective": "Cost/technical analyst",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T1"
+  },
+  {
+   "url": "https://escholarship.org/content/qt1vx545q7/qt1vx545q7.pdf",
+   "quality": "unreliable",
+   "perspective": "Cost/technical analyst",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T3"
+  },
+  {
+   "url": "https://dl.acm.org/doi/pdf/10.1145/3757892.3757904?download=true",
+   "quality": "unreliable",
+   "perspective": "Cost/technical analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.176158592.23065552/v2",
+   "quality": "unreliable",
+   "perspective": "Cost/technical analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Artificial_intelligence_industry_in_the_United_Kingdom",
+   "quality": "secondary",
+   "perspective": "On-site vs indirect water breakdown",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Environmental_impact_of_AI",
+   "quality": "secondary",
+   "perspective": "Sensitivity/assumptions in water estimate",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.63044/w26esl147",
+   "quality": "unreliable",
+   "perspective": "Sensitivity/assumptions in water estimate",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.21203/rs.3.rs-769999/v1",
+   "quality": "primary",
+   "perspective": "Sensitivity/assumptions in water estimate",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T?"
+  },
+  {
+   "url": "https://doi.org/10.1109/cgc.2013.19",
+   "quality": "unreliable",
+   "perspective": "Sensitivity/assumptions in water estimate",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2"
+  },
+  {
+   "url": "https://doi.org/10.1109/glocom.2014.7037184",
+   "quality": "unreliable",
+   "perspective": "Sensitivity/assumptions in water estimate",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Ethics_of_artificial_intelligence",
+   "quality": "secondary",
+   "perspective": "Corporate and researcher rebuttals",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Generative_AI",
+   "quality": "secondary",
+   "perspective": "Corporate and researcher rebuttals",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 14,
+  "claimsExtracted": 21,
+  "urlDupes": 1,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 56,
+    "ok": 56,
+    "fail": 0,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 56,
+    "ok": 0,
+    "fail": 56,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 56,
+    "ok": 0,
+    "fail": 56,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 56,
+    "ok": 0,
+    "fail": 56,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 56,
+    "ok": 56,
+    "fail": 0,
+    "results": 39
+   },
+   "crossref": {
+    "attempts": 53,
+    "ok": 47,
+    "fail": 6,
+    "results": 265
+   },
+   "europepmc": {
+    "attempts": 6,
+    "ok": 6,
+    "fail": 0,
+    "results": 7
+   },
+   "openalex": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "results": 13
+   },
+   "pubmed": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 18
+   }
+  },
+  "sourceTiers": {
+   "T2": 8,
+   "T1": 2,
+   "T3": 2,
+   "T?": 2
+  },
+  "agentCalls": 179,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 413440,
+  "outputTokens": 97768,
+  "wallSeconds": 919.0,
+  "claimsVerified": 21,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 11,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}

@@ -54,6 +54,29 @@ export DR_SEARXNG_URL=http://searxng:8080
 
 `docker network connect` attaches a running container without restarting it.
 
+## It will rate-limit itself, and that used to be silent
+
+One research run makes roughly 90 searches in a few minutes. Measured 2026-09-06: a
+single run suspended **every** engine in SearXNG's default set — brave and google cse
+"too many requests", duckduckgo "timeout", startpage "CAPTCHA". The instance then
+answers `200 OK` with an empty result list, and the next run reads that as *the web has
+nothing to say*, which is the exact failure self-hosting was supposed to end.
+
+Two changes, both shipped here:
+
+- **`settings.yml` enables a much wider engine pool** (bing, qwant, wikipedia, wikidata,
+  semantic scholar, crossref, pubmed, arxiv, github, stackoverflow, hackernews, reddit
+  alongside the defaults). They do not share a rate limit, so load spreads instead of
+  concentrating. Verified: with five providers still suspended, queries returned 20+
+  results carried by the rest.
+- **The engine now raises instead of returning an empty list** when SearXNG reports
+  every upstream engine unresponsive. The message names them and says the instance is
+  rate-limited rather than broken, so the run falls through to the next backend and the
+  reason ends up in `searchHealth` rather than nowhere.
+
+If you see this, wait a few minutes or enable more engines. Nothing is wrong with the
+container.
+
 ## Security note
 
 This compose file binds to `127.0.0.1` and turns the rate limiter **off**. Both are

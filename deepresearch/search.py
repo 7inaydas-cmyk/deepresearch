@@ -300,6 +300,18 @@ def _searxng(query: str, n: int) -> list[dict]:
     if not base:
         raise RuntimeError("DR_SEARXNG_URL not set")
     data = json.loads(_get(base + "/search?format=json&q=" + urllib.parse.quote(query)))
+    # SearXNG answers 200 with an empty result list when its UPSTREAM engines are all
+    # suspended, and it names them in `unresponsive_engines`. Measured 2026-09-06 after
+    # one research run: brave "too many requests", google cse "too many requests",
+    # duckduckgo "timeout", startpage "CAPTCHA" - 56 successful HTTP calls, 0 results.
+    # Without this, health() reports `ok: 56, results: 0` and a reader concludes the web
+    # has nothing to say, which is the exact failure self-hosting was meant to end.
+    dead = [e[0] for e in (data.get("unresponsive_engines") or []) if e]
+    if dead and not (data.get("results") or []):
+        raise RuntimeError(
+            "SearXNG answered but every upstream engine is unavailable: %s. Your instance "
+            "is up and rate-limited, not broken - wait, or enable more engines in "
+            "settings.yml (see contrib/searxng)." % ", ".join(sorted(set(dead))[:8]))
     return [{"url": r.get("url", ""), "title": r.get("title", ""),
              "snippet": (r.get("content") or "")[:300]}
             for r in (data.get("results") or [])[:n] if r.get("url")]

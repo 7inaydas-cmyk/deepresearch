@@ -1,0 +1,24 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does test-driven development actually reduce defect rates compared with writing tests after the code? Weigh th
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Across controlled experiments and industrial case studies, does adopting TDD (versus test-after deve
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Meta-analyst / systematic reviewer | Controlled-experiment purist (academic RCT researcher) | Industrial case-study steelman (TDD advocate practitioner) | Confound-hunting skeptic (methodologist) | Cost-benefit / ROI analyst | Moderator/heterogeneity data auditor
+  [w1] Controlled-experiment purist (academic RCT researcher): 8 hits -> 0 picked
+  [w1] Confound-hunting skeptic (methodologist): 8 hits -> 0 picked
+  [w1] Meta-analyst / systematic reviewer: 8 hits -> 1 picked
+  [w1] Industrial case-study steelman (TDD advocate practitioner): 8 hits -> 5 picked
+  [w1] Cost-benefit / ROI analyst: 8 hits -> 3 picked
+  [w1] Moderator/heterogeneity data auditor: 8 hits -> 4 picked
+[w1] 13 sources, 13 claims
+Round 1: 8/8 sub-questions still open, 2 contradictions, 5 follow-ups
+  [pick:Test effort equalized comparison] recovered a double-encoded array: the field arrived as a JSON STRING holding 1 item(s), not as an array
+  [w2] Test effort equalized comparison: 8 hits -> 1 picked
+  [w2] Controlled experiment effect sizes: 8 hits -> 5 picked
+  [w2] Pooled meta-analysis effect sizes: 8 hits -> 1 picked
+  [w2] TDD vs code review cost-effectiveness: 8 hits -> 2 picked
+  [w2] Industrial case study defect numbers and confounds: 8 hits -> 5 picked
+[w2] 10 sources, 14 claims
+Verify pool spans 6 distinct sub-question buckets (of 8)
+Total: 23 sources -> 27 claims -> verifying 27
