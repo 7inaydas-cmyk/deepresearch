@@ -617,6 +617,10 @@ ok("YOUR PREVIOUS RESPONSE WAS REJECTED" in _agent_src,
 ok("max_tokens=4000" in _engine_txt,
    "and the framing call starts at a budget that was measured to be enough")
 
+ok("killsByLens=dict" in _engine_txt,
+   "which lens killed what is STORED, not just logged: six runs reported killsByLens={} "
+   "while the log line beside it read {'support': 9, 'provenance': 10, 'counter': 5}")
+
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
    "kappa=1.0 on n=10 no longer returns 'calibrated' - that verdict was the whole complaint")

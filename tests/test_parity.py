@@ -41,6 +41,7 @@ SHARED = {
     "audit key (claim,url)":     ('fact_by.get((c["claim"]', "auditKey(c.claim"),
     "rescue pass":               ("RESCUE:", "RESCUE:"),
     "citation audit":            ("citationAccuracy", "citationAccuracy"),
+    "kills attributed by lens":  ("killsByLens", "killsByLens"),
     "answer-first synthesis":    ("answerFirst", "answerFirst"),
     "hypothesis adjudication":   ("hypothesisVerdicts", "hypothesisVerdicts"),
     "coverage-limit disclosure": ("Coverage limit you MUST disclose", "Coverage limit you MUST disclose"),

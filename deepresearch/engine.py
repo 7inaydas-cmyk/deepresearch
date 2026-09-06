@@ -71,6 +71,7 @@ DROP_N = DROP_TOTAL = DROP_PCT = 0
 # searching is that something later adjudicates them; nothing did until now.
 HYPOTHESES = []
 SAMPLE_DROPPED_N = int(os.environ.get("DR_SAMPLE_DROPPED", "0"))
+KILLS_BY_LENS = {}
 # What to do with summary sentences the critic says trace to no verified claim.
 #   "flag"   report them and leave the text intact (default)
 #   "strike" remove them from the summary and record what was removed
@@ -1193,6 +1194,7 @@ def deepresearch(question, depth="standard"):
                  claimsExcludedNonCitable=len(non_citable),
                  searchHealth=search_health(),
                  sourceTiers=_tier_census(sources),
+                 killsByLens=dict(globals().get("KILLS_BY_LENS") or {}),
                  agentCalls=_stats["calls"], agentErrors=_stats["errors"],
                  rateLimited=_stats["ratelimited"],
                  inputTokens=_stats["in_tok"], outputTokens=_stats["out_tok"],
@@ -1306,6 +1308,13 @@ def deepresearch(question, depth="standard"):
         for v in c["verdicts"]:
             if v.get("refuted"):
                 tally[v["lens"]] = tally.get(v["lens"], 0) + 1
+    # Store it, do not just print it. The JS build has recorded this in stats from the
+    # start; the Python build only logged it, so six runs produced `killsByLens: {}` in
+    # every report while the log line beside it read
+    # `{'support': 9, 'provenance': 10, 'counter': 5}`. That asymmetry is the evidence
+    # for issue #15 and it was being thrown away at the point of writing the file.
+    # The parity test missed it because nobody had listed the feature in it.
+    globals()["KILLS_BY_LENS"] = dict(tally)
     log("Verify: %d confirmed, %d refuted, %d unverified | kills by lens: %s"
         % (len(confirmed), len(killed), len(unver), tally or "-"))
 
