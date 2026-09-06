@@ -165,11 +165,63 @@ def lens_disagreement_rate(verdict_sets):
             "unanimityRate": round((total - split) / total, 4) if total else None}
 
 
-def interpret(kappa, thresholds=(0.4, 0.6)):
-    """Apply the pre-registered gate. Deliberately dumb: the thresholds were fixed
-    before the experiment was built and this function must not be where they get
-    quietly renegotiated."""
+# Pre-registered 2026-09-06, before the instrument was built:
+#   kappa >= 0.60  -> calibrated
+#   0.40-0.60      -> usable but noisy
+#   < 0.40         -> noise
+#
+# AMENDMENT, 2026-09-06, made BEFORE the runs it governs produced any numbers.
+# Two preconditions were missing, and both were exposed by real output rather than
+# argued for in the abstract:
+#
+#   MIN_N = 30. A run returned kappa = 1.0 on n = 10 and the gate said "calibrated,
+#   proceed". Ten items cannot separate a filter from a coin: one flipped claim moves
+#   raw agreement by 0.10 and kappa by roughly 0.2 once chance correction divides by
+#   (1-pe), which is the width of the bands themselves. Below 30 the gate now returns
+#   `underpowered` whatever the number says.
+#
+#   MIN_LENS_KAPPA = 0.40. In the same run the three lenses disagreed on 70% of claims,
+#   yet the aggregated verdict repeated 10 of 10 with zero flips, with per-lens kappas of
+#   1.00 / 0.78 / 0.35. A 2-of-3 vote can turn three unstable raters into a stable-looking
+#   verdict - the aggregate then measures the dominant lens, not the panel. So
+#   `calibrated` now additionally requires every lens to be individually measurable at
+#   0.40 or better. If one is undefined or near-noise, the verdict caps at the middle band.
+#
+# The amendment can only make the gate STRICTER. It cannot promote a verdict, which is
+# the property that stops an amendment from being a quiet renegotiation.
+MIN_N = 30
+MIN_LENS_KAPPA = 0.4
+
+
+def interpret(kappa, thresholds=(0.4, 0.6), n=None, per_lens=None):
+    """Apply the pre-registered gate, as amended. Deliberately dumb: the thresholds were
+    fixed before the experiment was built and this function must not be where they get
+    quietly renegotiated.
+
+    `n` and `per_lens` are optional so an older call site still works; pass them and the
+    two amended preconditions apply.
+    """
     lo, hi = thresholds
+    if kappa is not None and n is not None and n < MIN_N:
+        return ("underpowered",
+                "PRECONDITION FAILED: n=%d, below the pre-registered minimum of %d. One "
+                "flipped claim moves raw agreement by %.2f here, and kappa by more than that "
+                "again once chance correction divides by (1-pe) - comparable to the width of "
+                "the bands themselves. So the coefficient (%.2f) has less resolution than the "
+                "decision it would be used for. Report the number, adjudicate nothing, and "
+                "re-run at n>=%d." % (n, MIN_N, 1.0 / max(n, 1), kappa, MIN_N))
+    if kappa is not None and kappa >= hi and per_lens:
+        weak = sorted(name for name, k in per_lens.items()
+                      if k is None or k < MIN_LENS_KAPPA)
+        if weak:
+            return ("usable but noisy",
+                    "CAPPED by the per-lens precondition: the aggregate reads %.2f, but %s %s "
+                    "below %.2f or unmeasurable. A 2-of-3 vote can turn unstable raters into a "
+                    "stable-looking verdict, so this aggregate is evidence about the dominant "
+                    "lens rather than about the panel. Treat as the middle band: publish the "
+                    "number, add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, "
+                    "and diversify the model rather than the prompt."
+                    % (kappa, ", ".join(weak), "is" if len(weak) == 1 else "are", MIN_LENS_KAPPA))
     if kappa is None:
         return ("undefined", "Coefficient undefined or unreliable — the base rate was too skewed for "
                              "chance correction to mean anything. The gate cannot be "

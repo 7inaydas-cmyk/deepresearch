@@ -515,5 +515,86 @@ ok("Process Critic 1/2" in _pc and "Traceability" in _pc and "A summary." in _pc
    "p_critic is module-level and renders the real prompt, so the probe scores the critic "
    "rather than a paraphrase of it")
 
+print("\n-- the five bugs Clawbot's live review found, tested by EFFECT not plumbing --")
+
+# 1. Env vars were read at import and then overwritten by argparse's default of 0.
+_main_src = _engine_txt.split("def main(", 1)[1]
+ok("default=CALIBRATE_N" in _main_src and "default=SAMPLE_DROPPED_N" in _main_src,
+   "--calibrate/--sample-dropped default to the env vars instead of clobbering them with 0")
+ok("globals()['CALIBRATE_N'] = a.calibrate" in _main_src,
+   "the CLI flag still wins over the env var when both are given")
+
+# 2. A double-encoded array is recovered, and a shape mismatch is never silent.
+ok(dr.dicts('{"results": [{"url": "https://a.org"}]}', "pick") == [{"url": "https://a.org"}],
+   "a whole object arriving JSON-encoded as a STRING is recovered, not read as 'the model chose nothing'")
+ok(dr.dicts('[{"url": "https://b.org"}]', "pick") == [{"url": "https://b.org"}],
+   "a bare array arriving as a string is recovered too")
+ok(dr.as_str_list("one long prose string of sub-questions", "plan") == [],
+   "but prose is STILL rejected - a permissive parser would bring back the 226-character bug")
+ok(dr.dicts('{"a": [1], "b": [2]}', "ambiguous") == [],
+   "and an object with two candidate lists is rejected rather than guessed at")
+_log_src = _engine_txt.split("def as_list(", 1)[1].split("\ndef ", 1)[0]
+ok("recovered a double-encoded array" in _log_src and "shape mismatch at the seam" in _log_src,
+   "both paths LOG: a silent empty list is what hid this for a week")
+
+# 3. Strike must actually remove a sentence. The old test only checked the policy string.
+_summary = ("Sleep duration fell by 12 minutes. These findings were independently confirmed "
+            "by the Wellcome Trust review panel. Effect sizes were small.")
+_verbatim = "These findings were independently confirmed by the Wellcome Trust review panel."
+_out = _summary
+for _f in [_verbatim]:
+    if _f in _out:
+        _out = _out.replace(_f, "")
+ok(_verbatim not in _out and "Sleep duration fell by 12 minutes." in _out,
+   "an exact-match strike removes the offending sentence and leaves the rest intact")
+ok('"untraceableVerbatim"' in _engine_txt and "untraceableVerbatim" in str(dr.S_CRITIC),
+   "the critic schema now REQUESTS the verbatim sentence: matching on a prose description "
+   "is why strike reported struck=0 on every run it ever ran")
+_strike_src = _engine_txt.split("UNTRACEABLE_POLICY ==", 1)[1][:1600]
+ok("STRIKE MATCHED NOTHING" in _engine_txt,
+   "and when nothing matches it SAYS so - 'policy: strike, untraceable: 9, struck: 0' "
+   "read as a clean run for as long as nobody read all three numbers together")
+ok("\\u2018" in _strike_src or "'" in _strike_src,
+   "the fallback also tries single and curly quotes, which is what the critic actually writes")
+
+# 4. The selftest must not green-light a dead general web.
+ok(dr.EXIT_DEGRADED == 3 and dr.EXIT_AUTH == 2 and dr.EXIT_FAIL == 1,
+   "DEGRADED gets its own exit code (3): 1 and 2 already mean failed and auth-failed")
+_st = _engine_txt.split("def selftest(", 1)[1].split("\ndef ", 1)[0]
+ok("GENERAL_WEB" in _st and "EXIT_DEGRADED" in _st,
+   "the selftest checks the general-web backends specifically, not just 'did anything answer'")
+ok("contrib/searxng" in _st, "and the degraded path tells you how to fix it")
+ok("sys.exit(selftest())" in _main_src,
+   "main() propagates the code instead of collapsing it to 0/1")
+
+# 5. The calibration sample was biased by construction - my own bug, found in live output.
+_v = [{"claim": str(i), "survives": i < 25} for i in range(30)]
+_samp = dr.calibration_sample(_v, 12)
+_kills = sum(1 for c in _samp if not c["survives"])
+ok(len(_samp) == 12 and _kills >= 2,
+   "a 17%% kill rate yields %d kills in a sample of 12: taking the FIRST 12 of a "
+   "rank-ordered list gave 12 survivors and an undefined coefficient" % _kills)
+ok(all(not c["survives"] for c in dr.calibration_sample(
+       [{"claim": str(i), "survives": False} for i in range(9)], 12)),
+   "an all-kill pool is still returned whole rather than padded")
+ok(len(dr.calibration_sample([], 12)) == 0 and len(dr.calibration_sample(_v, 0)) == 0,
+   "empty pool and n=0 are handled")
+
+print("\n-- the amended gate (dated, and it can only tighten) --")
+ok(C.interpret(1.0, n=10)[0] == "underpowered",
+   "kappa=1.0 on n=10 no longer returns 'calibrated' - that verdict was the whole complaint")
+ok(C.interpret(1.0, n=30, per_lens={"support": 1.0, "prov": 0.78, "counter": 0.35})[0] == "usable but noisy",
+   "and a clean aggregate is CAPPED when one lens sits below 0.4: a 2-of-3 vote can "
+   "launder unstable raters into a stable-looking verdict")
+ok(C.interpret(1.0, n=30, per_lens={"support": 1.0, "prov": 0.78, "counter": None})[0] == "usable but noisy",
+   "an unmeasurable lens counts as weak, not as absent")
+ok(C.interpret(1.0, n=30, per_lens={"a": 0.8, "b": 0.7, "c": 0.6})[0] == "calibrated",
+   "a genuinely powered, genuinely balanced run still passes")
+_verdicts = [C.interpret(k, n=n, per_lens=pl)[0]
+             for k, n, pl in [(0.2, 50, {"a": 0.9}), (0.5, 50, {"a": 0.9}), (0.9, 50, {"a": 0.9})]]
+ok(_verdicts == ["noise", "usable but noisy", "calibrated"],
+   "the original bands are untouched: %s" % _verdicts)
+ok(C.MIN_N == 30 and C.MIN_LENS_KAPPA == 0.4, "the amended constants are named and inspectable")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

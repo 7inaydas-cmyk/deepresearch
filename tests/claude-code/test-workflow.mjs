@@ -218,6 +218,25 @@ import fs2 from 'node:fs'
      'the retry recovers a real contract, so hypotheses are adjudicated after all')
   ok(!out.error, 'and the run completes normally')
 }
+{
+  const { out, logs } = await run('T19 calibration: balanced sample, degeneracy guard, amended gate',
+    { question: 'Q', depth: 'standard', calibrate: 12 })
+  const c = out.calibration
+  ok(c && typeof c.n === 'number', 'calibration ran and produced a block (n=' + (c && c.n) + ')')
+  ok(c && c.perLens && Object.keys(c.perLens).length >= 2,
+     'per-lens agreement is computed, so a dominant lens cannot hide behind the aggregate')
+  ok(c && c.lensSplit && typeof c.lensSplit.disagreementRate === 'number',
+     'lens split rate is reported alongside (' + (c && c.lensSplit.disagreementRate) + ')')
+  ok(c && typeof c.gateVerdict === 'string',
+     'the pre-registered gate returns a verdict here too, not just in python: ' + (c && c.gateVerdict))
+  ok(c && c.thresholds.minimumN === 30 && c.thresholds.minimumPerLensKappa === 0.4,
+     'the amended preconditions travel inside the report')
+  ok(c && (c.cohenKappa === null ? c.degenerate === true : true),
+     'a near-degenerate matrix reports undefined rather than a confident-looking zero')
+  ok(c && (c.n < 30 ? c.gateVerdict === 'underpowered' : true),
+     'and n below 30 returns underpowered whatever the coefficient says')
+  ok(logs.some(l => l.includes('CALIBRATION')), 'and it says so in the log')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

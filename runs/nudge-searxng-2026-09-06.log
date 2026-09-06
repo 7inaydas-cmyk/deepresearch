@@ -1,0 +1,249 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Do behavioural 'nudge' interventions produce meaningful real-world effect sizes once publication bias is corre
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: After applying publication-bias correction methods used by Mertens et al. (2022) and the Maier et al
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Primary meta-analyst | Bias-correction methodologist (steelman of correction validity) | Independent replicator/skeptic | Field megastudy constructor | Adversarial rebuttal tracker | Heterogeneity/domain auditor
+  [w1] Primary meta-analyst: 8 hits -> 6 picked
+  [w1] Independent replicator/skeptic: 8 hits -> 5 picked
+  [w1] Bias-correction methodologist (steelman of correction validity): 8 hits -> 5 picked
+  [w1] Field megastudy constructor: 8 hits -> 5 picked
+  [w1] Adversarial rebuttal tracker: 8 hits -> 5 picked
+  [w1] Heterogeneity/domain auditor: 8 hits -> 0 picked
+[w1] 16 sources, 24 claims
+Round 1: 4/8 sub-questions still open, 2 contradictions, 5 follow-ups
+  [w2] Maier RoBMA exact posterior estimate: 8 hits -> 5 picked
+  [w2] Szaszi corrected estimates: 8 hits -> 5 picked
+  [w2] Method convergence/divergence across bias-correction techniques: 8 hits -> 5 picked
+  [w2] Policy-relevant effect size threshold debate: 8 hits -> 5 picked
+  [w2] Heterogeneity by nudge type (defaults vs social norms vs framing): 8 hits -> 5 picked
+[w2] 10 sources, 9 claims
+NOTE: 3 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 6 distinct sub-question buckets (of 8)
+Total: 26 sources -> 33 claims -> verifying 30
+  OK          3-0  Mertens et al. (2022) reported the overall uncorrected pooled effect of choice architectur…
+  OK          2-1  Maier et al. applied robust Bayesian meta-analysis to correct for publication bias, while …
+  OK          2-1  Mertens et al. published a formal reply (PNAS, 2022) acknowledging publication bias as a g…
+  OK          3-0  Maier et al. conclude that after correcting for severe publication bias in the nudge liter…
+  OK          3-0  Maier et al.'s RoBMA analysis found substantial heterogeneity by intervention category and…
+  OK          3-0  Academic journal nudge trials show an average take-up effect of 8.7 percentage points, a 3…
+  OK          3-0  Mertens et al. ran an Egger's test as a publication bias diagnostic, finding significant a…
+  OK          2-1  Maier et al. (2022) applied robust Bayesian meta-analysis (RoBMA), which model-averages ac…
+  OK          3-0  Maier et al. (rejoinder authors) respond directly to a Data Colada critique titled 'Meanin…
+  OK          2-1  This article is unrelated to nudge interventions or the Mertens/Maier/Szaszi meta-analyses…
+  OK          3-0  Despite the near-zero average effect, Maier et al. found evidence for heterogeneity in nea…
+  OK          3-0  The study assembles 126 RCTs covering 23 million individuals, including all trials run by …
+  OK          3-0  Mertens et al.'s own sensitivity analyses suggested the effect size attenuates to d = 0.31…
+  OK          2-1  The page (PubMed record) is titled 'No evidence for nudging after adjusting for publicatio…
+  OK          3-0  The paper finds that selection models used for publication bias correction do not resolve …
+  KILLED[support+counter+provenance] 0-3  Different nudge characteristics, such as topic area and behavioral channel, account for mo…
+  OK          3-0  A meta-analysis model incorporating statistical power, intervention characteristics, and s…
+  OK          3-0  Mertens et al. (2022) found significant publication bias via Egger regression, with a seve…
+  OK          3-0  The Bayes factor for the overall nudge effect in Maier et al.'s reanalysis was inconclusiv…
+  OK          3-0  A large simulation study (the 'meta-showdown' project) compared naive random-effects meta-…
+  KILLED[support+counter+provenance] 0-3  Beyond selective publication, differences in nudge characteristics such as topic area and …
+  KILLED[support+counter+provenance] 0-3  In academic journal nudge studies (from two meta-analyses), the average nudge effect was a…
+  OK          3-0  After correcting for publication bias, Maier et al. estimate that only 21.5% of academic n…
+  KILLED[support+counter+provenance] 0-3  Under heterogeneity, p-curve and p-uniform overestimate the underlying true effect and can…
+  OK          3-0  A meta-analysis model incorporating statistical power, intervention characteristics, and s…
+  KILLED[support+provenance] 1-2  PET-PEESE estimates can be highly unreliable: in simulations, the method sometimes massive…
+  OK          3-0  The rejoinder authors acknowledge that a DellaVigna & Linos (2022) mixture-modeling approa…
+  OK          3-0  Using RoBMA, Maier et al. obtained a publication-bias-corrected heterogeneity estimate (ta…
+  OK          3-0  The DellaVigna and Linos (2022) study is based on a dataset of 126 RCTs covering 23 millio…
+  OK          2-1  The document is a paper on selection models, PET-PEESE, and Robust Bayesian Meta-Analysis …
+SAMPLING 3 dropped claims to measure what the cap discarded
+  KILLED[support+provenance] 1-2  The paper was published on 2022-09-01
+  OK          2-1  In the presence of publication bias, naive random-effects meta-analysis and trim-and-fill …
+  KILLED[support+counter] 1-2  The three-parameter selection model (3PSM) generalizes p-curve and p-uniform by estimating…
+SAMPLING: 1/3 dropped claims survived (33%) vs 83% of kept claims
+CALIBRATION: re-running the panel on 12 claims to measure reliability
+  OK          3-0  Mertens et al. (2022) reported the overall uncorrected pooled effect of choice architectur…
+  OK          2-1  Maier et al. applied robust Bayesian meta-analysis to correct for publication bias, while …
+  OK          2-1  Mertens et al. published a formal reply (PNAS, 2022) acknowledging publication bias as a g…
+  OK          3-0  Maier et al. conclude that after correcting for severe publication bias in the nudge liter…
+  OK          3-0  Maier et al.'s RoBMA analysis found substantial heterogeneity by intervention category and…
+  OK          3-0  Academic journal nudge trials show an average take-up effect of 8.7 percentage points, a 3…
+  OK          3-0  Mertens et al. ran an Egger's test as a publication bias diagnostic, finding significant a…
+  OK          3-0  Maier et al. (2022) applied robust Bayesian meta-analysis (RoBMA), which model-averages ac…
+  OK          3-0  Maier et al. (rejoinder authors) respond directly to a Data Colada critique titled 'Meanin…
+  OK          2-1  This article is unrelated to nudge interventions or the Mertens/Maier/Szaszi meta-analyses…
+  OK          3-0  Despite the near-zero average effect, Maier et al. found evidence for heterogeneity in nea…
+  OK          3-0  The study assembles 126 RCTs covering 23 million individuals, including all trials run by …
+CALIBRATION: n=12 raw=1.000 cohenKappa=None scottPi=None flips=0 -> undefined
+Verify: 25 confirmed, 5 refuted, 0 unverified | kills by lens: {'support': 5, 'counter': 4, 'provenance': 5}
+RESCUE: 2 sub-question(s) have ZERO surviving claims - re-searching 2
+  [rescue] rescue8: 8 hits -> 0 picked
+  [rescue] rescue3: search returned NOTHING
+[rescue] 0 sources, 0 claims
+RESCUE: no new claims found - these sub-questions remain genuinely unanswered
+Citation audit (full pool of 30): 27 supported, 1 partial, 0 UNSUPPORTED, 2 unreachable -> 96.4%
+Process critique: material-gaps | 9 untraceable, 12 coverage gaps, 8 plan flaws
+Report written to runs/nudge-searxng-2026-09-06.json
+{
+ "citationAudit": {
+  "citationAccuracy": 96.4,
+  "effectiveCitations": 27,
+  "supported": 27,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 2,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "untraceableCount": 9,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableStatements": [
+   "Executive summary is empty string - there is no executive summary to check, but its absence itself is notable given the report is expected to answer the question directly with a stated corrected effect size in prose.",
+   "Finding 10: 'though Maier ...' is cut off/truncated in the finding text, leaving an unsupported dangling qualifier whose content cannot be verified against any claim.",
+   "Finding 10: 'though Maier ...' sentence is cut off / incomplete in the findings text itself, meaning the qualifying context (e.g., how Maier et al. responded to the Data Colada critique) is missing or truncated - claim [8] mentions Maier et al. responding to Data Colada but the finding does not state what that response was, leaving an unsupported implicit suggestion that Maier's rebuttal is somehow weaker or unaddressed.",
+   "Finding 4 also asserts 'or even null effects' as applying to Szaszi's methods specifically, but claim [1] attributes this jointly without specifying which method(s) produced null vs. smaller effects - the finding doesn't distinguish, understating specificity that checklist item 3 asked for (does Szaszi's estimate quantitatively agree/diverge from Maier's numeric estimate) - no numeric Szaszi estimate is given anywhere in the findings despite being requested in checklist #3.",
+   "Finding 4: 'Szaszi et al. independently reached a similar directional conclusion using different correction methods (robust Bayesian meta-analysis-like approaches, Andrews-Kasy, WAAP, and trim-and-fill)' - claim [1] does not attribute robust Bayesian meta-analysis to Szaszi et al.; RoBMA is attributed to Maier et al. only. This misattributes a method to Szaszi et al. that the source assigns to Maier et al., and finding 4 gives no specific Szaszi corrected point estimate or CI, despite checklist item 3 requiring one - so the finding both slightly misstates methods and fails to answer the sub-question it addresses.",
+   "Finding 4: 'Szaszi et al. independently reached a similar directional conclusion using different correction methods (robust Bayesian meta-analysis-like approaches...)' - claim [1] does not say Szaszi used RoBMA-like approaches; it lists Andrews-Kasy, WAAP, and trim-and-fill only. The parenthetical 'robust Bayesian meta-analysis-like' is an inserted/inflated characterization not supported by any claim.",
+   "Finding 6: 'Maier et al. characterize this coefficient as severe by established convention' - no claim explicitly states Maier et al. called the Egger coefficient 'severe'; claim [16] says 'severe Egger coefficient of b=2.10' but this is stated as the source's own framing, not necessarily attributed by name to Maier et al. characterizing it as such 'by established convention.' This is a mild inflation of attribution.",
+   "Finding 6: characterizing Egger coefficient b=2.10 as 'severe' is attributed to Maier et al., but no claim source states Maier et al. used the word 'severe' to describe the Egger coefficient specifically (claim [16] uses 'severe' referring to the sensitivity-analysis publication-bias scenario, not explicitly labeling the Egger b-value itself as 'severe' per Maier et al.) - a mild inflation/conflation of two distinct pieces of evidence into one attributed characterization.",
+   "The executive summary is empty/blank, meaning none of the report's framing, weighing, or final answer to the question ('state what the corrected effect size actually is') is actually presented anywhere as a coherent synthesis - this is not a traceability issue per se but means the core deliverable the question asked for is absent from the produced output."
+  ],
+  "coverageGaps": [
+   "Checklist #3 (Szaszi et al. specifics) is not fulfilled quantitatively: no numeric corrected point estimate/CI from Szaszi et al. is given anywhere in the findings, so it's impossible to assess whether Szaszi's estimate 'agrees or diverges' from Maier's 0.04/0.11 numerically - only a vague directional claim is offered.",
+   "Checklist #4 (do PET-PEESE, selection models, p-curve, 3PSM converge or diverge, and what are known limitations of each in THIS literature) is only answered generically via claim [12]/[18] about meta-showdown/MAIVE simulations in economics, not in the nudge literature specifically. No claim reports method-by-method corrected point estimates for the nudge dataset to show convergence/divergence numerically.",
+   "Checklist #5 (rebuttal/reply and unresolved points) is answered at a high level (finding 7) but doesn't cover the Data Colada exchange in depth or clarify whether Maier et al.'s rejoinder to Data Colada resolved, conceded, or contested the heterogeneity-averaging critique - the point of continuing disagreement is left vague.",
+   "Checklist #7 (heterogeneity by nudge type/domain with corrected estimates) is only partially covered via Bayes factors per category (finding 8) but no domain-specific corrected effect SIZES (d-values) are reported, only qualitative BF01/undecided labels - policy-relevant magnitude by domain (e.g., defaults vs. social norms vs. framing) is never quantified, despite being explicitly requested.",
+   "Checklist #8 (threshold for 'practically significant' effect size, e.g., d=0.2, and whether contested) is never addressed at all in any finding - no claim discusses conventions for judging practical/policy significance of a corrected effect size.",
+   "No claim/finding reports Szaszi et al.'s original paper directly (title, venue, year) - the perspective 'primary meta-analyst' presumably should have pulled the actual Szaszi paper's abstract/data but only secondhand characterizations via claim [1] exist; the primary Szaszi source itself seems never retrieved.",
+   "No source appears to have been retrieved for the original Szaszi et al. paper itself; all Szaszi-specific facts are filtered through a single secondary claim [1], meaning the 'primary meta-analyst' perspective's mandate (trust only original datasets/code, not summaries) was not fulfilled for Szaszi et al.",
+   "Sub-question 3 (Szaszi et al.'s specific corrected point estimate and CI, and explicit agreement/divergence from Maier et al.) is never answered with a number - only claim [1] vaguely says Szaszi's methods yield 'smaller effect sizes or even null effects' without a specific point estimate, so checklist item 3 remains substantively unanswered despite being listed as covered.",
+   "Sub-question 4 (do PET-PEESE, selection models, p-curve, 3PSM converge or diverge, and what are method-specific critiques in THIS literature) is only addressed generically via claim [18] (meta-showdown) and [14] (MAIVE, explicitly flagged as unrelated to nudges in claim [9]) - no finding applies these general critiques specifically to the Mertens/Maier/Szaszi dispute, so the 'in this specific literature' requirement of the checklist is not met.",
+   "Sub-question 8 (threshold for practical significance, e.g., d≈0.2, and whether contested among methodologists) is never addressed by any finding - no claim in the pool discusses a specific threshold convention or debate over what counts as practically meaningful.",
+   "The Data Colada 'Meaningless Means' critique (finding 10) is mentioned but its actual arguments/methodological critique are not detailed, nor is there any finding on whether Maier/Szaszi or Mertens responded to that specific critique with data (only claim [8] notes a rejoinder exists) - the content of that rejoinder is not reported.",
+   "The field-megastudy evidence (DellaVigna & Linos) is well covered quantitatively, but there is no direct comparison stated between DellaVigna & Linos' field effect size (1.4pp) and Maier's corrected d (0.04-0.11) in commensurable units - checklist #6 asks whether field evidence is 'consistent with' the corrected meta-analytic estimate, but no claim/finding actually attempts this cross-metric reconciliation (percentage points vs Cohen's d)."
+  ],
+  "planFlaws": [
+   "No perspective explicitly tasked with obtaining the primary Szaszi et al. paper or dataset, despite it being one of the two named re-analyses in the question itself - an obvious a priori gap in the perspective design given the question names Szaszi et al. as co-equal with Maier et al.",
+   "No perspective was tasked with directly retrieving/reading the Szaszi et al. paper as a primary source (only Mertens and Maier get 'primary source' style scrutiny from the 'Primary meta-analyst' persona) - this creates an asymmetry where Szaszi's specific numbers are never independently verified, only relayed via a secondary claim [1], despite the question explicitly naming Szaszi et al. as one of the two re-analyses to weigh.",
+   "The 'Bias-correction methodologist' perspective was meant to interrogate convergence/divergence and critiques of PET-PEESE/selection models/p-curve/3PSM specifically for the nudge literature, but the retrieved evidence for this perspective (claims 18, 14, 9, 24) is generic methodological literature not specific to nudges - the plan accepted general meta-science critiques as a substitute for domain-specific critique, which is a mismatch between the perspective's mandate and what was actually retrieved.",
+   "The 'threshold for practical significance' checklist item (#8) was never assigned to any of the 6 named perspectives - there is no persona akin to a 'policy/practical-significance methodologist' - meaning this sub-question was structurally orphaned from the start and was never going to be answered given the perspective list.",
+   "The perspective list never included anyone tasked with locating an explicit statement of a practical-significance threshold (d≈0.2) or a methodologist debate on thresholds, so checklist item 8 was structurally unanswerable given the search plan - this is a scoping-perspective blind spot, not just an execution gap.",
+   "The perspectives are all oriented toward finding/confirming a bias-corrected number or field-based counter-evidence, but none is explicitly adversarial toward the correction methods' own validity in a nudge-specific context (the 'Bias-correction methodologist' persona is framed as a steelman of correction validity generally, not as someone testing whether RoBMA/Andrews-Kasy specifically are appropriate for the skewed, small-sample nudge literature) - this leaves the meta-showdown/MAIVE caution (claim 12) floating as generic literature rather than applied critique, a blind spot shared across the perspective set.",
+   "The premise that a single 'corrected effect size' number is the right target for the whole report was accepted from the scoper's checklist framing (item asks 'what the corrected effect size actually is') without the heterogeneity-auditor perspective's conclusion (that pooling is 'meaningless') being allowed to override or reframe the final answer structure - the checklist itself may have steered toward a headline single number that the evidence (finding 10) says is contested as a valid target at all.",
+   "The scoping and searched perspectives collectively assume a single 'aggregate corrected effect size' is the right object of analysis (echoed in the question itself), and even though claim [10]/Data Colada critique flags this as contested, none of the 6 perspectives was tasked specifically with challenging whether pooling heterogeneous nudge types into one d is methodologically valid at all - this critique appears only secondhand via one claim, not as a driving sub-investigation, despite being highly relevant to the final answer the user wants ('what the corrected effect size actually is')."
+  ],
+  "rationales": [
+   "The findings are mostly traceable to claims with only minor inflation/attribution issues, but the report fails to deliver on several explicitly committed checklist items: it never gives a numeric Szaszi et al. corrected estimate (so the requested Maier-vs-Szaszi numeric comparison, checklist #3, is impossible to make), never addresses the practical-significance threshold question (checklist #8) at all, never gives domain-specific corrected effect *sizes* (only qualitative Bayes factors, partiall…",
+   "The findings are largely well-traceable to the claim pool and correctly convey the central finding (d=0.43 uncorrected vs. ~0.04-0.11 corrected, per RoBMA) with appropriate hedging on Bayes factors. However, several checklist items the scoper committed to are not substantively answered: Szaszi et al.'s own corrected point estimate/CI is never given (only vague language), method convergence/divergence critiques specific to the nudge literature (vs. generic meta-science critiques) are thin, and th…"
+  ]
+ },
+ "rescue": {
+  "wipedSubQuestions": [
+   "What specific publication-bias correction method(s) did Szaszi et al. apply in their re-analysis, and does their corrected estimate agree with, or diverge from, Maier et al.'s?",
+   "By what threshold/convention (e.g., d≈0.2 as 'small but meaningful') should a corrected effect size be judged practically significant for real-world policy application, and is that threshold itself contested among methodologists?"
+  ],
+  "targeted": 2,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 33,
+  "urlDupes": 16,
+  "budgetDropped": 9,
+  "claimsDroppedBeforeVerify": 3,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 58,
+    "ok": 58,
+    "fail": 0,
+    "results": 159
+   },
+   "ddg-html": {
+    "attempts": 33,
+    "ok": 0,
+    "fail": 33,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 33,
+    "ok": 0,
+    "fail": 33,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 33,
+    "ok": 0,
+    "fail": 33,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 33,
+    "ok": 33,
+    "fail": 0,
+    "results": 10
+   },
+   "crossref": {
+    "attempts": 31,
+    "ok": 30,
+    "fail": 1,
+    "results": 153
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 0,
+    "fail": 1,
+    "results": 0
+   },
+   "pubmed": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 1,
+    "ok": 0,
+    "fail": 1,
+    "results": 0
+   },
+   "hn": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   }
+  },
+  "sourceTiers": {
+   "T2": 10,
+   "T1": 4,
+   "T3": 9,
+   "T4": 3
+  },
+  "agentCalls": 196,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 544432,
+  "outputTokens": 118050,
+  "wallSeconds": 859.6,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 25,
+  "killed": 5,
+  "unverifiedCount": 0,
+  "afterSynthesis": 12
+ }
+}

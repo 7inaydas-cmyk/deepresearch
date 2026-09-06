@@ -46,6 +46,12 @@ SHARED = {
     "honestLimits in report":    ("honestLimits", "honestLimits"),
     "strike/flag policy":        ("UNTRACEABLE_POLICY", "UNTRACEABLE_POLICY"),
     "calibration":               ("cohenKappa", "cohenKappa"),
+    "per-lens agreement":        ("per_lens_agreement", "perLens"),
+    "near-degenerate guard":     ("minority < 2", "minority < 2"),
+    "balanced calib. sample":    ("calibration_sample", "calibrationSample"),
+    "amended gate (n + lens)":   ("MIN_LENS_KAPPA", "MIN_LENS_KAPPA"),
+    "double-encoded recovery":   ("recovered a double-encoded array", "recovered a double-encoded array"),
+    "verbatim strike":           ("untraceableVerbatim", "untraceableVerbatim"),
     "process critic":            ("processCritique", "processCritique"),
     "partial citations surfaced": ("citationPartials", "citationPartials"),
     "critique leads with count":  ("untraceableCount", "untraceableCount"),
@@ -54,6 +60,10 @@ SHARED = {
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
 # dumping ground for "we forgot to port it".
 PYTHON_ONLY = {
+    "selftest DEGRADED gate":
+        "The JS build has no selftest: the Claude Code Workflow runtime owns search, "
+        "fetch, credentials and concurrency, so there is nothing for this build to "
+        "preflight. Exit codes are meaningless inside a workflow too.",
     "credential preflight":
         "The JS build runs inside the Claude Code Workflow runtime, which owns "
         "authentication. There is no credential for this build to preflight.",

@@ -487,6 +487,12 @@ S_CRITIC = {
     "type": "object", "required": ["untraceableStatements", "coverageGaps", "verdict"],
     "properties": {
         "untraceableStatements": {"type": "array", "items": {"type": "string"}},
+        # The strike policy needs the exact sentence, not a description of it. It spent
+        # its whole life matching on text between straight double quotes while the critic
+        # wrote its objections with single quotes, so `policy: strike` reported
+        # `struck: 0` on every run it ever ran. Ask for the verbatim text explicitly and
+        # the match becomes possible; leave it implicit and the feature stays a promise.
+        "untraceableVerbatim": {"type": "array", "items": {"type": "string"}},
         "coverageGaps": {"type": "array", "items": {"type": "string"}},
         "planFlaws": {"type": "array", "items": {"type": "string"}},
         "verdict": {"enum": ["sound", "minor-gaps", "material-gaps"]},
@@ -540,7 +546,7 @@ def p_plan(q, n, contract):
     discriminate between the stated hypotheses rather than to confirm one."""
     ctx = ""
     if contract:
-        hyp = dicts(contract.get("hypotheses"))
+        hyp = dicts(contract.get("hypotheses"), "framing.hypotheses")
         ctx = ("## Framing already agreed\n"
                "Key question: " + webtext(contract.get("keyQuestion", ""), 400) + "\n"
                "Decision at stake: " + webtext(contract.get("decisionAtStake", ""), 300) + "\n"
@@ -683,6 +689,10 @@ def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
         "1. **Traceability.** Go sentence by sentence through the summary and each finding. Does EVERY factual "
         "assertion trace to a numbered claim above? List any that does not - inserted facts, inflated certainty, a "
         "hedge quietly dropped, a \"therefore\" the claims do not license. Highest-yield check; do it literally.\n"
+        "   For each one, ALSO put the offending sentence into `untraceableVerbatim` copied CHARACTER FOR CHARACTER "
+        "from the summary above - no quotation marks added, no ellipsis, no rewording, no summarising. It is used to "
+        "delete that sentence by exact string match, so a paraphrase silently does nothing. Same order and same "
+        "length as `untraceableStatements`.\n"
         "2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was "
         "never searched - a primary paper, official documentation, a dataset, a dissenting expert, a more recent "
         "measurement?\n"
@@ -692,20 +702,84 @@ def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
         "concrete: name the exact sentence or the exact missing source type. \"Could be more thorough\" is useless.")
 
 
+def calibration_sample(voted, n):
+    """Pick N claims for the reliability re-run, balanced across the outcome.
+
+    Taking the first N was wrong, and it took a live run to see it. `voted` arrives
+    in rank order, so the first N are the highest-tier, most-strongly-supported
+    claims - the ones most likely to survive. Measured 2026-09-06: a 30-claim run
+    with a 17% kill rate produced a calibration subset of 12 claims that ALL
+    survived in both passes, raw agreement 1.0, coefficient undefined. The gate
+    could not be adjudicated, and the reason was the sampler rather than the panel.
+
+    That is the same failure the degeneracy guard in calibration.py reports, arriving
+    one step earlier: a lopsided sample cannot measure a chance-corrected statistic,
+    so do not draw one. Interleave survivors and kills so the subset carries the
+    run's own kill rate as closely as N allows.
+    """
+    if n <= 0 or not voted:
+        return []
+    surv = [c for c in voted if c.get("survives")]
+    kill = [c for c in voted if not c.get("survives")]
+    want_k = min(len(kill), max(1, round(n * len(kill) / len(voted)))) if kill else 0
+    want_s = min(len(surv), n - want_k)
+    # If one side is short, spend the remainder on the other rather than under-filling.
+    want_k = min(len(kill), n - want_s)
+    out = []
+    for i in range(max(want_s, want_k)):
+        if i < want_s:
+            out.append(surv[i])
+        if i < want_k:
+            out.append(kill[i])
+    return out[:n]
+
+
 # --- Helpers ----------------------------------------------------------------
-def as_list(v):
+def as_list(v, label=""):
     """Model output is not a contract - a schema is what we asked for, not what we got.
 
     A STRING is not a list of strings. Iterating one yields characters, and every
     character is a truthy str, so a naive `[x for x in (v or []) if isinstance(x, str)]`
     silently turns one sentence into 226 one-character "sub-questions". Observed live
-    on 2026-09-06. Reject anything that is not actually a list.
+    on 2026-09-06.
+
+    But rejecting every string threw away recoverable payloads. The structured-output
+    path intermittently returns the whole object JSON-ENCODED AS A STRING, and a
+    perfectly parseable list of picked sources became "the model chose nothing".
+    Reproduced 4 times in the Hermes build; the pipeline logged `8 hits -> 0 picked`
+    and later reported the sub-question "genuinely unanswerable from the web".
+
+    So: parse a string, but only accept the result if it really is a list (or an
+    object wrapping exactly one). Anything else is still rejected - a permissive
+    parser here would reintroduce the 226-character bug, which is the worse failure
+    because it produces plausible garbage instead of nothing.
+
+    And say so either way. A silent empty list is indistinguishable from a real "no",
+    which is why this cost a week of runs before anyone noticed.
     """
-    return list(v) if isinstance(v, (list, tuple)) else []
+    if isinstance(v, (list, tuple)):
+        return list(v)
+    if isinstance(v, str) and v.strip()[:1] in ("[", "{"):
+        try:
+            parsed = json.loads(v)
+        except Exception:
+            parsed = None
+        if isinstance(parsed, dict):
+            lists = [x for x in parsed.values() if isinstance(x, list)]
+            parsed = lists[0] if len(lists) == 1 else None
+        if isinstance(parsed, list):
+            log("  [%s] recovered a double-encoded array: the field arrived as a JSON "
+                "STRING holding %d item(s), not as an array" % (label or "field", len(parsed)))
+            return parsed
+    if v not in (None, "", [], {}):
+        log("  [%s] expected an array, got %s (%r) - treating as empty. This is NOT the "
+            "model declining; it is a shape mismatch at the seam."
+            % (label or "field", type(v).__name__, str(v)[:120]))
+    return []
 
 
-def as_str_list(v):
-    return [x.strip() for x in as_list(v) if isinstance(x, str) and x.strip()]
+def as_str_list(v, label=""):
+    return [x.strip() for x in as_list(v, label) if isinstance(x, str) and x.strip()]
 
 
 def shape_report(obj, required):
@@ -716,9 +790,13 @@ def shape_report(obj, required):
     return "keys present: %s | missing/empty required: %s" % (sorted(obj.keys()), missing or "none")
 
 
-def dicts(xs):
-    """Model output is not guaranteed to match its schema. Keep only real objects."""
-    return [x for x in (xs or []) if isinstance(x, dict)]
+def dicts(xs, label=""):
+    """Model output is not guaranteed to match its schema. Keep only real objects.
+
+    Routes through as_list so a double-encoded array is recovered here too - this is
+    the path the source picker uses, and it is where the losses were measured.
+    """
+    return [x for x in as_list(xs, label) if isinstance(x, dict)]
 
 
 IMP = {"central": 0, "supporting": 1, "tangential": 2}
@@ -787,7 +865,7 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
             return None
         by_url = {h["url"]: h for h in hits}
         chosen = []
-        for r in sorted(dicts(pick.get("results")), key=lambda r: REL.get(r.get("relevance"), 3)):
+        for r in sorted(dicts(pick.get("results"), "pick:" + p["label"]), key=lambda r: REL.get(r.get("relevance"), 3)):
             h = by_url.get(r.get("url"))
             if h:
                 chosen.append(dict(h, relevance=r.get("relevance", "medium")))
@@ -820,7 +898,7 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
         if not ext:
             return None
         claims = []
-        for c in dicts(ext.get("claims")):
+        for c in dicts(ext.get("claims"), "extract"):
             c = dict(c)
             c["sourceUrl"] = s["url"]
             c["sourceQuality"] = ext.get("sourceQuality", "unreliable")
@@ -949,9 +1027,9 @@ def deepresearch(question, depth="standard"):
     else:
         if contract.get("keyQuestion"):
             log("Key question: " + str(contract["keyQuestion"])[:100])
-        globals()["HYPOTHESES"] = dicts(contract.get("hypotheses"))
+        globals()["HYPOTHESES"] = dicts(contract.get("hypotheses"), "framing.hypotheses")
         log("Assumptions stated: %d | hypotheses w/ kill criteria: %d"
-            % (len(as_str_list(contract.get("assumptions"))), len(dicts(contract.get("hypotheses")))))
+            % (len(as_str_list(contract.get("assumptions"))), len(dicts(contract.get("hypotheses"), "framing.hypotheses"))))
     if not HYPOTHESES:
         # Say it loudly here as well as in the report. A run with no hypotheses is
         # not doing the thing this tool leads with, and the only previous signal was
@@ -966,8 +1044,8 @@ def deepresearch(question, depth="standard"):
         plan = agent(p_plan(question, T["perspectives"], contract), S_PLAN,
                      label=("plan" if attempt == 1 else "plan:retry"), max_tokens=4000)
         if plan:
-            subqs = as_str_list(plan.get("subQuestions"))
-            persps = [x for x in dicts(plan.get("perspectives"))
+            subqs = as_str_list(plan.get("subQuestions"), "plan.subQuestions")
+            persps = [x for x in dicts(plan.get("perspectives"), "plan.perspectives")
                       if x.get("label") and x.get("query")][:T["perspectives"]]
             if subqs and persps:
                 break
@@ -976,9 +1054,9 @@ def deepresearch(question, depth="standard"):
     if not subqs or not persps:
         return {"error": "Search plan unusable after 2 attempts (%d sub-questions, %d perspectives). %s"
                          % (len(subqs), len(persps), shape_report(plan, REQ))}
-    if len(dicts(plan.get("perspectives"))) > len(persps):
+    if len(dicts(plan.get("perspectives"), "plan.perspectives")) > len(persps):
         log("NOTE: planner returned %d perspectives; capped to %d for depth=%s"
-            % (len(dicts(plan.get("perspectives"))), len(persps), depth))
+            % (len(dicts(plan.get("perspectives"), "plan.perspectives")), len(persps), depth))
     log("Checklist: %d sub-questions" % len(subqs))
     log("Perspectives: " + " | ".join(p["label"] for p in persps))
 
@@ -998,9 +1076,9 @@ def deepresearch(question, depth="standard"):
                     S_GAP, label="gap:r%d" % rnd, max_tokens=3000)
         if not gap:
             log("Deepen %d: analyst failed, stopping" % rnd); break
-        coverage = dicts(gap.get("coverage"))
+        coverage = dicts(gap.get("coverage"), "gap.coverage")
         contradictions += gap.get("contradictions") or []
-        follow = [f for f in dicts(gap.get("followUps")) if f.get("query") and f.get("label")][:n_follow]
+        follow = [f for f in dicts(gap.get("followUps"), "gap.followUps") if f.get("query") and f.get("label")][:n_follow]
         open_n = sum(1 for c in (coverage or []) if c.get("status") != "answered")
         log("Round %d: %d/%d sub-questions still open, %d contradictions, %d follow-ups"
             % (rnd, open_n, len(subqs), len(gap.get("contradictions") or []), len(follow)))
@@ -1116,7 +1194,7 @@ def deepresearch(question, depth="standard"):
     # survive/kill verdict repeats. Measures reliability, never validity.
     calibration = None
     if CALIBRATE_N > 0 and voted:
-        subset = voted[:min(CALIBRATE_N, len(voted))]
+        subset = calibration_sample(voted, CALIBRATE_N)
         claims_again = [{k: v for k, v in c.items()
                          if k not in ("verdicts", "refutedVotes", "erroredVotes",
                                       "survives", "isRefuted", "killedBy")}
@@ -1138,11 +1216,18 @@ def deepresearch(question, depth="standard"):
             calibration["lensSplit"] = _cal.lens_disagreement_rate(
                 [[v.get("refuted") for v in c.get("verdicts", [])] for c in voted])
             calibration["missingLensVerdicts"] = ga + gb
-            verdict, action = _cal.interpret(calibration["cohenKappa"])
+            verdict, action = _cal.interpret(
+                calibration["cohenKappa"], n=calibration["n"],
+                per_lens={k: v.get("cohenKappa") for k, v in calibration["perLens"].items()})
             calibration["gateVerdict"] = verdict
             calibration["preRegisteredAction"] = action
-            calibration["thresholds"] = {"noise": "< 0.4", "noisy": "0.4-0.6", "calibrated": ">= 0.6",
-                                         "note": "fixed 2026-09-06 before this instrument was built"}
+            calibration["thresholds"] = {
+                "noise": "< 0.4", "noisy": "0.4-0.6", "calibrated": ">= 0.6",
+                "minimumN": _cal.MIN_N, "minimumPerLensKappa": _cal.MIN_LENS_KAPPA,
+                "note": ("bands fixed 2026-09-06 before this instrument was built; the two "
+                         "preconditions added by dated amendment the same day, before the runs "
+                         "they govern produced any numbers. The amendment can only make the "
+                         "gate stricter - it cannot promote a verdict.")}
             log("CALIBRATION: n=%d raw=%.3f cohenKappa=%s scottPi=%s flips=%d -> %s"
                 % (calibration["n"], calibration["rawAgreement"], calibration["cohenKappa"],
                    calibration["scottPi"], calibration["verdictFlips"], verdict))
@@ -1474,8 +1559,18 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         # Strike only sentences we can actually locate. A fuzzy match would delete
         # text the critic did not object to, which is worse than leaving it.
         _summary = out.get("summary") or ""
+        # Prefer the verbatim field. Fall back to pulling a quoted fragment out of the
+        # prose description, which is all there was before and which never once matched:
+        # the critic quotes with ' and the old code split on ".
+        _cands = list(uniq("untraceableVerbatim"))
         for _u in _untraceable:
-            _frag = _u.split('"')[1] if '"' in _u else ""
+            for _q in ('"', "'", "\u201c", "\u2018"):
+                if _q in _u:
+                    _parts = _u.split(_q)
+                    if len(_parts) > 2:
+                        _cands.append(_parts[1])
+        for _frag in _cands:
+            _frag = (_frag or "").strip()
             if _frag and len(_frag) > 25 and _frag in _summary:
                 _summary = _summary.replace(_frag, "")
                 _struck.append(_frag)
@@ -1483,6 +1578,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             out["summary"] = re.sub(r"\s{2,}", " ", _summary).strip()
             log("STRUCK %d untraceable statement(s) from the summary (DR_UNTRACEABLE=strike)"
                 % len(_struck))
+        elif _untraceable:
+            # Say it. `policy: strike, untraceable: 9, struck: 0` looked like a clean run
+            # for as long as nobody read all three numbers together.
+            log("STRIKE MATCHED NOTHING: %d untraceable statement(s) flagged, 0 removable - "
+                "the critic's text does not appear verbatim in the summary. Reporting them "
+                "instead of deleting on a fuzzy match." % len(_untraceable))
     out["processCritique"] = {"untraceableCount": len(_untraceable),
                               "readThisFirst": (
                                   "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. "
@@ -1496,6 +1597,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                                               "see readThisFirst"),
                               "policy": UNTRACEABLE_POLICY,
                               "struckFromSummary": _struck,
+                              "untraceableVerbatim": uniq("untraceableVerbatim"),
                               "untraceableStatements": _untraceable,
                               "coverageGaps": uniq("coverageGaps"), "planFlaws": uniq("planFlaws"),
                               "rationales": [webtext(c.get("rationale", ""), 500) for c in crits]}
@@ -1508,8 +1610,27 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     return out
 
 
+# Exit codes. 1 and 2 were already taken, so DEGRADED gets its own rather than being
+# folded into either. The point of a distinct code is that each caller decides whether
+# "everything works but the general web is unreachable" is fatal for them; folding it
+# into 0 takes that choice away and folding it into 1 says the tool is broken when it
+# is not.
+EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED = 0, 1, 2, 3
+
+# Backends that reach the general web. If every one of these returns nothing, the run
+# will see a scholarly-only slice - which is a legitimate mode for an academic question
+# and a silent trap for anything else.
+GENERAL_WEB = ("searxng", "ddg-html", "ddg-lite", "mojeek")
+
+
 def selftest():
-    """Prove every external dependency works before spending a real run."""
+    """Prove every external dependency works before spending a real run.
+
+    Returns an exit code, not a bool. It used to gate on `ok &= bool(hits)`, so a single
+    Wikipedia hit printed ALL CHECKS PASSED while all four general-web backends were
+    dead - a green light in exactly the state the skill warns about, and the same
+    "passes on plumbing, not effect" shape this tool exists to catch.
+    """
     ok = True
     print("1. credential       ...", end=" ")
     try:
@@ -1535,8 +1656,32 @@ def selftest():
                                label="c%d" % i, max_tokens=100), [1, 2, 3])
     good = sum(1 for r in res if r); print("OK (%d/3 parallel agents)" % good if good == 3 else "FAIL (%d/3)" % good)
     ok &= good == 3
-    print("\n%s" % ("ALL CHECKS PASSED" if ok else "SOME CHECKS FAILED"))
-    return ok
+    if not ok:
+        print("\nSOME CHECKS FAILED")
+        return EXIT_FAIL
+
+    hp = search_health()
+    live = [n for n in GENERAL_WEB if (hp.get(n) or {}).get("results", 0) > 0]
+    if not live:
+        dead = ", ".join("%s %d/%d" % (n, (hp.get(n) or {}).get("results", 0),
+                                       (hp.get(n) or {}).get("attempts", 0))
+                         for n in GENERAL_WEB if n in hp)
+        print("\nDEGRADED - every dependency works, but the general web does not.")
+        print("  no results from: %s" % (dead or "any general-web backend"))
+        print("  Consequence: this run would search Crossref, Wikipedia and the other")
+        print("  scholarly backends only. Fine for an academic question. It will miss")
+        print("  blogs, documentation, pricing, news and practitioner experience entirely,")
+        print("  and it will not say so in the answer - only in stats.searchHealth.")
+        print("  Fix (about two minutes):")
+        print("      cd contrib/searxng && docker compose up -d")
+        print("      export DR_SEARXNG_URL=http://127.0.0.1:8888")
+        print("      sh contrib/searxng/verify.sh")
+        print("  Exit code %d = degraded but usable. 0 = healthy, 1 = failed, 2 = auth."
+              % EXIT_DEGRADED)
+        return EXIT_DEGRADED
+
+    print("\nALL CHECKS PASSED (general web live via: %s)" % ", ".join(live))
+    return EXIT_OK
 
 
 def main():
@@ -1547,13 +1692,20 @@ def main():
     ap.add_argument("--out", "-o", help="write the full JSON report here")
     ap.add_argument("--model", "-m", default=MODEL)
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)
-    ap.add_argument("--sample-dropped", type=int, default=0, metavar="N",
+    # Read the environment as the DEFAULT rather than assigning 0 and overwriting it
+    # below. DR_CALIBRATE=8 was parsed correctly at import and then silently replaced
+    # by argparse's default of 0, so the run reported `calibration: null` and said
+    # nothing about why. An env var that is read and then discarded is worse than one
+    # that was never supported.
+    ap.add_argument("--sample-dropped", type=int, default=SAMPLE_DROPPED_N, metavar="N",
                     help="Verify N claims the budget discarded and report how often they would "
-                         "have survived. Turns '80%% of evidence is dropped' from a worry into a number.")
-    ap.add_argument("--calibrate", type=int, default=0, metavar="N",
+                         "have survived. Turns '80%% of evidence is dropped' from a worry into a "
+                         "number. Env: DR_SAMPLE_DROPPED.")
+    ap.add_argument("--calibrate", type=int, default=CALIBRATE_N, metavar="N",
                     help="Re-run the panel on N verified claims and report Cohen's kappa, "
                          "Scott's pi, per-lens agreement and the confusion matrix. Doubles "
-                         "the verify cost for those N claims. Measures reliability, not validity.")
+                         "the verify cost for those N claims. Measures reliability, not validity. "
+                         "Env: DR_CALIBRATE. The pre-registered gate needs N>=30.")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--bg", action="store_true",
                     help="Detach and run in the background, printing the log and report paths "
@@ -1563,7 +1715,7 @@ def main():
     globals()['CALIBRATE_N'] = a.calibrate
     globals()['SAMPLE_DROPPED_N'] = a.sample_dropped
     if a.selftest:
-        sys.exit(0 if selftest() else 1)
+        sys.exit(selftest())
     if not a.question or not a.question.strip():
         ap.error("--question is required (or use --selftest)")
 
@@ -1599,7 +1751,7 @@ def main():
     try:
         rep = deepresearch(a.question.strip(), a.depth)
     except AuthError as e:
-        print(json.dumps({"error": str(e)}, indent=1)); sys.exit(2)
+        print(json.dumps({"error": str(e)}, indent=1)); sys.exit(EXIT_AUTH)
     txt = json.dumps(rep, indent=1, ensure_ascii=False)
     if a.out:
         with open(a.out, "w", encoding="utf-8") as f:

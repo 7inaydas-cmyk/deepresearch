@@ -53,7 +53,11 @@ if (prefixed) {
   QUESTION = prefixed[2].trim()
 }
 if (!TIERS[DEPTH]) DEPTH = 'standard'
-const T = TIERS[DEPTH]
+// Calibration is off by default because it doubles the verify cost for the claims it
+// re-runs. `args.calibrate: N` turns it on. The pre-registered gate needs N >= 30, and
+// the code says so rather than leaving a caller to discover it from a verdict of
+// "underpowered".
+const T = { ...TIERS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0) }
 
 if (!QUESTION) {
   return { error: "No research question provided. Call: Workflow({name:'deepresearch', args:{question:'…', depth:'standard'}})." }
@@ -162,9 +166,37 @@ const agentChecked = async (prompt, opts) => {
 // code that iterated it produced 226 one-character "sub-questions". JS fails
 // differently but no better — a string has no .map, so the stage throws and the
 // item is silently dropped. Validate the shape once, here, at the seam.
-const asList = v => (Array.isArray(v) ? v : [])
-const asStrList = v => asList(v).filter(x => typeof x === 'string' && x.trim()).map(x => x.trim())
-const asObjList = v => asList(v).filter(x => x && typeof x === 'object' && !Array.isArray(x))
+// Rejecting every string also threw away RECOVERABLE payloads: the structured-output
+// path intermittently returns the whole object JSON-encoded as a string, and a
+// perfectly parseable list of picked sources became "the model chose nothing".
+// Reproduced 4x in the Hermes build, where the log read `8 hits -> 0 picked` and the
+// sub-question was then reported "genuinely unanswerable from the web".
+// So parse a string, but accept the result ONLY if it really is a list (or an object
+// wrapping exactly one). A permissive parser here brings back the 226-character bug,
+// which is worse — plausible garbage beats nothing at fooling a reader.
+// And log either way: a silent empty list is indistinguishable from a real "no".
+const asList = (v, label) => {
+  if (Array.isArray(v)) return v
+  const tag = label || 'field'
+  if (typeof v === 'string' && /^[[{]/.test(v.trim())) {
+    let parsed = null
+    try { parsed = JSON.parse(v) } catch { parsed = null }
+    if (parsed && !Array.isArray(parsed) && typeof parsed === 'object') {
+      const lists = Object.values(parsed).filter(Array.isArray)
+      parsed = lists.length === 1 ? lists[0] : null
+    }
+    if (Array.isArray(parsed)) {
+      log('[' + tag + '] recovered a double-encoded array: the field arrived as a JSON STRING holding ' + parsed.length + ' item(s), not as an array')
+      return parsed
+    }
+  }
+  if (v !== null && v !== undefined && v !== '') {
+    log('[' + tag + '] expected an array, got ' + typeof v + ' (' + String(v).slice(0, 120) + ') — treating as empty. This is NOT the model declining; it is a shape mismatch at the seam.')
+  }
+  return []
+}
+const asStrList = (v, label) => asList(v, label).filter(x => typeof x === 'string' && x.trim()).map(x => x.trim())
+const asObjList = (v, label) => asList(v, label).filter(x => x && typeof x === 'object' && !Array.isArray(x))
 const shapeReport = (o, required) => {
   if (!o || typeof o !== 'object') return 'response was ' + (o === null ? 'null' : typeof o) + ', not an object'
   const missing = required.filter(k => !o[k])
@@ -328,6 +360,10 @@ const CRITIC_SCHEMA = {
   type: 'object', required: ['untraceableStatements', 'coverageGaps', 'verdict'],
   properties: {
     untraceableStatements: { type: 'array', items: { type: 'string' } },
+    // The strike policy needs the exact sentence, not a description of it. Matching on
+    // text between straight double quotes while the critic wrote single quotes is why
+    // `policy: strike` reported `struck: 0` on every run it ever ran.
+    untraceableVerbatim: { type: 'array', items: { type: 'string' } },
     coverageGaps: { type: 'array', items: { type: 'string' } },
     planFlaws: { type: 'array', items: { type: 'string' } },
     verdict: { enum: ['sound', 'minor-gaps', 'material-gaps'] },
@@ -826,18 +862,108 @@ if (confirmed.length === 0) {
 // marginals, which is part of what we are trying to measure, so pi is reported
 // beside it. Raw agreement is never reported alone — two independent coin-flip
 // panels at a 7% kill rate score 0.84 raw and kappa -0.02.
+// Taking the first N was wrong, and it took a live run to see it. `voted` arrives in
+// rank order, so the first N are the highest-tier, most-strongly-supported claims — the
+// ones most likely to survive. Measured 2026-09-06: a 30-claim run with a 17% kill rate
+// produced a subset of 12 that ALL survived in both passes, raw agreement 1.0, coefficient
+// undefined. The gate could not be adjudicated, and the sampler was the reason.
+const calibrationSample = (all, n) => {
+  if (n <= 0 || !all.length) return []
+  const surv = all.filter(c => c.survives), kill = all.filter(c => !c.survives)
+  let wantK = kill.length ? Math.min(kill.length, Math.max(1, Math.round(n * kill.length / all.length))) : 0
+  const wantS = Math.min(surv.length, n - wantK)
+  wantK = Math.min(kill.length, n - wantS)
+  const out = []
+  for (let i = 0; i < Math.max(wantS, wantK); i++) {
+    if (i < wantS) out.push(surv[i])
+    if (i < wantK) out.push(kill[i])
+  }
+  return out.slice(0, n)
+}
+
+// The pre-registered gate, with the two preconditions added by dated amendment on
+// 2026-09-06 — before the runs they govern produced any numbers. MIN_N because kappa=1.0
+// was returned on n=10 and read as "calibrated"; MIN_LENS_KAPPA because in that same run
+// the lenses disagreed on 70% of claims while the aggregate repeated 10 of 10, with
+// per-lens kappas of 1.00 / 0.78 / 0.35 — a 2-of-3 vote can launder unstable raters into
+// a stable-looking verdict. The amendment can only make the gate STRICTER; it cannot
+// promote a verdict, which is what stops it being a quiet renegotiation.
+const MIN_N = 30, MIN_LENS_KAPPA = 0.4
+const interpretGate = (kappa, n, perLens) => {
+  if (kappa === null || kappa === undefined) {
+    return ['undefined', 'Coefficient undefined or unreliable — the base rate was too skewed for chance correction to mean anything. Re-run on a question with a less lopsided kill rate.']
+  }
+  if (n !== undefined && n < MIN_N) {
+    return ['underpowered', 'PRECONDITION FAILED: n=' + n + ', below the pre-registered minimum of ' + MIN_N + '. One flipped claim moves raw agreement by ' + (1 / Math.max(n, 1)).toFixed(2) + ' here, and kappa by more again once chance correction divides by (1-pe) — comparable to the width of the bands themselves. Report the number, adjudicate nothing.']
+  }
+  if (kappa >= 0.6 && perLens) {
+    const weak = Object.keys(perLens).filter(k => perLens[k] === null || perLens[k] === undefined || perLens[k] < MIN_LENS_KAPPA).sort()
+    if (weak.length) {
+      return ['usable but noisy', 'CAPPED by the per-lens precondition: the aggregate reads ' + kappa + ', but ' + weak.join(', ') + ' ' + (weak.length === 1 ? 'is' : 'are') + ' below ' + MIN_LENS_KAPPA + ' or unmeasurable. This aggregate is evidence about the dominant lens rather than about the panel.']
+    }
+  }
+  if (kappa >= 0.6) return ['calibrated', 'PASS (necessary, not sufficient): the panel repeats itself. It does NOT say the panel is right.']
+  if (kappa >= 0.4) return ['usable but noisy', 'MIDDLE BAND: publish the number, then add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, and diversify the model rather than the prompt.']
+  return ['noise', 'FAIL: the central claim does not hold. Stop and redesign before any polish.']
+}
+
 let calibration = null
 if (T.calibrate > 0 && voted.length) {
   phase('Calibrate')
-  const subset = voted.slice(0, Math.min(T.calibrate, voted.length))
+  const subset = calibrationSample(voted, T.calibrate)
   log('CALIBRATION: re-running the panel on ' + subset.length + ' claims to measure reliability')
   const again = await runPanel(subset.map(c => ({ ...c, verdicts: undefined })))
   const byClaim = new Map(again.map(c => [c.claim, c]))
-  const a = [], b = []
+  const a = [], b = [], pairs = []
   for (const c of subset) {
     const d = byClaim.get(c.claim)
-    if (d) { a.push(!!c.survives); b.push(!!d.survives) }
+    if (d) { a.push(!!c.survives); b.push(!!d.survives); pairs.push([c, d]) }
   }
+  // Per-lens reliability. Without it the aggregate is the only number, and a 2-of-3 vote
+  // can make three unstable lenses look like one stable panel. If ONE lens carries the
+  // instability, replacing that lens is far cheaper than redesigning the panel — and
+  // there is no way to see that happening from the aggregate alone.
+  const lensVec = which => {
+    const out = {}
+    for (const pr of pairs) {
+      for (const v of asObjList(pr[which].verdicts, 'calibration.verdicts')) {
+        if (!v.lens) continue
+        ;(out[v.lens] = out[v.lens] || []).push(!!v.refuted)
+      }
+    }
+    return out
+  }
+  const lensA = lensVec(0), lensB = lensVec(1)
+  const perLens = {}
+  for (const name of Object.keys(lensA).filter(k => k in lensB).sort()) {
+    const x = lensA[name], y = lensB[name], m = Math.min(x.length, y.length)
+    if (!m) continue
+    const q = (f) => x.slice(0, m).filter((v, i) => f(v, y[i])).length
+    const Yy = q((u, w) => u && w), Nn = q((u, w) => !u && !w)
+    const Yn = q((u, w) => u && !w), Ny = q((u, w) => !u && w)
+    const po2 = (Yy + Nn) / m, pa2 = (Yy + Yn) / m, pb2 = (Yy + Ny) / m
+    const pe2 = pa2 * pb2 + (1 - pa2) * (1 - pb2)
+    const minor2 = Math.min(Yy + Yn, Ny + Nn, Yy + Ny, Yn + Nn)
+    perLens[name] = {
+      n: m,
+      cohenKappa: (pe2 >= 1 || minor2 < 2) ? null : Math.round(((po2 - pe2) / (1 - pe2)) * 10000) / 10000,
+      rawAgreement: Math.round(po2 * 10000) / 10000,
+      refuteRateRun1: Math.round((x.slice(0, m).filter(Boolean).length / m) * 10000) / 10000,
+      refuteRateRun2: Math.round((y.slice(0, m).filter(Boolean).length / m) * 10000) / 10000,
+    }
+  }
+  // How often the three lenses split at all, within a single run. If they agree on
+  // nearly everything the voting rule is close to a no-op.
+  let splitTotal = 0, splitN = 0
+  for (const c of voted) {
+    const vs = asObjList(c.verdicts, 'lensSplit').map(v => !!v.refuted)
+    if (vs.length < 2) continue
+    splitTotal++
+    if (vs.some(Boolean) && !vs.every(Boolean)) splitN++
+  }
+  const lensSplit = { claims: splitTotal, split: splitN,
+                      disagreementRate: splitTotal ? Math.round((splitN / splitTotal) * 10000) / 10000 : null,
+                      unanimityRate: splitTotal ? Math.round(((splitTotal - splitN) / splitTotal) * 10000) / 10000 : null }
   if (a.length) {
     const n = a.length
     const yy = a.filter((x, i) => x && b[i]).length
@@ -848,22 +974,41 @@ if (T.calibrate > 0 && voted.length) {
     const peC = pa * pb + (1 - pa) * (1 - pb)
     const m = (pa + pb) / 2, peS = m * m + (1 - m) * (1 - m)
     const r4 = x => Math.round(x * 10000) / 10000
+    // Undefined stays undefined, and NEAR-degenerate counts as undefined too. If every
+    // claim landed in one category, chance agreement is 1.0 and the correction divides by
+    // zero. But measured 2026-09-06: run 1 kept 10/10 and run 2 kept 8/10, pe was 0.9 —
+    // just under the perfect-degeneracy guard — and the formula produced a confident
+    // kappa of exactly 0.0, which the gate read as "the panel is noise". With no cell
+    // where both runs killed the same claim there is nothing for chance correction to
+    // work with; the coefficient is an artefact of the base rate.
+    const minority = Math.min(yy + yn, ny + nn, yy + ny, yn + nn)
+    const degenerate = minority < 2
+    const kappa = (peC >= 1 || degenerate) ? null : r4((po - peC) / (1 - peC))
+    const perLensK = {}
+    for (const [name, v] of Object.entries(perLens || {})) perLensK[name] = v.cohenKappa
+    const [gateVerdict, preRegisteredAction] = interpretGate(kappa, n, Object.keys(perLensK).length ? perLensK : null)
     calibration = {
       n, rawAgreement: r4(po),
-      // Undefined stays undefined: if every claim landed in one category, chance
-      // agreement is 1.0 and the correction divides by zero. Reporting 1.0 or 0.0
-      // would be a lie in opposite directions.
-      cohenKappa: peC >= 1 ? null : r4((po - peC) / (1 - peC)),
-      scottPi: peS >= 1 ? null : r4((po - peS) / (1 - peS)),
+      cohenKappa: kappa,
+      scottPi: (peS >= 1 || degenerate) ? null : r4((po - peS) / (1 - peS)),
+      expectedByChance: r4(peC),
+      degenerate: degenerate || undefined,
+      degenerateReason: degenerate
+        ? 'unreliable: the smallest marginal cell holds ' + minority + ' item(s) of ' + n + '. The coefficient is pinned near zero by the base rate whatever the panel did. Re-run on a question that produces a more balanced kill rate.'
+        : undefined,
       confusion: { survive_survive: yy, kill_kill: nn, survive_then_kill: yn, kill_then_survive: ny },
       surviveRateRun1: r4(pa), surviveRateRun2: r4(pb),
       verdictFlips: yn + ny,
+      perLens, lensSplit,
+      gateVerdict, preRegisteredAction,
       measures: 'reliability (does the panel repeat), NOT validity (is the panel right)',
-      thresholds: { noise: '< 0.4', noisy: '0.4-0.6', calibrated: '>= 0.6', note: 'pre-registered 2026-09-06' },
+      thresholds: { noise: '< 0.4', noisy: '0.4-0.6', calibrated: '>= 0.6',
+                    minimumN: MIN_N, minimumPerLensKappa: MIN_LENS_KAPPA,
+                    note: 'bands pre-registered 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter.' },
     }
     log('CALIBRATION: n=' + n + ' raw=' + calibration.rawAgreement +
         ' cohenKappa=' + calibration.cohenKappa + ' scottPi=' + calibration.scottPi +
-        ' flips=' + calibration.verdictFlips)
+        ' flips=' + calibration.verdictFlips + ' -> ' + gateVerdict)
   }
 }
 
@@ -1040,6 +1185,7 @@ const critiques = (await parallel(Array.from({ length: T.critics }, (_, k) => ()
     '## Your checks\n' +
     '1. **Traceability.** Go sentence by sentence through the summary and each finding. Does EVERY factual assertion trace to a numbered claim above? ' +
     'List any assertion that does not — inserted facts, inflated certainty, a hedge quietly dropped, a "therefore" the claims do not license. This is the highest-yield check; do it first and do it literally.\n' +
+    '   For each one, ALSO put the offending sentence into `untraceableVerbatim` copied CHARACTER FOR CHARACTER from the summary above — no quotation marks added, no ellipsis, no rewording, no summarising. It is used to delete that sentence by exact string match, so a paraphrase silently does nothing. Same order and same length as `untraceableStatements`.\n' +
     '2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was never searched — a primary paper, official documentation, a dataset, a dissenting expert, a non-English or non-Western source, a more recent measurement?\n' +
     '3. **Plan flaws.** Did the SCOPING itself steer the research wrong — a leading sub-question, a premise accepted instead of tested, a perspective set that shares one blind spot, a framing that made a whole class of answers unreachable?\n\n' +
     'Verdict: **sound** (nothing material) · **minor-gaps** (real but does not change the answer) · **material-gaps** (a user acting on this report could be misled).\n' +
@@ -1054,9 +1200,34 @@ const worst = ['sound', 'minor-gaps', 'material-gaps']
 const critVerdict = critiques.length
   ? critiques.map(c => c.verdict).sort((a, b) => worst.indexOf(b) - worst.indexOf(a))[0]
   : 'unknown'
-const untraceable = [...new Set(critiques.flatMap(c => c.untraceableStatements || []))]
-const gaps = [...new Set(critiques.flatMap(c => c.coverageGaps || []))]
-const planFlaws = [...new Set(critiques.flatMap(c => c.planFlaws || []))]
+const untraceable = [...new Set(critiques.flatMap(c => asStrList(c.untraceableStatements, 'critic.untraceableStatements')))]
+const untraceableVerbatim = [...new Set(critiques.flatMap(c => asStrList(c.untraceableVerbatim, 'critic.untraceableVerbatim')))]
+const gaps = [...new Set(critiques.flatMap(c => asStrList(c.coverageGaps, 'critic.coverageGaps')))]
+const planFlaws = [...new Set(critiques.flatMap(c => asStrList(c.planFlaws, 'critic.planFlaws')))]
+// Strike only sentences we can actually LOCATE. Prefer the verbatim field; fall back to
+// pulling a quoted fragment out of the prose description, trying the quote characters
+// the critic actually writes — the Python build matched only on " and therefore reported
+// `struck: 0` on every run it ever ran.
+if (UNTRACEABLE_POLICY === 'strike' && untraceable.length) {
+  let text = report.summary || ''
+  const cands = [...untraceableVerbatim]
+  for (const u of untraceable) {
+    for (const q of ['"', "'", '\u201c', '\u2018']) {
+      const parts = u.split(q)
+      if (parts.length > 2) cands.push(parts[1])
+    }
+  }
+  for (const raw of cands) {
+    const frag = (raw || '').trim()
+    if (frag.length > 25 && text.includes(frag)) { text = text.split(frag).join(''); struck.push(frag) }
+  }
+  if (struck.length) {
+    report.summary = text.replace(/\s{2,}/g, ' ').trim()
+    log('STRUCK ' + struck.length + ' untraceable statement(s) from the summary (policy=strike)')
+  } else {
+    log('STRIKE MATCHED NOTHING: ' + untraceable.length + ' untraceable statement(s) flagged, 0 removable — the critic\'s text does not appear verbatim in the summary. Reporting them instead of deleting on a fuzzy match.')
+  }
+}
 log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untraceable statements, ' + gaps.length + ' coverage gaps, ' + planFlaws.length + ' plan flaws')
 
 return {
@@ -1097,6 +1268,7 @@ return {
                      // never been measured, and deleting on an unmeasured judgement is
                      // the same unearned confidence this tool exists to catch.
                      policy: UNTRACEABLE_POLICY, struckFromSummary: struck,
+                     untraceableVerbatim,
                      untraceableStatements: untraceable, coverageGaps: gaps, planFlaws, rationales: critiques.map(c => webText(c.rationale || '')) },
   refuted: killed.map(toRefuted),
   unverified: unverified.map(toUnverified),
