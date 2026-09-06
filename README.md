@@ -207,15 +207,27 @@ rather than take the bullet on trust:
 
 ## The measured numbers, and what they do not prove
 
+> **Correction, 2026-09-06.** This table previously read `37%, 50%, 53%, 54%, 60%, 71%` for the kill rate and `86.7%, 88.1%, 90%` for citation accuracy. **50%, 53%, 60% and 90% appear in no run, under any definition of the denominator.** The published range also dropped the four lowest kill rates — 7%, 17%, 20%, 27% — which are the unflattering ones, the runs where the panel barely killed anything. Corrected below against every recorded run, and `tools/compare_regimes.py` now regenerates this table from `runs/` so it cannot drift again. A tool that exists to catch unsupported numbers had unsupported numbers in its own README; that is the least defensible place for them.
+
 | Measurement | Value | Denominator |
 |---|---|---|
-| Claims killed by the panel | 37%, 50%, 53%, 54%, 60%, 71% | 6 runs, 10–42 claims each, Sept 2026 |
-| Blind citation accuracy | 86.7%, 88.1%, 90% | full verification pool: 30, 42, 36 claims |
-| Claims demoted *after* passing the panel | measured, non-zero | same runs |
+| Claims killed by the panel | 7%, 17%, 20%, 27%, 37%, 54%, 71%, 71% | 8 runs, 11–42 claims each, Sept 2026 |
+| Blind citation accuracy | 82.8%, 85.2%, 85.7%, 86.7%, 88.1%, 96.4% | full verification pool, 11–42 claims |
+| Claims demoted *after* passing the panel | **1, across all 8 runs** | same runs |
 
-Earlier builds audited only the claims that *survived* the panel and unsurprisingly scored 100%. That was a rubber stamp — the weak claims were already dead before the auditor ran. The numbers above are from the current build, which audits the **whole** verification pool. Do not quote the old 100%s at me; they are in the git history and they were meaningless.
+Regenerate any time:
 
-Six runs is a small sample and the 37–71% spread is wide. These say the filter removes a lot; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done.
+```bash
+python3 tools/compare_regimes.py
+```
+
+**The kill rate spans 7% to 71% on the same kind of question.** That is a tenfold spread, it is the strongest argument against this tool, and hiding the low end would have made the panel look far more like a calibrated filter than the data supports. Two of the eight are the *same question* at 7% and 37%.
+
+**The demotion path has fired once, ever.** `demotedBySurvivingPanel` is the whole point of the blind citation audit — a claim the panel passed that its own source turns out not to support — and across eight recorded runs it has removed exactly one claim. Either the panel rarely lets a badly-cited claim through, or the audit rarely catches one. The injected-defect probes below say it is partly the second: three of five fabrications came back `partial`, and `partial` does not demote.
+
+Earlier builds audited only the claims that *survived* the panel and unsurprisingly scored 100% — twice, both still in `runs/`. That was a rubber stamp: the weak claims were already dead before the auditor ran. The percentages above exclude those two and come from the current build, which audits the **whole** verification pool.
+
+Eight runs is a small sample and the 7–71% spread is enormous. These say the filter removes a variable amount; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done. Every number above was also measured on a pipeline running **scholarly-only search** — see `runs/README.md`; a full re-measurement under the current setup is in progress.
 
 ### Injected defects, which are the only ground truth here
 
