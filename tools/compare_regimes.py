@@ -71,10 +71,13 @@ def spread(rows, key):
 
 
 def main():
-    paths = sorted(glob.glob(os.path.join(ROOT, "runs", "*.json")))
-    new = [row(p) for p in paths if os.path.basename(p).startswith("v2-")]
-    old = [row(p) for p in paths
-           if not os.path.basename(p).startswith(("v2-", "probes-"))]
+    # A framing contract is not a run. Persisting it beside the report made
+    # runs/*.json match it, and this tool listed two empty rows as if they were runs.
+    paths = sorted(p for p in glob.glob(os.path.join(ROOT, "runs", "*.json"))
+                   if not p.endswith(".contract.json")
+                   and not os.path.basename(p).startswith("probes-"))
+    new = [row(p) for p in paths if os.path.basename(p).startswith(("v2-", "v3-"))]
+    old = [row(p) for p in paths if not os.path.basename(p).startswith(("v2-", "v3-"))]
     table(old, "SUPERSEDED: scholarly-only search, biased calibration sample, strike dead")
     table(new, "CURRENT: SearXNG on, all fixes in")
 

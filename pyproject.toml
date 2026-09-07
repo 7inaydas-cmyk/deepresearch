@@ -18,7 +18,7 @@ classifiers = [
 dependencies = []          # standard library only
 
 [project.optional-dependencies]
-better-extraction = ["trafilatura>=1.6"]   # optional: cleaner page text
+better-extraction = ["trafilatura>=1.6", "pypdf>=4"]   # optional: cleaner page text
 
 [project.scripts]
 deepresearch = "deepresearch.engine:main"

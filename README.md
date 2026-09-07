@@ -127,7 +127,7 @@ Three backends down, and it still says so *out loud* rather than reporting an em
 | **Framing** | The contract: decision at stake, assumptions, hypotheses + kill criteria. Written before any search. |
 | **Plan** | Sub-question checklist and N *perspectives* — different kinds of investigator, including a **mandatory steelman** and a **mandatory constructor**, so the panel does not share one blind spot. |
 | **Search** | Keyless, multi-backend, with per-backend health reported. |
-| **Fetch** | URL-dedup, then falsifiable claims, each with a verbatim quote. |
+| **Fetch** | URL-dedup, then falsifiable claims, each with a verbatim quote. **PDFs are read as text** (stdlib, kerning-aware); an unreadable one is reported unreachable rather than passed on as binary. |
 | **Deepen** | Gap analysis against the checklist, then follow-up waves aimed at what is missing. |
 | **Verify** | Three **different** adversarial lenses — quote-support, counter-evidence, provenance. Two refutations kill a claim. |
 | **Rescue** | Any sub-question left with zero survivors gets a targeted primary-source re-search. |
@@ -196,6 +196,7 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 - **It cannot make sources exist.** On a thin topic it returns a mostly-empty report and says so. That is correct behaviour, not a malfunction.
 - **The panel is harsh** and occasionally kills a true claim whose near-duplicate survives. Read `refuted` before concluding something is unsupported.
 - **Model cost is real.** Search is free; a standard run is a few hundred thousand tokens.
+- **Cloudflare-protected publishers stay closed.** A stdlib fetcher cannot pass a JS challenge, so sites like PNAS answer 403. Where the URL carries a DOI the run falls back to the Crossref **abstract**, labelled `via: crossref-fallback, abstractOnly: true` so the audit knows it did not read the paper. A paid scraper with a headless browser and residential proxies genuinely wins here; nothing else in this list is closable by spending money.
 - **A blocked host degrades quietly.** If DuckDuckGo and Mojeek challenge your IP the run becomes scholarly-only and still reads as complete. Check `stats.searchHealth`; fix it with [`contrib/searxng`](contrib/searxng).
 
 Each of these is tracked as an open issue with its evidence, so you can read the numbers

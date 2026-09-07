@@ -47,6 +47,7 @@ import threading
 import urllib.error
 import urllib.parse
 import urllib.request
+import zlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 __all__ = ["search", "fetch", "health", "reset_health", "BACKENDS"]
@@ -97,16 +98,113 @@ def _note(backend: str, status: str, n: int) -> None:
         h["ok" if status == "ok" else "fail"] += 1
 
 
-def _get(url: str, headers: dict | None = None, timeout: int = TIMEOUT) -> str:
+def _get_bytes(url: str, headers: dict | None = None, timeout: int = TIMEOUT):
+    """Raw bytes plus the content-type. Text callers go through _get.
+
+    Bytes matter because the latin-1 fallback below will happily decode ANYTHING,
+    including a PDF, into a mojibake string that looks like page text to every caller
+    downstream. Measured 2026-09-07: 7.8% of all sources across every recorded run were
+    PDFs, and each one reached the extractor and the citation auditor as binary.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
     with urllib.request.urlopen(req, timeout=timeout) as r:
-        raw = r.read()
+        return r.read(), (r.headers.get("content-type") or "")
+
+
+def _decode(raw: bytes) -> str:
     for enc in ("utf-8", "latin-1"):
         try:
             return raw.decode(enc)
         except UnicodeDecodeError:
             continue
     return raw.decode("utf-8", "replace")
+
+
+def _get(url: str, headers: dict | None = None, timeout: int = TIMEOUT) -> str:
+    raw, _ = _get_bytes(url, headers, timeout)
+    return _decode(raw)
+
+
+_PDF_ESC = {b"n": b"\n", b"r": b"\n", b"t": b" ", b"b": b"", b"f": b""}
+
+
+def _pdf_unescape(s: bytes) -> bytes:
+    out, i = bytearray(), 0
+    while i < len(s):
+        c = s[i:i + 1]
+        if c == b"\\" and i + 1 < len(s):
+            nxt = s[i + 1:i + 2]
+            if nxt in _PDF_ESC:
+                out += _PDF_ESC[nxt]; i += 2; continue
+            if nxt.isdigit():
+                j = i + 1
+                while j < len(s) and j < i + 4 and s[j:j + 1].isdigit():
+                    j += 1
+                try:
+                    out.append(int(s[i + 1:j], 8) & 0xFF)
+                except ValueError:
+                    pass
+                i = j; continue
+            out += nxt; i += 2; continue
+        out += c; i += 1
+    return bytes(out)
+
+
+def pdf_text(raw: bytes, cap: int = 200000) -> str:
+    """Text from a PDF, stdlib only. `pypdf` is used instead when it is installed.
+
+    Two things make this work without a dependency. Content streams are almost always
+    FlateDecode, and zlib is stdlib. And PDFs position words by KERNING rather than by
+    spaces: a TJ array is glyph runs separated by numbers in thousandths of an em, so
+    "(Employment)-250(Effects)" is two words and naive concatenation yields
+    "EmploymentEffects". Anything below -100 is treated as a word break.
+
+    Research is PDF-heavy - arXiv, working papers, government reports - so a research
+    tool that cannot read one is not reading the primary sources it claims to prefer.
+    """
+    try:
+        from pypdf import PdfReader          # optional extra, better on odd encodings
+        import io
+        pages = PdfReader(io.BytesIO(raw)).pages
+        txt = "\n".join((pg.extract_text() or "") for pg in pages)
+        if len([w for w in txt.split() if len(w) > 3]) > 40:
+            return re.sub(r"\n{3,}", "\n\n", txt)[:cap].strip()
+    except Exception:
+        pass
+    out = []
+    for m in re.finditer(rb"stream\r?\n(.*?)endstream", raw, re.S):
+        chunk = m.group(1)
+        try:
+            chunk = zlib.decompress(chunk)
+        except Exception:
+            try:
+                chunk = zlib.decompressobj().decompress(chunk)   # truncated stream
+            except Exception:
+                continue
+        if b"TJ" not in chunk and b"Tj" not in chunk:
+            continue
+        for op in re.finditer(rb"\[((?:[^\[\]\\]|\\.)*)\]\s*TJ|\(((?:[^\\()]|\\.)*)\)\s*Tj|(T\*|Td|TD)", chunk):
+            if op.group(3):
+                out.append("\n"); continue
+            if op.group(2) is not None:
+                out.append(_pdf_unescape(op.group(2)).decode("latin-1", "ignore")); continue
+            parts = []
+            for tok in re.finditer(rb"\(((?:[^\\()]|\\.)*)\)|(-?\d+(?:\.\d+)?)", op.group(1)):
+                if tok.group(1) is not None:
+                    parts.append(_pdf_unescape(tok.group(1)).decode("latin-1", "ignore"))
+                else:
+                    try:
+                        kern = float(tok.group(2))
+                    except ValueError:
+                        kern = 0.0
+                    if kern < -100:
+                        parts.append(" ")
+            out.append("".join(parts))
+        out.append("\n")
+        if sum(len(x) for x in out) > cap:
+            break
+    txt = re.sub(r"[ \t]{2,}", " ", "".join(out))
+    return re.sub(r"\n{3,}", "\n\n", txt).strip()
 
 
 def _clean(s: str) -> str:
@@ -426,6 +524,25 @@ def _readable(html_text: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", body))).strip()
 
 
+_DOI_IN_URL = re.compile(r"(10\.\d{4,9}/[^\s?#]+)")
+
+
+def doi_in_url(url: str):
+    """A DOI anywhere in the URL, not just a doi.org resolver link.
+
+    Publishers put the DOI in their own paths - pnas.org/doi/10.1073/...,
+    dl.acm.org/doi/pdf/10.1145/... - and many of them answer a crawler with 403 behind
+    Cloudflare. That is a real gap against a paid scraper with a headless browser and
+    residential proxies, and it is not closable with the stdlib. What IS closable: the
+    DOI is right there in the URL, so a blocked page can still yield its abstract
+    through Crossref instead of yielding nothing.
+    """
+    m = _DOI_IN_URL.search(urllib.parse.unquote(url or ""))
+    if not m:
+        return None
+    return m.group(1).rstrip(").,;").replace("/pdf", "")
+
+
 def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
     """Return ``(text, meta)`` for a URL.
 
@@ -438,6 +555,31 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
         if text:
             return text[:cap], {"via": "crossref-api", **(meta or {})}
     try:
-        return _readable(_get(url, timeout=30))[:cap], {"via": "http"}
+        raw, ctype = _get_bytes(url, timeout=30)
+        if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
+            text = pdf_text(raw, cap * 8)
+            words = len([w for w in text.split() if len(w) > 3 and any(c.isalpha() for c in w)])
+            if words < 40:
+                # Refuse rather than hand binary downstream. An unreadable PDF is
+                # UNREACHABLE, which the citation auditor already understands; passing
+                # the bytes on made it look like a page that simply disagreed.
+                return "", {"via": "pdf-unreadable",
+                            "error": "PDF text extraction yielded %d words; refusing to pass "
+                                     "binary as page text" % words}
+            return text[:cap], {"via": "pdf", "pdfWords": words}
+        return _readable(_decode(raw))[:cap], {"via": "http"}
     except Exception as e:
+        # Blocked or broken. If the URL carries a DOI, the abstract is still reachable
+        # through Crossref - an abstract is not the full text, and `via` says so, so the
+        # citation auditor and the tier rules can both tell the difference.
+        doi = doi_in_url(url)
+        if doi:
+            try:
+                text, meta = crossref_record(doi)
+                if text and text.strip():
+                    return text[:cap], {"via": "crossref-fallback", "abstractOnly": True,
+                                        "blockedBy": "%s: %s" % (type(e).__name__, e),
+                                        **(meta or {})}
+            except Exception:
+                pass
         return "", {"via": "failed", "error": "%s: %s" % (type(e).__name__, e)}

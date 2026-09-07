@@ -631,6 +631,49 @@ ok("calibration=calibration" in _fallback and "droppedSample=dropped_sample" in 
 ok("synthesisFailed" in _fallback,
    "and the report says it is incomplete rather than empty, naming what DID run")
 
+print("\n-- PDFs are read as text, never passed on as binary --")
+import zlib as _zlib
+from deepresearch import search as _S
+def _mkpdf(runs):
+    """A minimal one-page PDF whose content stream is FlateDecode'd, like a real one."""
+    body = b"BT /F1 12 Tf " + b" ".join(runs) + b" ET"
+    comp = _zlib.compress(body)
+    # Built by concatenation, not %-formatting: the literal "%PDF" header contains "%P",
+    # which bytes-% reads as a format spec and raises.
+    return (b"%PDF-1.5\n1 0 obj\n<< /Length " + str(len(comp)).encode()
+            + b" /Filter /FlateDecode >>\nstream\n" + comp
+            + b"\nendstream\nendobj\ntrailer\n<< >>\n%EOF")
+_kerned = _mkpdf([b"[(Employment)-250(Effects)-250(of)-250(Minimum)-250(Wages)]TJ",
+                  b"[(in)-250(New)-250(Jersey)-250(and)-250(Pennsylvania)]TJ"])
+_txt = _S.pdf_text(_kerned)
+ok("Employment Effects of Minimum Wages" in _txt,
+   "kerning is read as word breaks: a TJ array separates runs by thousandths of an em, and "
+   "naive concatenation gave 'EmploymentEffectsofMinimumWages'")
+ok("New Jersey and Pennsylvania" in _txt, "across multiple text operators too")
+ok(_S.pdf_text(_mkpdf([b"(hello) Tj"])).strip() == "hello", "a plain Tj string is read")
+ok(_S.pdf_text(b"not a pdf at all") == "", "a non-PDF yields nothing rather than raising")
+_esc = _S.pdf_text(_mkpdf([rb"[(a\(b\)c)]TJ"]))
+ok("a(b)c" in _esc, "escaped parentheses survive")
+_src = open(_S.__file__, encoding="utf-8").read()
+ok('raw[:5] == b"%PDF-"' in _src and '"via": "pdf-unreadable"' in _src,
+   "fetch() detects a PDF by its magic bytes and REFUSES when extraction is too thin - "
+   "an unreadable PDF is unreachable, which the auditor understands; binary looked like "
+   "a page that merely disagreed")
+ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
+   "fetch reads BYTES first: the old latin-1 fallback decoded a PDF into mojibake that "
+   "every caller downstream treated as page text")
+
+print("\n-- a blocked publisher still yields its abstract --")
+ok(_S.doi_in_url("https://www.pnas.org/doi/10.1073/pnas.2200300119") == "10.1073/pnas.2200300119",
+   "a DOI is found in a publisher's own path, not just in a doi.org link")
+ok(_S.doi_in_url("https://dl.acm.org/doi/pdf/10.1145/3757892.3757904") == "10.1145/3757892.3757904",
+   "and the /pdf segment does not corrupt it")
+ok(_S.doi_in_url("https://www.bloomberg.com/news/articles/2024-01-01") is None,
+   "a URL with no DOI gets no fallback - the run still records a real failure")
+ok('"via": "crossref-fallback"' in _src and '"abstractOnly": True' in _src,
+   "the fallback labels itself an abstract, so the auditor is not judging a claim against "
+   "a stub while believing it read the paper")
+
 print("\n-- the framing-contract intake: supplied fields win, the model drafts the rest --")
 import json as _json, os as _os, tempfile as _tmp
 _sup = {"decisionAtStake": "whether to buy standing desks for 40 people",
