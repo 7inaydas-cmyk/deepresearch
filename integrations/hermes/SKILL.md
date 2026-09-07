@@ -105,8 +105,13 @@ Run the selftest first if anything looks broken - it checks the credential, keyl
 about 30 seconds:
 
 ```bash
-cd /opt/data/deepresearch-repo && python3 -m deepresearch --selftest
+cd /opt/data/deepresearch-repo && python3 -m deepresearch --selftest; echo "exit: $?"
 ```
+
+**Never pipe this into `tail` or anything else without `set -o pipefail` first** - a pipe
+reports the LAST command's exit code, not the selftest's. Measured live: piped to `tail`,
+the handle read exit 0 while the body plainly said `DEGRADED`. If you must capture output,
+`... --selftest 2>&1 | tee /tmp/st.log; echo "exit: ${PIPESTATUS[0]}"` keeps the real code.
 
 To update the engine: `cd /opt/data/deepresearch-repo && git pull`.
 

@@ -163,7 +163,16 @@ instruments the numbers below were produced with.
 | `--sample-dropped N` | `DR_SAMPLE_DROPPED` | Verifies N claims the budget discarded and reports how often they would have survived. Turns "most of the evidence is never checked" from a worry into a number. |
 | — | `DR_UNTRACEABLE=strike` | Removes untraceable sentences from the summary instead of flagging them. Default is `flag`, because the critic's precision is unmeasured and deleting on an unmeasured judgement is the unearned confidence this tool exists to catch. |
 | `--contract path.json` | — | A framing contract you already ratified — any subset of `decisionAtStake`, `keyQuestion`, `assumptions`, `whatWouldChangeTheAnswer`, `hypotheses`. **Supplied fields are never re-derived**; the model drafts only what is missing. A malformed file exits `4` before any model call. Every run writes the contract it used to `<out-stem>.contract.json`, so a re-run can pass it straight back and hold framing constant. |
-| `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded** — everything works but no general-web backend returns anything, so the run would be scholarly-only. |
+| `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded** — everything works but no general-web backend returns anything after 3 probes with backoff, so the run would be scholarly-only. |
+
+**A shell pipe swallows the exit code.** `python3 -m deepresearch --selftest \| tail` reports the exit status of `tail`, not of the selftest — measured live: it printed `0` while the selftest body said `DEGRADED`. Either don't pipe it, or `set -o pipefail` first so the real code survives:
+
+```bash
+set -o pipefail
+python3 -m deepresearch --selftest | tail -20; echo "exit: $?"
+```
+
+Any CI or wrapper piping `--selftest` without `pipefail` gets a false green in exactly the degraded state this check exists to catch.
 
 ```bash
 python3 -m deepresearch.probes --report runs/your-run.json --out runs/probes.json
@@ -198,6 +207,7 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 - **Model cost is real.** Search is free; a standard run is a few hundred thousand tokens.
 - **Cloudflare-protected publishers stay closed.** A stdlib fetcher cannot pass a JS challenge, so sites like PNAS answer 403. Where the URL carries a DOI the run falls back to the Crossref **abstract**, labelled `via: crossref-fallback, abstractOnly: true` so the audit knows it did not read the paper. A paid scraper with a headless browser and residential proxies genuinely wins here; nothing else in this list is closable by spending money.
 - **A blocked host degrades quietly.** If DuckDuckGo and Mojeek challenge your IP the run becomes scholarly-only and still reads as complete. Check `stats.searchHealth`; fix it with [`contrib/searxng`](contrib/searxng).
+- **Retrieval scale loses to paid tools, on purpose.** A DeepResearch-Bench-style comparison put effective citations at ~21 median here against Gemini 2.5 Pro DR's ~111 — Google's index versus a rate-limited keyless chain, not a tuning gap. The fix (a keyed general-web backend) is a deliberate no: `$0` marginal cost and no paid search API is the whole differentiator against every tool in that comparison, not a corner cut for now.
 
 Each of these is tracked as an open issue with its evidence, so you can read the numbers
 rather than take the bullet on trust:

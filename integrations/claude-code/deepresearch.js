@@ -1187,14 +1187,25 @@ if (T.factAudit) {
   const nUns = factRows.filter(f => f.support === 'unsupported').length
   const nUnr = factRows.filter(f => f.support === 'unreachable').length
   const judged = nSup + nPar + nUns
+  // Commercial deep-research tools measure citation accuracy only over what they
+  // publish (panel survivors). We measure the whole verification pool, which is
+  // harsher. Report both so a reader is not comparing apples to a stricter orange.
+  const survRows = factRows.filter(f => f.survivedPanel)
+  const sSup = survRows.filter(f => f.support === 'supported').length
+  const sPar = survRows.filter(f => f.support === 'partial').length
+  const sUns = survRows.filter(f => f.support === 'unsupported').length
+  const sJudged = sSup + sPar + sUns
   factMetrics = {
     citationAccuracy: judged ? Math.round((nSup / judged) * 1000) / 10 : null,
+    citationAccuracySurvivorsOnly: sJudged ? Math.round((sSup / sJudged) * 1000) / 10 : null,
+    survivorsOnlyNote: 'measured the way commercial deep-research tools report citation accuracy — only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.',
     effectiveCitations: nSup,
     supported: nSup, partial: nPar, unsupported: nUns, unreachable: nUnr,
     note: 'Citation Accuracy = supported / (supported+partial+unsupported), computed by blind re-fetch. Unreachable pages excluded from the denominator.',
   }
   log('Citation audit (full pool of ' + factRows.length + '): ' + nSup + ' supported, ' + nPar + ' partial, ' + nUns + ' UNSUPPORTED, ' + nUnr + ' unreachable' +
-      (judged ? ' → accuracy ' + factMetrics.citationAccuracy + '%' : ''))
+      (judged ? ' → accuracy ' + factMetrics.citationAccuracy + '%' : '') +
+      (sJudged ? ' (survivors-only, market-comparable: ' + factMetrics.citationAccuracySurvivorsOnly + '%)' : ''))
 
   // The panel judges whether the ARGUMENT holds. The audit judges whether the
   // cited PAGE actually says it. A claim needs both. A survivor whose citation

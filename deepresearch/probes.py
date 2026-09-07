@@ -108,15 +108,27 @@ def score_audit_probes(results):
         b = by_kind.setdefault(k, {"n": 0, "caught": 0})
         b["n"] += 1
         b["caught"] += 1 if r.get("support") in ("unsupported", "partial") else 0
+    # catchRateStrict is the headline now, not catchRate. `partial` counts as a "catch" in
+    # catchRate/caughtAny, and that is grade inflation: an inflated-number probe (a real
+    # figure multiplied by ten) scored `partial` in the live run this was built to check,
+    # which means a fabricated statistic would have been PUBLISHED while this metric
+    # called it caught. Only `unsupported` actually stops a claim - see engine.py's
+    # citationPartials/partialCitationsAreKept, which exist because of this exact gap.
     return {
         "n": n,
         "caughtStrict": strict, "caughtAny": caught,
+        "catchRateStrict": round(strict / n, 3),
         "catchRate": round(caught / n, 3),
+        "catchRateNote": ("catchRateStrict is the honest number: only `unsupported` demotes "
+                          "a claim, so a probe scored `partial` was NOT caught in any sense "
+                          "that changes what gets published. catchRate (partial counts as a "
+                          "catch) is kept only as the lenient secondary."),
         "falseNegatives": missed,
         "byMutation": by_kind,
-        "reading": ("the auditor catches defects of this kind" if caught / n >= 0.8 else
-                    "the auditor MISSES defects it should catch; the accuracy it reports on "
-                    "real runs is measuring agreement with the extractor, not citation support"),
+        "reading": ("the auditor catches defects of this kind" if strict / n >= 0.8 else
+                    "the auditor MISSES defects it should catch: catchRateStrict is below 0.8, "
+                    "so the accuracy it reports on real runs is measuring agreement with the "
+                    "extractor, not citation support that actually blocks publication"),
         "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
     }
 
@@ -458,7 +470,8 @@ def main():
     if a.only not in ("critic", "framing"):
         E.log("Injecting %d citation-audit probes (#11)..." % a.audit_n)
         res["auditProbes"] = run_audit_probes(rep, a.audit_n)
-        E.log("  catch rate: %s" % res["auditProbes"].get("catchRate"))
+        E.log("  catch rate (strict): %s   (lenient, counts partial too: %s)"
+              % (res["auditProbes"].get("catchRateStrict"), res["auditProbes"].get("catchRate")))
     if a.only == "framing" or a.only is None:
         E.log("Re-running the critic with the real provenance and with it faked to all-drafted...")
         res["framingProbes"] = run_framing_probes(rep)

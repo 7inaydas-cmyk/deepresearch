@@ -715,6 +715,41 @@ ok('"via": "crossref-fallback"' in _src and '"abstractOnly": True' in _src,
    "the fallback labels itself an abstract, so the auditor is not judging a claim against "
    "a stub while believing it read the paper")
 
+print("\n-- survivor-only citation accuracy travels alongside the pool number --")
+ok('"citationAccuracySurvivorsOnly"' in _engine_txt and '"survivorsOnlyNote"' in _engine_txt,
+   "the report now carries the market-comparable number (panel survivors only) "
+   "beside the harsher one this project leads with (the full verification pool, "
+   "killed claims included) - so a stricter self-measurement never accidentally "
+   "under-sells a real comparison")
+
+print("\n-- catchRateStrict: partial no longer scores as a caught defect --")
+_probe_results = [
+    {"probe": "negated", "claim": "x", "support": "unsupported"},
+    {"probe": "inflated-number", "claim": "x", "support": "partial"},
+    {"probe": "fabricated-specificity", "claim": "x", "support": "partial"},
+    {"probe": "scope-inflation", "claim": "x", "support": "partial"},
+    {"probe": "unsupported-causation", "claim": "x", "support": "supported"},
+]
+_scored = P.score_audit_probes(_probe_results)
+ok(_scored["catchRateStrict"] == 0.2,
+   "1 of 5 unsupported -> catchRateStrict=0.2, not the lenient 0.8 that counted 3 "
+   "partials as caught - measured live: an inflated-number probe (a real figure x10) "
+   "scored partial, which the OLD headline metric called a catch")
+ok(_scored["catchRate"] == 0.8, "the lenient number still exists as a labelled secondary")
+ok("catchRateNote" in _scored and "NOT caught" in _scored["catchRateNote"],
+   "and the report says plainly which one is honest")
+ok("below 0.8" in _scored["reading"], "the reading text now keys off the strict rate")
+
+print("\n-- selftest retries a general-web backend before declaring it dead --")
+_sel_src = _insp.getsource(dr.selftest)
+ok("all_backends=True" in _sel_src and "for attempt in range(2)" in _sel_src,
+   "measured live: selftest declared ddg-html dead off ONE probe, and the real run 20 "
+   "minutes later pulled 40 results from it across 72 attempts - one rate-limit "
+   "challenge is not the same as a dead backend")
+ok("def web_search(query, n=6, all_backends=False)" in _engine_txt,
+   "web_search exposes all_backends so a retry is not skipped by an earlier backend "
+   "already satisfying n")
+
 print("\n-- every report exit carries the instruments, not just the happy path --")
 # Architecture review, 2026-09-07: I had reported this fixed. It was fixed on ONE of
 # four exits. Verify by counting every `return dict(base` site in the source rather

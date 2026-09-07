@@ -136,8 +136,8 @@ def tier_of(url, title="", text=""):
 
 
 # --- Search and fetch (delegated to the keyless `search` module) -------------
-def web_search(query, n=6):
-    return _search.search(query, n=n)
+def web_search(query, n=6, all_backends=False):
+    return _search.search(query, n=n, all_backends=all_backends)
 
 
 def search_health():
@@ -1702,14 +1702,36 @@ def deepresearch(question, depth="standard", contract=None):
         nU = sum(1 for f in fact_rows if f["support"] == "unsupported")
         nX = sum(1 for f in fact_rows if f["support"] == "unreachable")
         judged = nS + nP + nU
+        # Commercial deep-research tools (Perplexity, Gemini, OpenAI's FACT-style evals)
+        # measure citation accuracy ONLY over what they actually publish - i.e. panel
+        # survivors. We measure the whole verification pool, killed claims included,
+        # which is a harsher denominator: a claim the panel already refuted, later
+        # judged unsupported by the audit too, drags the number down twice for one
+        # defect. Report BOTH so a reader is not comparing apples to a stricter orange -
+        # and does not accidentally under-sell a number that would be higher on the
+        # market's own methodology.
+        surv_rows = [f for f in fact_rows if f.get("survivedPanel")]
+        sS = sum(1 for f in surv_rows if f["support"] == "supported")
+        sP = sum(1 for f in surv_rows if f["support"] == "partial")
+        sU = sum(1 for f in surv_rows if f["support"] == "unsupported")
+        sJudged = sS + sP + sU
         fact_metrics = {"citationAccuracy": round(nS / judged * 100, 1) if judged else None,
+                        "citationAccuracySurvivorsOnly": round(sS / sJudged * 100, 1) if sJudged else None,
+                        "survivorsOnlyNote": ("measured the way commercial deep-research tools report "
+                                              "citation accuracy - only claims that survived the "
+                                              "adversarial panel, i.e. what would actually be "
+                                              "published. citationAccuracy (no suffix) is the harsher "
+                                              "number: the full verification pool, killed claims "
+                                              "included, and is the one this project leads with."),
                         "effectiveCitations": nS, "supported": nS, "partial": nP,
                         "unsupported": nU, "unreachable": nX,
                         "scope": "full verification pool (%d claims), not survivors only" % len(fact_rows),
                         "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. "
                                 "Unreachable excluded from the denominator."}
-        log("Citation audit (full pool of %d): %d supported, %d partial, %d UNSUPPORTED, %d unreachable -> %s%%"
-            % (len(fact_rows), nS, nP, nU, nX, fact_metrics["citationAccuracy"]))
+        log("Citation audit (full pool of %d): %d supported, %d partial, %d UNSUPPORTED, %d unreachable -> %s%% "
+            "(survivors-only, market-comparable: %s%%)"
+            % (len(fact_rows), nS, nP, nU, nX, fact_metrics["citationAccuracy"],
+               fact_metrics["citationAccuracySurvivorsOnly"]))
         # The panel judges whether the ARGUMENT holds; the audit judges whether the
         # cited PAGE actually says it. A claim needs both.
         # Key on (claim, sourceUrl): identical claim text extracted from two
@@ -2060,10 +2082,29 @@ def selftest():
     hp = search_health()
     live = [n for n in GENERAL_WEB if (hp.get(n) or {}).get("results", 0) > 0]
     if not live:
+        # One probe correctly caught "ALL CHECKS PASSED" printing while the web was dead
+        # (that was the original bug). But one probe also cannot tell a genuinely dead
+        # backend from one that hit a single rate-limit challenge - measured live:
+        # selftest declared ddg-html dead off ONE attempt, and the real run 20 minutes
+        # later pulled 40 results from it across 72 attempts (~35% success). A gate that
+        # cries DEGRADED on a flaky backend that is actually fine gets ignored, which is
+        # the same "trained to ignore the warning" failure the gate exists to prevent -
+        # just pointed the other way. Give every general-web backend real retries, with
+        # backoff, using all_backends=True so a backend later in the chain is not
+        # skipped just because an earlier one already satisfied n.
+        for attempt in range(2):
+            time.sleep(1.5 * (attempt + 1))
+            web_search("open source research tools", n=4, all_backends=True)
+            hp = search_health()
+            live = [n for n in GENERAL_WEB if (hp.get(n) or {}).get("results", 0) > 0]
+            if live:
+                break
+    if not live:
         dead = ", ".join("%s %d/%d" % (n, (hp.get(n) or {}).get("results", 0),
                                        (hp.get(n) or {}).get("attempts", 0))
                          for n in GENERAL_WEB if n in hp)
         print("\nDEGRADED - every dependency works, but the general web does not.")
+        print("  probed 3 times with backoff before declaring this; attempts= shows the total.")
         print("  no results from: %s" % (dead or "any general-web backend"))
         print("  Consequence: this run would search Crossref, Wikipedia and the other")
         print("  scholarly backends only. Fine for an academic question. It will miss")
