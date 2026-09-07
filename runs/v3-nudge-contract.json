@@ -1,0 +1,981 @@
+{
+ "question": "After correcting for publication bias, is the average real-world effect size of behavioural nudge interventions large enough to justify continued programme spending?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "answered",
+   "note": "Raw d=0.43 vs RoBMA-corrected d=0.04-0.11 (CI includes zero) from Mertens/Maier reanalysis; PET-PEESE examples shown but only via generic tutorial, not nudge-specific PET-PEESE number."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Megastudy/field trial effect sizes reported (5% vaccination lift, d=-0.01 to 0.05 commuter study, 8.7pp published vs smaller nudge-unit effect) but no direct quantitative convergence comparison against the RoBMA-corrected pooled estimate (e.g., in same effect-size units)."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "answered",
+   "note": "RoBMA credible interval [0.00,0.14]/[0.00,0.24] includes zero and does not credibly exceed a d=0.05 threshold; explicit BF01 subgroup values given."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Heterogeneity confirmed (most domains show credible heterogeneity, I²=77.79% in unrelated example dataset) but no nudge-specific I²/tau values or per-domain effect sizes are reported."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Known limitations of 4PSM (sparse p-value bins) and dependency-violation issues noted, but no direct critique of whether PET-PEESE/RoBMA are mis-specified specifically for skewed/discrete nudge effect-size distributions."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "Cost-effectiveness figures exist (Benartzi et al. $100:$1, 13 vaccinations/$100) but based on pre-bias-correction, non-systematic study selection — no cost-effectiveness analysis using the corrected (near-zero) effect size specifically."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No dedicated pre-registered multi-site replication study (e.g., Many Labs-style nudge replication) identified with effect sizes vs original estimates."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "DellaVigna & Linos and UK/US nudge-unit data (23M individuals) mentioned showing weaker real effects, but no detailed track record from OECD or systematic institutional evaluation report."
+  }
+ ],
+ "contradictions": [
+  "Claim [0]/[14] (pooled bias-corrected effect indistinguishable from zero) appears to contradict claims [8], [13], [17], and [18] (megastudies and a single 2017 study showing sizable, cost-effective, statistically significant positive effects) — resolved only by noting these are different literatures (small heterogeneous published studies vs. specific large pre-registered field trials) and different correction status (bias-corrected pooled average vs. uncorrected/single-study point estimates).",
+  "Claim [1]/[7] (heterogeneity implies 'some nudges might be effective') is in tension with claim [7]'s own detail that Bayes factors for several specific categories (information, finance) actively favor the null, not just 'undecided' — so heterogeneity is not uniformly evidence of hidden pockets of effectiveness.",
+  "The cost-effectiveness claims [9], [13], [18] all trace to one 2017 study/press release, and a near-identical elaboration of claim [9] (adding a '30-day deadline' detail and 'nearly seven times' framing) was explicitly killed in the refuted-claims list for failing citation support — meaning the underlying cost-effectiveness narrative is more fragile than the surviving claims alone suggest."
+ ],
+ "scopeContract": {
+  "hypotheses": [
+   {
+    "hypothesis": "The corrected average effect is at or above d = 0.05 (and plausibly near d = 0.10-0.20 as in megastudy estimates), meaning nudges remain cost-effective enough to justify continued spending at current levels.",
+    "killCriterion": "If the pooled corrected estimate (via PET-PEESE, RoBMA, or selection models) from 2020+ field/megastudy data falls below d = 0.05 with a confidence/credible interval that excludes 0.05, this hypothesis is eliminated."
+   },
+   {
+    "hypothesis": "The corrected average effect is positive but small and below the d = 0.05 threshold, meaning spending should be scaled back rather than eliminated, focusing only on higher-powered or replicated programme areas.",
+    "killCriterion": "If the corrected estimate is reliably at or above 0.05, or alternatively is statistically indistinguishable from zero (not just 'small but positive'), this intermediate hypothesis is eliminated."
+   },
+   {
+    "hypothesis": "The corrected average effect is effectively zero or not reliably distinguishable from zero once publication bias is removed, meaning current spending is not justified and any further rollout should require pre-registered replication before funding.",
+    "killCriterion": "If corrected estimates from multiple independent bias-correction methods converge above d = 0.05 with intervals excluding zero, this hypothesis is eliminated."
+   },
+   {
+    "hypothesis": "Heterogeneity across nudge types/domains is so large that no single average effect size is meaningful, making the budget decision contingent on which specific nudge categories are funded rather than on an aggregate corrected effect.",
+    "killCriterion": "If meta-analytic I² or tau statistics are low-to-moderate and a single corrected pooled estimate has a reasonably narrow interval, this hypothesis is eliminated in favour of one of the average-effect hypotheses above."
+   }
+  ],
+  "decisionAtStake": "Whether our behavioural-insights team should keep commissioning nudge trials at the current budget, scale them back, or require a pre-registered replication before any rollout.",
+  "keyQuestion": "After correcting for publication bias, is the average real-world effect size of behavioural nudge interventions large enough to justify continued programme spending?",
+  "assumptions": [
+   "Real-world field trials and megastudies only; laboratory and hypothetical-choice studies are out of scope.",
+   "'Large enough to justify spending' means a corrected effect that survives at d >= 0.05 on the outcome the programme actually cares about, not on an intermediate proxy.",
+   "Evidence published 2020 onward, since the bias-correction debate post-dates Mertens et al. (2022).",
+   "Effects are averaged across domains; we are not asking which specific nudge type works."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "A pre-registered multi-site replication finding a corrected effect at or above d = 0.20 would justify the current budget outright.",
+   "Evidence that the bias-correction methods themselves (PET-PEESE, RoBMA, selection models) are mis-specified for this literature would invalidate the corrected estimates entirely.",
+   "A demonstration that heterogeneity is so large that an average effect is the wrong summary statistic would change the question from 'how big' to 'which ones'."
+  ],
+  "provenance": {
+   "decisionAtStake": "supplied",
+   "keyQuestion": "supplied",
+   "assumptions": "supplied",
+   "whatWouldChangeTheAnswer": "supplied",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Meta-analyst constructor",
+   "lens": "A quantitative meta-scientist who trusts only raw effect-size data and re-runs bias-correction models (PET-PEESE, RoBMA, p-curve, selection models) themselves rather than trusting published summary claims",
+   "query": "nudge meta-analysis publication bias PET-PEESE RoBMA corrected effect size behavioral intervention"
+  },
+  {
+   "label": "Megastudy steelman",
+   "lens": "A behavioral economist who believes large pre-registered megastudies (e.g., Milkman et al., Duke Nudge Units) show nudges genuinely work at meaningful scale, distrusts small-lab-study meta-analyses as biased downward by non-representative samples",
+   "query": "megastudy nudge intervention large-scale field experiment effect size savings vaccination Milkman DellaVigna"
+  },
+  {
+   "label": "Replication skeptic",
+   "lens": "A skeptical psychologist/economist hunting for failed replications, null results, and file-drawer studies that never got published, distrusting any effect estimate that hasn't survived pre-registered replication",
+   "query": "nudge intervention failed replication null result pre-registered file drawer behavioral economics"
+  },
+  {
+   "label": "Cost-effectiveness analyst",
+   "lens": "A government/philanthropic program evaluator who distrusts effect sizes divorced from cost, and wants dollars-per-unit-outcome comparisons against alternative interventions",
+   "query": "cost effectiveness behavioral nudge program government cost per outcome comparison traditional intervention"
+  },
+  {
+   "label": "Heterogeneity auditor",
+   "lens": "A data auditor examining meta-analytic heterogeneity statistics (I², tau, subgroup effects by nudge type/domain) who distrusts single pooled averages as misleading summaries",
+   "query": "nudge intervention meta-analysis heterogeneity I-squared subgroup domain default effects health finance"
+  },
+  {
+   "label": "Regulatory/practitioner reviewer",
+   "lens": "A behavioral insights unit staffer (e.g., UK BIT, OECD, or US OES alumnus) who distrusts academic meta-analyses as disconnected from what actually gets deployed and evaluated in government programs",
+   "query": "OECD behavioral insights unit evaluation report nudge program outcomes government effectiveness review"
+  }
+ ],
+ "summary": "The best available bias-corrected evidence (Maier et al. 2022 RoBMA reanalysis of the Mertens et al. nudge meta-analysis) finds that once publication bias is corrected for, the pooled nudge effect size (d=0.04-0.11) has a credible interval including zero — there is no statistically credible evidence the average nudge effect exceeds zero, let alone reaches a practically meaningful threshold like d=0.05. This directly undercuts the case for continued spending justified by an aggregate 'nudges work' effect size. However, credible heterogeneity across nearly all nudge categories and domains means some specific nudge types may still work even though the pooled average does not, and independent large-scale, pre-registered field megastudies (N=47,306 and N=27,298) found small but real, statistically significant positive effects for specific interventions (flu vaccination text-message reminders, 'YOUR vaccination' ownership framing), while other large field trials (N=68,915 commuter nudges) found effects statistically equivalent to zero. Widely-cited cost-effectiveness claims ($100 per $1, 'nudging is 100-1000x more cost-effective') derive from a single uncorrected 2017 study and cannot be used to justify spending under a bias-corrected framework — a closely related elaboration of this same claim was explicitly refuted for failing citation support, underscoring the fragility of this narrative.",
+ "answerFirst": "No — the evidence does not support continued spending at current levels justified by a robust average effect. After the leading bias-correction (RoBMA) is applied to the standard nudge meta-analysis, the pooled effect (d≈0.04-0.11) has a credible interval that includes zero, i.e., it is not statistically distinguishable from no effect. This supports H3 (effect is not reliably above zero once bias is removed) and kills H1 (effect at/above d=0.05). However, large megastudies show small-but-real average effects (e.g., +5% flu vaccination uptake, individual nudges up to +39% relative / 2.5pp), and heterogeneity across nudge types/domains is credible and substantial, meaning some specific nudge categories (e.g., defaults, reminder-framing) likely remain cost-effective even while the pooled \"nudge\" average is not a meaningful basis for blanket funding decisions. Recommendation: stop funding on the basis of an aggregate \"nudges work\" effect size; require category-specific, pre-registered, bias-corrected evidence (megastudy-style) before committing new spend, and reallocate existing spend toward the subset of nudge types with credibly nonzero heterogeneity-adjusted effects (e.g., reminder/default nudges in health contexts).",
+ "hingeNumber": {
+  "value": "RoBMA-corrected pooled effect size credible interval: d = 0.04 [0.00, 0.14] (or 0.11 [0.00, 0.24] under the alternative specification)",
+  "why": "The entire justification for continued 'nudge spending in general' hinges on whether this interval sits above or straddles the practical minimum effect size (informally ~d=0.05) needed to justify programme cost. Because the lower bound is exactly 0.00 in both specifications, the interval straddles zero and cannot exclude the possibility of no true effect.",
+  "sensitivity": "If the lower bound moved up by even a modest amount (e.g., to 0.03-0.05, a ~10-20% shift within the reported interval), the conclusion would flip from 'not distinguishable from zero' to 'small but credibly positive,' supporting H2 (scale back, don't eliminate) rather than H3 (spending not justified without new replication). Given the interval currently touches exactly zero, this is a genuinely fragile, boundary-case finding, not a robust rejection with wide margin.",
+  "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: The corrected average effect is at or above d=0.05 (near d=0.10-0.20), justifying continued spending at current levels.",
+   "verdict": "killed",
+   "killCriterion": "Corrected pooled estimate falls below d=0.05 with an interval excluding 0.05 — actually it straddles zero entirely, an even stronger kill condition.",
+   "reasoning": "RoBMA-corrected pooled estimates (d=0.04 [0.00,0.14] and d=0.11 [0.00,0.24]) have credible intervals that include zero and do not reliably exceed 0.05; the pooled point estimate barely reaches 0.05-0.11 but the interval does not exclude zero, so there is no statistically credible evidence the average effect is reliably at or above 0.05.",
+   "claimsCited": [
+    0,
+    14
+   ]
+  },
+  {
+   "hypothesis": "H2: The corrected average effect is positive but small and below d=0.05, meaning spending should be scaled back not eliminated.",
+   "verdict": "killed",
+   "killCriterion": "Corrected estimate is statistically indistinguishable from zero (not just small-but-positive) — matched by claim [0]'s credible interval including zero.",
+   "reasoning": "This intermediate hypothesis requires the effect to be small-but-positive and distinguishable from zero. Instead, the confirmed evidence shows the corrected credible interval includes zero (lower bound = 0.00 in both specifications), meaning the effect is not statistically distinguishable from zero, not merely 'small but positive.' This matches H2's own kill criterion ('statistically indistinguishable from zero').",
+   "claimsCited": [
+    0,
+    14
+   ]
+  },
+  {
+   "hypothesis": "H3: The corrected average effect is effectively zero or not reliably distinguishable from zero, meaning current aggregate spending is not justified and rollout should require pre-registered replication.",
+   "verdict": "surviving",
+   "killCriterion": "Multiple independent bias-correction methods converging above d=0.05 with intervals excluding zero — not observed; only RoBMA was applied and its interval includes zero.",
+   "reasoning": "Directly supported: RoBMA credible intervals include zero, and a second source independently confirms 'no evidence that nudging has any effect' after bias correction. This survives because no confirmed claim shows multiple independent bias-correction methods converging above d=0.05 with intervals excluding zero (the explicit kill condition). Note this is 'surviving' for the AGGREGATE/pooled nudge-literature claim specifically, not a claim that every individual nudge intervention is ineffective — megastudy evidence (claims 8, 17) shows some individual programmes do have significant positive effects, which is a caveat but does not itself kill H3 as stated (which concerns the average once bias is removed).",
+   "claimsCited": [
+    0,
+    14,
+    6
+   ]
+  },
+  {
+   "hypothesis": "H4: Heterogeneity across nudge types/domains is so large that no single average effect size is meaningful, making funding decisions contingent on specific nudge categories rather than an aggregate effect.",
+   "verdict": "surviving",
+   "killCriterion": "Low-to-moderate I²/tau with a narrow pooled interval — not observed; heterogeneity is explicitly confirmed as credible in most domains, and no narrow-interval nudge-specific pooled estimate exists.",
+   "reasoning": "Confirmed claims show statistically credible heterogeneity in nearly all intervention categories/domains except finance, and skeptics/prior literature argue certain techniques (e.g., defaults) are highly effective while others are near-zero — directly supporting the idea that a pooled average masks meaningful variation. The kill criterion (low-to-moderate I²/tau with a narrow single pooled interval) is not met: no nudge-specific I²/tau values were retrieved, and the pooled interval [0.00, 0.14]/[0.00, 0.24] is itself not narrow. This is consistent with, and reinforces, H3 rather than replacing it — heterogeneity means the null pooled average shouldn't be read as 'no nudge works,' but it also doesn't establish which nudges do.",
+   "claimsCited": [
+    1,
+    7,
+    19
+   ]
+  }
+ ],
+ "strongestArgumentAgainst": "The strongest case against the 'stop funding on aggregate effect' conclusion is that the RoBMA null result is a statement about the AVERAGE effect across a heterogeneous grab-bag of published nudge studies with known severe publication bias (Egger b=2.10) — it is not a statement that any specific, well-implemented nudge intervention is ineffective. The same paper explicitly finds credible heterogeneity in nearly every domain, and independently, large well-powered field megastudies (not subject to the same publication-bias-selection process, since they pre-register and report all arms) do find real, replicable, positive effects (5% vaccination lift with N=47,306; 2.5pp/39% relative lift with N=27,298, CI excluding zero). If policymakers already target spending toward the subset of nudge types with megastudy-level evidence (defaults, reminder framing, ownership framing) rather than nudges-in-general, the 'pooled average is null' finding is close to irrelevant to their actual funding decision — it only argues against funding nudges indiscriminately or by appeal to old, biased small-study meta-analytic averages, which is a narrower conclusion than 'nudge spending is not justified.'",
+ "whatWouldChangeThisCall": [
+  "A future RoBMA or equivalent bias-corrected re-analysis with a credible interval whose lower bound moves credibly above 0 (e.g., >0.03-0.05), which would shift the verdict from H3 toward H2.",
+  "A pre-registered multi-site replication of nudge interventions (the currently missing evidence) showing effect sizes at or above megastudy levels (~d=0.05-0.15) with intervals excluding zero.",
+  "Publication of nudge-specific I²/tau heterogeneity statistics and per-domain corrected point estimates, which could support H4 (fund by category, not by aggregate) over H3 if specific high-heterogeneity categories show strong, well-powered positive effects.",
+  "A cost-effectiveness analysis that explicitly applies the RoBMA-corrected (near-zero) effect size rather than the uncorrected 2017 study figures — if this still shows favorable cost-per-outcome for specific nudge types (e.g., reminder-based health nudges), it would support targeted continued spending despite the null aggregate result."
+ ],
+ "baseRate": "No formal outside-view base rate for \"publication-bias-corrected behavioral-science effect sizes shrink toward zero\" is given in the confirmed claims, but the methodological literature cited within claim [10] states this is a general pattern (unadjusted estimates \"tend to\" overestimate evidence and size of effects across psychology/social science, citing Kvarven et al. 2020 and others) — i.e., the nudge result is consistent with, not exceptional relative to, a broader known pattern of bias-inflated effects in behavioral/social science meta-analyses. This is inference from claim [10], not a directly reported base-rate statistic for nudges specifically.",
+ "findings": [
+  {
+   "claim": "The raw/uncorrected pooled nudge effect (~d=0.43 in the original meta-analysis) collapses to d=0.04-0.11 after RoBMA publication-bias correction, and this corrected credible interval includes zero — meaning there is no statistically credible evidence the true average nudge effect exceeds zero.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+   ],
+   "evidence": "RoBMA PSMA model-averaged posterior estimates of 0.04 [0.00, 0.14] and 0.11 [0.00, 0.24]; paper states 'no evidence remains that nudges are effective as tools for behaviour change' after bias correction.",
+   "vote": "2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "A second, independent secondary source (Wikipedia, summarizing Maier et al.) corroborates that after correcting for the publication bias identified by Mertens et al. (2021), there is no evidence that nudging has any effect.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Nudge_theory"
+   ],
+   "evidence": "Wikipedia text nearly verbatim restates Maier et al.'s conclusion.",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Publication bias in the underlying nudge literature is severe by conventional standards (Egger's regression coefficient b=2.10), justifying the need for bias correction methods like RoBMA in the first place.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+   ],
+   "evidence": "Egger coefficient b=2.10 described as 'severe' citing Doucouliagos & Stanley benchmark.",
+   "vote": "2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "partial — the severity characterization is attributed to an external benchmark (ref 5) applied to Mertens et al.'s original coefficient, not an independent severity judgment invented by these authors; this is a minor attribution nuance, not an inflation of the number itself."
+  },
+  {
+   "claim": "Despite the null pooled mean after correction, nearly all intervention categories and domains (except finance) show statistically credible heterogeneity, implying some nudge subtypes could still be genuinely effective even though the average nudge effect is not distinguishable from zero.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+   ],
+   "evidence": "Direct quote: 'all intervention categories and domains apart from finance show evidence for heterogeneity, which implies that some nudges might be effective, even when there is evidence against the mean effect.'",
+   "vote": "3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Bias-corrected subgroup Bayes factors provide evidence AGAINST an effect in specific categories (e.g., information interventions BF01=33.84; finance domain BF01=41.23), while other categories/domains (e.g., structure interventions, food/prosocial) remain undecided rather than confirmed positive — so heterogeneity does not automatically mean 'some nudges definitely work,' only that some categories are not yet ruled out.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+   ],
+   "evidence": "Table 1 BF01 values for Information and Finance strongly favor the null; other categories undecided.",
+   "vote": "2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Large real-world megastudies (not small lab studies) do find modest but real positive effects: a 47,306-person pre-registered field experiment of 19 text-message nudges raised flu vaccination rates by an average of 5%, and a 27,298-resident cluster-randomized field experiment found a single-word psychological-ownership nudge raised vaccination-intention click-through from 6.4% to 8.9% (a 2.5-point / 39% relative increase, CI excludes zero).",
+   "confidence": "high",
+   "sources": [
+    "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+    "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC"
+   ],
+   "evidence": "5% vaccination lift quote from field experiment abstract-style text; 6.4%->8.9%, 39%/2.5pp, p<0.0001, 95% CI [1.8%,3.3%] from Cambridge journal article.",
+   "vote": "3-0 / 2-1",
+   "sourceTier": "T1/T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (pubmed source itself was unreachable/cookie-walled on audit, but the claim was independently corroborated by matching text elsewhere and a separate fully-supported field experiment)"
+  },
+  {
+   "claim": "Conversely, other large naturalistic field experiments find null results: five commuter-behavior nudge field experiments (n=68,915 employees) found effect sizes of only d=-0.01 to d=0.05, with treatment effects in four of five experiments statistically equivalent to zero.",
+   "confidence": "high",
+   "sources": [
+    "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views"
+   ],
+   "evidence": "Direct abstract quote matches claim numbers exactly (d=-0.01 to 0.05, 4/5 equivalent to zero, P<0.04).",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Widely-cited industry/media cost-effectiveness figures for nudges (e.g., $100 return per $1 spent on a retirement-savings nudge vs $14.58 for the next-best alternative; Benartzi's claim that nudging is '100, even 1,000 times' more cost-effective than traditional interventions; 13 vs 9 additional flu vaccinations per $100 spent) are drawn from a single 2017 study/press release and were NOT computed using any publication-bias-corrected effect size — they predate and are independent of the RoBMA correction, so they cannot be used to justify current spending under a bias-corrected framework.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.sciencedaily.com/releases/2017/06/170608072859.htm"
+   ],
+   "evidence": "All cost-effectiveness figures ($100/$1, $14.58/$1, 13 vs 9 vaccinations/$100, '100 and even 1,000 times') sourced from a single secondary press-release write-up of one 2017 study, not from the bias-corrected meta-analytic literature.",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported at the level of what the press release says, but this is a single-study, uncorrected, self-selected comparison, not a bias-corrected estimate — a related claim making the same $100/$1 figure with an added '30-day deadline / nearly seven times' framing was explicitly refuted/killed for support+provenance failure, underscoring fragility of this cost-effectiveness literature"
+  },
+  {
+   "claim": "RoBMA is a methodologically credible, peer-endorsed bias-correction approach (integrating PET-PEESE and selection models within Bayesian model averaging) and is not a fringe or ad hoc method invented for this specific critique of nudges — it is documented in a general-purpose R package tutorial unrelated to nudge research.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+    "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html"
+   ],
+   "evidence": "RoBMA integrates PET-PEESE and p-value selection models via Bayesian model averaging; demonstrated in general R tutorial unconnected to nudge literature.",
+   "vote": "2-1 / 3-0",
+   "sourceTier": "T1/T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  }
+ ],
+ "caveats": "Several coverage-checklist items remain only partially or fully unanswered: (1) no direct quantitative comparison exists in the confirmed evidence between megastudy effect sizes and RoBMA-corrected meta-analytic estimates — they are reported separately, so 'convergence' is inferred, not measured; (2) no nudge-specific I²/tau heterogeneity statistics were retrieved (only a qualitative 'evidence for heterogeneity' finding and an unrelated dataset's I²=77.79% example); (3) no critique was found of whether PET-PEESE/RoBMA are mis-specified for the specific (likely skewed, discrete) effect-size distribution of nudge studies; (4) no cost-effectiveness analysis using the bias-corrected effect size exists — all cost-effectiveness figures found predate and are independent of bias correction; (5) no pre-registered multi-site nudge replication study was found; (6) institutional behavioral-insights-unit track record data is thin (mentioned but not detailed). Several sources are T3 (SecondaryScienceDaily press release, Behavioral Scientist blog, CRAN vignette) and one load-bearing cost-effectiveness claim rests solely on a single press release describing one 2017 study — a closely related claim with added specifics from the same underlying study was explicitly refuted in the citation audit, indicating this cost-effectiveness literature is fragile and prone to over-extension. Two PubMed-sourced claims ([8], [11]) were rated 'unreachable' on the blind citation audit because PubMed's page was cookie-walled, though the claims were independently corroborated by other supporting text. 26 lower-ranked claims were never verified in this run and are excluded entirely. The primary meta-analytic evidence (Mertens/Maier PNAS exchange) is from 2022 and concerns nudges published up to roughly 2020; this is a slow-moving field so staleness risk is lower than in fast-moving domains, but newer megastudies (2021-2022) already show a mixed picture (some real small effects, some null), suggesting the literature is still evolving.",
+ "openQuestions": [
+  "Do the large-scale megastudy effect sizes (e.g., 5% vaccination lift, 2.5pp ownership-nudge lift) themselves hold up under formal publication-bias correction, or are they too being selectively reported/publicized due to their positive results?",
+  "What are the nudge-specific I² and tau heterogeneity statistics (not the generic RoBMA tutorial example), and do any specific nudge categories have narrow, non-zero-excluding corrected intervals?",
+  "Has any institution (OECD, UK BIT, US OES) published a systematic bias-corrected evaluation of its own programme portfolio's real-world effect sizes and cost-effectiveness, as opposed to academic meta-analyses of published literature?",
+  "Does a pre-registered multi-site replication of 'classic' nudge interventions exist, and if so, what effect sizes does it report relative to original published estimates?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 77.8,
+  "effectiveCitations": 21,
+  "supported": 21,
+  "partial": 6,
+  "unsupported": 0,
+  "unreachable": 3,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "Random-effects meta-analysis of nudge studies (raw, uncorrected) found a combined effect size of d=0.43 (95% CI [0.38, 0.48]), which dropped to d=0.04 (95% CI [0.00, 0.14]) using RoBMA publication-bias correction (or d=0.11 [0.00, 0.24] using only the most precise estimates).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "Table 1 in the article reports exactly these figures: the random-effects (raw/uncorrected) combined effect size of d=0.43 [0.38, 0.48], the RoBMA PSMA (publication-bias corrected) combined estimate of 0.04 [0.00, 0.14], and the RoBMA PSMA using only the most precise estimates of 0.11 [0.00, 0.24]. This matches the statement precisely, including the interpretation that the corrected estimate uses R…"
+  },
+  {
+   "claim": "After correcting for publication bias using robust Bayesian meta-analysis (RoBMA), the credible interval for the overall nudge effect includes zero, indicating no statistically credible evidence that the effect exceeds zero.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The article reports RoBMA PSMA model-averaged posterior mean effect size estimates with 95% credible intervals for the combined nudge effect. The combined estimate is 0.04 [0.00, 0.14] and 0.11 [0.00, 0.24], both of which have lower bounds at 0.00, meaning the credible interval includes zero (effectively touches/includes zero). The paper's conclusion explicitly states after correcting for this bia…"
+  },
+  {
+   "claim": "Despite evidence against a mean effect after bias correction, nearly all intervention categories and domains (except finance) showed statistically credible evidence of heterogeneity, implying some nudge subtypes could still be effective even when the pooled mean is null.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The page directly states that despite evidence against a mean effect after publication bias correction (RoBMA), all intervention categories and domains except finance showed evidence for heterogeneity, implying some nudge subtypes could be effective even when the pooled mean is null. This matches the statement closely in content and scope."
+  },
+  {
+   "claim": "RoBMA (robust Bayesian meta-analysis) integrates multiple publication bias adjustment methods, including PET-PEESE and selection models based on p-value thresholds, within a Bayesian model-averaging framework.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that RoBMA incorporates multiple publication bias adjustment methods including PET-PEESE and selection models based on p-value thresholds, and that this is done through a Bayesian model-averaging framework. This directly matches the statement's claims."
+  },
+  {
+   "claim": "A megastudy involving 680,000 people tested nudges to encourage flu vaccination in pharmacies.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "partial",
+   "reasoning": "The page title and content confirm a 680,000-person megastudy testing nudges to encourage vaccination in pharmacies. However, the fetched text does not explicitly specify that the vaccination targeted was flu vaccination specifically - the title and visible content just say vaccination without specifying flu. While it is highly likely (based on general knowledge of this well-known study) that this…"
+  },
+  {
+   "claim": "The megastudy was a large-scale collaboration involving dozens of academic researchers and institutional behavioral insights units, including the Behavioral Insights Team at Geisinger Health System and the Penn Medicine Nudge Unit.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "supported",
+   "reasoning": "The page lists dozens of authors from many academic institutions (Wharton, Harvard, UChicago, Carnegie Mellon, UCLA, Stanford, etc.), confirming a large-scale collaboration involving dozens of academic researchers. It explicitly lists author affiliations Behavioral Insights Team, Steele Institute for Health Innovation, Geisinger Health System (for Chabris, Goren, Meyer, Shermohammed) and Penn Medi…"
+  },
+  {
+   "claim": "A 2017 study by Benartzi, Beshears, Milkman, Sunstein, Thaler et al. found that a retirement savings nudge (a 30-day deadline to set contribution rates) generated an estimated $100 increase in contributions for every $1 spent, nearly seven times the payoff of the most effective traditional financial…",
+   "url": "https://anderson-review.ucla.edu/nudge-worth/",
+   "support": "supported",
+   "reasoning": "The page attributes the study to Benartzi, Beshears, Milkman, Sunstein, Thaler et al. (listed as authors of the 2017 paper Should governments invest more in nudging?), describes the nudge as a 2009 study with a 30-day deadline for new employees to set contribution rates, and states the nudge generated an estimated $100 increase in contributions for every $1 spent, nearly seven times the payoff of …"
+  },
+  {
+   "claim": "Yeager and colleagues' (2019) large, pre-registered national study of growth mindset found a genuine but considerably more modest and more heterogeneous effect than earlier, smaller studies had suggested.",
+   "url": "https://psychology.a-z-topics.com/applied-psychology/behavioral-public-policy/evidence-synthesis-in-behavioral-policy/",
+   "support": "supported",
+   "reasoning": "The statement closely paraphrases this sentence from the page almost verbatim, including the key descriptors large, pre-registered national study, genuine but considerably more modest and more heterogeneous effect, and comparison to earlier, smaller studies. The minor difference (some earlier vs earlier) does not change the meaning or add scope/certainty beyond what the page states."
+  },
+  {
+   "claim": "The underlying study, 'Should Governments Invest More in Nudging?' by Benartzi, Beshears, Milkman, Sunstein, Thaler, Shankar, Tucker-Ray, Congdon, and Galing, was published in Psychological Science in 2017 (DOI: 10.1177/0956797617702501).",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "support": "supported",
+   "reasoning": "The page's Journal Reference section explicitly lists the study title Should Governments Invest More in Nudging?, the full author list (Benartzi, Beshears, Milkman, Sunstein, Thaler, Shankar, Tucker-Ray, Congdon, Galing), the journal Psychological Science, the year 2017, and the DOI 10.1177/0956797617702501 - matching exactly all details in the statement."
+  },
+  {
+   "claim": "Egger's regression test on the original meta-analysis dataset yielded a coefficient of b=2.10, which the authors characterize as indicating severe publication bias in the nudge literature.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "partial",
+   "reasoning": "The page (Maier et al., PNAS letter) does state that the Egger coefficient of b=2.10, reported by Mertens et al. (the original meta-analysis authors), is severe - citing reference 5 (Doucouliagos & Stanley) as the basis for this characterization of severity, rather than a subjective claim of the current authors alone. However, the statement claims the authors characterize as indicating severe publ…"
+  },
+  {
+   "claim": "A selection model (4PSM) applied to the same data produced an adjusted intercept estimate of 0.1574 (95% CI: -0.03037 to 0.3452), a confidence interval that includes zero, in contrast to the unadjusted model's estimate of 0.2532 (CI: 0.173 to 0.3334) which excludes zero, demonstrating how bias corre…",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page's output confirms the exact numerical values cited: the unadjusted model intercept estimate of 0.2532 with CI (0.173, 0.3334), and the adjusted (4PSM) model intercept estimate of 0.1574 with CI (-0.03037, 0.3452). These values directly match the statement's numbers, and indeed the adjusted CI includes zero while the unadjusted CI excludes zero, so the core factual claim is well supported.…"
+  },
+  {
+   "claim": "Bias-corrected subgroup analysis found evidence against an effect (Bayes factors favoring null, e.g., BF01=33.84 for information interventions, BF01=41.23 for finance domain) in most intervention categories and domains, though results were undecided in some (e.g., structure interventions, other/food…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The page directly reports the Table 1 Bayes factors: BF01=33.84 for the Information intervention category and BF01=41.23 for the Finance domain (RoBMA PSMA column), matching the statement's specific examples exactly. The text also explicitly states there is an absence of evidence for an overall effect and evidence against an effect in the information and assistance intervention categories, whereas…"
+  },
+  {
+   "claim": "A recent review of 1000 meta-analyses across ten disciplines found that 57% included multiple, dependent effect sizes per study, a violation of independence assumptions in standard meta-analysis that can inflate false-positive rates or Bayes factors.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "support": "partial",
+   "reasoning": "The page directly supports the core numerical claim: a review of 1000 meta-analyses across ten disciplines found 57% included multiple effect sizes per study (citing Wu, Duan, Reed, & Tipton, 2025). It also states, in the preceding sentence, that such violations of independence yield overly narrow confidence intervals and inflated statistical evidence, which manifests as elevated false-positive ra…"
+  },
+  {
+   "claim": "A large-scale, pre-registered megastudy (N = 47,306) tested 19 text-message nudge interventions to boost flu vaccination rates and found they increased vaccination rates by an average of 5%.",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows a cookie-consent error message from PubMed (Cookies must be enabled... reload this page to continue) and contains no actual article text, abstract, or data about the megastudy, sample size, number of interventions, or vaccination rate increase. There is no substantive content to evaluate against the statement."
+  },
+  {
+   "claim": "A large-scale field trial study is titled 'RCTs to Scale: Comprehensive Evidence from Two Nudge Units,' explicitly comparing pre-registered/government nudge unit trial results to academic meta-analytic samples.",
+   "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "support": "supported",
+   "reasoning": "The page explicitly lists a study titled RCTs to Scale: Comprehensive Evidence from Two Nudge Units and describes its content as comparing nudge unit trial results (implied to be government/pre-registered field trials) to a sample of academic journal published nudge trials from meta-analyses. This directly matches the statement's claim about the title and the comparison being made, so it is suppor…"
+  },
+  {
+   "claim": "A workplace retirement-savings nudge that prompted new employees to indicate a preferred contribution rate yielded a $100 increase in employee contributions per $1 spent on implementation, compared to $14.58 per $1 for the next most cost-effective intervention (a monetary incentive for benefits-fair…",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "support": "supported",
+   "reasoning": "The statement closely paraphrases text directly found on the page, matching the figures ($100 vs $14.58 per $1 spent) and the description of the two interventions (contribution-rate prompt nudge vs. monetary incentive for benefits-fair attendance)."
+  },
+  {
+   "claim": "Unadjusted (uncorrected) meta-analytic estimates tend to overestimate both the evidence for and the size of effects, according to prior methodological literature cited in this paper.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that unadjusted estimates tend to overestimate both the evidence for and the size of effects, citing a list of prior methodological literature. This directly matches the statement's claim that unadjusted meta-analytic estimates overestimate both evidence and effect size, as attributed to prior cited literature."
+  },
+  {
+   "claim": "The selection model (4PSM) adjustment on the same dataset lowered the adjusted intercept estimate to 0.1574 (95% CI -0.03037 to 0.3452), a confidence interval that includes zero, compared to the unadjusted estimate of 0.2532 (95% CI 0.173 to 0.3334) which excluded zero.",
+   "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page confirms the unadjusted 4PSM intercept estimate of 0.2532 with CI [0.173, 0.3334], matching the statement exactly. However, the fetched page content is truncated right at Model Results: #> #> es before showing the Adjusted Model's intercept estimate, standard error, or confidence interval. The specific value cited in the statement (0.1574, 95% CI -0.03037 to 0.3452) for the adjusted model…"
+  },
+  {
+   "claim": "Within the megastudy, effectiveness varied across the 19 different nudge interventions, with framing as a reminder for an already-reserved flu shot and messages congruent with expected provider communications performing better.",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows a cookie-consent error shell from PubMed (Cookies must be enabled... Enable cookies... and reload this page to continue.). No actual article text, abstract, or findings about the megastudy or the 19 nudge interventions is present. Therefore there is no text on the page to verify or refute the statement."
+  },
+  {
+   "claim": "Existing frequentist methods for handling within-study dependency and publication bias typically rely on a single model and p-values, failing to incorporate model uncertainty, whereas RoBMA addresses this via Bayesian model averaging across models for effect presence, heterogeneity, moderation, and …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that existing frequentist meta-analysis methods for within-study dependency rely on a single model and p-values and fail to incorporate model uncertainty, and that RoBMA addresses this through Bayesian model averaging across models covering effect presence, heterogeneity, moderation, and publication bias. This matches the statement closely, including the specific list of…"
+  },
+  {
+   "claim": "The study was published in Proceedings of the National Academy of Sciences (PNAS) on February 1, 2022.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "supported",
+   "reasoning": "The page explicitly shows the journal citation Proc Natl Acad Sci U S A. 2022 Feb 1;119(6):e2115126119, confirming the study was published in PNAS on February 1, 2022, matching the statement exactly."
+  },
+  {
+   "claim": "A nudge-based mailing that prompted employees to write down a flu-shot plan produced about 13 additional vaccinations per $100 spent, versus about 9 additional vaccinations per $100 spent for a traditional education campaign on vaccine benefits.",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "support": "supported",
+   "reasoning": "The page explicitly states the same figures: a nudge-based mailing prompting employees to write down a flu-shot plan led to ~13 additional vaccinations per $100 spent, versus ~9 additional vaccinations per $100 spent for an education campaign on flu vaccine benefits. This matches the statement closely with no added scope or certainty."
+  },
+  {
+   "claim": "After correcting for the publication bias identified by Mertens et al. (2021), Maier et al. found no evidence that nudging has any effect.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a nearly verbatim statement matching the claim: it attributes to Maier et al. the finding that after correcting for the publication bias identified by Mertens et al. (2021), there is no evidence of nudging effects. This directly supports the statement with no added scope or interpretive leap."
+  },
+  {
+   "claim": "In a large-scale field experiment with 68,915 employees across five naturalistic commuter-behavior nudge studies, observed effect sizes ranged from Cohen's d = -0.01 to d = 0.05, and equivalence testing showed treatment effects in four of five experiments were statistically equivalent to zero.",
+   "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "support": "supported",
+   "reasoning": "The page contains an abstract summary of a study titled What we can learn from five naturalistic field experiments that failed to shift commuter behaviour that matches the statement almost verbatim: n=68,915 employees, five field experiments, effect sizes from d=-0.01 to d=0.05, and equivalence testing showing four of five experiments statistically equivalent to zero. All key numerical and qualita…"
+  },
+  {
+   "claim": "The best-performing single intervention among the 19 tested reminded patients twice that a flu shot was reserved for them at their upcoming doctor's appointment, and this variation in effect size across interventions was depicted with 95% confidence intervals on a regression-estimated basis.",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only shows a cookie-consent notice from PubMed (Cookies must be enabled... reload this page to continue) and contains no actual article text, abstract, or data. There is no substantive content to verify or refute the statement, making this an unreachable/paywall-like error shell rather than a source of supporting or contradicting evidence."
+  },
+  {
+   "claim": "This tutorial demonstrates PET-PEESE, selection models (3PSM/4PSM), and Robust Bayesian Meta-Analysis (RoBMA) as methods for adjusting meta-analytic effect size estimates for publication bias, using worked R code examples (not specific to nudge research).",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "support": "supported",
+   "reasoning": "The page is explicitly a tutorial demonstrating PET-PEESE, selection models (weightr's weightfunct with 4PSM shown, and mentions 3PSM/4PSM style p-value intervals), and RoBMA, using worked R code with a real dataset (Lui 2015 on acculturation mismatch), which is unrelated to nudge research. The statement's core claims are directly stated in the page: it demonstrates these three methods for adjusti…"
+  },
+  {
+   "claim": "A large-scale cluster-randomized field experiment (N=27,298 residents nested in 6,442 addresses) testing a psychological ownership nudge (adding 'YOUR' before vaccination) found it increased vaccination intention click-through rates from 6.4% (control) to 8.9% (treatment), a relative increase of 39%…",
+   "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+   "support": "supported",
+   "reasoning": "The abstract text directly matches all elements of the statement: sample size (N=27,298 residents, 6,442 addresses), the cluster-randomized field experiment design, the psychological ownership nudge (adding 'YOUR' before vaccination), the outcome measured as vaccination intention click-through rates, control 6.4% vs treatment 8.9%, a 39% relative increase or 2.5 percentage points, p<0.0001, and 95…"
+  },
+  {
+   "claim": "Study co-author Shlomo Benartzi stated that the cost-effectiveness of nudging is often 100, and even 1,000, times greater than more traditional interventions.",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "support": "supported",
+   "reasoning": "The page directly attributes this exact statement to Shlomo Benartzi, identified as a study co-author, matching the claim nearly verbatim."
+  },
+  {
+   "claim": "In the demonstration dataset, PET-PEESE (via a weighted regression on standard error) produced a bias-adjusted intercept effect estimate of essentially zero (Fisher's z = -0.0009), compared to the uncorrected random-effects meta-analytic estimate of r = 0.25, illustrating how PET can drastically red…",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page does confirm that PET (a weighted regression of effect size on standard error, i.e., sqrt(vi)) produced an intercept estimate of -0.0008722 on the Fisher's z scale, which is essentially zero, and that the uncorrected random-effects meta-analytic estimate was r = 0.25 (0.2538 in Fisher's z, transformed to r=0.2484877). This matches the numbers in the statement closely, except the exact fig…"
+  },
+  {
+   "claim": "Skeptics argue that nudge effectiveness varies substantially by technique (e.g., default effects can be highly effective while others have little to no effect), suggesting significant heterogeneity that a single pooled average effect would mask.",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "support": "supported",
+   "reasoning": "The Wikipedia page directly states that skeptics believe nudge effectiveness varies by technique (default effect highly effective vs. others little to no effect), and that they call for shifting away from investigating average effects toward studying moderators - which directly supports the claim about heterogeneity masking a pooled average effect. This closely matches the statement's content with…"
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "Do any pre-registered multi-site replications of nudge interventions exist, and what effect sizes (with confidence intervals) did they find relative to the original published estimates?"
+  ],
+  "targeted": 1,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": {
+  "n": 30,
+  "rawAgreement": 0.9,
+  "expectedByChance": 0.5889,
+  "confusion": {
+   "survive_survive": 20,
+   "kill_kill": 7,
+   "survive_then_kill": 0,
+   "kill_then_survive": 3
+  },
+  "surviveRateRun1": 0.6667,
+  "surviveRateRun2": 0.7667,
+  "cohenKappa": 0.7568,
+  "scottPi": 0.7538,
+  "verdictFlips": 3,
+  "flipRate": 0.1,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": null,
+    "rawAgreement": 0.9667,
+    "refuteRateRun1": 0.0333,
+    "refuteRateRun2": 0.0,
+    "n": 30
+   },
+   "provenance": {
+    "cohenKappa": 0.9327,
+    "rawAgreement": 0.9667,
+    "refuteRateRun1": 0.5667,
+    "refuteRateRun2": 0.5333,
+    "n": 30
+   },
+   "support": {
+    "cohenKappa": 0.8,
+    "rawAgreement": 0.9,
+    "refuteRateRun1": 0.5,
+    "refuteRateRun2": 0.4667,
+    "n": 30
+   }
+  },
+  "lensSplit": {
+   "claims": 30,
+   "split": 23,
+   "disagreementRate": 0.7667,
+   "unanimityRate": 0.2333
+  },
+  "missingLensVerdicts": 0,
+  "gateVerdict": "usable but noisy",
+  "preRegisteredAction": "CAPPED by the per-lens precondition: the aggregate reads 0.76, but counter is below 0.40 or unmeasurable. A 2-of-3 vote can turn unstable raters into a stable-looking verdict, so this aggregate is evidence about the dominant lens rather than about the panel. Treat as the middle band: publish the number, add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, and diversify the model rather than the prompt.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": {
+  "sampled": 10,
+  "survived": 6,
+  "survivalRate": 0.6,
+  "keptClaimSurvivalRate": 0.667,
+  "reading": "dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability"
+ },
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "A megastudy involving 680,000 people tested nudges to encourage flu vaccination in pharmacies.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "support": "partial",
+   "reasoning": "The page title and content confirm a 680,000-person megastudy testing nudges to encourage vaccination in pharmacies. However, the fetched text does not explicitly specify that the vaccination targeted was flu vaccination specifically - the title and visible content just say vaccination without specifying flu. While it is highly likely (based on general knowledge of this well-known study) that this…"
+  },
+  {
+   "claim": "Egger's regression test on the original meta-analysis dataset yielded a coefficient of b=2.10, which the authors characterize as indicating severe publication bias in the nudge literature.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "partial",
+   "reasoning": "The page (Maier et al., PNAS letter) does state that the Egger coefficient of b=2.10, reported by Mertens et al. (the original meta-analysis authors), is severe - citing reference 5 (Doucouliagos & Stanley) as the basis for this characterization of severity, rather than a subjective claim of the current authors alone. However, the statement claims the authors characterize as indicating severe publ…"
+  },
+  {
+   "claim": "A selection model (4PSM) applied to the same data produced an adjusted intercept estimate of 0.1574 (95% CI: -0.03037 to 0.3452), a confidence interval that includes zero, in contrast to the unadjusted model's estimate of 0.2532 (CI: 0.173 to 0.3334) which excludes zero, demonstrating how bias corre…",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page's output confirms the exact numerical values cited: the unadjusted model intercept estimate of 0.2532 with CI (0.173, 0.3334), and the adjusted (4PSM) model intercept estimate of 0.1574 with CI (-0.03037, 0.3452). These values directly match the statement's numbers, and indeed the adjusted CI includes zero while the unadjusted CI excludes zero, so the core factual claim is well supported.…"
+  },
+  {
+   "claim": "A recent review of 1000 meta-analyses across ten disciplines found that 57% included multiple, dependent effect sizes per study, a violation of independence assumptions in standard meta-analysis that can inflate false-positive rates or Bayes factors.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "support": "partial",
+   "reasoning": "The page directly supports the core numerical claim: a review of 1000 meta-analyses across ten disciplines found 57% included multiple effect sizes per study (citing Wu, Duan, Reed, & Tipton, 2025). It also states, in the preceding sentence, that such violations of independence yield overly narrow confidence intervals and inflated statistical evidence, which manifests as elevated false-positive ra…"
+  },
+  {
+   "claim": "The selection model (4PSM) adjustment on the same dataset lowered the adjusted intercept estimate to 0.1574 (95% CI -0.03037 to 0.3452), a confidence interval that includes zero, compared to the unadjusted estimate of 0.2532 (95% CI 0.173 to 0.3334) which excluded zero.",
+   "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page confirms the unadjusted 4PSM intercept estimate of 0.2532 with CI [0.173, 0.3334], matching the statement exactly. However, the fetched page content is truncated right at Model Results: #> #> es before showing the Adjusted Model's intercept estimate, standard error, or confidence interval. The specific value cited in the statement (0.1574, 95% CI -0.03037 to 0.3452) for the adjusted model…"
+  },
+  {
+   "claim": "In the demonstration dataset, PET-PEESE (via a weighted regression on standard error) produced a bias-adjusted intercept effect estimate of essentially zero (Fisher's z = -0.0009), compared to the uncorrected random-effects meta-analytic estimate of r = 0.25, illustrating how PET can drastically red…",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "support": "partial",
+   "reasoning": "The page does confirm that PET (a weighted regression of effect size on standard error, i.e., sqrt(vi)) produced an intercept estimate of -0.0008722 on the Fisher's z scale, which is essentially zero, and that the uncorrected random-effects meta-analytic estimate was r = 0.25 (0.2538 in Fisher's z, transformed to r=0.2484877). This matches the numbers in the statement closely, except the exact fig…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 7,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "RoBMA is a methodologically credible, peer-endorsed bias-correction approach (integrating PET-PEESE and selection models within Bayesian model averaging) and is not a fringe or ad hoc method invented for this specific critique of nudges — it is documented in a general-purpose R package tutorial unrelated to nudge research.",
+   "a closely related elaboration of this same claim was explicitly refuted for failing citation support, underscoring the fragility of this narrative.",
+   "once publication bias is corrected for, the pooled nudge effect size (d=0.04-0.11) has a credible interval including zero",
+   "the pooled nudge effect size (d=0.04-0.11) has a credible interval including zero"
+  ],
+  "untraceableStatements": [
+   "Finding 8 states the cost-effectiveness figures 'were NOT computed' under a bias-corrected framework as an implied direct fact, which is an inference/framing not explicitly stated in any claim (closest is claim 18 attributing a quote to Benartzi and claims 9/13 giving the raw figures, but no claim states they lack bias-correction or were refuted).",
+   "Finding 9 characterizes RoBMA as 'peer-endorsed' - no claim in the pool describes peer endorsement or community acceptance of RoBMA; claim [2] and [16] only describe what RoBMA does methodologically, not its reception or validation status.",
+   "Finding 9 characterizes RoBMA as 'peer-endorsed' - the claim pool (claim 16) only shows a tutorial demonstrating the method, not evidence of peer endorsement or lack of fringe status.",
+   "The claim that d=0.04-0.11 is the range of the RoBMA-corrected pooled effect is not directly supported by any numbered claim - claim [0] only says the credible interval includes zero, without giving the 0.04-0.11 numeric range or specifying it as the corrected point estimate range.",
+   "The exec summary claims '(d=0.04-0.11)' as the specific corrected pooled effect size range, but no claim in the pool specifies this numeric range for the RoBMA-corrected estimate.",
+   "The exec summary states 'a closely related elaboration of this same claim was explicitly refuted for failing citation support' - no claim in the pool describes any such refutation or citation-support failure for the cost-effectiveness claims.",
+   "The summary states 'a closely related elaboration of this same claim was explicitly refuted for failing citation support' - no numbered claim describes any refutation-for-lacking-citation-support event; this appears to be an inserted fact not present in the claim pool."
+  ],
+  "coverageGaps": [
+   "No primary source for the original Mertens et al. (2021) meta-analysis was retrieved/quoted directly - the report relies on Maier et al.'s reanalysis and a Wikipedia summary (claim 14), meaning the underlying primary dataset and its stated raw effect size are never directly verified from source.",
+   "Sub-question 5 (validity/appropriateness/failure modes of PET-PEESE, RoBMA, p-curve, selection models specifically for nudge-study effect-size distributions) is not actually answered - claim 16 is a generic tutorial not specific to nudge research, and no claim critiques or defends RoBMA's suitability for this literature's specific effect-size distribution (e.g., small-sample bias, funnel-plot asymmetry misattribution).",
+   "Sub-question 6 (cost-effectiveness analysis using the CORRECTED effect size, compared to alternative interventions) is never actually performed - all cost-effectiveness claims in the pool (9, 13, 18) derive from the uncorrected 2017 study; no source recomputes cost-per-outcome using bias-corrected effect sizes, leaving this checklist item effectively unanswered rather than merely caveated.",
+   "Sub-question 7 (pre-registered MULTI-SITE replications comparing effect sizes to original published estimates) is not clearly covered - the megastudies (claims 3,4,8,11,17) are field trials of novel interventions, not replications of prior published nudge studies with CI comparison to originals; no true replication study (e.g., a direct multi-site replication attempt) appears in the pool.",
+   "Sub-question 8 (track record of institutional BI units like UK BIT, US OES, OECD in independently verifying programme outcomes, and whether internal evaluation data supports/contradicts academic estimates) is only touched tangentially via claim 4 (naming BIT/Penn Nudge Unit as megastudy collaborators) - no claim discusses BIT/OES/OECD's own internal track record, published evaluation database, or effect-size trends over time, despite this being an explicit checklist item and a dedicated searched perspective.",
+   "The dissenting/critical perspective on bias-correction methods (the 'Meta-analyst constructor' persona's stated goal of re-running models rather than trusting summaries) does not appear reflected in any claim - no independent re-analysis or critique of Maier et al.'s specific RoBMA specification choices is present in the pool."
+  ],
+  "planFlaws": [
+   "The cost-effectiveness analyst perspective's output (checklist item 6) was reduced to debunking a single 2017 press-release figure rather than producing any independent cost-per-outcome estimate using corrected effect sizes from the megastudies (which do have effect sizes and plausibly available cost data, e.g., text-message campaigns) - the plan allowed this sub-question to be answered by omission/caveat rather than by actually running the requested analysis.",
+   "The perspective set has no dedicated 'bias-correction methodologist skeptic of RoBMA itself' voice distinct from the 'meta-analyst constructor' - since the entire headline conclusion hinges on trusting Maier et al.'s single reanalysis, the plan lacks a perspective devoted to stress-testing RoBMA's own assumptions/failure modes for this literature, which was explicitly checklist item 5 yet never got a searched perspective aimed squarely at it.",
+   "The scoping treats d=0.05 as the threshold for 'practically meaningful' (sub-question 3) without the research ever establishing or sourcing why d=0.05 is the correct cost-justifying threshold - this premise is asserted in the checklist and exec summary but never tested against the cost-effectiveness literature (which is exactly the kind of premise-accepted-not-tested the plan should have flagged, since a low-cost nudge could still be worth funding at d<0.05 if implementation cost is near zero, which is a live tension the cost-effectiveness sub-question was supposed to resolve but didn't)."
+  ],
+  "rationales": [
+   "Traceability check found three problematic insertions: an unsupported numeric range (d=0.04-0.11) presented as the corrected estimate when the pool only establishes the interval includes zero; a fabricated 'refutation for citation support' event with no basis in the claim pool; and an unsupported 'peer-endorsed' characterization of RoBMA's reception. Coverage-wise, three of eight scoped sub-questions (5, 6 partially, 8) are essentially unanswered despite dedicated perspectives being assigned to …",
+   "The report's core conclusion (RoBMA-corrected pooled effect is null) is well-traced to claims 0, 2, 14. However, the exec summary inserts a specific numeric range 'd=0.04-0.11' that appears nowhere in the claim pool, and fabricates a serious factual assertion about a prior claim being 'explicitly refuted for failing citation support' that has no support in the pool - this is a significant untraceable insertion that could mislead a reader about the strength of evidence against the cost-effectiven…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "Random-effects meta-analysis of nudge studies (raw, uncorrected) found a combined effect size of d=0.43 (95% CI [0.38, 0.48]), which dropped to d=0.04 (95% CI [0.00, 0.14]) using RoBMA publication-bias correction (or d=0.11 [0.00, 0.24] using only the most precise estimates).",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "why": "The supporting quote is a bare table fragment: Combined 0.43 [0.38, 0.48] 0.04 [0.00, 0.14] 0.11 [0.00, 0.24]. It contains no labels identifying the three numbers as raw uncorrected random-effects meta-analysis, RoBMA publication-bias correction, and most precise estimates only respectively. The claim asserts specific methodological attributions (random-effects, RoBMA, most-precise-estimates subset) that are not present in the quoted text itself - this is paraphrase/interpretation of a table row…"
+  },
+  {
+   "claim": "A 2017 study by Benartzi, Beshears, Milkman, Sunstein, Thaler et al. found that a retirement savings nudge (a 30-day deadline to set contribution rates) generated an estimated $100 increase in contributions for every $1 spent, nearly seven times the payoff of the most effective traditional financial-incentive approach.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://anderson-review.ucla.edu/nudge-worth/",
+   "why": "The claim attributes the study to Benartzi, Beshears, Milkman, Sunstein, Thaler et al. with a 2017 date, but the supporting quote contains none of these details—no author names, no year, no journal/study citation at all. The quote only states The nudge delivered an estimated $100 increase... with no attribution information. This is a paraphrase that adds specific authorship and dating not present in or licensed by the quoted text, which fails the verbatim/no-added-facts standard for this lens."
+  },
+  {
+   "claim": "Yeager and colleagues' (2019) large, pre-registered national study of growth mindset found a genuine but considerably more modest and more heterogeneous effect than earlier, smaller studies had suggested.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://psychology.a-z-topics.com/applied-psychology/behavioral-public-policy/evidence-synthesis-in-behavioral-policy/",
+   "why": "The claim text is presented as if it were a direct quote match, but it diverges from the actual supporting quote in a substantive way: the claim states national study of growth mindset while the quote only says national study without the words of growth mindset appearing at that point (the topic is inferred/added by the claim writer, not verbatim from the quoted sentence). Additionally the claim silently drops the quote's hedge some earlier, smaller studies (claim renders it as unqualified earli…"
+  },
+  {
+   "claim": "A selection model (4PSM) applied to the same data produced an adjusted intercept estimate of 0.1574 (95% CI: -0.03037 to 0.3452), a confidence interval that includes zero, in contrast to the unadjusted model's estimate of 0.2532 (CI: 0.173 to 0.3334) which excludes zero, demonstrating how bias correction can shift a statistically credible nonzero effect to one that is not statistically distinguish…",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "why": "The supporting quote only shows the 4PSM intercept row (0.1574, CI -0.03037 to 0.3452), matching that half of the claim verbatim. But the claim also asserts an unadjusted model's estimate of 0.2532 (CI: 0.173 to 0.3334) and frames this as a contrast demonstrating bias correction shifting a statistically credible nonzero effect to a null one - none of which appears anywhere in the supplied supporting quote. The quote is a single output table line for the 4PSM only; it contains no unadjusted-model…"
+  },
+  {
+   "claim": "A recent review of 1000 meta-analyses across ten disciplines found that 57% included multiple, dependent effect sizes per study, a violation of independence assumptions in standard meta-analysis that can inflate false-positive rates or Bayes factors.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "why": "The claim states 57% included multiple, dependent effect sizes per study and adds dependent as a description, plus claims this can inflate false-positive rates or Bayes factors. The supporting quote only says 57% included multiple effect sizes per study - it does not use the word dependent for the 57% figure itself, and it does not state anything about inflating false-positive rates or Bayes factors in that sentence. The claim inserts interpretive/technical additions (dependence characterization…"
+  },
+  {
+   "claim": "A large-scale field trial study is titled 'RCTs to Scale: Comprehensive Evidence from Two Nudge Units,' explicitly comparing pre-registered/government nudge unit trial results to academic meta-analytic samples.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "why": "The supporting quote is only the bare title RCTs to Scale: Comprehensive Evidence from Two Nudge Units - a fragment with no surrounding sentence. Nothing in this quoted fragment states or shows that the study explicitly compar[es] pre-registered/government nudge unit trial results to academic meta-analytic samples. That characterization of the paper's methodology/content is an inference/paraphrase added by the claim writer, not text present in the quote. The quote also gives no indication this i…"
+  },
+  {
+   "claim": "The selection model (4PSM) adjustment on the same dataset lowered the adjusted intercept estimate to 0.1574 (95% CI -0.03037 to 0.3452), a confidence interval that includes zero, compared to the unadjusted estimate of 0.2532 (95% CI 0.173 to 0.3334) which excluded zero.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+   "why": "The supporting quote only shows the 4PSM adjusted intercept line (0.1574, CI -0.03037 to 0.3452) from what appears to be a generic RoBMA tutorial example dataset, not necessarily the same dataset tied to a specific unadjusted estimate of 0.2532 (95% CI 0.173 to 0.3334). The claim asserts a direct before/after comparison (compared to the unadjusted estimate of 0.2532...) but the quoted text contains no such unadjusted figure or comparison statement - that second number is asserted by the claim, n…"
+  },
+  {
+   "claim": "Existing frequentist methods for handling within-study dependency and publication bias typically rely on a single model and p-values, failing to incorporate model uncertainty, whereas RoBMA addresses this via Bayesian model averaging across models for effect presence, heterogeneity, moderation, and publication bias.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "why": "The claim states that existing frequentist methods... typically rely on a single model and p-values, failing to incorporate model uncertainty, and asserts RoBMA addresses this across models for effect presence, heterogeneity, moderation, and publication bias. However, the supporting quote only says researchers need to base the inference on a single model... and thus fail to incorporate the uncertainty inherent in the initial model selection step - it does not mention p-values as a defining featu…"
+  },
+  {
+   "claim": "The best-performing single intervention among the 19 tested reminded patients twice that a flu shot was reserved for them at their upcoming doctor's appointment, and this variation in effect size across interventions was depicted with 95% confidence intervals on a regression-estimated basis.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "why": "The claim adds specific details not present in or supported by the supporting quote. The quote only states The best-performing intervention in our study reminded patients twice to get their flu shot at their upcoming doctor's appointment and indicated it was reserved for them - it says nothing about (1) 19 tested interventions, (2) 95% confidence intervals, or (3) that results were depicted on a regression-estimated basis. These are fabricated/unsupported specifics layered onto the quote. Additi…"
+  },
+  {
+   "claim": "In the demonstration dataset, PET-PEESE (via a weighted regression on standard error) produced a bias-adjusted intercept effect estimate of essentially zero (Fisher's z = -0.0009), compared to the uncorrected random-effects meta-analytic estimate of r = 0.25, illustrating how PET can drastically reduce effect estimates relative to raw meta-analysis.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "why": "The supporting quote only shows a code snippet and output metafor::transf.ztor(summary(fit_PET)$coefficients[Intercept, Estimate]) #> [1] -0.000872208 - it does not contain the narrative text claimed. The claim states this is In the demonstration dataset from a RoBMA tutorial about behavioural nudge interventions, but the quote gives no indication of the dataset's topic (nudges), no mention of Fisher's z = -0.0009 (the quote shows -0.000872208, a different number), no mention of uncorrected rand…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1"
+  },
+  {
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T1"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "quality": "primary",
+   "perspective": "Megastudy steelman",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/358331395_A_680000-person_megastudy_of_nudges_to_encourage_vaccination_in_pharmacies",
+   "quality": "unreliable",
+   "perspective": "Megastudy steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T4"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "quality": "primary",
+   "perspective": "Megastudy steelman",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+   "quality": "primary",
+   "perspective": "Megastudy steelman",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "quality": "secondary",
+   "perspective": "Replication skeptic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3"
+  },
+  {
+   "url": "https://psychology.a-z-topics.com/applied-psychology/behavioral-public-policy/evidence-synthesis-in-behavioral-policy/",
+   "quality": "secondary",
+   "perspective": "Replication skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://atticusli.com/replication-crisis/publication-bias-file-drawer-problem/",
+   "quality": "blog",
+   "perspective": "Replication skeptic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "quality": "secondary",
+   "perspective": "Replication skeptic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2"
+  },
+  {
+   "url": "https://anderson-review.ucla.edu/nudge-worth/",
+   "quality": "secondary",
+   "perspective": "Cost-effectiveness analyst",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "quality": "secondary",
+   "perspective": "Cost-effectiveness analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Cost",
+   "quality": "unreliable",
+   "perspective": "Cost-effectiveness analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://journals.sagepub.com/doi/abs/10.1177/09567976211024535",
+   "quality": "unreliable",
+   "perspective": "Multi-site replication",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/09567976211024535",
+   "quality": "unreliable",
+   "perspective": "Multi-site replication",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/352313110_How_Accurate_Are_Accuracy-Nudge_Interventions_A_Preregistered_Direct_Replication_of_Pennycook_et_al_2020",
+   "quality": "unreliable",
+   "perspective": "Multi-site replication",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T4"
+  },
+  {
+   "url": "https://www.semanticscholar.org/paper/How-Accurate-Are-Accuracy-Nudge-Interventions-A-of-Roozenbeek-Freeman/e773b41de41b65820e24236c92e6d51b094570c4",
+   "quality": "unreliable",
+   "perspective": "Multi-site replication",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/abs/10.3982/ECTA18709",
+   "quality": "unreliable",
+   "perspective": "DellaVigna & Linos primary source",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2"
+  },
+  {
+   "url": "https://www.nber.org/system/files/working_papers/w27594/w27594.pdf",
+   "quality": "unreliable",
+   "perspective": "DellaVigna & Linos primary source",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T3"
+  },
+  {
+   "url": "https://eml.berkeley.edu/~sdellavi/wp/NudgeToScale2021-01-13c.pdf",
+   "quality": "unreliable",
+   "perspective": "DellaVigna & Linos primary source",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3"
+  },
+  {
+   "url": "https://eml.berkeley.edu/~sdellavi/wp/NudgeToScale2020-03-20.pdf",
+   "quality": "primary",
+   "perspective": "DellaVigna & Linos primary source",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T3"
+  },
+  {
+   "url": "https://www.oecd.org/",
+   "quality": "unreliable",
+   "perspective": "OECD/BIT institutional track record",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1"
+  },
+  {
+   "url": "https://www.oecd.org/en/topics/development.html",
+   "quality": "unreliable",
+   "perspective": "OECD/BIT institutional track record",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 56,
+  "urlDupes": 1,
+  "budgetDropped": 8,
+  "claimsDroppedBeforeVerify": 26,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 82,
+    "ok": 82,
+    "fail": 0,
+    "results": 446
+   }
+  },
+  "sourceTiers": {
+   "T2": 8,
+   "T1": 6,
+   "T3": 10,
+   "T4": 2
+  },
+  "killsByLens": {
+   "support": 10,
+   "counter": 1,
+   "provenance": 9
+  },
+  "agentCalls": 280,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 704360,
+  "outputTokens": 151600,
+  "wallSeconds": 595.8,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 20,
+  "killed": 10,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}

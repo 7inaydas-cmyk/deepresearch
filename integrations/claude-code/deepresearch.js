@@ -480,14 +480,29 @@ const dupes = []
 const budgetDropped = []
 const relRank = { high: 0, medium: 1, low: 2 }
 
-// A supplied premise is a decision to respect; a drafted one is a premise to test. Without
-// this the critic flags a human-ratified assumption as 'accepted instead of tested'.
-const provenanceNote = prov => {
-  if (!prov) return ''
-  const sup = Object.keys(prov).filter(k => prov[k] === 'supplied'), dra = Object.keys(prov).filter(k => prov[k] === 'drafted')
-  if (!sup.length) return ''
-  return '   Provenance of the framing: the asker SUPPLIED ' + sup.join(', ') + (dra.length ? '; the model DRAFTED ' + dra.join(', ') : '') +
-    '. A supplied field is a decision the asker ratified — do NOT flag it as a premise accepted instead of tested; judge whether the research honoured it. A drafted field is the model\'s guess and IS fair game.\n'
+// Check 3 of the critic, GENERATED with the provenance in it.
+// This used to be a caveat prepended to a fixed check 3. It did not work: the caveat
+// landed at the tail of check 2, and check 3 then arrived as a fresh numbered
+// instruction containing the exact phrase the caveat forbade. Measured 2026-09-07 in
+// the Python build - the critic flagged the asker's own ratified d=0.05 threshold as
+// unjustified. A negative aside loses to a later positive instruction, so the phrase is
+// now simply absent when there is nothing it could correctly apply to.
+const HUNT = 'a leading sub-question, a premise accepted instead of tested, a perspective set that shares one blind spot, a framing that made a whole class of answers unreachable'
+const planFlawsCheck = prov => {
+  const plain = '3. **Plan flaws.** Did the SCOPING itself steer the research wrong — ' + HUNT + '?\n\n'
+  if (!prov) return plain
+  const sup = Object.keys(prov).filter(k => prov[k] === 'supplied')
+  const dra = Object.keys(prov).filter(k => prov[k] === 'drafted')
+  if (!sup.length) return plain
+  let out = '3. **Plan flaws.** The framing has two parts and they are judged DIFFERENTLY.\n' +
+    '   - The asker RATIFIED ' + sup.join(', ') + ' before the run. These are DECISIONS, not premises. ' +
+    'Judge only whether the research HONOURED them — did it stay inside the stated scope, use the stated ' +
+    'threshold, chase what the asker said would change the answer? Do not ask the research to justify, ' +
+    'source or re-derive them, and do not report them as untested: the asker was not required to defend them to you.\n'
+  out += dra.length
+    ? '   - The model DRAFTED ' + dra.join(', ') + '. These ARE fair game: ' + HUNT + '?\n\n'
+    : '   - Nothing in the framing was model-drafted, so there is no drafted premise to test.\n\n'
+  return out
 }
 // ═══ Prompts ════════════════════════════════════════════════════════════════
 const SEARCH_PROMPT = angle =>
@@ -1322,8 +1337,7 @@ const critiques = (await parallel(Array.from({ length: T.critics }, (_, k) => ()
     'List any assertion that does not — inserted facts, inflated certainty, a hedge quietly dropped, a "therefore" the claims do not license. This is the highest-yield check; do it first and do it literally.\n' +
     '   For each one, ALSO put the offending sentence into `untraceableVerbatim` copied CHARACTER FOR CHARACTER from the summary above — no quotation marks added, no ellipsis, no rewording, no summarising. It is used to delete that sentence by exact string match, so a paraphrase silently does nothing. Same order and same length as `untraceableStatements`.\n' +
     '2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was never searched — a primary paper, official documentation, a dataset, a dissenting expert, a non-English or non-Western source, a more recent measurement?\n' +
-    provenanceNote(CONTRACT.provenance) +
-    '3. **Plan flaws.** Did the SCOPING itself steer the research wrong — a leading sub-question, a premise accepted instead of tested, a perspective set that shares one blind spot, a framing that made a whole class of answers unreachable?\n\n' +
+    planFlawsCheck(CONTRACT.provenance) +
     'Verdict: **sound** (nothing material) · **minor-gaps** (real but does not change the answer) · **material-gaps** (a user acting on this report could be misled).\n' +
     'Be concrete. "Could be more thorough" is useless. Name the exact sentence or the exact missing source type.\n\nStructured output only.',
     { label: 'critic:' + (k + 1), phase: 'Critique', schema: CRITIC_SCHEMA }

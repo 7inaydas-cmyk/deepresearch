@@ -656,12 +656,28 @@ ok(all(v == "supplied" for v in _r2["scopeContract"]["provenance"].values()), "a
 _r3 = run()
 ok(all(v == "drafted" for v in _r3["scopeContract"]["provenance"].values()),
    "no contract supplied: every field is drafted, and the report SAYS so rather than looking identical")
-_pc = dr.p_critic(0, 2, "Q?", ["s1"], [{"label": "L", "lens": "x"}], [{"claim": "c1"}], "S.", [],
-                  provenance={"assumptions": "supplied", "hypotheses": "drafted"})
-ok("the asker SUPPLIED assumptions" in _pc and "DRAFTED hypotheses" in _pc and "do NOT flag" in _pc,
-   "the critic is told which premises were ratified, so it stops flagging a human decision as 'accepted instead of tested'")
-ok("SUPPLIED" not in dr.p_critic(0, 2, "Q?", ["s1"], [], [{"claim": "c"}], "S.", [], provenance=None),
-   "and says nothing when there is no provenance to report")
+# EFFECT, not presence. The previous test here asserted the provenance string was IN the
+# prompt and passed for a full day while the instruction was being ignored: the note
+# rendered under check 2, and check 3 then re-issued the very phrase it forbade. Assert
+# what the prompt DOES - whether the forbidden instruction is there at all.
+_FORBIDDEN = "a premise accepted instead of tested"
+_crit = lambda prov: dr.p_critic(0, 2, "Q?", ["s1"], [], [{"claim": "c"}], "S.", [], prov)
+_all_sup = {f: "supplied" for f in dr.FRAMING_FIELDS}
+ok(_FORBIDDEN not in _crit(_all_sup),
+   "with every field ratified there is NO instruction to hunt an untested premise - the "
+   "caveat-plus-instruction shape let the instruction win")
+ok(_FORBIDDEN in _crit({f: "drafted" for f in dr.FRAMING_FIELDS}),
+   "with every field drafted the hunt instruction is present in full")
+ok(_FORBIDDEN in _crit(None), "and with no provenance at all the check is unchanged")
+_mixed = _crit(dict(_all_sup, hypotheses="drafted"))
+_after = _mixed[_mixed.index("RATIFIED"):]
+ok(_FORBIDDEN in _after.split("DRAFTED hypotheses", 1)[1],
+   "on a mixed contract the hunt is scoped to the DRAFTED fields, stated after them")
+ok(_FORBIDDEN not in _mixed.split("RATIFIED", 1)[1].split("- The model DRAFTED", 1)[0],
+   "and never appears in the ratified half")
+ok("do not report them as untested" in _mixed and "3. **Plan flaws" in _mixed,
+   "the rule lives INSIDE check 3, not orphaned under check 2 where it used to render")
+ok("RATIFIED" not in _crit(None), "says nothing about ratification when there is none")
 
 print("\n-- load_contract: strict on a human-written file, before any model call --")
 def _write(obj):

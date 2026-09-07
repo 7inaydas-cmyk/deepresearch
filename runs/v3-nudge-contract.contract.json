@@ -1,0 +1,40 @@
+{
+ "hypotheses": [
+  {
+   "hypothesis": "The corrected average effect is at or above d = 0.05 (and plausibly near d = 0.10-0.20 as in megastudy estimates), meaning nudges remain cost-effective enough to justify continued spending at current levels.",
+   "killCriterion": "If the pooled corrected estimate (via PET-PEESE, RoBMA, or selection models) from 2020+ field/megastudy data falls below d = 0.05 with a confidence/credible interval that excludes 0.05, this hypothesis is eliminated."
+  },
+  {
+   "hypothesis": "The corrected average effect is positive but small and below the d = 0.05 threshold, meaning spending should be scaled back rather than eliminated, focusing only on higher-powered or replicated programme areas.",
+   "killCriterion": "If the corrected estimate is reliably at or above 0.05, or alternatively is statistically indistinguishable from zero (not just 'small but positive'), this intermediate hypothesis is eliminated."
+  },
+  {
+   "hypothesis": "The corrected average effect is effectively zero or not reliably distinguishable from zero once publication bias is removed, meaning current spending is not justified and any further rollout should require pre-registered replication before funding.",
+   "killCriterion": "If corrected estimates from multiple independent bias-correction methods converge above d = 0.05 with intervals excluding zero, this hypothesis is eliminated."
+  },
+  {
+   "hypothesis": "Heterogeneity across nudge types/domains is so large that no single average effect size is meaningful, making the budget decision contingent on which specific nudge categories are funded rather than on an aggregate corrected effect.",
+   "killCriterion": "If meta-analytic I² or tau statistics are low-to-moderate and a single corrected pooled estimate has a reasonably narrow interval, this hypothesis is eliminated in favour of one of the average-effect hypotheses above."
+  }
+ ],
+ "decisionAtStake": "Whether our behavioural-insights team should keep commissioning nudge trials at the current budget, scale them back, or require a pre-registered replication before any rollout.",
+ "keyQuestion": "After correcting for publication bias, is the average real-world effect size of behavioural nudge interventions large enough to justify continued programme spending?",
+ "assumptions": [
+  "Real-world field trials and megastudies only; laboratory and hypothetical-choice studies are out of scope.",
+  "'Large enough to justify spending' means a corrected effect that survives at d >= 0.05 on the outcome the programme actually cares about, not on an intermediate proxy.",
+  "Evidence published 2020 onward, since the bias-correction debate post-dates Mertens et al. (2022).",
+  "Effects are averaged across domains; we are not asking which specific nudge type works."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "A pre-registered multi-site replication finding a corrected effect at or above d = 0.20 would justify the current budget outright.",
+  "Evidence that the bias-correction methods themselves (PET-PEESE, RoBMA, selection models) are mis-specified for this literature would invalidate the corrected estimates entirely.",
+  "A demonstration that heterogeneity is so large that an average effect is the wrong summary statistic would change the question from 'how big' to 'which ones'."
+ ],
+ "provenance": {
+  "decisionAtStake": "supplied",
+  "keyQuestion": "supplied",
+  "assumptions": "supplied",
+  "whatWouldChangeTheAnswer": "supplied",
+  "hypotheses": "drafted"
+ }
+}

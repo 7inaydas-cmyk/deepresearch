@@ -31,7 +31,7 @@ from __future__ import annotations
 
 __all__ = ["make_audit_probes", "score_audit_probes",
            "make_critic_probes", "score_critic_probes",
-           "run_audit_probes", "run_critic_probes", "main"]
+           "run_audit_probes", "run_critic_probes", "run_framing_probes", "main"]
 
 
 # ── Citation auditor (#11) ───────────────────────────────────────────────────
@@ -303,6 +303,138 @@ def run_critic_probes(rep):
     return out
 
 
+# ── Provenance rule (#the critic and ratified premises) ─────────────────────
+# A structural test can only show the forbidden instruction is absent from the prompt.
+# Whether the critic ACTS on it needs the critic. This is the A/B: the same report, the
+# same prompt builder, run once with the real provenance and once with it faked to
+# all-drafted. If the rule works, the ratified arm names the asker's own decisions as
+# plan flaws LESS often than the arm that was told nothing was ratified.
+
+# The shape of the violation, not a bag of words. A flaw that QUOTES a supplied field
+# while saying the research ignored it is legitimate - that is "did it honour the
+# decision", which the rule still asks for. The violation is a flaw that asks the ASKER
+# to defend a decision they already made, and it has a recognisable phrasing.
+_DEMAND_PHRASES = (
+    "accepted rather than tested", "accepted instead of tested", "assumed rather than tested",
+    "without establishing", "without sourcing", "without ever establishing",
+    "never established", "never sourced", "never justified", "not justified",
+    "fails to justify", "does not justify", "is unjustified", "arbitrary threshold",
+    "no justification for", "without justifying",
+)
+
+
+def _targets_supplied(flaw, supplied_values):
+    """Does this plan flaw demand the asker justify one of their OWN decisions?
+
+    Tightened after the first live A/B scored a false positive: the earlier version
+    matched any 6-letter word from the contract plus any word containing "justif", and
+    fired on "five of six perspectives ... only one addresses spending justification" -
+    a perfectly good perspective-set flaw. Both halves are now specific: a recognisable
+    demand PHRASE, and a genuinely distinctive token (a number, year, or proper noun),
+    never ordinary English.
+    """
+    low = flaw.lower()
+    phrase = next((d for d in _DEMAND_PHRASES if d in low), None)
+    if not phrase:
+        return None
+    for token in supplied_values:
+        if token.lower() in low:
+            return "%s | %s" % (token, phrase)
+    return None
+
+
+def _distinctive_tokens(contract):
+    """Fragments only the asker's own framing would contain: numbers, years, proper nouns,
+    hyphenated technical terms. NOT ordinary words - that is what produced the false
+    positive on 'continued'."""
+    import re
+    out = set()
+    prov = contract.get("provenance") or {}
+    for field, origin in prov.items():
+        if origin != "supplied":
+            continue
+        v = contract.get(field)
+        text = " ".join(str(x) for x in v) if isinstance(v, list) else str(v or "")
+        out.update(re.findall(r"\d+\.\d+", text))                      # 0.05, 0.20
+        out.update(re.findall(r"\b(?:19|20)\d{2}\b", text))             # 2020, 2022
+        out.update(re.findall(r"\b[A-Z][a-z]+-[A-Z]{2,}[A-Za-z]*\b", text))   # PET-PEESE
+        out.update(re.findall(r"\b[A-Z]{3,}\b", text))                   # RoBMA-style
+        # Proper nouns, but never at the start of a sentence, where capitals mean nothing.
+        for m in re.finditer(r"(?<![.!?]\s)(?<!^)\b([A-Z][a-z]{3,})\b", text, re.M):
+            out.add(m.group(1))
+    return sorted(out)
+
+
+def run_framing_probes(rep):
+    """Does the critic actually respect a ratified framing? Real prompt, both arms."""
+    from . import engine as E
+    contract = rep.get("scopeContract") or {}
+    prov = contract.get("provenance") or {}
+    supplied = [f for f, v in prov.items() if v == "supplied"]
+    if not supplied:
+        return {"reason": "this report had no supplied framing fields, so there is nothing to respect"}
+    tokens = _distinctive_tokens(contract)
+    depth = rep.get("depth") or "standard"
+    n_critics = (E.TIERS.get(depth) or E.TIERS["standard"])["critics"]
+    q = rep.get("question") or ""
+    subqs = []
+    for c in (rep.get("coverage") or []):
+        if isinstance(c, dict):
+            subqs.append(str(c.get("subQuestion") or "sub-question %s (%s)"
+                              % (c.get("subQuestionIndex"), c.get("status", "?"))))
+    persps = [p for p in (rep.get("perspectives") or []) if isinstance(p, dict)]
+    confirmed = [{"claim": d.get("claim", "")} for d in (rep.get("citationDetail") or [])
+                 if isinstance(d, dict) and d.get("claim")]
+    summary, findings = _report_summary_and_findings(rep)
+    faked = {f: "drafted" for f in prov}
+
+    def arm(spec):
+        which, p = spec
+        got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, summary, findings, p),
+                      E.S_CRITIC, label="probe:framing:" + which, max_tokens=3000)
+        return (which, got or {})
+
+    jobs = [("ratified", prov)] * n_critics + [("as-if-drafted", faked)] * n_critics
+    got = [x for x in E.pmap(arm, jobs) if x]
+    hits = {}
+    for which in ("ratified", "as-if-drafted"):
+        flaws = [f for k, c in got if k == which for f in (c.get("planFlaws") or [])]
+        found = [(f, _targets_supplied(f, tokens)) for f in flaws]
+        hits[which] = {"planFlaws": len(flaws),
+                       "demandingJustificationOfASuppliedField":
+                           [{"matched": t, "flaw": f[:260]} for f, t in found if t],
+                       # every flaw, so the detector can be re-scored without re-running
+                       # the critic - the first version of it was wrong and re-running to
+                       # find that out cost four model calls.
+                       "allFlaws": [f[:400] for f in flaws]}
+    a = len(hits["ratified"]["demandingJustificationOfASuppliedField"])
+    b = len(hits["as-if-drafted"]["demandingJustificationOfASuppliedField"])
+    return {
+        "suppliedFields": supplied, "tokensWatched": tokens[:12],
+        "criticsPerArm": n_critics, "arms": hits,
+        "reading": (
+            "the rule holds: the ratified arm demanded nothing and the as-if-drafted arm "
+            "demanded %d" % b if a == 0 and b >= 2 else
+            "the rule is NOT working: the ratified arm demands the asker justify a decision "
+            "they made, and the as-if-drafted arm does not" if a > 0 and b == 0 else
+            "INCONCLUSIVE at this sample size. ratified=%d as-if-drafted=%d, with %d critic(s) "
+            "per arm and a keyword detector over free text. Two runs of this probe on the same "
+            "report gave (1, 6) and (1, 0) - the run-to-run variance is larger than the effect, "
+            "and BOTH ratified hits were false positives on inspection ('spending justification' "
+            "as a topic, and 'Large' from the asker's own quoted phrase). Read allFlaws yourself; "
+            "do not quote a verdict from this number." % (a, b, n_critics)),
+        "measures": "whether the critic ACTS on provenance, not whether it was told about it",
+        "instrumentLimits": (
+            "A keyword detector over free-text plan flaws is a weak instrument and this one has "
+            "produced a false positive on every run so far. The STRUCTURAL claim - that the "
+            "forbidden instruction is absent from the prompt when a field is ratified - is "
+            "deterministic and is tested in tests/test_pipeline.py. This probe tests something "
+            "harder and does not yet do it reliably. Settling it needs many more arms, or a "
+            "model judge asked 'does this flaw demand the asker justify their own decision?', "
+            "which is itself an unvalidated judge."),
+    }
+
+
 def main():
     import argparse
     import json
@@ -314,7 +446,8 @@ def main():
     ap.add_argument("--report", "-r", required=True, help="a finished report JSON")
     ap.add_argument("--out", "-o", help="write the probe result here")
     ap.add_argument("--audit-n", type=int, default=5, help="how many citation probes to inject")
-    ap.add_argument("--only", choices=["audit", "critic"], help="run just one of the two")
+    ap.add_argument("--only", choices=["audit", "critic", "framing"],
+                    help="run just one of the three")
     a = ap.parse_args()
 
     from . import engine as E
@@ -322,11 +455,15 @@ def main():
     rep = json.load(open(a.report, encoding="utf-8"))
     res = {"report": a.report, "question": (rep.get("question") or "")[:200],
            "measures": "detection of INJECTED defects, not validity of the pipeline as a whole"}
-    if a.only != "critic":
+    if a.only not in ("critic", "framing"):
         E.log("Injecting %d citation-audit probes (#11)..." % a.audit_n)
         res["auditProbes"] = run_audit_probes(rep, a.audit_n)
         E.log("  catch rate: %s" % res["auditProbes"].get("catchRate"))
-    if a.only != "audit":
+    if a.only == "framing" or a.only is None:
+        E.log("Re-running the critic with the real provenance and with it faked to all-drafted...")
+        res["framingProbes"] = run_framing_probes(rep)
+        E.log("  " + str(res["framingProbes"].get("reading") or res["framingProbes"].get("reason")))
+    if a.only not in ("audit", "framing"):
         E.log("Running the process critic on a clean and a degraded summary (#10)...")
         res["criticProbes"] = run_critic_probes(rep)
         E.log("  clean=%s degraded=%s moved=%s"

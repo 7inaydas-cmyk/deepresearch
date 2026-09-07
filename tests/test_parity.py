@@ -36,7 +36,7 @@ SHARED = {
     "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
     "framing-contract intake":   ("def load_contract(", "const intakeContract = "),
     "per-field provenance":      ('contract["provenance"] = {', "CONTRACT.provenance = "),
-    "critic reads provenance":   ("def _provenance_note(", "const provenanceNote = "),
+    "critic reads provenance":   ("def _plan_flaws_check(", "const planFlawsCheck = "),
     "corrective retry prompt":   ("YOUR PREVIOUS RESPONSE WAS REJECTED", "YOUR PREVIOUS RESPONSE WAS REJECTED"),
     "deterministic tiering":     ("def tier_of", "const tierOf"),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),

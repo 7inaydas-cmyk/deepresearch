@@ -259,6 +259,16 @@ import fs2 from 'node:fs'
   ok(typo.out.error && /unknown field/.test(typo.out.error), 'a typo is not silently honoured: ' + typo.out.error)
   ok(typo.calls === 0 && bad.calls === 0, 'and neither spent a single agent call')
 }
+{
+  // Effect, not presence — the Python twin of this test passed while the rule was ignored.
+  const sup = { keyQuestion: 'k', assumptions: ['a', 'b'], whatWouldChangeTheAnswer: ['w', 'x'],
+                decisionAtStake: 'd', hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }] }
+  const { logs: L1 } = await run('T21 fully ratified framing: no untested-premise hunt', { question: 'Q', depth: 'standard', contract: sup })
+  ok(L1.some(l => /nothing to draft/.test(l)), 'a fully supplied contract drafts nothing')
+  const { out } = await run('T21b provenance reaches the report', { question: 'Q', depth: 'standard', contract: sup })
+  ok(out.scopeContract.provenance && Object.values(out.scopeContract.provenance).every(v => v === 'supplied'),
+     'every field reads supplied: ' + JSON.stringify(out.scopeContract.provenance))
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

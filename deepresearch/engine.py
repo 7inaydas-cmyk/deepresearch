@@ -827,20 +827,45 @@ def p_fact(claim, url, text):
         "- **unreachable** - the fetch returned nothing, or the page is a paywall/error shell.\n\n"
         "A working link proves the page EXISTS, not that it says this. Judge only the text above.")
 
-def _provenance_note(provenance):
-    """A supplied premise is a decision to respect; a drafted one is a premise to test.
-    Without this the critic flags a human-ratified assumption as 'accepted instead of
-    tested' - a false plan-flaw on exactly the runs that were framed most carefully."""
+def _plan_flaws_check(provenance):
+    """Generate check 3 of the critic, provenance-aware.
+
+    This used to be a caveat PREPENDED to a fixed check 3. It did not work, and the
+    reason is visible the moment you render the prompt: the caveat landed at the tail of
+    check 2, indented under it, and check 3 then arrived as a fresh numbered instruction
+    containing the exact phrase the caveat forbade - "a premise accepted instead of
+    tested". A negative aside loses to a later positive instruction every time.
+
+    Measured 2026-09-07: with all four non-hypothesis fields supplied, the critic still
+    returned "the scoping treats d=0.05 as the threshold ... without the research ever
+    establishing or sourcing why d=0.05" - d=0.05 being the asker's own ratified
+    assumption.
+
+    So the check is now WRITTEN with the provenance in it, and the forbidden phrase is
+    simply absent when there is nothing it could correctly apply to. One instruction
+    about premises, and it already knows which fields are decisions.
+    """
+    hunt = ("a leading sub-question, a premise accepted instead of tested, a perspective "
+            "set sharing one blind spot")
     if not provenance:
-        return ""
+        return "3. **Plan flaws.** Did the SCOPING steer the research wrong - " + hunt + "?\n"
     sup = [f for f, v in provenance.items() if v == "supplied"]
     dra = [f for f, v in provenance.items() if v == "drafted"]
     if not sup:
-        return ""
-    return ("   Provenance of the framing: the asker SUPPLIED %s%s. A supplied field is a decision the "
-            "asker ratified - do NOT flag it as a premise accepted instead of tested; judge whether the "
-            "research honoured it. A drafted field is the model's guess and IS fair game.\n"
-            % (", ".join(sup), ("; the model DRAFTED " + ", ".join(dra)) if dra else ""))
+        return "3. **Plan flaws.** Did the SCOPING steer the research wrong - " + hunt + "?\n"
+    out = ("3. **Plan flaws.** The framing has two parts and they are judged DIFFERENTLY.\n"
+           "   - The asker RATIFIED " + ", ".join(sup) + " before the run. These are "
+           "DECISIONS, not premises. Judge only whether the research HONOURED them - did it "
+           "stay inside the stated scope, use the stated threshold, chase what the asker said "
+           "would change the answer? Do not ask the research to justify, source or re-derive "
+           "them, and do not report them as untested: the asker was not required to defend "
+           "them to you.\n")
+    if dra:
+        out += ("   - The model DRAFTED " + ", ".join(dra) + ". These ARE fair game: " + hunt
+                + "?\n")
+    else:
+        out += "   - Nothing in the framing was model-drafted, so there is no drafted premise to test.\n"
+    return out
 
 
 def p_critic(k, total, q, subqs, persps, confirmed, summary, findings, provenance=None):
@@ -876,9 +901,7 @@ def p_critic(k, total, q, subqs, persps, confirmed, summary, findings, provenanc
         "2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was "
         "never searched - a primary paper, official documentation, a dataset, a dissenting expert, a more recent "
         "measurement?\n"
-        + _provenance_note(provenance) +
-        "3. **Plan flaws.** Did the SCOPING steer the research wrong - a leading sub-question, a premise accepted "
-        "instead of tested, a perspective set sharing one blind spot?\n\n"
+        + _plan_flaws_check(provenance) + "\n"
         "Verdict: **sound** / **minor-gaps** / **material-gaps** (a user acting on this could be misled). Be "
         "concrete: name the exact sentence or the exact missing source type. \"Could be more thorough\" is useless.")
 

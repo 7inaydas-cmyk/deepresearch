@@ -1,0 +1,59 @@
+{
+ "report": "runs/v3-nudge-contract.json",
+ "question": "After correcting for publication bias, is the average real-world effect size of behavioural nudge interventions large enough to justify continued programme spending?",
+ "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
+ "framingProbes": {
+  "suppliedFields": [
+   "decisionAtStake",
+   "keyQuestion",
+   "assumptions",
+   "whatWouldChangeTheAnswer"
+  ],
+  "tokensWatched": [
+   "0.05",
+   "0.20",
+   "2020",
+   "2022",
+   "Large",
+   "Mertens",
+   "PEESE",
+   "PET"
+  ],
+  "criticsPerArm": 2,
+  "arms": {
+   "ratified": {
+    "planFlaws": 6,
+    "demandingJustificationOfASuppliedField": [
+     {
+      "matched": "Large | never established",
+      "flaw": "The finding/summary conflates two different evidentiary bases (small-lab meta-analytic bias correction vs. large megastudy field results) without a stated method for weighing them against each other when they conflict — the plan never established how the asker"
+     }
+    ],
+    "allFlaws": [
+     "The finding/summary conflates two different evidentiary bases (small-lab meta-analytic bias correction vs. large megastudy field results) without a stated method for weighing them against each other when they conflict — the plan never established how the asker's 'real-world effect size' threshold should be adjudicated when megastudies and corrected meta-analyses disagree, leaving the final verdict",
+     "The megastudy steelman perspective's core claim (megastudies show nudges work at scale) is presented as in tension with the meta-analytic null, but the research never checks whether the megastudy effects themselves would survive publication-bias-style scrutiny (e.g., were all 19 text-message arms and all pre-registered outcomes reported, or could there be selective emphasis on the best-performing ",
+     "No perspective or claim addresses what threshold size would count as 'large enough to justify continued programme spending' from a decision-theoretic/cost-benefit standpoint independent of the discredited $100:$1 figure — the key question's threshold criterion is asserted to be unmet ('let alone reaches a practically meaningful threshold like d=0.05') without any claim in the pool establishing d=0",
+     "The perspective set has a shared blind spot: five of six perspectives (Meta-analyst, Megastudy steelman, Replication skeptic, Heterogeneity auditor, Cost-effectiveness analyst) focus on academic effect-size literature, while only one (Regulatory/practitioner reviewer) was tasked with grounding in actual government program spending decisions — yet that perspective's findings were never actually sur",
+     "The research treats 'is the effect large enough to justify spending' as answerable purely via statistical significance/credible-interval-includes-zero framing, but never operationalizes 'large enough to justify spending' against actual programme costs (which are often very low for nudges) — a magnitude-vs-cost framing that a Cost-effectiveness analyst perspective was nominally tasked with but did ",
+     "The executive summary elevates a single meta-analysis re-analysis (Mertens/Maier) to 'the best available bias-corrected evidence' without checking whether other bias-corrected meta-analyses of nudge literature exist or reaching out to alternative meta-analytic teams, despite the Meta-analyst constructor perspective being specifically charged with re-running models rather than trusting one publishe"
+    ]
+   },
+   "as-if-drafted": {
+    "planFlaws": 8,
+    "demandingJustificationOfASuppliedField": [],
+    "allFlaws": [
+     "The scoping and perspective set never included a persona representing program administrators who must decide near-term budget allocations under uncertainty (i.e., someone forced to weigh a null pooled academic estimate against operational/political costs of shutting down existing nudge units) - this creates a blind spot where the report can conclude 'undercuts case for spending' without engaging c",
+     "The scoping presupposes that a single pooled effect-size across all 'nudge interventions' is the right unit of analysis for a spending decision, when the heterogeneity evidence [2],[11],[29] and the Heterogeneity auditor perspective itself suggest programme spending decisions should be nudge-type-specific and domain-specific rather than aggregate - yet the exec summary still leads with and privile",
+     "Several sub-questions remain partial/unanswered (checklist items 2,4,5,6,7) yet the plan did not flag or trigger follow-up searches to close these before drafting the executive summary, indicating the synthesis proceeded despite acknowledged incomplete coverage.",
+     "The claim pool over-represents health/vaccination-domain megastudies (items 4,5,13,18,20,21,24,26) relative to other nudge domains (finance, environment, education) that are directly relevant to 'programme spending' broadly construed, suggesting the search process's megastudy steelman searches clustered around one easily-available topic (flu vaccination) rather than sampling across domains proport",
+     "The scoping conflated 'effect size after bias correction' with 'is programme spending justified' - these are related but distinct questions requiring actual spending/cost data, which was never gathered; the Cost-effectiveness analyst perspective's central ask (dollars-per-unit-outcome vs alternatives) was left as a debunking exercise on one 2017 figure rather than answered.",
+     "The perspective set has a shared blind spot: five of six perspectives (Meta-analyst, Megastudy steelman, Replication skeptic, Heterogeneity auditor, Cost-effectiveness) are academic/statistical in orientation, while only one (Regulatory/practitioner) represents actual programme implementers - yet that one perspective's evidence never materialized in the claim pool (claim [14] is just a title), lea",
+     "The scoping treated Maier et al./RoBMA as presumptively 'best available evidence' without the plan including a step to seek critiques or alternative bias-correction analyses of the same or newer datasets, risking anchoring on a single reanalysis paper's conclusions as definitive.",
+     "Marking sub-question 7 as simply 'unanswered' without the final report surfacing this gap to the reader is a process flaw - the executive summary should have explicitly noted which sub-question was dropped and why, so a reader can judge residual uncertainty."
+    ]
+   }
+  },
+  "reading": "the rule is NOT working: the ratified arm still demands the asker justify a decision they made",
+  "measures": "whether the critic ACTS on provenance, not whether it was told about it"
+ }
+}
