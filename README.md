@@ -162,6 +162,7 @@ instruments the numbers below were produced with.
 | `--calibrate N` | `DR_CALIBRATE` | Re-runs the panel on N verified claims and reports Cohen's kappa, Scott's pi, per-lens agreement, the confusion matrix and a pre-registered gate verdict. Doubles the verify cost for those N claims. **The gate needs N ≥ 30.** |
 | `--sample-dropped N` | `DR_SAMPLE_DROPPED` | Verifies N claims the budget discarded and reports how often they would have survived. Turns "most of the evidence is never checked" from a worry into a number. |
 | — | `DR_UNTRACEABLE=strike` | Removes untraceable sentences from the summary instead of flagging them. Default is `flag`, because the critic's precision is unmeasured and deleting on an unmeasured judgement is the unearned confidence this tool exists to catch. |
+| `--contract path.json` | — | A framing contract you already ratified — any subset of `decisionAtStake`, `keyQuestion`, `assumptions`, `whatWouldChangeTheAnswer`, `hypotheses`. **Supplied fields are never re-derived**; the model drafts only what is missing. A malformed file exits `4` before any model call. Every run writes the contract it used to `<out-stem>.contract.json`, so a re-run can pass it straight back and hold framing constant. |
 | `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded** — everything works but no general-web backend returns anything, so the run would be scholarly-only. |
 
 ```bash

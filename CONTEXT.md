@@ -88,8 +88,25 @@ A tier the engine may use as sole support for a claim.
 
 **Framing contract**:
 What is written before any search: the decision at stake, the assumptions, and the
-hypotheses with their kill criteria.
+hypotheses with their kill criteria. Each field is either supplied or drafted.
 _Avoid_: scope, plan (which comes after and is separate)
+
+**Supplied field**:
+A framing-contract field that arrived from outside the engine, ratified by a person. The
+engine never re-derives a supplied field.
+_Avoid_: user input, override, grilled field (grilling is one way a field gets supplied, not
+the only way)
+
+**Drafted field**:
+A framing-contract field the model wrote because it was not supplied. A drafted field is a
+premise to test; a supplied field is a decision to respect.
+_Avoid_: generated, default, fallback
+
+**Provenance**:
+Which fields of a framing contract were supplied and which were drafted. Travels with the
+report, because a drafted assumption and a supplied one look identical in the JSON and mean
+opposite things.
+_Avoid_: source, origin, author
 
 **Kill criterion**:
 The specific evidence that, if found, would eliminate a hypothesis. Written before

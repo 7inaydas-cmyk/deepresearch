@@ -165,11 +165,11 @@ def install(cfg):
 LOGS = []
 
 
-def run(cfg=None, depth="standard", q="Test question?"):
+def run(cfg=None, depth="standard", q="Test question?", contract=None):
     install(cfg or {})
     dr.preflight = lambda: "stub"   # the stubs replace the network; nothing to preflight
     dr._stats.update(calls=0, errors=0, ratelimited=0, in_tok=0, out_tok=0)
-    return dr.deepresearch(q, depth)
+    return dr.deepresearch(q, depth, contract=contract)
 
 
 # ── Tiering: a pure function, so test it like one ───────────────────────────
@@ -630,6 +630,70 @@ ok("calibration=calibration" in _fallback and "droppedSample=dropped_sample" in 
    "one run computed kappa=0.7115 at n=30, logged `calibrated`, and then threw it away")
 ok("synthesisFailed" in _fallback,
    "and the report says it is incomplete rather than empty, naming what DID run")
+
+print("\n-- the framing-contract intake: supplied fields win, the model drafts the rest --")
+import json as _json, os as _os, tempfile as _tmp
+_sup = {"decisionAtStake": "whether to buy standing desks for 40 people",
+        "keyQuestion": "do standing desks improve health outcomes for office workers?",
+        "assumptions": ["office workers, not clinical populations", "12-month horizon"],
+        "whatWouldChangeTheAnswer": ["an RCT showing harm", "no effect beyond sitting time"]}
+_r = run(contract=_sup)
+_sc = _r.get("scopeContract") or {}
+ok(_sc.get("keyQuestion") == _sup["keyQuestion"] and _sc.get("assumptions") == _sup["assumptions"],
+   "supplied fields reach the report VERBATIM - the model was told to copy them and the overwrite guarantees it")
+ok(_sc.get("provenance", {}).get("assumptions") == "supplied" and _sc["provenance"].get("hypotheses") == "drafted",
+   "provenance is per FIELD: assumptions supplied, hypotheses drafted (%s)" % _sc.get("provenance"))
+ok(len(_sc.get("hypotheses") or []) == 2, "the model drafted the missing hypotheses, seeded by the supplied fields")
+ok(any("Contract: 4 field(s) supplied" in l and "drafting decisionAtStake" not in l and "drafting" in l for l in LOGS),
+   "the log names what was supplied and what is being drafted")
+ok(len(_r.get("hypothesisVerdicts") or []) == 2, "drafted hypotheses are still adjudicated downstream - nine readers unchanged")
+ok("framingProvenance" in (_r.get("honestLimits") or {}), "honestLimits explains what provenance means")
+_full = dict(_sup, hypotheses=[{"hypothesis": "h1", "killCriterion": "k1"}, {"hypothesis": "h2", "killCriterion": "k2"}])
+_r2 = run(contract=_full)
+ok(any("nothing to draft" in l for l in LOGS) and not any(l.strip().startswith("[framing]") for l in LOGS),
+   "a FULLY supplied contract skips the framing call entirely - no model call for a decision already made")
+ok(all(v == "supplied" for v in _r2["scopeContract"]["provenance"].values()), "and every field reads supplied")
+_r3 = run()
+ok(all(v == "drafted" for v in _r3["scopeContract"]["provenance"].values()),
+   "no contract supplied: every field is drafted, and the report SAYS so rather than looking identical")
+_pc = dr.p_critic(0, 2, "Q?", ["s1"], [{"label": "L", "lens": "x"}], [{"claim": "c1"}], "S.", [],
+                  provenance={"assumptions": "supplied", "hypotheses": "drafted"})
+ok("the asker SUPPLIED assumptions" in _pc and "DRAFTED hypotheses" in _pc and "do NOT flag" in _pc,
+   "the critic is told which premises were ratified, so it stops flagging a human decision as 'accepted instead of tested'")
+ok("SUPPLIED" not in dr.p_critic(0, 2, "Q?", ["s1"], [], [{"claim": "c"}], "S.", [], provenance=None),
+   "and says nothing when there is no provenance to report")
+
+print("\n-- load_contract: strict on a human-written file, before any model call --")
+def _write(obj):
+    fd, path = _tmp.mkstemp(suffix=".json", dir=_os.environ.get("TMPDIR") or None)
+    with _os.fdopen(fd, "w", encoding="utf-8") as f:
+        _json.dump(obj, f)
+    return path
+def _raises(obj):
+    try:
+        dr.load_contract(_write(obj)); return None
+    except dr.ContractError as e:
+        return str(e)
+ok(dr.load_contract(_write(_sup)) == _sup, "a valid partial contract loads and round-trips exactly")
+_e = _raises({"assumptions": "one long prose string of assumptions", "keyQuestion": "k"})
+ok(_e and "assumptions" in _e, "a malformed supplied field is REJECTED and named, never dropped and re-drafted: %s" % (_e or "")[:80])
+_e = _raises({"assumption": ["typo"]})
+ok(_e and "unknown field" in _e and "assumption" in _e,
+   "a typo'd field name is rejected - silently ignoring it would let the asker believe it was honoured")
+_e = _raises({"hypotheses": [{"hypothesis": "h1"}]})
+ok(_e and "hypotheses" in _e, "a hypothesis without a killCriterion is rejected at intake")
+ok(_raises({}) and "no fields" in _raises({}), "an empty contract is rejected")
+ok(dr.load_contract(_write(dict(_sup, provenance={"assumptions": "supplied"}))) == _sup,
+   "a persisted contract (carrying provenance) can be passed straight back in - provenance is stripped")
+ok(dr.load_contract(_write({"keyQuestion": "k"})) == {"keyQuestion": "k"}, "a single supplied field is enough")
+_main_src2 = _engine_txt.split("def main(", 1)[1]
+ok("os.path.abspath(a.contract)" in _main_src2 and "os.path.abspath(a.out)" in _main_src2,
+   "--contract AND --out are absolutised before the --bg re-exec, which runs the child under a different cwd")
+ok('"--question", a.question.strip()' in _main_src2 and "sys.argv[1:]" not in _main_src2.split("start_new_session")[0],
+   "the --bg child's argv is rebuilt from the PARSED args, not copied from sys.argv")
+ok("sys.exit(EXIT_CONTRACT)" in _main_src2 and dr.EXIT_CONTRACT == 4,
+   "a rejected contract exits 4 in the PARENT, before detaching and before any model call")
+ok('".contract.json"' in _main_src2, "every run writes the contract it used beside the report")
 
 print("\n-- the model seam: shape() is the only form a caller ever sees --")
 _ok = lambda sch, o: dr.shape(sch, o, "t")

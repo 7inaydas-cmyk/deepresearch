@@ -34,6 +34,9 @@ SHARED = {
     "<UNKNOWN> sentinel retry":  ("_UNKNOWN_SENTINEL", "hasUnknownSentinel"),
     "empty-array schema retry":  ("_schema_shortfall", "schemaShortfall"),
     "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
+    "framing-contract intake":   ("def load_contract(", "const intakeContract = "),
+    "per-field provenance":      ('contract["provenance"] = {', "CONTRACT.provenance = "),
+    "critic reads provenance":   ("def _provenance_note(", "const provenanceNote = "),
     "corrective retry prompt":   ("YOUR PREVIOUS RESPONSE WAS REJECTED", "YOUR PREVIOUS RESPONSE WAS REJECTED"),
     "deterministic tiering":     ("def tier_of", "const tierOf"),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),
@@ -63,6 +66,10 @@ SHARED = {
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
 # dumping ground for "we forgot to port it".
 PYTHON_ONLY = {
+    "contract persisted beside report":
+        "The Workflow runtime has no filesystem, so the JS build cannot write "
+        "<out>.contract.json. Its report carries the same scopeContract with provenance, "
+        "which the caller can save; the Python CLI writes it because it already writes --out.",
     "selftest DEGRADED gate":
         "The JS build has no selftest: the Claude Code Workflow runtime owns search, "
         "fetch, credentials and concurrency, so there is nothing for this build to "

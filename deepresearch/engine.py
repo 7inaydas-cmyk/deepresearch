@@ -659,10 +659,40 @@ LENSES = [
 
 
 # --- Prompt builders --------------------------------------------------------
-def p_framing(q):
-    """Module 1: the mega_research Phase 0 contract. Nothing else."""
+FRAMING_FIELDS = ("decisionAtStake", "keyQuestion", "assumptions", "whatWouldChangeTheAnswer", "hypotheses")
+
+
+def p_framing(q, supplied=None):
+    """Module 1: the mega_research Phase 0 contract. Nothing else.
+
+    `supplied` holds the fields a person ratified before the run (see CONTEXT.md:
+    Supplied field). They are shown as already agreed and the model drafts ONLY what
+    is missing - typically the hypotheses and their kill criteria, which grilling never
+    produces because they are research artefacts rather than decisions. A supplied
+    field is never re-derived here; the caller overwrites whatever the model returns
+    for it.
+    """
+    supplied = supplied or {}
+    agreed = ""
+    if supplied:
+        lines = []
+        for f in FRAMING_FIELDS:
+            if f not in supplied:
+                continue
+            v = supplied[f]
+            if isinstance(v, list):
+                v = "; ".join((x.get("hypothesis", "") + " (killed by: " + x.get("killCriterion", "") + ")")
+                              if isinstance(x, dict) else str(x) for x in v)
+            lines.append("- **%s**: %s" % (f, webtext(str(v), 600)))
+        missing = [f for f in FRAMING_FIELDS if f not in supplied]
+        agreed = ("## Already agreed by the asker - do NOT change, restate, or second-guess these\n"
+                  + "\n".join(lines) + "\n\n"
+                  "Return ALL five fields. For the fields above, copy them through unchanged. Draft only: "
+                  + ", ".join(missing) + ". Make what you draft CONSISTENT with what was agreed - the "
+                  "hypotheses must discriminate the agreed key question, and the kill criteria must be "
+                  "findable within the agreed assumptions.\n\n")
     return (
-        "## Research Framing (scope contract)\n\nResearch question:\n\"" + q + "\"\n\n"
+        "## Research Framing (scope contract)\n\nResearch question:\n\"" + q + "\"\n\n" + agreed +
         "Write the contract BEFORE anything is searched. This costs a minute and prevents the most expensive "
         "failure mode: a beautifully sourced answer to the WRONG question. Return these five fields and nothing else.\n\n"
         "- **decisionAtStake**: what will the reader DO differently depending on the answer? If nothing, say so plainly.\n"
@@ -797,7 +827,23 @@ def p_fact(claim, url, text):
         "- **unreachable** - the fetch returned nothing, or the page is a paywall/error shell.\n\n"
         "A working link proves the page EXISTS, not that it says this. Judge only the text above.")
 
-def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
+def _provenance_note(provenance):
+    """A supplied premise is a decision to respect; a drafted one is a premise to test.
+    Without this the critic flags a human-ratified assumption as 'accepted instead of
+    tested' - a false plan-flaw on exactly the runs that were framed most carefully."""
+    if not provenance:
+        return ""
+    sup = [f for f, v in provenance.items() if v == "supplied"]
+    dra = [f for f, v in provenance.items() if v == "drafted"]
+    if not sup:
+        return ""
+    return ("   Provenance of the framing: the asker SUPPLIED %s%s. A supplied field is a decision the "
+            "asker ratified - do NOT flag it as a premise accepted instead of tested; judge whether the "
+            "research honoured it. A drafted field is the model's guess and IS fair game.\n"
+            % (", ".join(sup), ("; the model DRAFTED " + ", ".join(dra)) if dra else ""))
+
+
+def p_critic(k, total, q, subqs, persps, confirmed, summary, findings, provenance=None):
     """The process-critic prompt, lifted out of the pipeline so it has one home.
 
     Extracted for the injected-defect probe (#10). The probe feeds the critic a
@@ -830,10 +876,53 @@ def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
         "2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was "
         "never searched - a primary paper, official documentation, a dataset, a dissenting expert, a more recent "
         "measurement?\n"
+        + _provenance_note(provenance) +
         "3. **Plan flaws.** Did the SCOPING steer the research wrong - a leading sub-question, a premise accepted "
         "instead of tested, a perspective set sharing one blind spot?\n\n"
         "Verdict: **sound** / **minor-gaps** / **material-gaps** (a user acting on this could be misled). Be "
         "concrete: name the exact sentence or the exact missing source type. \"Could be more thorough\" is useless.")
+
+
+class ContractError(ValueError):
+    """A supplied framing contract is malformed. Raised BEFORE any model call: a person
+    wrote the file and can fix it in ten seconds; the alternative is a 10-50 minute run on
+    a contract that is not what they meant. Never silently dropped and re-drafted - that
+    would discard something a human wrote, the one bug class this project has sworn off."""
+
+
+def load_contract(path):
+    """Read a supplied framing contract. Returns the supplied fields, shaped.
+
+    Any SUBSET of the five S_FRAMING fields is accepted (CONTEXT.md: Supplied field);
+    each one present must be well-formed. Two things are rejected on purpose:
+
+      - a malformed field (hypotheses without a killCriterion, assumptions as one prose
+        string) -> ContractError naming the field and what arrived
+      - an unknown top-level key -> ContractError. A typo such as `assumption` would
+        otherwise be ignored in silence and the asker would believe it had been honoured.
+
+    `provenance` is the engine's own annotation on a persisted contract and is stripped
+    so a written contract can be passed straight back in.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+    except (OSError, ValueError) as e:
+        raise ContractError("could not read %s: %s" % (path, e))
+    if not isinstance(raw, dict):
+        raise ContractError("%s: expected a JSON object, got %s" % (path, type(raw).__name__))
+    raw = {k: v for k, v in raw.items() if k != "provenance"}
+    unknown = sorted(k for k in raw if k not in FRAMING_FIELDS)
+    if unknown:
+        raise ContractError("%s: unknown field(s) %s - the five allowed are %s"
+                            % (path, unknown, list(FRAMING_FIELDS)))
+    if not raw:
+        raise ContractError("%s: no fields supplied" % path)
+    partial = dict(S_FRAMING, required=[])          # any subset, but each one well-formed
+    shaped, problems = shape(partial, raw, "contract")
+    if problems:
+        raise ContractError("%s: %s" % (path, "; ".join(problems)))
+    return {k: v for k, v in shaped.items() if k in raw}
 
 
 def calibration_sample(voted, n):
@@ -1145,8 +1234,11 @@ def preflight():
     return scheme
 
 
-def deepresearch(question, depth="standard"):
+def deepresearch(question, depth="standard", contract=None):
+    """`contract`: supplied framing fields (any subset of FRAMING_FIELDS), already shaped
+    by load_contract or an equivalent. Supplied fields win; the model drafts the rest."""
     T = TIERS.get(depth) or TIERS["standard"]
+    supplied = dict(contract or {})
     t0 = time.time()
     scheme = preflight()
     log("Credential: %s%s" % (scheme,
@@ -1164,9 +1256,23 @@ def deepresearch(question, depth="standard"):
     # back with every required array empty - which reads identically to "the model
     # returned nothing" and is why this took a live watch to diagnose. The retry now
     # grows the budget on its own, but starting in the right place saves a whole call.
-    framing = agent(p_framing(question), S_FRAMING, label="framing", max_tokens=4000)
-    contract = framing or {}
-    if not contract:
+    missing = [f for f in FRAMING_FIELDS if f not in supplied]
+    if supplied:
+        log("Contract: %d field(s) supplied by the asker (%s)%s"
+            % (len(supplied), ", ".join(f for f in FRAMING_FIELDS if f in supplied),
+               "; drafting " + ", ".join(missing) if missing else "; nothing to draft"))
+    drafted = {}
+    if missing:
+        framing = agent(p_framing(question, supplied), S_FRAMING, label="framing", max_tokens=4000)
+        drafted = {k: v for k, v in (framing or {}).items() if k in missing}
+    # Supplied fields WIN. The model was told to copy them through, but a promise made
+    # to a prompt is not a guarantee; the overwrite is.
+    contract = dict(drafted)
+    contract.update(supplied)
+    contract["provenance"] = {f: ("supplied" if f in supplied else "drafted" if f in drafted else "absent")
+                              for f in FRAMING_FIELDS}
+    if not any(f in contract for f in FRAMING_FIELDS):
+        contract = {}
         log("NOTE: framing agent failed - continuing without a scope contract")
     else:
         if contract.get("keyQuestion"):
@@ -1657,7 +1763,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # traceability of the summary, not just whether links resolve.
     def critic(k):
         return agent(p_critic(k, T["critics"], q, subqs, persps, confirmed,
-                              report.get("summary", ""), report["findings"]),
+                              report.get("summary", ""), report["findings"],
+                              (base.get("scopeContract") or {}).get("provenance")),
                      S_CRITIC, label="critic:%d" % (k + 1), max_tokens=3000)
 
     crits = [c for c in pmap(critic, list(range(T["critics"]))) if c]
@@ -1701,6 +1808,11 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             "inflated number, an invented attribution and an inflated scope all came back "
             "`partial`, so all three would have been published. Read `citationPartials` "
             "before quoting a number or an attribution from this report."),
+        "framingProvenance": (
+            "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the "
+            "model DRAFTED it. A drafted assumption and a supplied one look identical in the "
+            "JSON and mean opposite things: a supplied field is a decision to respect, a "
+            "drafted one is a premise the run should have tested."),
         "searchCoverage": (
             "Check stats.searchHealth. If every general-web backend reports 0 results, "
             "this run saw a scholarly-only slice of the web and its coverage gaps are a "
@@ -1787,7 +1899,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
 # "everything works but the general web is unreachable" is fatal for them; folding it
 # into 0 takes that choice away and folding it into 1 says the tool is broken when it
 # is not.
-EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED = 0, 1, 2, 3
+EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED, EXIT_CONTRACT = 0, 1, 2, 3, 4
 
 # Backends that reach the general web. If every one of these returns nothing, the run
 # will see a scholarly-only slice - which is a legitimate mode for an academic question
@@ -1878,6 +1990,13 @@ def main():
                          "Scott's pi, per-lens agreement and the confusion matrix. Doubles "
                          "the verify cost for those N claims. Measures reliability, not validity. "
                          "Env: DR_CALIBRATE. The pre-registered gate needs N>=30.")
+    ap.add_argument("--contract", metavar="PATH",
+                    help="A framing contract the asker already ratified (any subset of: "
+                         "decisionAtStake, keyQuestion, assumptions, whatWouldChangeTheAnswer, "
+                         "hypotheses). Supplied fields are never re-derived; the model drafts only "
+                         "what is missing. A malformed file exits %d before any model call. Every run "
+                         "writes the contract it used to <out-stem>.contract.json so it can be passed "
+                         "straight back here." % EXIT_CONTRACT)
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--bg", action="store_true",
                     help="Detach and run in the background, printing the log and report paths "
@@ -1890,6 +2009,22 @@ def main():
         sys.exit(selftest())
     if not a.question or not a.question.strip():
         ap.error("--question is required (or use --selftest)")
+    # Absolutise BEFORE the --bg re-exec: the child runs with cwd=pkg_parent, so a
+    # relative path survives the argv copy and then resolves somewhere else. --out had
+    # this bug already; it only worked because pkg_parent happened to be the repo root.
+    if a.out:
+        a.out = os.path.abspath(a.out)
+    if a.contract:
+        a.contract = os.path.abspath(a.contract)
+    supplied = None
+    if a.contract:
+        # Validate in the PARENT, so a malformed file fails here and now with exit 4,
+        # not inside a detached child whose only output is a log file.
+        try:
+            supplied = load_contract(a.contract)
+        except ContractError as e:
+            print(json.dumps({"error": "contract rejected", "detail": str(e),
+                              "exit": EXIT_CONTRACT}, indent=1)); sys.exit(EXIT_CONTRACT)
 
     # Self-detach. A standard run takes 6-8 minutes and a degraded-search quick run
     # was measured at 415s, while agent harnesses kill terminal commands far sooner
@@ -1902,9 +2037,14 @@ def main():
         # package-relative imports (`from . import search`) — caught when the
         # documented `python3 -m deepresearch ... --bg` invocation was run for real.
         pkg_parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        argv = [sys.executable, "-m", "deepresearch"] + [x for x in sys.argv[1:] if x != "--bg"]
-        if not a.out:
-            argv += ["--out", out]
+        # Rebuild argv from the PARSED args rather than copying sys.argv, so the
+        # absolutised --out and --contract are what the child sees.
+        argv = [sys.executable, "-m", "deepresearch", "--question", a.question.strip(),
+                "--depth", a.depth, "--out", out, "--model", a.model,
+                "--concurrency", str(a.concurrency),
+                "--sample-dropped", str(a.sample_dropped), "--calibrate", str(a.calibrate)]
+        if a.contract:
+            argv += ["--contract", a.contract]
         env = dict(os.environ, DR_BG_CHILD="1")
         with open(logp, "wb") as lf:
             proc = subprocess.Popen(argv, stdout=lf, stderr=lf, stdin=subprocess.DEVNULL,
@@ -1921,7 +2061,7 @@ def main():
         }, indent=1))
         return
     try:
-        rep = deepresearch(a.question.strip(), a.depth)
+        rep = deepresearch(a.question.strip(), a.depth, contract=supplied)
     except AuthError as e:
         print(json.dumps({"error": str(e)}, indent=1)); sys.exit(EXIT_AUTH)
     txt = json.dumps(rep, indent=1, ensure_ascii=False)
@@ -1929,6 +2069,15 @@ def main():
         with open(a.out, "w", encoding="utf-8") as f:
             f.write(txt)
         log("Report written to " + a.out)
+        # The contract the run actually used, supplied and drafted fields alike, with
+        # provenance - so a re-run can hold framing constant with --contract. Two runs
+        # of the "same question" differed 7% vs 37% in kill rate this week and part of
+        # that was two different drafted framings nobody could diff.
+        if rep.get("scopeContract"):
+            stem = a.out[:-5] if a.out.endswith(".json") else a.out
+            with open(stem + ".contract.json", "w", encoding="utf-8") as f:
+                json.dump(rep["scopeContract"], f, indent=1, ensure_ascii=False)
+            log("Contract written to " + stem + ".contract.json")
         print(json.dumps({k: rep.get(k) for k in
                           ("summary", "citationAudit", "processCritique", "rescue", "stats") if k in rep},
                          indent=1, ensure_ascii=False))

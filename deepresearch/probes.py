@@ -282,7 +282,8 @@ def run_critic_probes(rep):
 
     def arm(spec):
         which, text = spec
-        got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, text, findings),
+        got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, text, findings,
+                                 (rep.get("scopeContract") or {}).get("provenance")),
                       E.S_CRITIC, label="probe:critic:" + which, max_tokens=3000)
         return (which, got or {})
 

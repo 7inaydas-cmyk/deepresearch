@@ -77,6 +77,13 @@ answers into the question you pass.
 State any load-bearing premise explicitly. The scoper is instructed to turn asserted
 premises into sub-questions to *test*, not to assume — but only if it can see them.
 
+**Better: pass what you settled as a contract, not as prose.** `args.contract` takes an
+object with any subset of `decisionAtStake`, `keyQuestion`, `assumptions`,
+`whatWouldChangeTheAnswer`, `hypotheses`. Supplied fields are never re-derived — the model
+drafts only what is missing (typically the hypotheses and their kill criteria) — and the
+report's `scopeContract.provenance` says, per field, which were yours and which were drafted.
+Weaving answers into the question string throws that structure away one call later.
+
 ### Choosing depth
 
 | depth | agents | use for |

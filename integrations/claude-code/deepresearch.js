@@ -59,6 +59,29 @@ if (!TIERS[DEPTH]) DEPTH = 'standard'
 // "underpowered".
 const T = { ...TIERS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0) }
 
+// ── Contract intake. `args.contract` is an object holding any SUBSET of the five framing
+//    fields the asker already ratified (CONTEXT.md: Supplied field). Supplied fields are
+//    never re-derived; the model drafts only what is missing. A malformed field or an
+//    unknown key is an error before any model call - a person wrote this and can fix it,
+//    and dropping it would be a silent discard of something a human said.
+const FRAMING_FIELDS = ['decisionAtStake', 'keyQuestion', 'assumptions', 'whatWouldChangeTheAnswer', 'hypotheses']
+let SUPPLIED = {}
+const intakeContract = () => {
+  if (RAW.contract === undefined || RAW.contract === null) return null
+  const raw = RAW.contract
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return { error: 'contract rejected: expected an object with any of ' + FRAMING_FIELDS.join(', ') }
+  }
+  const cleaned = Object.fromEntries(Object.entries(raw).filter(([k]) => k !== 'provenance'))
+  const unknown = Object.keys(cleaned).filter(k => !FRAMING_FIELDS.includes(k)).sort()
+  if (unknown.length) return { error: 'contract rejected: unknown field(s) ' + unknown.join(', ') + ' - the five allowed are ' + FRAMING_FIELDS.join(', ') }
+  if (!Object.keys(cleaned).length) return { error: 'contract rejected: no fields supplied' }
+  const { shaped, problems } = shape({ ...FRAMING_SCHEMA, required: [] }, cleaned, 'contract')
+  if (problems.length) return { error: 'contract rejected: ' + problems.join('; ') }
+  SUPPLIED = Object.fromEntries(Object.entries(shaped).filter(([k]) => k in cleaned))
+  return null
+}
+
 if (!QUESTION) {
   return { error: "No research question provided. Call: Workflow({name:'deepresearch', args:{question:'…', depth:'standard'}})." }
 }
@@ -446,6 +469,15 @@ const dupes = []
 const budgetDropped = []
 const relRank = { high: 0, medium: 1, low: 2 }
 
+// A supplied premise is a decision to respect; a drafted one is a premise to test. Without
+// this the critic flags a human-ratified assumption as 'accepted instead of tested'.
+const provenanceNote = prov => {
+  if (!prov) return ''
+  const sup = Object.keys(prov).filter(k => prov[k] === 'supplied'), dra = Object.keys(prov).filter(k => prov[k] === 'drafted')
+  if (!sup.length) return ''
+  return '   Provenance of the framing: the asker SUPPLIED ' + sup.join(', ') + (dra.length ? '; the model DRAFTED ' + dra.join(', ') : '') +
+    '. A supplied field is a decision the asker ratified — do NOT flag it as a premise accepted instead of tested; judge whether the research honoured it. A drafted field is the model\'s guess and IS fair game.\n'
+}
 // ═══ Prompts ════════════════════════════════════════════════════════════════
 const SEARCH_PROMPT = angle =>
   '## Web Searcher — perspective: ' + angle.label + '\n\n' +
@@ -589,8 +621,24 @@ log('Depth: ' + DEPTH + ' (' + T.perspectives + ' perspectives, ' + T.deepenRoun
     T.lenses + '-lens verify, citation audit ' + (T.factAudit ? 'ON' : 'off') + ')')
 
 // ── Framing (mega_research Phase 0): the contract, and nothing else ──────────
-const framing = await agentChecked(
-  '## Research Framing (scope contract)\n\nResearch question:\n"' + QUESTION + '"\n\n' +
+{ const bad = intakeContract(); if (bad) return bad }
+const MISSING = FRAMING_FIELDS.filter(f => !(f in SUPPLIED))
+if (Object.keys(SUPPLIED).length) {
+  log('Contract: ' + Object.keys(SUPPLIED).length + ' field(s) supplied by the asker (' +
+      FRAMING_FIELDS.filter(f => f in SUPPLIED).join(', ') + ')' + (MISSING.length ? '; drafting ' + MISSING.join(', ') : '; nothing to draft'))
+}
+const AGREED = Object.keys(SUPPLIED).length
+  ? '## Already agreed by the asker - do NOT change, restate, or second-guess these\n' +
+    FRAMING_FIELDS.filter(f => f in SUPPLIED).map(f => {
+      const v = SUPPLIED[f]
+      const txt = Array.isArray(v) ? v.map(x => (x && typeof x === 'object') ? (x.hypothesis + ' (killed by: ' + x.killCriterion + ')') : String(x)).join('; ') : String(v)
+      return '- **' + f + '**: ' + webText(txt, 600)
+    }).join('\n') + '\n\n' +
+    'Return ALL five fields. For the fields above, copy them through unchanged. Draft only: ' + MISSING.join(', ') +
+    '. Make what you draft CONSISTENT with what was agreed.\n\n'
+  : ''
+const framing = MISSING.length ? await agentChecked(
+  '## Research Framing (scope contract)\n\nResearch question:\n"' + QUESTION + '"\n\n' + AGREED +
   'Write the contract BEFORE anything is searched. This costs a minute and prevents the most expensive failure ' +
   'mode: a beautifully sourced answer to the WRONG question. Return these five fields and nothing else.\n\n' +
   '- **decisionAtStake**: what will the reader DO differently depending on the answer? If nothing, say so plainly.\n' +
@@ -603,9 +651,14 @@ const framing = await agentChecked(
   'killCriterion — the specific finding that would eliminate it. Searches exist to DISCRIMINATE between these.\n\n' +
   'Structured output only.',
   { label: 'framing', schema: FRAMING_SCHEMA }
-)
-const CONTRACT = (framing && typeof framing === 'object') ? framing : {}
-if (!framing) {
+) : null
+// Supplied fields WIN. The model was told to copy them through; the overwrite is the guarantee.
+const DRAFTED = Object.fromEntries(Object.entries((framing && typeof framing === 'object') ? framing : {}).filter(([k]) => MISSING.includes(k)))
+const CONTRACT = { ...DRAFTED, ...SUPPLIED }
+if (FRAMING_FIELDS.some(f => f in CONTRACT)) {
+  CONTRACT.provenance = Object.fromEntries(FRAMING_FIELDS.map(f => [f, f in SUPPLIED ? 'supplied' : f in DRAFTED ? 'drafted' : 'absent']))
+}
+if (!FRAMING_FIELDS.some(f => f in CONTRACT)) {
   log('NOTE: framing agent failed — continuing without a scope contract')
 } else {
   if (CONTRACT.keyQuestion) log('Key question: ' + String(CONTRACT.keyQuestion).slice(0, 100))
@@ -1258,6 +1311,7 @@ const critiques = (await parallel(Array.from({ length: T.critics }, (_, k) => ()
     'List any assertion that does not — inserted facts, inflated certainty, a hedge quietly dropped, a "therefore" the claims do not license. This is the highest-yield check; do it first and do it literally.\n' +
     '   For each one, ALSO put the offending sentence into `untraceableVerbatim` copied CHARACTER FOR CHARACTER from the summary above — no quotation marks added, no ellipsis, no rewording, no summarising. It is used to delete that sentence by exact string match, so a paraphrase silently does nothing. Same order and same length as `untraceableStatements`.\n' +
     '2. **Coverage gaps.** Which sub-questions did the research never actually answer? Which source type was never searched — a primary paper, official documentation, a dataset, a dissenting expert, a non-English or non-Western source, a more recent measurement?\n' +
+    provenanceNote(CONTRACT.provenance) +
     '3. **Plan flaws.** Did the SCOPING itself steer the research wrong — a leading sub-question, a premise accepted instead of tested, a perspective set that shares one blind spot, a framing that made a whole class of answers unreachable?\n\n' +
     'Verdict: **sound** (nothing material) · **minor-gaps** (real but does not change the answer) · **material-gaps** (a user acting on this report could be misled).\n' +
     'Be concrete. "Could be more thorough" is useless. Name the exact sentence or the exact missing source type.\n\nStructured output only.',
@@ -1321,6 +1375,7 @@ return {
     confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
     killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
     searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
+    framingProvenance: 'scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.',
     partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry — and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.',
   },
   citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),

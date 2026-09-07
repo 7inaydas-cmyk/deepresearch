@@ -238,6 +238,23 @@ import fs2 from 'node:fs'
      'and n below 30 returns underpowered whatever the coefficient says')
   ok(logs.some(l => l.includes('CALIBRATION')), 'and it says so in the log')
 }
+{
+  const sup = { keyQuestion: 'do standing desks improve health?', assumptions: ['office workers', '12 months'],
+                whatWouldChangeTheAnswer: ['an RCT showing harm', 'no effect'], decisionAtStake: 'buy 40 desks' }
+  const { out, logs } = await run('T20 contract intake: supplied fields win, the model drafts the rest',
+    { question: 'Q', depth: 'standard', contract: sup })
+  ok(out.scopeContract && out.scopeContract.keyQuestion === sup.keyQuestion, 'a supplied field reaches the report verbatim')
+  ok(out.scopeContract.provenance && out.scopeContract.provenance.assumptions === 'supplied' && out.scopeContract.provenance.hypotheses === 'drafted',
+     'provenance is per field: ' + JSON.stringify(out.scopeContract.provenance))
+  ok(logs.some(l => /Contract: 4 field\(s\) supplied/.test(l)), 'the log names what was supplied')
+  ok(Array.isArray(out.hypothesisVerdicts) && out.hypothesisVerdicts.length === 2, 'drafted hypotheses are still adjudicated')
+  const bad = await run('T20b malformed supplied field is rejected before any model call',
+    { question: 'Q', depth: 'standard', contract: { assumptions: 'one prose string' } })
+  ok(bad.out.error && /contract rejected/.test(bad.out.error) && /assumptions/.test(bad.out.error), 'named, not dropped: ' + bad.out.error)
+  const typo = await run('T20c unknown key is rejected', { question: 'Q', depth: 'standard', contract: { assumption: ['x'] } })
+  ok(typo.out.error && /unknown field/.test(typo.out.error), 'a typo is not silently honoured: ' + typo.out.error)
+  ok(typo.calls === 0 && bad.calls === 0, 'and neither spent a single agent call')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

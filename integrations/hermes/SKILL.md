@@ -130,6 +130,14 @@ then weave the answers into `--question`.
 State any load-bearing premise explicitly. The scoper turns asserted premises into
 sub-questions to *test* rather than assume - but only if it can see them.
 
+**Better: pass what you settled as a contract, not as prose.** Write the agreed fields to a
+JSON file - any subset of `decisionAtStake`, `keyQuestion`, `assumptions`,
+`whatWouldChangeTheAnswer`, `hypotheses` - and add `--contract /opt/data/research/raw/dr/<slug>.contract.json`
+to the command. Supplied fields are never re-derived; the model drafts only what is missing.
+A malformed file exits 4 immediately, before any model call, naming the field - fix it and
+relaunch. Every run also writes the contract it used beside the report as
+`<out-stem>.contract.json`, so a re-run can pass it straight back.
+
 ### Choosing depth
 
 | depth | agents | wall time | use for |
