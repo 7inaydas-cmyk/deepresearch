@@ -270,6 +270,24 @@ Earlier builds audited only the claims that *survived* the panel and unsurprisin
 
 Six runs is a small sample and the 11–52% spread is wide. These say the filter removes a variable amount; they do **not** say what it removed was false. Nobody has run this against a set of questions with known answers and published the misses — that is the experiment that would settle it, and it has not been done.
 
+### Retrieval, measured before and after
+
+The same question, same regime, one thing changed — the fetcher learned to read PDFs and to refuse results that are not about the question:
+
+| | before | after |
+|---|---|---|
+| Sources | 26 | 26 |
+| Claims extracted | 45 | **79** |
+| Unreachable citations | 2 | **0** |
+| Cohen's κ | 0.8618 | **0.9268** (`calibrated`) |
+| Citation accuracy | 85.7% | 76.7% |
+
+Four primary-source PDFs were read as text for the first time, including `davidcard.berkeley.edu/papers/njmin-aer.pdf` — the paper that question exists to weigh, which had been reaching the model as `%PDF-1.5 %\x8f 135 0 obj...`.
+
+**Citation accuracy went down, and that is the honest direction.** 79 claims drawn from full papers give far more opportunity to overstate than 45 drawn from abstracts; 76.7% with zero unreachable beats 85.7% with two unreachable and a third fewer claims.
+
+`stats.fetchVia` now records how every source was read — `http`, `pdf`, `crossref-api`, `crossref-fallback`, `pdf-unreadable`, `failed` — so a claim cited to a paper is no longer indistinguishable from one cited to an abstract stub.
+
 ### Injected defects, which are the only ground truth here
 
 Real output has no answer key, so both self-checks were tested by manufacturing one: take a finished report, break something on purpose, and see whether the checker notices.

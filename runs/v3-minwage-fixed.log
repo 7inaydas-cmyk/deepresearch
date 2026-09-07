@@ -1,0 +1,300 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does raising the minimum wage reduce employment? Weigh the Card and Krueger tradition against Neumark and Wasc
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Does the modern minimum-wage literature, after accounting for publication bias and methodological im
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Original Card-Krueger Constructor | Neumark-Wascher Steelman | Meta-Analysis / Publication-Bias Auditor | Policy-Institution Synthesizer | Bunching/Border-Discontinuity Modernist | Heterogeneity/Context Historian
+  [pick:Heterogeneity/Context Historian.results] recovered a double-encoded array: the field arrived as a JSON STRING holding 3 item(s), not as an array
+  [w1] Heterogeneity/Context Historian: 8 hits -> 3 picked
+  [w1] Neumark-Wascher Steelman: 8 hits -> 6 picked
+  [w1] Original Card-Krueger Constructor: 8 hits -> 5 picked
+  [w1] Bunching/Border-Discontinuity Modernist: 8 hits -> 5 picked
+  [w1] Policy-Institution Synthesizer: 8 hits -> 2 picked
+  [w1] Meta-Analysis / Publication-Bias Auditor: 8 hits -> 1 picked
+[w1] 16 sources, 52 claims
+Round 1: 8/8 sub-questions still open, 3 contradictions, 5 follow-ups
+  [w2] CBO/Federal Reserve/OECD policy synthesis: 8 hits -> 2 picked
+  [w2] Publication bias detection methods: 8 hits -> 0 picked
+  [pick:Neumark Shirley 2022 meta-analysis.results] recovered a double-encoded array: the field arrived as a JSON STRING holding 4 item(s), not as an array
+  [w2] Neumark Shirley 2022 meta-analysis: 8 hits -> 4 picked
+  [w2] Meta-analysis publication bias direction: 8 hits -> 5 picked
+  [w2] Large recent minimum wage increases ($15, Seattle, UK NLW): 8 hits -> 5 picked
+[w2] 10 sources, 27 claims
+NOTE: 49 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 9 distinct sub-question buckets (of 8)
+Total: 26 sources -> 79 claims -> verifying 30
+  [counter] response violates its own schema: refuted MISSING (required), evidence MISSING (required), confidence MISSING (required) (stop_reason=tool_use); retrying (1/5)
+  [counter] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (1/5)
+  KILLED[counter+provenance] 1-2  Neumark and Wascher argue minimum wage effects on employment are lagged, taking more than …
+  KILLED[support+counter+provenance] 0-3  Neumark and Wascher (1992) concluded that a 10 percent increase in the minimum wage reduce…
+  OK          3-0  A study of the 2015 German minimum wage introduction and subsequent increases finds a smal…
+  KILLED[support+counter] 1-2  The study applies new difference-in-differences estimators designed to handle staggered tr…
+  OK          3-0  The German minimum wage's regional labor market bite changed over time, with around one th…
+  OK          2-1  Prior to the early-1990s 'new view' challenge, the empirical consensus (including the 1981…
+  OK          3-0  This paper studies spillover effects of sub-national minimum wage policies on local rental…
+  OK          2-1  A meta-analysis of 236 estimated minimum wage elasticities and 710 partial correlation coe…
+  OK          3-0  Unlike US studies, the UK minimum wage literature shows little, if any, overall reporting …
+  KILLED[support+provenance] 1-2  Using 13+ years of panel data across all 50 states and DC, Neumark and Wascher found that …
+  OK          3-0  JNR's preferred TWFE specification (commuting-zone based) yields a minimum wage elasticity…
+  OK          2-1  The same study finds no statistically significant effect of the German minimum wage on emp…
+  KILLED[counter+provenance] 1-2  A study using Chinese panel data combining linear and nonlinear regression models finds a …
+  OK          3-0  The research addresses a gap in the literature, noting that minimum wage employment effect…
+  KILLED[support+counter+provenance] 0-3  A 1992 survey found that only 20.5 percent of 1,350 academic and non-academic economists d…
+  OK          2-1  The paper's baseline estimate is that a 10 percent increase in the workplace minimum wage …
+  OK          2-1  Stanley and Doucouliagos published a methodological paper in 2013 titled 'Meta-regression …
+  KILLED[support+provenance] 1-2  This paper has been cited by 704 other works, indicating it is a highly influential method…
+  OK          2-1  Card and Krueger published a Reply in the American Economic Review (2000) responding to cr…
+  KILLED[support+provenance] 1-2  Neumark and Wascher's original 1992 analysis found minimum wage increases reduce employmen…
+  OK          2-1  The study finds a significant negative effect of about 2.4 percent on marginal (mini-job t…
+  OK          3-0  The paper notes that some recent empirical studies have found the impact of minimum wages …
+  OK          2-1  The paper argues that nonlinear modeling of minimum wage's effect on employment produces b…
+  KILLED[support+provenance] 1-2  The Congressional Budget Office estimated in 2021 that raising the federal minimum wage to…
+  OK          2-1  The paper's simulations suggest landlords capture approximately 10 cents of each dollar ge…
+  OK          2-1  Doucouliagos and Stanley applied meta-regression analysis to 64 US minimum-wage studies an…
+  OK          3-0  The estimated magnitude of publication selection bias in the minimum-wage employment liter…
+  KILLED[support+provenance] 1-2  This Card-Krueger Reply article has been cited 647 times, indicating it remains a heavily …
+  OK          3-0  In their 1993 reply to Card, Katz and Krueger's criticisms, Neumark and Wascher concluded …
+  OK          2-1  A macroeconomic model incorporating productivity fluctuations, incomplete markets, directe…
+SAMPLING 10 dropped claims to measure what the cap discarded
+  [provenance] response violates its own schema: confidence MISSING (required) (stop_reason=tool_use); retrying (1/5)
+  OK          2-1  Card and Krueger's NJ-PA fast-food study found no evidence that New Jersey's minimum wage …
+  KILLED[counter+provenance] 1-2  Card and Krueger tested robustness of their no-negative-employment-effect finding across a…
+  OK          2-1  Card and Krueger's study found no evidence that New Jersey's minimum wage increase negativ…
+  OK          2-1  Card and Krueger found that fast-food prices rose more in New Jersey than in Pennsylvania …
+  OK          2-1  Card and Krueger's 1994 fast-food employment findings were inconsistent with the standard …
+  OK          3-0  Dube, Lester and Reich (2010) using cross-state border county pairs did not detect restaur…
+  OK          3-0  With post-2000 data, JNR's specification does not indicate substantial disemployment effec…
+  OK          3-0  QCEW-based own-wage elasticity estimates in this study range from -0.38 to +0.49, none sta…
+  OK          3-0  During the 1990s, per-capita restaurant employment declined in states that ever raised the…
+  OK          2-1  Neumark and Wascher found that subminimum wages moderate the disemployment effects of mini…
+SAMPLING: 9/10 dropped claims survived (90%) vs 67% of kept claims
+CALIBRATION: re-running the panel on 30 claims to measure reliability
+  [provenance] response violates its own schema: confidence MISSING (required) (stop_reason=tool_use); retrying (1/5)
+  OK          3-0  A study of the 2015 German minimum wage introduction and subsequent increases finds a smal…
+  KILLED[support+provenance] 1-2  Neumark and Wascher argue minimum wage effects on employment are lagged, taking more than …
+  OK          3-0  The German minimum wage's regional labor market bite changed over time, with around one th…
+  KILLED[support+counter+provenance] 0-3  Neumark and Wascher (1992) concluded that a 10 percent increase in the minimum wage reduce…
+  OK          2-1  Prior to the early-1990s 'new view' challenge, the empirical consensus (including the 1981…
+  KILLED[support+counter] 1-2  The study applies new difference-in-differences estimators designed to handle staggered tr…
+  OK          3-0  This paper studies spillover effects of sub-national minimum wage policies on local rental…
+  KILLED[support+provenance] 1-2  Using 13+ years of panel data across all 50 states and DC, Neumark and Wascher found that …
+  KILLED[counter+provenance] 1-2  A meta-analysis of 236 estimated minimum wage elasticities and 710 partial correlation coe…
+  KILLED[counter+provenance] 1-2  A study using Chinese panel data combining linear and nonlinear regression models finds a …
+  OK          3-0  Unlike US studies, the UK minimum wage literature shows little, if any, overall reporting …
+  KILLED[support+provenance] 1-2  A 1992 survey found that only 20.5 percent of 1,350 academic and non-academic economists d…
+  OK          3-0  JNR's preferred TWFE specification (commuting-zone based) yields a minimum wage elasticity…
+  KILLED[support+provenance] 1-2  This paper has been cited by 704 other works, indicating it is a highly influential method…
+  OK          2-1  The same study finds no statistically significant effect of the German minimum wage on emp…
+  KILLED[support+provenance] 1-2  Neumark and Wascher's original 1992 analysis found minimum wage increases reduce employmen…
+  OK          3-0  The research addresses a gap in the literature, noting that minimum wage employment effect…
+  KILLED[support+provenance] 1-2  The Congressional Budget Office estimated in 2021 that raising the federal minimum wage to…
+  OK          2-1  The paper's baseline estimate is that a 10 percent increase in the workplace minimum wage …
+  KILLED[support+provenance] 1-2  This Card-Krueger Reply article has been cited 647 times, indicating it remains a heavily …
+  OK          2-1  Stanley and Doucouliagos published a methodological paper in 2013 titled 'Meta-regression …
+  OK          2-1  Card and Krueger published a Reply in the American Economic Review (2000) responding to cr…
+  OK          2-1  The study finds a significant negative effect of about 2.4 percent on marginal (mini-job t…
+  OK          3-0  The paper notes that some recent empirical studies have found the impact of minimum wages …
+  OK          2-1  The paper argues that nonlinear modeling of minimum wage's effect on employment produces b…
+  OK          3-0  The paper's simulations suggest landlords capture approximately 10 cents of each dollar ge…
+  OK          2-1  Doucouliagos and Stanley applied meta-regression analysis to 64 US minimum-wage studies an…
+  OK          3-0  The estimated magnitude of publication selection bias in the minimum-wage employment liter…
+  OK          2-1  In their 1993 reply to Card, Katz and Krueger's criticisms, Neumark and Wascher concluded …
+  OK          3-0  A macroeconomic model incorporating productivity fluctuations, incomplete markets, directe…
+CALIBRATION: n=30 raw=0.967 cohenKappa=0.9268 scottPi=0.9267 flips=1 -> calibrated
+Verify: 20 confirmed, 10 refuted, 0 unverified | kills by lens: {'counter': 5, 'provenance': 9, 'support': 8}
+Citation audit (full pool of 30): 23 supported, 6 partial, 1 UNSUPPORTED, 0 unreachable -> 76.7%
+  [synthesize] response was TRUNCATED (max_tokens), so its required arrays came back empty: summary MISSING (required), hypothesisVerdicts MISSING (required). Retrying with max_tokens=16000 (1/5)
+  [synthesize] response violates its own schema: whatWouldChangeThisCall MISSING (required) (stop_reason=tool_use); retrying (2/5)
+  [synthesize] response violates its own schema: summary MISSING (required) (stop_reason=tool_use); retrying (3/5)
+  [synthesize.findings[6]] dropped an item: factInferenceAssumption='fact for the model outputs; inference th' not in ['fact', 'inference', 'assumption']
+Process critique: material-gaps | 13 untraceable, 15 coverage gaps, 9 plan flaws
+Report written to /home/excelsior/Desktop/deepresearch/runs/v3-minwage-fixed.json
+Contract written to /home/excelsior/Desktop/deepresearch/runs/v3-minwage-fixed.contract.json
+{
+ "summary": "Weighing the confirmed evidence, the Card-Krueger tradition (near-zero/small employment effects) is currently better supported by the verified claim set than the classic Neumark-Wascher \"clear sizable disemployment\" position, but the newest large-panel reanalysis shows the negative estimate shrinking toward insignificance over time, and the publication-bias literature itself finds bias roughly equal in magnitude to the average reported effect - meaning much of the reported negative effect in the literature may not be real. A defensible current best estimate is a small negative elasticity, plausibly in the -0.1 to 0 range for the increases actually studied, with country/context-specific variation (Germany ~-0.5% on dependent employment overall but -2.4% on marginal/mini-jobs). This is a probabilistic synthesis, not a resolved consensus, and 62% of extracted claims were never verified.",
+ "citationAudit": {
+  "citationAccuracy": 76.7,
+  "effectiveCitations": 23,
+  "supported": 23,
+  "partial": 6,
+  "unsupported": 1,
+  "unreachable": 0,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "untraceableCount": 13,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A defensible current best estimate is a small negative elasticity, plausibly in the -0.1 to 0 range for the increases actually studied, with country/context-specific variation (Germany ~-0.5% on dependent employment overall but -2.4% on marginal/mini-jobs).",
+   "The current best point-estimate synthesis, based on the most recent large-panel administrative reanalysis, is a small-to-insignificant negative elasticity: -0.242 (s.e. 0.126) for 1990-2016 shrinking to a statistically insignificant -0.114 (s.e. 0.123) for 2000-2016.",
+   "This is a probabilistic synthesis, not a resolved consensus, and 62% of extracted claims were never verified.",
+   "Weighing the confirmed evidence, the Card-Krueger tradition (near-zero/small employment effects) is currently better supported by the verified claim set than the classic Neumark-Wascher clear sizable disemployment position, but the newest large-panel reanalysis shows the negative estimate shrinking toward insignificance over time, and the publication-bias literature itself finds bias roughly equal in magnitude to the average reported effect - meaning much of the reported negative effect in the literature may not be real.",
+   "implying the published 'consensus' negative effect may be substantially inflated by selection",
+   "this is the historical anchor that both later traditions are…"
+  ],
+  "untraceableStatements": [
+   "62% of extracted claims were never verified - this specific percentage appears nowhere in the claim pool.",
+   "Claim that JNR estimate [6] represents 'the current best point-estimate synthesis' - the claim pool never labels this as a synthesis or best estimate, it's one specific study (JNR, presumably Jardim/others or a named paper) not identified as authoritative over meta-analyses",
+   "Finding 1 labels claim [6]'s JNR estimates as 'the current best point-estimate synthesis, based on the most recent large-panel administrative reanalysis' - the claim pool never characterizes this as the 'current best' synthesis or as 'the most recent' or 'administrative' data reanalysis.",
+   "Finding 1 labels the JNR estimate as 'the current best point-estimate synthesis, based on the most recent large-panel administrative reanalysis' - the claim pool giving claim [6] does not identify it as 'the most recent' or as a 'synthesis'; it's a single paper's preferred specification",
+   "Finding 3's concluding interpretive clause 'implying the published consensus negative effect may be substantially inflated by selection' is an inference added beyond what [16] and [17] state.",
+   "Finding 4 conclusion that the two traditions remain 'in direct, unresolved conflict' is an interpretive framing beyond what claims 11 and 18 (which are about 1993 and 2000 exchanges, not current status) directly support",
+   "Finding 6's characterization 'this is the historical anchor that both later traditions are...' (truncated) asserts a specific historiographic relationship between claim [2] and the two traditions that is not stated in claim [2] itself.",
+   "The characterization of JNR claim [6] as 'the newest large-panel reanalysis' is an inserted framing/label not present in the claim pool - no claim identifies this study's name, authors, novelty, or that it represents 'the newest' analysis.",
+   "The claim that Card-Krueger tradition (near-zero/small effects) is currently better supported than Neumark-Wascher's position is an editorial weighing not licensed by any single claim - claims [11] and [18] show unresolved conflict, not that one side is 'better supported'.",
+   "The executive summary's claim that Card-Krueger tradition is 'currently better supported by the verified claim set' is an interpretive leap not directly stated by any claim",
+   "The percentage '62% of extracted claims were never verified' has no source in the claim pool at all",
+   "The plausible range 'plausibly in the -0.1 to 0 range for the increases actually studied' is a numeric synthesis constructed by the writer, not sourced from any single claim in the pool.",
+   "The specific numeric range '-0.1 to 0' as 'a defensible current best estimate' is a synthesized number not present in any single claim - it is an inference from claim 6 alone, not corroborated by meta-analytic claims 4, 16, 17"
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (Card-Krueger's original NJ-PA fast-food study results and Neumark-Wascher's payroll-data critique of it) is never actually answered with substantive content - only claim [11] (a 2000 AER Reply exists) and [18] (1993 reply) are cited, but the actual empirical findings of the NJ-PA study and the actual payroll-data reanalysis results are never surfaced from the claim pool.",
+   "Checklist item 2 (the core methodological critique of Card-Krueger and whether administrative/QCEW data supports or undermines it) is not substantively addressed - no claim describes what the payroll-data critique actually showed empirically.",
+   "Checklist item 3 (major meta-analyses: Doucouliagos & Stanley 2009, Neumark & Shirley 2022, Wolfson & Belman) is only partially covered - Neumark & Shirley 2022 and Wolfson & Belman are named in the checklist but never appear anywhere in the claim pool or findings; only Doucouliagos/Stanley (2009-era, via claims 16-17) and a UK meta-analysis (claim 4) are used.",
+   "Checklist item 4 (post-2015 bunching/border-discontinuity designs, e.g., Cengiz et al. 2019, Seattle/California studies) is never answered - no claim in the pool addresses bunching estimators or Cengiz et al. despite a dedicated 'Bunching/Border-Discontinuity Modernist' perspective being tasked to search for it.",
+   "Checklist item 4 (post-2015 quasi-experimental designs like Cengiz et al. 2019 bunching estimator, border-discontinuity/synthetic control studies) is completely absent from both the claim pool and the findings despite an entire perspective ('Bunching/Border-Discontinuity Modernist') being tasked with searching this - no Cengiz et al. finding, no border-discontinuity result appears anywhere.",
+   "Checklist item 5 (variance decomposition between context heterogeneity vs. author/methodology/publication-bias factors) is not answered - no meta-regression variance decomposition claim appears in the pool despite the Heterogeneity/Context Historian perspective being assigned.",
+   "Checklist item 5 (variance decomposition between context heterogeneity vs. author/methodology/publication-bias factors) is not answered - the Heterogeneity/Context Historian perspective produced no claims in the pool that isolate the share of variance explained by bite/monopsony/business cycle vs. methodology choices.",
+   "Checklist item 6 (CBO, OECD, Federal Reserve institutional synthesis with a specific elasticity range and caveats) is entirely missing - no claim from the 'Policy-Institution Synthesizer' perspective appears in the verified claim pool at all, despite this being one of the six searched perspectives.",
+   "Checklist item 6 (CBO/OECD/Federal Reserve institutional synthesis with explicit elasticity ranges and caveats) is completely absent from the claim pool - no CBO 2019 report, OECD Employment Outlook, or Fed research division synthesis is cited anywhere, despite a dedicated Policy-Institution Synthesizer perspective.",
+   "Checklist item 7 (direct evidence of asymmetric publication bias via funnel-plot, p-curve, selection models, and robustness across methods) is only thinly covered by claims 16-17 (one meta-regression method) and claim 5 (UK shows little bias) - no p-curve or selection-model evidence, and no discussion of robustness across alternative bias-detection methods as the checklist explicitly requested.",
+   "Checklist item 7 (funnel-plot asymmetry, p-curve, or selection-model bias-detection methods, and direction/robustness of bias across methods) is only thinly covered by claims [16][17] (one meta-regression paper) and [4][5] (UK finding no bias) - no p-curve or selection-model analysis, and no discussion of robustness across alternative bias-detection methods as the checklist requested.",
+   "Checklist item 8 ($15 minimum wage, Seattle, California, UK National Living Wage large recent increases) is not addressed with any specific claim - Seattle and California minimum wage studies (e.g., Jardim et al., Cengiz et al.) are absent from the claim pool entirely, and the UK claims (4, 5) address elasticity/bias generally but not the National Living Wage's large recent increase specifically.",
+   "Checklist item 8 (elasticity implied specifically for large recent increases like $15 proposals, Seattle, California, UK National Living Wage) is not addressed - the report only has Germany and a general UK meta-analysis without wage-bite-specific analysis for large recent increases; Seattle/California/$15 studies are entirely absent from the claim pool.",
+   "Neumark & Shirley 2022 and Wolfson & Belman meta-analyses named explicitly in the checklist are absent from the claim pool; only Doucouliagos & Stanley (2009-era) work [16][17] and a 2013 methods paper [10] appear.",
+   "The original Card-Krueger NJ-PA fast-food study's own actual employment findings (checklist item 1) are never directly retrieved - only a later 2000 AER Reply [11] is in the pool, and Neumark-Wascher's specific payroll-data critique/reanalysis of that study is never surfaced (only their 1993 reply to Card/Katz/Krueger [18], which predates and is not the same as the payroll-data critique referenced in the checklist)."
+  ],
+  "planFlaws": [
+   "Claim [6] (the JNR/TWFE commuting-zone study) is elevated in the findings to 'the current best point-estimate synthesis' without any claim in the pool actually characterizing it as authoritative, most recent, or a synthesis - this is a synthesis-stage overreach rather than a scoping flaw per se, but the plan's checklist item 8 (large recent increases like $15/Seattle/California) was never matched to this or any other specific modern paper, so the report defaults to whatever single study happened to be retrieved (a 1990-2016 national commuting-zone panel, not a large-recent-increase natural experiment) and presents it as the headline number.",
+   "The 'Bunching/Border-Discontinuity Modernist' and 'Policy-Institution Synthesizer' perspectives were explicitly scoped as searchers but produced zero claims in the final verified pool - the plan named the right perspectives but execution failed to deliver on checklist items 4 and 6, and no flaw or gap was flagged about this failure in the summary itself.",
+   "The Bunching/Border-Discontinuity Modernist perspective was scoped specifically to find post-2015 quasi-experimental evidence (Cengiz et al., border-county pairs) but zero claims from this search made it into the verified pool - this is a critical gap given the report's central question about 'current best estimate,' since these methods are widely considered the most credible recent evidence and their complete absence undermines the report's confidence in a near-zero conclusion.",
+   "The Policy-Institution Synthesizer perspective, meant to deliver the CBO/OECD/Fed synthesis (checklist item 6, arguably the most decision-relevant part of the question), contributed no verified claims - the report never actually delivers the institutional 'best estimate range used for real policy decisions' the question explicitly asked for, despite the executive summary implicitly presenting itself as such a synthesis.",
+   "The checklist explicitly asked for 'best estimate of the employment elasticity' as a headline deliverable, but no perspective was scoped to specifically pull a single canonical meta-analytic point estimate (e.g., pooled elasticity from Doucouliagos & Stanley's own headline number, or Neumark & Shirley's), leaving the final 'best estimate' number in the summary synthesized ad hoc by the writer rather than sourced from a claim.",
+   "The perspective set has a structural blind spot: none of the six perspectives was explicitly tasked with retrieving the original Card-Krueger NJ-PA employment counts or the specific Neumark-Wascher payroll-data reanalysis numbers, even though checklist item 1 explicitly demands them - the 'Original Card-Krueger Constructor' and 'Neumark-Wascher Steelman' perspectives were described as wanting this, but no such quantitative claims surfaced in the verified pool, suggesting the search under these perspectives failed silently without a follow-up or flag in the final report.",
+   "The report treats the single JNR/TWFE estimate (claim [6]) as if it were the definitive 'current best estimate' for the entire literature, but the scoping never asked for corroboration from multiple recent large-panel studies - overweighting one paper's finding as representative of 'the current best estimate' is a plan flaw in how synthesis was scoped (no requirement for triangulation across multiple recent quasi-experimental designs).",
+   "The scoping treated Doucouliagos & Stanley's 2009-era meta-regression finding (claims 16-17) as representative of 'the publication-bias literature' without the more recent and directly relevant Neumark & Shirley (2022) meta-analysis (explicitly named in the checklist) ever being retrieved - since Neumark & Shirley 2022 reportedly finds more support for negative effects than Doucouliagos & Stanley, omitting it biases the surviving evidence toward the near-zero conclusion the summary reaches.",
+   "The scoping/search process appears to have surfaced several off-topic or tangential claims (housing rent spillovers [3][9][15], nonlinear modeling fit [14], monopsony macro model [19], skill-level gap note [8]) that were not integrated into the summary or findings at all, suggesting search retrieval was noisy and not well-targeted to the checklist's core sub-questions, wasting coverage capacity that should have gone to items 4, 6, and 8."
+  ],
+  "rationales": [
+   "The report fabricates several unsupported syntheses (an invented -0.1 to 0 'best estimate' range, an invented 62% verification statistic, and editorial framing that Card-Krueger is 'currently better supported') that are not licensed by the claim pool. More importantly, three of the eight scoped checklist items - post-2015 bunching/border-discontinuity evidence, institutional (CBO/OECD/Fed) synthesis, and elasticity estimates for large recent increases ($15, Seattle, California) - have zero suppo…",
+   ""
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 79,
+  "urlDupes": 4,
+  "budgetDropped": 8,
+  "claimsDroppedBeforeVerify": 49,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 81,
+    "ok": 40,
+    "fail": 41,
+    "results": 196
+   },
+   "ddg-html": {
+    "attempts": 51,
+    "ok": 0,
+    "fail": 51,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 51,
+    "ok": 0,
+    "fail": 51,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 51,
+    "ok": 0,
+    "fail": 51,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 51,
+    "ok": 51,
+    "fail": 0,
+    "results": 63
+   },
+   "crossref": {
+    "attempts": 41,
+    "ok": 38,
+    "fail": 3,
+    "results": 208
+   },
+   "europepmc": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 0
+   },
+   "openalex": {
+    "attempts": 3,
+    "ok": 2,
+    "fail": 1,
+    "results": 5
+   },
+   "pubmed": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 13
+   }
+  },
+  "sourceTiers": {
+   "T3": 7,
+   "T?": 7,
+   "T2": 6,
+   "T1": 6
+  },
+  "killsByLens": {
+   "counter": 5,
+   "provenance": 9,
+   "support": 8
+  },
+  "fetchVia": {
+   "pdf": 4,
+   "pdf-unreadable": 1,
+   "crossref-api": 9,
+   "http": 11,
+   "failed": 1
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 1,
+   "hits": 88,
+   "rate": 0.091
+  },
+  "agentCalls": 289,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 628860,
+  "outputTokens": 179357,
+  "wallSeconds": 1354.3,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 20,
+  "killed": 10,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}

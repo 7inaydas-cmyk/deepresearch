@@ -1,0 +1,44 @@
+{
+ "decisionAtStake": "A policymaker, journalist, or informed reader is trying to decide how much weight to put on employment-loss concerns when evaluating a proposed minimum wage increase (e.g., whether to support, oppose, or caveat such a policy, and how large an increase might be 'safe'). The answer determines whether disemployment risk is treated as a first-order concern, a second-order concern, or largely a statistical artifact of specification/publication-bias in this literature.",
+ "keyQuestion": "Does the modern minimum-wage literature, after accounting for publication bias and methodological improvements on both sides of the Card-Krueger vs. Neumark-Wascher debate, support a best-estimate employment elasticity that is economically small/near zero, or one that is negative and large enough to imply meaningful job losses from typical minimum wage increases?",
+ "assumptions": [
+  "Scope is primarily the US minimum wage literature (Card-Krueger and Neumark-Wascher debate is US-centric), though relevant international meta-analyses (UK, OECD) may be cited as corroborating evidence.",
+  "Time horizon covers roughly 1990s (original Card-Krueger/Neumark-Wascher exchange) through present-day meta-analyses (~2020s), not just the most recent papers.",
+  "'Employment elasticity' refers to the standard labor-economics parameter: % change in employment / % change in minimum wage, focused on low-wage/teen/restaurant-sector workers, not aggregate economy-wide employment.",
+  "'Serious' disemployment effects means elasticities that are statistically and economically distinguishable from zero at conventional policy-relevant magnitudes (e.g., elasticity magnitude notably greater than ~-0.1), not just any negative point estimate.",
+  "The question asks for a synthesis/best-estimate judgment rather than a single primary study; meta-analyses and meta-regression correcting for publication bias (e.g., Card-Krueger 1995 debate literature, Neumark-Wascher 2008 book, Belman-Wolfson 2014, Cengiz et al. 2019, Dube 2019 review, meta-analyses by Doucouliagos & Stanley 2009, Wolfson & Belman) are treated as the relevant evidentiary base.",
+  "No specific country's current policy proposal is named, so the answer is meant to inform general understanding/policy design principles rather than evaluate one specific minimum-wage bill."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "If recent large-sample, publication-bias-corrected meta-analyses (e.g., Card-Krueger-style natural experiments post-2015, Cengiz et al. bunching estimator, CBO 2019 report, Dube 2019 review) converge on elasticities near -0.1 to 0 with tight confidence intervals, the answer leans 'no serious disemployment effect for moderate increases.'",
+  "If meta-regression analysis (Doucouliagos & Stanley; Neumark & Shirley 2022) finds that after correcting for publication/selection bias the elasticity is meaningfully negative (e.g., -0.2 to -0.3) and robust across specifications, the answer leans 'yes, non-trivial disemployment effect exists.'",
+  "Evidence on heterogeneity by minimum wage 'bite' (ratio of minimum wage to median/local wage) would change the answer from a single number to a conditional one: small effects at low bite, larger negative effects when minimum wage is set very high relative to local wages (e.g., Seattle high-wage-hike studies, Cengiz et al. threshold effects).",
+  "If Neumark & Shirley's comprehensive 2022 survey of the post-1990s literature shows a strong majority of best-practice studies find negative and significant effects (contra earlier claims of null convergence), that would shift the answer toward the Neumark-Wascher tradition being vindicated.",
+  "Evidence of asymmetric publication bias specifically favoring null/positive results (rather than negative results) would undercut the 'consensus is small/no effect' narrative and suggest true effects are more negative than published estimates suggest, or vice versa if bias favors negative findings."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "H1: The best current estimate is that employment effects are small and statistically indistinguishable from zero for the range of minimum wage increases studied (elasticity roughly -0.05 to 0), largely vindicating the Card-Krueger tradition once publication bias and specification issues are addressed.",
+   "killCriterion": "Eliminated if leading publication-bias-corrected meta-analyses (Doucouliagos & Stanley 2009 replication/update, Neumark & Shirley 2022, CBO synthesis) find a statistically robust negative elasticity outside the -0.1 to 0 range across most credible specifications."
+  },
+  {
+   "hypothesis": "H2: The best current estimate is a modest but real negative elasticity (roughly -0.1 to -0.3), meaning disemployment effects exist and are economically non-trivial for larger increases, but were often statistically hidden by underpowered studies and offset by monopsony effects at low bite -- essentially a synthesis position between Card-Krueger and Neumark-Wascher.",
+   "killCriterion": "Eliminated if the weight of post-2015 quasi-experimental evidence (border-discontinuity, bunching estimators like Cengiz et al. 2019) consistently shows near-zero effects even for larger increases, OR if it shows sharply larger effects than -0.3 concentrated only in high-bite cases."
+  },
+  {
+   "hypothesis": "H3: The Neumark-Wascher tradition is essentially correct: minimum wage increases produce clear, sizable disemployment effects (elasticity more negative than -0.3) among low-skilled/teen workers, and the apparent null results in Card-Krueger-style studies are themselves artifacts of publication bias toward 'no effect' findings, weak instruments, or short time horizons.",
+   "killCriterion": "Eliminated if large publication-bias correction exercises (funnel-plot asymmetry tests, meta-regression) find that bias runs toward negative/significant results being over-published, not null results, or if elasticities this large are not replicated in high-quality post-2015 studies with long panels."
+  },
+  {
+   "hypothesis": "H4: No single 'best estimate' elasticity is defensible because true effects are highly heterogeneous by context (minimum wage bite, local labor market monopsony power, business cycle timing, industry composition), so the honest synthesis answer is conditional (near-zero at low bite, increasingly negative at high bite) rather than a single point estimate.",
+   "killCriterion": "Eliminated if meta-analyses find that heterogeneity by bite/context explains only a small share of variance in estimated elasticities (i.e., estimates vary more by author/methodology/publication bias than by underlying policy context), supporting H1-H3 instead."
+  }
+ ],
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted"
+ }
+}
