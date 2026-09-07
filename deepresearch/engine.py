@@ -922,6 +922,22 @@ def load_contract(path):
     shaped, problems = shape(partial, raw, "contract")
     if problems:
         raise ContractError("%s: %s" % (path, "; ".join(problems)))
+    # shape() DROPS a malformed item inside an array. That is right for model output and
+    # wrong here: a dropped item is a silent discard of something a person wrote, which is
+    # the one thing this intake exists to refuse. Measured on a live test - a contract with
+    # three hypotheses, one missing its killCriterion, was ACCEPTED with two because the
+    # survivors still met minItems, and the third vanished with only a log line.
+    for field, before in raw.items():
+        if not isinstance(before, list):
+            continue
+        after = shaped.get(field) or []
+        if len(after) < len(before):
+            raise ContractError(
+                "%s: %s had %d item(s) and %d survived validation. A supplied item is never "
+                "dropped - fix or remove the bad one. Each entry needs %s."
+                % (path, field, len(before), len(after),
+                   "both `hypothesis` and `killCriterion`" if field == "hypotheses"
+                   else "to be a non-empty string"))
     return {k: v for k, v in shaped.items() if k in raw}
 
 

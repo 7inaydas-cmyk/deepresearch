@@ -1,0 +1,15 @@
+{
+ "decisionAtStake": "Whether our behavioural-insights team should keep commissioning nudge trials at the current budget, scale them back, or require a pre-registered replication before any rollout.",
+ "keyQuestion": "After correcting for publication bias, is the average real-world effect size of behavioural nudge interventions large enough to justify continued programme spending?",
+ "assumptions": [
+  "Real-world field trials and megastudies only; laboratory and hypothetical-choice studies are out of scope.",
+  "'Large enough to justify spending' means a corrected effect that survives at d >= 0.05 on the outcome the programme actually cares about, not on an intermediate proxy.",
+  "Evidence published 2020 onward, since the bias-correction debate post-dates Mertens et al. (2022).",
+  "Effects are averaged across domains; we are not asking which specific nudge type works."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "A pre-registered multi-site replication finding a corrected effect at or above d = 0.20 would justify the current budget outright.",
+  "Evidence that the bias-correction methods themselves (PET-PEESE, RoBMA, selection models) are mis-specified for this literature would invalidate the corrected estimates entirely.",
+  "A demonstration that heterogeneity is so large that an average effect is the wrong summary statistic would change the question from 'how big' to 'which ones'."
+ ]
+}

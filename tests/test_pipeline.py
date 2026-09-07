@@ -686,6 +686,17 @@ ok(_raises({}) and "no fields" in _raises({}), "an empty contract is rejected")
 ok(dr.load_contract(_write(dict(_sup, provenance={"assumptions": "supplied"}))) == _sup,
    "a persisted contract (carrying provenance) can be passed straight back in - provenance is stripped")
 ok(dr.load_contract(_write({"keyQuestion": "k"})) == {"keyQuestion": "k"}, "a single supplied field is enough")
+# shape() drops a malformed ITEM inside an array - right for model output, wrong for a file
+# a person wrote. Found on a live test: 3 hypotheses, one missing killCriterion, ACCEPTED
+# with 2 because the survivors still met minItems, and the third vanished with a log line.
+_e = _raises({"hypotheses": [{"hypothesis": "h1", "killCriterion": "k1"},
+                             {"hypothesis": "h2", "killCriterion": "k2"},
+                             {"hypothesis": "h3 the human wrote, no kill criterion"}]})
+ok(_e and "3 item(s) and 2 survived" in _e,
+   "a supplied item is never DROPPED even when the survivors still satisfy minItems - "
+   "that would be a silent discard of something a person wrote")
+ok(dr.load_contract(_write({"assumptions": ["a", "b"]})) == {"assumptions": ["a", "b"]},
+   "and an array whose items all survive is untouched")
 _main_src2 = _engine_txt.split("def main(", 1)[1]
 ok("os.path.abspath(a.contract)" in _main_src2 and "os.path.abspath(a.out)" in _main_src2,
    "--contract AND --out are absolutised before the --bg re-exec, which runs the child under a different cwd")

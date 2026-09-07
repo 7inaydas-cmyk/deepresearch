@@ -251,6 +251,10 @@ import fs2 from 'node:fs'
   const bad = await run('T20b malformed supplied field is rejected before any model call',
     { question: 'Q', depth: 'standard', contract: { assumptions: 'one prose string' } })
   ok(bad.out.error && /contract rejected/.test(bad.out.error) && /assumptions/.test(bad.out.error), 'named, not dropped: ' + bad.out.error)
+  const drop = await run('T20d a dropped supplied item is rejected', { question: 'Q', depth: 'standard',
+    contract: { hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }, { hypothesis: 'h3 no kill criterion' }] } })
+  ok(drop.out.error && /3 item\(s\) and 2 survived/.test(drop.out.error),
+     'a supplied item is never dropped even when survivors meet minItems: ' + drop.out.error)
   const typo = await run('T20c unknown key is rejected', { question: 'Q', depth: 'standard', contract: { assumption: ['x'] } })
   ok(typo.out.error && /unknown field/.test(typo.out.error), 'a typo is not silently honoured: ' + typo.out.error)
   ok(typo.calls === 0 && bad.calls === 0, 'and neither spent a single agent call')

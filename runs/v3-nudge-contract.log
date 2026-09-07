@@ -1,0 +1,22 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: After correcting for publication bias, is the average real-world effect size of behavioural nudge intervention
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Contract: 4 field(s) supplied by the asker (decisionAtStake, keyQuestion, assumptions, whatWouldChangeTheAnswer); drafting hypotheses
+Key question: After correcting for publication bias, is the average real-world effect size of behavioural nudge in
+Assumptions stated: 4 | hypotheses w/ kill criteria: 4
+  [plan.subQuestions] expected an array, got str ('\n<item>What is the uncorrected (raw, published-literature) average effect size of behavioural nudge interventions report') - treating as empty. This is NOT the model declining; it is a shape mismatch at the seam.
+  [plan] response violates its own schema: subQuestions=0 (schema requires 3), perspectives MISSING (required) (stop_reason=end_turn); retrying (1/5)
+  [plan.subQuestions] expected an array, got str ('\n<UNKNOWN_PLACEHOLDER>\n') - treating as empty. This is NOT the model declining; it is a shape mismatch at the seam.
+  [plan] response violates its own schema: subQuestions=0 (schema requires 3), perspectives=0 (schema requires 3) (stop_reason=tool_use); retrying (2/5)
+Checklist: 8 sub-questions
+Perspectives: Meta-analyst constructor | Megastudy steelman | Replication skeptic | Cost-effectiveness analyst | Heterogeneity auditor | Regulatory/practitioner reviewer
+  [pick:Cost-effectiveness analyst.results] recovered a double-encoded array: the field arrived as a JSON STRING holding 3 item(s), not as an array
+  [w1] Cost-effectiveness analyst: 8 hits -> 3 picked
+  [w1] Regulatory/practitioner reviewer: 8 hits -> 3 picked
+  [w1] Meta-analyst constructor: 8 hits -> 5 picked
+  [pick:Replication skeptic.results] recovered a double-encoded array: the field arrived as a JSON STRING holding 5 item(s), not as an array
+  [pick:Replication skeptic] URL not in hit list, dropped: 'https://maseconomics.com/publication-bias-file-drawer-problem-distort-evidence/'
+  [w1] Replication skeptic: 8 hits -> 4 picked
+  [w1] Heterogeneity auditor: 8 hits -> 5 picked
+  [w1] Megastudy steelman: 8 hits -> 4 picked
+[w1] 16 sources, 54 claims

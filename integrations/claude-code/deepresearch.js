@@ -78,6 +78,17 @@ const intakeContract = () => {
   if (!Object.keys(cleaned).length) return { error: 'contract rejected: no fields supplied' }
   const { shaped, problems } = shape({ ...FRAMING_SCHEMA, required: [] }, cleaned, 'contract')
   if (problems.length) return { error: 'contract rejected: ' + problems.join('; ') }
+  // shape() drops a malformed item inside an array - right for model output, wrong for
+  // something a person wrote. A dropped supplied item is a silent discard, so refuse.
+  for (const [field, before] of Object.entries(cleaned)) {
+    if (!Array.isArray(before)) continue
+    const after = shaped[field] || []
+    if (after.length < before.length) {
+      return { error: 'contract rejected: ' + field + ' had ' + before.length + ' item(s) and ' + after.length +
+        ' survived validation. A supplied item is never dropped - fix or remove the bad one. Each entry needs ' +
+        (field === 'hypotheses' ? 'both `hypothesis` and `killCriterion`' : 'to be a non-empty string') + '.' }
+    }
+  }
   SUPPLIED = Object.fromEntries(Object.entries(shaped).filter(([k]) => k in cleaned))
   return null
 }
