@@ -145,12 +145,22 @@ def search_health():
 
 
 _doi_meta, _doi_lock = {}, threading.Lock()
+# A picker that is handed hits and chooses NONE of them, over and over, is the only
+# signal the pipeline has that search returned irrelevant results. searchHealth counts
+# results, not relevance, so a poisoned upstream engine reads as perfect health.
+_pick_tally, _pick_lock = {"calls": 0, "starved": 0, "hits": 0}, threading.Lock()
+# How each URL was actually read: http | pdf | crossref-api | crossref-fallback |
+# pdf-unreadable | failed. Reported per source and censused in stats.
+_fetch_meta = {}
 
 
 def web_fetch(url, cap=14000):
+    """Fetch, and REMEMBER how. `via` is the difference between a claim cited to a paper
+    and one cited to an abstract stub, and the report could not tell them apart."""
     text, meta = _search.fetch(url, cap=cap)
-    if meta.get("via") == "crossref-api":
-        with _doi_lock:
+    with _doi_lock:
+        _fetch_meta[str(url)] = meta
+        if meta.get("via") == "crossref-api":
             _doi_meta[str(url)] = meta
     return text
 
@@ -964,6 +974,16 @@ def load_contract(path):
     return {k: v for k, v in shaped.items() if k in raw}
 
 
+def _via_census(sources):
+    """How the run actually read its sources. A run whose evidence is mostly
+    `crossref-fallback` read abstracts, not papers, and should say so."""
+    out = {}
+    for s in sources or []:
+        v = (_fetch_meta.get(s.get("url")) or {}).get("via") or "unknown"
+        out[v] = out.get(v, 0) + 1
+    return out
+
+
 def calibration_sample(voted, n):
     """Pick N claims for the reliability re-run, balanced across the outcome.
 
@@ -1138,6 +1158,11 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
                 # no line saying why, indistinguishable from the model choosing fewer.
                 log("  [pick:%s] URL not in hit list, dropped: %r" % (p["label"], str(r["url"])[:120]))
         log("  [%s] %s: %d hits -> %d picked" % (tag, p["label"], len(hits), len(chosen)))
+        with _pick_lock:
+            _pick_tally["calls"] += 1
+            _pick_tally["hits"] += len(hits)
+            if hits and not chosen:
+                _pick_tally["starved"] += 1
         return {"persp": p["label"], "chosen": chosen}
 
     picks = [x for x in pmap(do_search, perspectives) if x]
@@ -1389,6 +1414,12 @@ def deepresearch(question, depth="standard", contract=None):
             % (dropped_pre, T["max_verify"]))
     log("Verify pool spans %d distinct sub-question buckets (of %d)"
         % (len({sq_key(c, len(subqs)) for c in ranked}), len(subqs)))
+    if _pick_tally["calls"] >= 4 and _pick_tally["starved"] / _pick_tally["calls"] >= 0.6:
+        log("WARNING: the source picker rejected EVERY hit in %d of %d searches. Search "
+            "returned %d results, so this is not an empty web - it is an upstream engine "
+            "serving results that are not about the question. Treat this run's coverage as "
+            "unreliable and check stats.pickStarvation."
+            % (_pick_tally["starved"], _pick_tally["calls"], _pick_tally["hits"]))
     log("Total: %d sources -> %d claims -> verifying %d" % (len(sources), len(all_claims), len(ranked)))
 
     # `perspectives` is recorded so the injected-defect probe (#10) can rebuild the
@@ -1404,7 +1435,10 @@ def deepresearch(question, depth="standard", contract=None):
                          # without the page text produced a different answer for the
                          # same source, so sources[].tier and stats.sourceTiers could
                          # disagree inside one report.
-                         "tier": s.get("tier") or tier_of(s["url"])[0]}
+                         "tier": s.get("tier") or tier_of(s["url"])[0],
+                         "via": (_fetch_meta.get(s["url"]) or {}).get("via"),
+                         **({"abstractOnly": True}
+                            if (_fetch_meta.get(s["url"]) or {}).get("abstractOnly") else {})}
                         for s in sources]
     def stats(**kw):
         d = dict(depth=depth, perspectives=len(persps), subQuestions=len(subqs),
@@ -1415,6 +1449,10 @@ def deepresearch(question, depth="standard", contract=None):
                  searchHealth=search_health(),
                  sourceTiers=_tier_census(sources),
                  killsByLens=dict(globals().get("KILLS_BY_LENS") or {}),
+                 fetchVia=_via_census(sources),
+                 pickStarvation=dict(_pick_tally,
+                                     rate=round(_pick_tally["starved"] / _pick_tally["calls"], 3)
+                                     if _pick_tally["calls"] else None),
                  agentCalls=_stats["calls"], agentErrors=_stats["errors"],
                  rateLimited=_stats["ratelimited"],
                  inputTokens=_stats["in_tok"], outputTokens=_stats["out_tok"],
@@ -1852,6 +1890,17 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             "model DRAFTED it. A drafted assumption and a supplied one look identical in the "
             "JSON and mean opposite things: a supplied field is a decision to respect, a "
             "drafted one is a premise the run should have tested."),
+        "irrelevantSearchResults": (
+            "stats.pickStarvation counts how often the source picker was handed search hits "
+            "and chose NONE of them. A high rate means search returned results that were not "
+            "about the question - a poisoned or rate-limited upstream engine - and NOT that "
+            "the web is silent. searchHealth counts results, not relevance, so it reads as "
+            "healthy in exactly this case."),
+        "abstractOnlySources": (
+            "stats.fetchVia counts how each source was READ. `crossref-fallback` means the "
+            "publisher blocked the fetch and only the abstract was available, and those "
+            "sources carry `abstractOnly: true`. A claim verified against an abstract has "
+            "been checked against a summary of the paper, not the paper."),
         "searchCoverage": (
             "Check stats.searchHealth. If every general-web backend reports 0 results, "
             "this run saw a scholarly-only slice of the web and its coverage gaps are a "

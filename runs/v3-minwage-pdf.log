@@ -1,0 +1,200 @@
+Credential: oauth (local Claude Code login; set ANTHROPIC_API_KEY to avoid a server-side revocation taking a run down mid-flight)
+Question: Does raising the minimum wage reduce employment? Weigh the Card and Krueger tradition against Neumark and Wasc
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: Based on the accumulated quasi-experimental and meta-analytic evidence including corrections for pub
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Original NJ-PA Combatants | Meta-Analyst / Publication-Bias Auditor | Modern Quasi-Experimental Designer | High-Bite Case Skeptic (Seattle/California $15) | Steelman for Disemployment Effects | Policy Practitioner / CBO-style Regulator
+  [w1] Meta-Analyst / Publication-Bias Auditor: 8 hits -> 0 picked
+  [w1] Policy Practitioner / CBO-style Regulator: 8 hits -> 0 picked
+  [w1] High-Bite Case Skeptic (Seattle/California $15): 8 hits -> 0 picked
+  [w1] Modern Quasi-Experimental Designer: 8 hits -> 0 picked
+  [pick:Original NJ-PA Combatants.results] recovered a double-encoded array: the field arrived as a JSON STRING holding 1 item(s), not as an array
+  [w1] Original NJ-PA Combatants: 8 hits -> 1 picked
+  [w1] Steelman for Disemployment Effects: 8 hits -> 1 picked
+[w1] 2 sources, 4 claims
+Round 1: 8/8 sub-questions still open, 0 contradictions, 5 follow-ups
+  [w2] Publication bias meta-analysis: 8 hits -> 0 picked
+  [w2] CBO minimum wage employment elasticity estimate: 8 hits -> 0 picked
+  [w2] Seattle and California high-bite natural experiments: 8 hits -> 0 picked
+  [w2] CK-NW empirical resolution: 8 hits -> 0 picked
+  [w2] Post-2015 quasi-experimental studies: 8 hits -> 0 picked
+[w2] 0 sources, 0 claims
+Verify pool spans 3 distinct sub-question buckets (of 8)
+Total: 2 sources -> 4 claims -> verifying 4
+  OK          3-0  This NBER working paper is a direct reply by Neumark and Wascher to Card, Katz and Krueger…
+  OK          2-1  The paper was published as an NBER working paper in 2006, indicating it reflects the state…
+  KILLED[support+provenance] 1-2  The work by Neumark and Wascher has been cited 96 times, reflecting its influence within t…
+  OK          2-1  Neumark and Wascher's 2006 NBER review is a survey of the 'new minimum wage research' lite…
+CALIBRATION: re-running the panel on 4 claims to measure reliability
+  OK          3-0  This NBER working paper is a direct reply by Neumark and Wascher to Card, Katz and Krueger…
+  KILLED[support+provenance] 1-2  The work by Neumark and Wascher has been cited 96 times, reflecting its influence within t…
+  OK          2-1  The paper was published as an NBER working paper in 2006, indicating it reflects the state…
+  OK          2-1  Neumark and Wascher's 2006 NBER review is a survey of the 'new minimum wage research' lite…
+CALIBRATION: n=4 raw=1.000 cohenKappa=None scottPi=None flips=0 -> undefined
+Verify: 3 confirmed, 1 refuted, 0 unverified | kills by lens: {'support': 1, 'provenance': 1}
+RESCUE: 6 sub-question(s) have ZERO surviving claims - re-searching 4
+  [rescue] rescue6: 8 hits -> 0 picked
+  [rescue] rescue2: 8 hits -> 0 picked
+  [rescue] rescue4: 8 hits -> 0 picked
+  [rescue] rescue5: 8 hits -> 0 picked
+[rescue] 0 sources, 0 claims
+RESCUE: no new claims found - these sub-questions remain genuinely unanswered
+Citation audit (full pool of 4): 1 supported, 2 partial, 1 UNSUPPORTED, 0 unreachable -> 25.0%
+Process critique: material-gaps | 5 untraceable, 19 coverage gaps, 6 plan flaws
+Report written to /home/excelsior/Desktop/deepresearch/runs/v3-minwage-pdf.json
+Contract written to /home/excelsior/Desktop/deepresearch/runs/v3-minwage-pdf.contract.json
+{
+ "summary": "This synthesis run produced only three confirmed claims, all of which are provenance/metadata facts about the Card-Krueger vs. Neumark-Wascher dispute (who wrote what reply to whom, and when a review paper was published) rather than any empirical finding about employment effects. No claim in this run reports an actual elasticity estimate, a publication-bias-correction result (funnel plot, PET-PEESE, p-curve), or findings from modern post-2015 quasi-experimental studies. As a result, the user's core question - whether minimum wage increases reduce employment, and what the current best elasticity estimate is - cannot be answered from the evidence gathered; all four pre-registered hypotheses are marked untested. This should be treated as an incomplete research run requiring further evidence-gathering, not as a substantive finding of ambiguity in the literature itself.",
+ "citationAudit": {
+  "citationAccuracy": 25.0,
+  "effectiveCitations": 1,
+  "supported": 1,
+  "partial": 2,
+  "unsupported": 1,
+  "unreachable": 0,
+  "scope": "full verification pool (4 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "processCritique": {
+  "untraceableCount": 5,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "1. [high] Neumark and Wascher's NBER working paper (1993/94) was an explicit direct reply to Card, Katz and Krueger, confirming an active empirical dispute between the two research camps beginning in the early 1990s.",
+   "As a result, the user's core question - whether minimum wage increases reduce employment, and what the current best elasticity estimate is - cannot be answered from the evidence gathered; all four pre-registered hypotheses are marked untested.",
+   "This should be treated as an incomplete research run requiring further evidence-gathering, not as a substantive finding of ambiguity in the literature itself.",
+   "[high] Neumark and Wascher's NBER working paper (1993/94) was an explicit direct reply to Card, Katz and Krueger, confirming an active empirical dispute between the two research camps beginning in the early 1990s."
+  ],
+  "untraceableStatements": [
+   "Finding 1 adds a specific date range '1993/94' not present in claim [0], which only says 'early 1990s'",
+   "The characterization that the run should be treated as 'incomplete research run requiring further evidence-gathering' is an editorial judgment not derived from the claims themselves, though it is a reasonable inference",
+   "The claim that all four pre-registered hypotheses were 'marked untested' is not traceable to any numbered claim",
+   "The executive summary's characterization that the run 'cannot be answered' and requires 'further evidence-gathering' is a reasonable meta-conclusion given the claims, but the strong framing that this 'should be treated as an incomplete research run requiring further evidence-gathering, not as a substantive finding of ambiguity' is an editorializing conclusion not directly licensed by any single numbered claim - it is a reasonable inference but goes beyond simply reporting claims.",
+   "The finding that the 1993/94 NBER working paper was a 'direct reply' occurring 'beginning in the early 1990s' overstates claim [0], which only says it 'indicates an active empirical dispute... in the early 1990s' - it does not establish that this was the beginning of the dispute (Card-Krueger's original NJ-PA study was 1994, so framing NW's paper as marking the dispute's start is an inserted temporal claim)."
+  ],
+  "coverageGaps": [
+   "Checklist item 1: The empirical content of Card-Krueger's original NJ-PA finding (that the minimum wage increase did not reduce, and may have slightly increased, fast-food employment) is never stated — only the fact that a reply existed. The specific methodological critique (payroll vs. phone-survey data) mentioned in the checklist is never actually described in any claim or finding, only alluded to via authorship metadata. The 'later reanalysis' resolution (e.g., Card-Krueger's follow-up payroll-based reanalysis) is entirely absent.",
+   "Checklist item 2 (publication-bias correction techniques - funnel plots, PET-PEESE, p-curve) is completely unaddressed; no claim of that type exists in the pool and none was gathered.",
+   "Checklist item 3 (post-2015 quasi-experimental studies like Cengiz et al. 2019, Dube-Lester-Reich, Cengiz-Dube-Lindner-Zipperer) is entirely unaddressed - no claims from this literature were retrieved despite a dedicated perspective ('Modern Quasi-Experimental Designer') being assigned to search for it.",
+   "Checklist item 4 (bite-dependent effects, Seattle $15, California increases) is entirely unaddressed despite a dedicated perspective assigned to it.",
+   "Checklist item 5 (bidirectional publication bias / ideologically motivated suppression on both sides) is entirely unaddressed.",
+   "Checklist item 6 (Neumark-Wascher steelman case for disemployment effects and their rebuttal of near-zero meta-analytic estimates) is entirely unaddressed beyond bare provenance facts.",
+   "Checklist item 7 (CBO or other institutional point-estimate ranges and how they shifted over the past decade) is entirely unaddressed.",
+   "Checklist item 8 (subgroup heterogeneity: teens vs. broader low-wage workers, industry-specific effects) is entirely unaddressed.",
+   "No actual elasticity number appears anywhere in the findings or claim pool, so the report cannot fulfill the question's explicit request to 'state what the current best estimate of the employment elasticity is.'",
+   "No primary Card-Krueger (1994) paper, no Neumark-Wascher (2000) AER paper, no CBO report, no meta-analysis (e.g., Doucouliagos-Stanley, Belman-Wolfson), and no post-2015 quasi-experimental study appear anywhere in the verified claim pool - despite six perspectives being tasked with exactly these sources, none of their actual empirical content made it into the confirmed claims.",
+   "None of the six assigned search perspectives besides the 'Original NJ-PA Combatants' angle produced any surviving verified claims, indicating five of six planned search lines yielded nothing usable — a near-total research failure not just a partial gap.",
+   "Sub-question 1 (Card-Krueger NJ-PA findings, NW payroll-vs-phone critique, and how the dispute was resolved by later reanalysis) is only partially covered - the claim pool never states what Card-Krueger actually found, what the payroll-data critique specifically was, or how it was resolved.",
+   "Sub-question 2 (publication-bias correction techniques: funnel plots, PET-PEESE, p-curve) is entirely unaddressed - no claim reports any bias-correction result or elasticity.",
+   "Sub-question 3 (post-2015 quasi-experimental studies: Cengiz et al. 2019, Dube-Lester-Reich, Cengiz-Dube-Lindner-Zipperer) is entirely unaddressed - zero claims from this literature were gathered despite a dedicated perspective tasked with it.",
+   "Sub-question 4 (minimum wage 'bite' and Seattle/California high-bite natural experiments) is entirely unaddressed.",
+   "Sub-question 5 (bidirectional publication bias / ideologically motivated suppression on both sides) is entirely unaddressed.",
+   "Sub-question 6 (steelman case for disemployment effects and rebuttal to bias-corrected near-zero estimates) is entirely unaddressed.",
+   "Sub-question 7 (CBO or other policy-body summary of the elasticity range and how it shifted over the past decade) is entirely unaddressed - no CBO report, document, or actionable range was retrieved despite a dedicated perspective.",
+   "Sub-question 8 (subgroup heterogeneity: teens vs. all low-wage workers, restaurant industry effects) is entirely unaddressed."
+  ],
+  "planFlaws": [
+   "No flaw is evident in sub-question framing itself (checklist items are neutral and comprehensive); the failure is that execution did not follow through on the plan.",
+   "The executive summary and findings correctly flag this failure and do not fabricate an answer, which is appropriate epistemic behavior; however, the report as delivered gives the user zero actionable information despite the question explicitly demanding 'the current best estimate of the employment elasticity' - the process should have either retried the failed searches or clearly escalated for a re-run rather than presenting a near-empty result as final output.",
+   "The scoping checklist itself was reasonable and comprehensive, but the executive summary's framing as merely 'incomplete, needs more evidence-gathering' undersells the severity: essentially only 1 of 8 checklist items has even token (metadata-level) coverage, and even that item lacks the actual empirical finding (what Card-Krueger found, what the payroll-data critique specifically showed).",
+   "The scoping/perspective plan was reasonable in structure (six perspectives mapping to the eight sub-questions), but the process failed at the research-execution stage: only metadata/provenance facts about who-wrote-what-when survived to the claim pool, none of the substantive empirical or bias-correction content did, indicating a verification bar or extraction process that discarded nearly all the empirical evidence found (if any was found) - this is a process failure worth flagging, but it's an execution flaw more than a scoping flaw.",
+   "The two findings foreground provenance facts (who replied to whom, when a survey was published) as if they were substantive progress, when they carry near-zero informational value toward answering the user's actual question; presenting them as '[high]' and '[medium]' confidence findings in a report about employment effects risks giving false impression of partial progress on substance when in fact zero substantive economic findings were validated.",
+   "There is no evidence in the claim pool that the five other perspectives (Meta-Analyst, Modern Quasi-Experimental Designer, High-Bite Case Skeptic, Steelman for Disemployment, Policy Practitioner/CBO) produced any surviving verified claims at all — the plan assigned six specialized search perspectives, but the synthesis pool shows work product from effectively only one. This suggests either a retrieval/verification pipeline failure or that the underlying searches for those perspectives were not actually executed/completed, which the report does not flag explicitly as a process failure (it treats it as a generic 'incomplete run')."
+  ],
+  "rationales": [
+   "The claim pool contains only three provenance/metadata facts (who replied to whom, when a review was published) and zero empirical findings. Every one of the eight scoped sub-questions - including the two most central to the user's actual question (the true elasticity after publication-bias correction, and what post-2015 quasi-experimental designs find) - remains completely unanswered. The executive summary is honest about this failure, which is commendable, but one finding still smuggles in an …",
+   "The executive summary is honest in stating that no empirical elasticity or bias-correction finding was established, which is good epistemic hygiene. However, on traceability grounds, it overstates precision (e.g., 'four pre-registered hypotheses... marked untested' is asserted without any claim establishing what those hypotheses were or that they were tracked) and finding 1 inserts a specific year range (1993/94) not present in the underlying claim. More importantly, the coverage is catastrophic…"
+  ]
+ },
+ "rescue": {
+  "wipedSubQuestions": [
+   "What do formal publication-bias correction techniques (funnel-plot asymmetry tests, precision-effect estimates like PET-PEESE, p-curve/p-hacking tests) applied specifically to the minimum-wage-employment literature conclude about the true underlying elasticity once selective-reporting bias is removed?",
+   "Does the employment effect vary systematically with minimum wage 'bite' (ratio to local median/average wage), and specifically what happened in high-bite natural experiments like Seattle's $15 minimum wage and California's statewide increases in low-wage regions?",
+   "Is there credible evidence of publication bias running in BOTH directions (i.e., advocacy-funded or ideologically motivated suppression of null/positive findings on both the pro- and anti-minimum-wage sides), and does bias-correction change one side's conclusions more than the other's?",
+   "What is the strongest evidence-based case that minimum wage increases DO cause economically meaningful disemployment (the Neumark-Wascher steelman), and what do its proponents say is wrong with the bias-corrected near-zero meta-analytic estimates?",
+   "How do institutional/policy bodies (e.g., Congressional Budget Office) that must produce actionable numbers for legislators currently summarize the range and central point estimate of the minimum-wage employment elasticity, and how has that official range shifted over the past decade?",
+   "Do effects differ meaningfully by subgroup (teens specifically vs. all low-wage/less-educated workers, or by industry such as restaurants), such that a single aggregate elasticity misrepresents who actually bears any disemployment effect?"
+  ],
+  "targeted": 4,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 2,
+  "claimsExtracted": 4,
+  "urlDupes": 0,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 23,
+    "ok": 23,
+    "fail": 0,
+    "results": 154
+   },
+   "ddg-html": {
+    "attempts": 3,
+    "ok": 0,
+    "fail": 3,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 3,
+    "ok": 0,
+    "fail": 3,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 3,
+    "ok": 0,
+    "fail": 3,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 0
+   },
+   "crossref": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 21
+   }
+  },
+  "sourceTiers": {
+   "T?": 2
+  },
+  "killsByLens": {
+   "support": 1,
+   "provenance": 1
+  },
+  "fetchVia": {
+   "crossref-api": 1,
+   "crossref-fallback": 1
+  },
+  "agentCalls": 52,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 96865,
+  "outputTokens": 29957,
+  "wallSeconds": 250.0,
+  "claimsVerified": 4,
+  "lensesPerClaim": 3,
+  "confirmed": 3,
+  "killed": 1,
+  "unverifiedCount": 0,
+  "afterSynthesis": 2
+ }
+}

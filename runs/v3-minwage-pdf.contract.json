@@ -1,0 +1,43 @@
+{
+ "decisionAtStake": "The reader is likely a policymaker, analyst, or informed commentator deciding how much weight to give disemployment-effect arguments when evaluating a proposed minimum wage increase (e.g., whether to support/oppose a hike, or how large an increase is 'safe'). If the answer is 'effects are negligible/near zero,' the reader may discount job-loss objections; if 'effects are real and sizeable for some groups,' the reader may favor smaller increases, phase-ins, or targeted alternatives (EITC) instead. Absent a specific pending decision, the deliverable functions as a calibrated literature synthesis to inform that class of decisions.",
+ "keyQuestion": "Based on the accumulated quasi-experimental and meta-analytic evidence including corrections for publication bias, does raising the minimum wage cause a statistically and economically meaningful reduction in employment among low-wage/teen workers, and if so, what is the best current point estimate of that employment elasticity?",
+ "assumptions": [
+  "Geographic scope is primarily the United States, since Card & Krueger and Neumark & Wascher both center on US state/local minimum wage variation; will note whether international evidence (UK, Germany, developing countries) generalizes or diverges.",
+  "Time horizon covers the empirical literature from the early 1990s (Card-Krueger 1994 NJ/PA study) through the most recent meta-analyses and monopsony-based studies (2020s), since publication-bias critiques and modern estimates (e.g., Cengiz et al. 2019, Card & Krueger, Neumark & Wascher's later syntheses) postdate the original debate.",
+  "'Employment elasticity' refers to the standard labor-demand elasticity concept: percentage change in employment (typically teen or low-wage/low-skill worker employment, or restaurant-sector employment) per 1% change in the minimum wage, not aggregate employment or GDP effects.",
+  "'Reduce employment' is treated as a question of the sign and magnitude of disemployment effects for the directly affected (low-wage/teen) population, not broader macroeconomic effects like inflation, small business closures, or automation substitution, unless the literature ties those explicitly to employment elasticity estimates.",
+  "'Serious' or 'meaningful' disemployment effect is assumed to mean an elasticity magnitude that is statistically distinguishable from zero and economically non-trivial (e.g., beyond roughly -0.1 to -0.3), a threshold not specified by the asker but commonly used in this literature to distinguish 'small/negligible' from 'substantial' effects.",
+  "The question is treated as an academic/empirical synthesis request rather than tied to a specific pending policy vote or minimum wage level, since no specific jurisdiction, wage level, or policy proposal was named."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "If publication-bias-corrected meta-analyses (e.g., Card & Krueger 1995's own meta-analysis, or more recent ones like Wolfson & Belman 2019, Neumark & Shirley 2022) converge on an elasticity indistinguishable from zero after correction, that would support the 'negligible effect' conclusion; if instead correction reveals bias in the OPPOSITE direction (i.e., true effects are more negative than published estimates suggest), that would flip toward 'real and larger than commonly cited.'",
+  "If recent high-powered quasi-experimental designs using modern synthetic control / border-discontinuity methods (e.g., Cengiz et al. 2019, Dube-Lester-Reich border county studies) find consistent near-zero effects even at higher minimum wage levels (e.g., $15 in Seattle/California), that strengthens the Card-Krueger tradition; if newer studies at higher minimum-wage-to-median-wage ratios (bite) show emerging disemployment effects not visible at lower historical minimum wages, that would flip the answer toward 'effects depend on bite/level' rather than a flat 'no effect.'",
+  "If Neumark & Wascher's critiques of Card-Krueger's data/methodology (e.g., payroll vs. survey data issues in the NJ-PA study) are found to be decisively vindicated or decisively refuted by independent replications (e.g., Card & Krueger's 2000 payroll-data reanalysis), that shifts credibility weight between the two camps.",
+  "If the elasticity varies substantially and systematically by subgroup (teens vs. all low-wage workers), by wage level relative to local median ('bite'), or by whether the local labor market is monopsonistic, a single 'best estimate' answer would need to be replaced with a conditional answer, changing the nature of the conclusion from a point estimate to a range/interaction effect."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "The Card-Krueger view is largely correct: modern minimum wage increases (within observed historical ranges) have employment effects on low-wage/teen workers that are statistically indistinguishable from zero or very small (elasticity near 0 to -0.1), consistent with monopsony power or search frictions in low-wage labor markets.",
+   "killCriterion": "Eliminated if publication-bias-corrected meta-analyses and modern high-powered studies (post-2015) consistently show statistically significant negative elasticities in the -0.2 to -0.4 range or larger, robust to bias correction, particularly for teens or low-wage workers at higher minimum-wage 'bite' levels."
+  },
+  {
+   "hypothesis": "The Neumark-Wascher view is largely correct: minimum wage increases produce real, economically meaningful disemployment effects for low-wage/teen workers, with elasticities commonly cited in the -0.1 to -0.3 range in the broader (non-cherry-picked) literature, and Card-Krueger-style null results reflect specific methodological limitations (small samples, short time horizons, offsetting margins like hours/turnover) rather than the true underlying relationship.",
+   "killCriterion": "Eliminated if publication-bias-corrected meta-analyses (which explicitly test for and adjust away the file-drawer/p-hacking problem Neumark-Wascher's own survey-based tallies are accused of) show that the population of studies, once corrected, centers on a near-zero elasticity, or if Neumark & Wascher's own later work (e.g., Neumark & Shirley 2022) concedes convergence toward smaller effects than their earlier reviews claimed."
+  },
+  {
+   "hypothesis": "The true answer is conditional/heterogeneous rather than a single sign: employment effects are near zero for moderate minimum wages (low 'bite' relative to local median wage) but become negative and economically meaningful once the minimum wage crosses a higher bite threshold (e.g., >50-60% of local median wage), reconciling both literatures as looking at different policy regimes/time periods.",
+   "killCriterion": "Eliminated if studies of high-bite minimum wages (e.g., Seattle's $15, California's statewide increases relative to low-wage regions) show no detectable disemployment effect even at high bite, or conversely if low-bite historical increases (the original Card-Krueger NJ case) are shown via reanalysis to have produced real job losses, undermining the threshold/bite explanation."
+  },
+  {
+   "hypothesis": "Publication bias is severe enough on BOTH sides (advocacy-funded studies from pro- and anti-minimum-wage-increase interests) that the literature cannot currently support a precise consensus point estimate; the honest 'best estimate' is a wide, low-confidence range (e.g., -0.05 to -0.2) rather than a specific number, and further methodological consensus (not just more studies) is needed.",
+   "killCriterion": "Eliminated if a small number of well-identified, pre-registered or administrative-data-based studies (less susceptible to publication bias, e.g., using universal administrative payroll data across many states/countries) converge tightly on a specific elasticity value with narrow confidence intervals, indicating the field has effectively resolved the estimate despite bias in the broader literature."
+  }
+ ],
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted"
+ }
+}

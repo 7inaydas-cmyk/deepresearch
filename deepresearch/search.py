@@ -381,6 +381,49 @@ def _pubmed(query: str, n: int) -> list[dict]:
     return out
 
 
+_STOP = {"what", "when", "which", "does", "did", "the", "and", "for", "with", "from",
+         "that", "this", "how", "why", "are", "was", "were", "have", "has", "into",
+         "than", "then", "there", "their", "about", "after", "before", "between"}
+
+
+def _query_terms(query):
+    return {w for w in re.findall(r"[A-Za-z][A-Za-z0-9-]{3,}", (query or "").lower())
+            if w not in _STOP}
+
+
+def relevant(rows, query, floor=0.34):
+    """Drop results that share no content word with the query, and raise if none survive.
+
+    Counting results is not the same as getting answers. An upstream engine can serve a
+    full page of hits about something else entirely - measured 2026-09-07, SearXNG's bing
+    returned ten results for a minimum-wage query and all ten were an airline's website,
+    while searchHealth read `ok=23, results=154`. The pipeline's only symptom was the
+    source picker choosing nothing, eleven times, which looks identical to a fussy model.
+
+    This is deliberately generous: ONE shared content word keeps a result. It is a junk
+    filter, not a ranker - ranking is the picker's job and it is better at it.
+    """
+    terms = _query_terms(query)
+    if not terms or not rows:
+        return rows
+    kept = []
+    for r in rows:
+        hay = (" ".join(str(r.get(k) or "") for k in ("title", "snippet", "url"))).lower()
+        if any(t in hay for t in terms):
+            kept.append(r)
+    if not kept:
+        raise RuntimeError(
+            "every one of %d results was unrelated to the query (no result shared a single "
+            "content word with %r) - an upstream engine is serving junk, not an empty web"
+            % (len(rows), (query or "")[:60]))
+    if len(kept) / len(rows) < floor:
+        raise RuntimeError(
+            "only %d of %d results were even topically related to %r - treating this "
+            "backend as failed for this query rather than passing junk downstream"
+            % (len(kept), len(rows), (query or "")[:60]))
+    return kept
+
+
 def _searxng(query: str, n: int) -> list[dict]:
     """A SELF-HOSTED SearXNG instance, via DR_SEARXNG_URL.
 
@@ -398,6 +441,26 @@ def _searxng(query: str, n: int) -> list[dict]:
     if not base:
         raise RuntimeError("DR_SEARXNG_URL not set")
     data = json.loads(_get(base + "/search?format=json&q=" + urllib.parse.quote(query)))
+    rows = [r for r in (data.get("results") or []) if r.get("url")]
+    # A backend can answer 200 with plenty of results that have NOTHING to do with the
+    # query. Measured 2026-09-07: with every other engine rate-limited, SearXNG's bing
+    # returned ten results for "Card Krueger minimum wage New Jersey employment" and all
+    # ten were cebupacificair.com - an airline. searchHealth read `ok=23, results=154`,
+    # which is the plumbing looking perfect while the effect is garbage. One host owning
+    # almost every result is the cheapest reliable tell.
+    if len(rows) >= 5:
+        hosts = {}
+        for r in rows:
+            h = urllib.parse.urlsplit(r["url"]).netloc.lower().split(":")[0]
+            h = ".".join(h.split(".")[-2:])
+            hosts[h] = hosts.get(h, 0) + 1
+        top, n_top = max(hosts.items(), key=lambda kv: kv[1])
+        if n_top / len(rows) >= 0.8:
+            raise RuntimeError(
+                "SearXNG returned %d results and %d of them are %s - one host owning the "
+                "whole page means an upstream engine is serving junk, not that this is what "
+                "the web says. Treating as a failure so the chain falls through."
+                % (len(rows), n_top, top))
     # SearXNG answers 200 with an empty result list when its UPSTREAM engines are all
     # suspended, and it names them in `unresponsive_engines`. Measured 2026-09-06 after
     # one research run: brave "too many requests", google cse "too many requests",
@@ -410,9 +473,9 @@ def _searxng(query: str, n: int) -> list[dict]:
             "SearXNG answered but every upstream engine is unavailable: %s. Your instance "
             "is up and rate-limited, not broken - wait, or enable more engines in "
             "settings.yml (see contrib/searxng)." % ", ".join(sorted(set(dead))[:8]))
-    return [{"url": r.get("url", ""), "title": r.get("title", ""),
-             "snippet": (r.get("content") or "")[:300]}
-            for r in (data.get("results") or [])[:n] if r.get("url")]
+    return relevant([{"url": r.get("url", ""), "title": r.get("title", ""),
+                      "snippet": (r.get("content") or "")[:300]}
+                     for r in rows[:n]], query)
 
 
 _IMPL = {

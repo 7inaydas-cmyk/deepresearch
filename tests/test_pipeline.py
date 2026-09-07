@@ -663,6 +663,47 @@ ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
    "fetch reads BYTES first: the old latin-1 fallback decoded a PDF into mojibake that "
    "every caller downstream treated as page text")
 
+_eng = open(dr.__file__, encoding="utf-8").read()
+ok("_fetch_meta[str(url)] = meta" in _eng and '"via": (_fetch_meta.get' in _eng,
+   "every source row records HOW it was read, so a paper and an abstract stub are no "
+   "longer indistinguishable in the report")
+ok("fetchVia=_via_census" in _eng and "abstractOnlySources" in _eng,
+   "and the run censuses it, with an honest limit explaining what crossref-fallback means")
+
+print("\n-- results that are not about the question are junk, not evidence --")
+_junk = [{"url": "https://cebupacificair.com/%d" % i, "title": "Cebu Pacific booking",
+          "snippet": "book flights"} for i in range(8)]
+_good = [{"url": "https://x.org/a", "title": "Minimum wage employment effects in New Jersey",
+          "snippet": "Card and Krueger"}]
+try:
+    _S.relevant(_junk, "Card Krueger minimum wage New Jersey employment"); _caught = ""
+except RuntimeError as e:
+    _caught = str(e)
+ok("unrelated to the query" in _caught,
+   "a full page of results about an airline is REFUSED for a minimum-wage query - measured "
+   "live, and searchHealth read ok=23 results=154 the whole time")
+ok(_S.relevant(_good, "minimum wage employment") == _good, "a related result is kept")
+ok(len(_S.relevant(_good + _junk[:1], "minimum wage employment")) == 1,
+   "and the junk beside it is dropped without failing the whole query")
+try:
+    _S.relevant(_good + _junk, "minimum wage employment"); _floor = ""
+except RuntimeError as e:
+    _floor = str(e)
+ok("topically related" in _floor,
+   "below the floor the backend is treated as failed, so the chain falls through instead "
+   "of passing a page that is 1/9 relevant")
+ok(_S.relevant(_junk, "") == _junk, "an empty query cannot be judged, so nothing is dropped")
+_ssrc = open(_S.__file__, encoding="utf-8").read()
+ok("one host owning the whole page" in _ssrc,
+   "and one host owning almost every result is refused too - a different tell for the "
+   "same failure")
+_esrc = open(dr.__file__, encoding="utf-8").read()
+ok("_pick_tally" in _esrc and "pickStarvation" in _esrc and "rejected EVERY hit" in _esrc,
+   "the run also counts how often the picker was handed hits and chose none - the only "
+   "in-pipeline symptom this had, and it looked exactly like a fussy model")
+ok("irrelevantSearchResults" in _esrc,
+   "and honestLimits explains that searchHealth counts results, not relevance")
+
 print("\n-- a blocked publisher still yields its abstract --")
 ok(_S.doi_in_url("https://www.pnas.org/doi/10.1073/pnas.2200300119") == "10.1073/pnas.2200300119",
    "a DOI is found in a publisher's own path, not just in a doi.org link")
