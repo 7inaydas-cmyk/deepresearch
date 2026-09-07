@@ -54,6 +54,23 @@ def install(cfg):
         return "" if cfg.get("empty_pages") else "page body for " + u
 
     def fake_agent(prompt, schema, label="", model=None, max_tokens=0, retries=3):
+        # Route every fixture through the SEAM, so the pipeline tests see exactly what a
+        # production caller sees. The guards those callers used to carry are gone; if a
+        # fixture is malformed the stub now returns None the way agent() would.
+        got = _raw_fake_agent(prompt, schema, label, model, max_tokens, retries)
+        if got is not None and dr._has_unknown_sentinel(got):
+            # agent() retries a sentinel; the *_once fixtures behave on the second call.
+            dr.log("  [%s] API returned an <UNKNOWN> sentinel; retrying (stub)" % label)
+            got = _raw_fake_agent(prompt, schema, label, model, max_tokens, retries)
+        if got is None:
+            return None
+        shaped, problems = dr.shape(schema, got, label)
+        if problems:
+            dr.log("  [%s] response violates its own schema: %s (stub)" % (label, "; ".join(problems)))
+            return None
+        return shaped
+
+    def _raw_fake_agent(prompt, schema, label="", model=None, max_tokens=0, retries=3):
         if cfg.get("rate_limited") and label.startswith("pick:"):
             dr._stats["errors"] += 1
             dr._stats["ratelimited"] += 1
@@ -64,7 +81,7 @@ def install(cfg):
             if cfg.get("no_framing"):
                 return None
             return {"decisionAtStake": "d", "keyQuestion": "k", "assumptions": ["a1", "a2"],
-                    "whatWouldChangeTheAnswer": ["w1"],
+                    "whatWouldChangeTheAnswer": ["w1", "w2"],
                     "hypotheses": [{"hypothesis": "h1", "killCriterion": "k1"},
                                    {"hypothesis": "h2", "killCriterion": "k2"}]}
         if label.startswith("plan"):
@@ -124,7 +141,7 @@ def install(cfg):
             return {"answerFirst": "The answer, first.", "hingeNumber": "d = -0.31",
                     "baseRate": "none in evidence", "summary": "S",
                     "findings": [{"claim": "F1", "confidence": "high", "sources": ["u"], "evidence": "e",
-                                  "sourceTier": "T1", "factOrInference": "fact"}],
+                                  "sourceTier": "T1", "factInferenceAssumption": "fact"}],
                     "hypothesisVerdicts": [
                         {"hypothesis": "h1", "verdict": "killed", "killCriterion": "k1",
                          "reasoning": "claim [0] triggers it", "claimsCited": [0]},
@@ -139,7 +156,13 @@ def install(cfg):
         return None
 
     dr.web_search, dr.web_fetch, dr.agent = fake_search, fake_fetch, fake_agent
+    globals().setdefault("_real_log", dr.log)
+    LOGS.clear()
+    dr.log = lambda m: (LOGS.append(str(m)), _real_log(m))
     searchmod.reset_health()
+
+
+LOGS = []
 
 
 def run(cfg=None, depth="standard", q="Test question?"):
@@ -233,7 +256,9 @@ ok(r.get("scopeContract", {}).get("keyQuestion") == "k", "framing contract reach
 ok(len(r["scopeContract"]["hypotheses"]) == 2, "hypotheses with kill criteria carried through")
 ok(bool(r.get("answerFirst")), "answerFirst present")
 ok(bool(r.get("strongestArgumentAgainst")), "strongestArgumentAgainst is required and present")
-ok(r["findings"][0].get("factOrInference") == "fact", "findings tag fact vs inference")
+ok(r["findings"][0].get("factInferenceAssumption") == "fact",
+   "findings tag fact vs inference - asserted against the PYTHON schema's key; the old test "
+   "checked the JS key and passed only because the stub fabricated it")
 ca = r["citationAudit"]
 ok(ca["supported"] + ca["partial"] + ca["unsupported"] + ca["unreachable"] == r["stats"]["claimsVerified"],
    "citation audit covers EVERY verified claim, not just survivors")
@@ -267,8 +292,9 @@ ok("no evidence exists" in r_rl["summary"], "and warns not to read it as absence
 r5 = run({"empty_pages": True})
 ok("INFRASTRUCTURE" not in r5["summary"], "healthy search + empty pages is NOT called infra failure")
 r6 = run({"plan_string_subq": True})
-ok("error" in r6 and "keys present" in r6["error"],
-   "string-where-list-expected is rejected and the error names what arrived")
+ok("error" in r6, "string-where-list-expected is rejected, not iterated into fake sub-questions")
+ok(any("[plan" in l and "violates its own schema" in l and "subQuestions=0" in l for l in LOGS),
+   "and the SEAM names the violation (subQuestions=0, schema requires 3) before any caller sees it")
 r7 = run({"plan_unknown_sentinel": True})
 ok("error" in r7, "the <UNKNOWN> sentinel does not become fake sub-questions")
 r8 = run({"bad_plan": True})
@@ -485,15 +511,17 @@ ok(dr._schema_shortfall(dr.S_PLAN, {"strategy": "s", "subQuestions": ["a"], "per
    "the guard is general: a truncated PLAN response is caught the same way")
 ok(dr._schema_shortfall(dr.S_PICK, {"results": []}) == [],
    "schemas with no minItems are left alone - an empty pick list is a real answer")
-ok(dr._schema_shortfall(dr.S_FRAMING, "<UNKNOWN>") == [],
-   "a non-dict response is left to the sentinel guard rather than double-reported")
+ok(dr._schema_shortfall(dr.S_FRAMING, "<UNKNOWN>") == ["response was str, not an object"],
+   "a non-dict response is a NAMED problem at the seam (agent() checks the sentinel first, "
+   "so a sentinel never reaches shape; anything else that is not an object is retried)")
 ok(dr.S_FRAMING["properties"]["assumptions"].get("minItems") == 2,
    "S_FRAMING now DECLARES the minimum it needs - the guard can only enforce what the schema states")
 # dr.agent is stubbed by this suite, so read the file rather than the live object.
 _engine_src = open(dr.__file__, encoding="utf-8").read()
 _agent_src = _engine_src.split("def agent(", 1)[1].split("\ndef ", 1)[0]
-ok("_schema_shortfall" in _agent_src and "retrying" in _agent_src,
-   "and agent() retries on it, so every structured call is covered, not just framing")
+ok("shape(schema, got" in _agent_src and "retrying" in _agent_src and "return shaped" in _agent_src,
+   "and agent() shapes every response and retries on a problem, so every structured call "
+   "is covered at the seam, not just framing")
 _dr_src = _insp.getsource(dr.deepresearch)
 ok("NOTHING will be adjudicated" in _dr_src,
    "a run that ends with no hypotheses says so loudly - empty hypothesisVerdicts otherwise "
@@ -602,6 +630,51 @@ ok("calibration=calibration" in _fallback and "droppedSample=dropped_sample" in 
    "one run computed kappa=0.7115 at n=30, logged `calibrated`, and then threw it away")
 ok("synthesisFailed" in _fallback,
    "and the report says it is incomplete rather than empty, naming what DID run")
+
+print("\n-- the model seam: shape() is the only form a caller ever sees --")
+_ok = lambda sch, o: dr.shape(sch, o, "t")
+# every schema: a minimal valid object passes with no problems
+_valid = {
+ "S_PICK": {"results": [{"url": "https://a.org", "relevance": "high"}]},
+ "S_EXTRACT": {"sourceQuality": "primary", "claims": [{"claim": "c", "quote": "q", "importance": "central"}]},
+ "S_VERDICT": {"refuted": False, "evidence": "e", "confidence": "high"},
+ "S_FACT": {"support": "partial", "reasoning": "r"},
+ "S_CRITIC": {"untraceableStatements": [], "coverageGaps": [], "verdict": "sound"},
+ "S_GAP": {"coverage": [{"subQuestionIndex": 1, "status": "answered"}], "followUps": []},
+}
+for _n, _o in _valid.items():
+    _sh, _pr = _ok(getattr(dr, _n), _o)
+    ok(_pr == [] and _sh is not None, "%s: a minimal valid response passes untouched" % _n)
+_sh, _pr = _ok(dr.S_VERDICT, {"refuted": "false", "evidence": "e", "confidence": "high"})
+ok(_pr and "refuted" in _pr[0] and _sh is None or "refuted" not in (_sh or {}),
+   "refuted='false' (a STRING) is a problem, not a refutation: it used to be read as truthiness and KILL the claim")
+_sh, _pr = _ok(dr.S_FACT, {"support": "Supported", "reasoning": "r"})
+ok(_pr and "support" in _pr[0], "an enum leaf outside its enum is a problem the seam retries, never a value it repairs")
+_sh, _pr = _ok(dr.S_EXTRACT, {"sourceQuality": "primary", "claims": [
+    {"claim": "good", "quote": "q", "importance": "central"},
+    {"claim": "bad-enum", "quote": "q", "importance": "very"},
+    {"claim": "missing-quote", "importance": "central"},
+    "not an object"]})
+ok(_pr == [] and [c["claim"] for c in _sh["claims"]] == ["good"],
+   "inside an array, a bad item is DROPPED (and logged), the good ones kept, and the top level is fine")
+_sh, _pr = _ok(dr.S_GAP, {"coverage": [], "followUps": [], "contradictions": "one long string of prose"})
+ok(_pr == [] and _sh["contradictions"] == [],
+   "contradictions arriving as a STRING becomes [] - the list += str crash path is closed at the seam")
+_sh, _pr = _ok(dr.S_GAP, {"coverage": [], "followUps": [], "contradictions": '["a", "b"]'})
+ok(_sh["contradictions"] == ["a", "b"], "and a double-encoded array of strings is recovered")
+_sh, _pr = _ok(dr.S_REPORT, {"summary": "s", "findings": [], "caveats": "c",
+                             "strongestArgumentAgainst": "x", "whatWouldChangeThisCall": []})
+ok(any("hypothesisVerdicts" in x for x in _pr),
+   "hypothesisVerdicts is now REQUIRED, so an absent key is a shortfall - the guard from this "
+   "morning could not fire on the case its own comment cited")
+_sh, _pr = _ok(dr.S_REPORT, {"summary": "s", "findings": [], "caveats": "c", "hypothesisVerdicts": [],
+                             "strongestArgumentAgainst": "x", "whatWouldChangeThisCall": []})
+ok(_pr == [], "but an EMPTY hypothesisVerdicts is legal: no hypotheses is a real state")
+_sh, _pr = _ok(dr.S_PICK, {"results": [{"url": "https://a.org", "relevance": "high"}], "extra": 1})
+ok(_sh.get("extra") == 1, "undeclared keys pass through: the schema says what we NEED, not all we accept")
+ok(dr._schema_shortfall(dr.S_FRAMING, {"decisionAtStake": "x", "keyQuestion": "y",
+    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": []}),
+   "_schema_shortfall still reports the framing shortfall (now defined by shape)")
 
 print("\n-- a rejected response is retried DIFFERENTLY, not identically --")
 ok("stop_reason" in _agent_src and "TRUNCATED" in _agent_src,

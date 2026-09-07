@@ -33,6 +33,7 @@ SHARED = {
     "validation adapter":        ("def as_list", "const asList"),
     "<UNKNOWN> sentinel retry":  ("_UNKNOWN_SENTINEL", "hasUnknownSentinel"),
     "empty-array schema retry":  ("_schema_shortfall", "schemaShortfall"),
+    "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
     "corrective retry prompt":   ("YOUR PREVIOUS RESPONSE WAS REJECTED", "YOUR PREVIOUS RESPONSE WAS REJECTED"),
     "deterministic tiering":     ("def tier_of", "const tierOf"),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),

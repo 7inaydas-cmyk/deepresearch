@@ -183,9 +183,10 @@ import fs2 from 'node:fs'
   ok(!!out.stats.sourceTiers, 'tier census in stats: ' + JSON.stringify(out.stats.sourceTiers))
 }
 {
-  const { out } = await run('T14 subQuestions as a STRING', { question: 'Q', depth: 'standard' }, { plan_string_subq: true })
+  const { out, logs } = await run('T14 subQuestions as a STRING', { question: 'Q', depth: 'standard' }, { plan_string_subq: true })
   ok(!!out.error, 'string-where-list-expected is rejected, not iterated into fake items')
-  ok(/keys present/.test(out.error), 'error names what actually arrived')
+  ok(logs.some(l => /\[plan[^\]]*\] response violates its own schema: subQuestions=0/.test(l)),
+     'the SEAM names the violation (subQuestions=0, schema requires 3) before any caller sees it')
 }
 {
   const { out } = await run('T15 framing failure is survivable', { question: 'Q', depth: 'standard' }, { no_framing: true })

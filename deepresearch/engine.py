@@ -222,46 +222,105 @@ def _has_unknown_sentinel(obj, depth=0):
     return False
 
 
-def _schema_shortfall(schema, obj):
-    """Required arrays that came back shorter than the schema's own minItems.
+def shape(schema, obj, label=""):
+    """Coerce a model response to the schema that requested it. Returns (shaped, problems).
 
-    The tool-call layer checks types but lets an empty array through where
-    `minItems` says it must not be, and an empty array is not a sentinel, so the
-    <UNKNOWN> guard above never sees it. Measured 2026-09-06: framing returned
-    `assumptions: []` and `hypotheses: []` on live runs, so every later phase that
-    reads the contract silently had nothing to read. The report still printed, and
-    the headline promise - falsifiable kill criteria written before searching -
-    simply had not happened, with nothing anywhere saying so.
+    This is the model seam. Everything the engine believes about a response is decided
+    here, not at the twelve call sites that consume it. Before this existed each caller
+    re-validated in its own dialect - dicts() here, .get(k, "unreliable") there,
+    isinstance+support at the audit, nothing at all on `contradictions` - and the
+    `refuted` boolean that decides a kill was read as truthiness, so the string "false"
+    killed a claim.
 
-    An empty required array is a schema violation, not an answer. Treat it the way
-    the sentinel is treated: retry, and say why in the log.
+    Rules, walking the schema recursively:
+      - a declared array becomes a list (a double-encoded string is recovered by as_list)
+      - an array of objects keeps only real objects carrying every required key; the rest
+        are DROPPED AND LOGGED, never defaulted - a claim whose importance came back as
+        garbage does not silently become "central"
+      - an enum leaf must be in its enum; a boolean must be a bool; an integer must be int
+      - a required key that is absent, or an array shorter than its declared minimum,
+        is a problem
+
+    `problems` lists what could not be repaired AT THIS LEVEL. At the top level the caller
+    (agent) retries with a correction and then returns None: the seam never guesses at a
+    leaf. Inside an array the same list means "drop this item".
     """
+    tag = label or "field"
     if not isinstance(obj, dict):
-        return []
+        return None, ["response was %s, not an object" % type(obj).__name__]
     props = schema.get("properties") or {}
-    short = []
-    for name in schema.get("required") or []:
-        spec = props.get(name) or {}
-        # A required key that is ABSENT is a violation whatever its type. Measured
-        # 2026-09-06: a run wrote 4 hypotheses with kill criteria and then came back with
-        # `hypothesisVerdicts` missing entirely - not empty, absent - so the contract was
-        # written, never adjudicated, and nothing said so. 4 of 5 runs were fine, which is
-        # how a fault like this survives: it looks like a one-off until someone counts.
-        # An empty list stays legal here; only a missing key is caught, because some
-        # required fields (contradictions, say) are legitimately empty.
+    required = set(schema.get("required") or [])
+    out, problems = {}, []
+    for name, spec in props.items():
+        here = "%s.%s" % (tag, name)
         if name not in obj:
-            short.append("%s MISSING (required)" % name)
+            if name in required:
+                problems.append("%s MISSING (required)" % name)
             continue
-        if spec.get("type") != "array":
-            continue
-        need = spec.get("minItems")
-        if not need:
-            continue
-        got = obj.get(name)
-        n = len(got) if isinstance(got, list) else 0
-        if n < need:
-            short.append("%s=%d (schema requires %d)" % (name, n, need))
-    return short
+        v = obj[name]
+        t = spec.get("type")
+        if t == "array":
+            items = spec.get("items") or {}
+            lst = as_list(v, here)
+            if items.get("type") == "object":
+                kept = []
+                for i, item in enumerate(lst):
+                    shaped_item, item_problems = shape(items, item, "%s[%d]" % (here, i))
+                    if item_problems:
+                        log("  [%s[%d]] dropped an item: %s" % (here, i, "; ".join(item_problems)[:160]))
+                        continue
+                    kept.append(shaped_item)
+                lst = kept
+            elif items.get("type") == "string":
+                bad = [x for x in lst if not isinstance(x, str)]
+                if bad:
+                    log("  [%s] dropped %d non-string item(s), e.g. %r" % (here, len(bad), str(bad[0])[:80]))
+                lst = [x.strip() for x in lst if isinstance(x, str) and x.strip()]
+            need = spec.get("minItems")
+            if need and len(lst) < need:
+                problems.append("%s=%d (schema requires %d)" % (name, len(lst), need))
+            out[name] = lst
+        elif "enum" in spec:
+            if v in spec["enum"]:
+                out[name] = v
+            else:
+                problems.append("%s=%r not in %s" % (name, str(v)[:40], spec["enum"]))
+        elif t == "boolean":
+            if isinstance(v, bool):
+                out[name] = v
+            else:
+                problems.append("%s=%r is not a boolean" % (name, str(v)[:40]))
+        elif t == "integer":
+            try:
+                out[name] = int(v)
+            except (TypeError, ValueError):
+                problems.append("%s=%r is not an integer" % (name, str(v)[:40]))
+        elif t == "object":
+            shaped_sub, sub_problems = shape(spec, v, here)
+            if sub_problems:
+                # An optional nested object (hingeNumber) that is malformed is dropped
+                # and said so; a required one is a problem.
+                if name in required:
+                    problems.extend("%s.%s" % (name, x) for x in sub_problems)
+                else:
+                    log("  [%s] dropped malformed object: %s" % (here, "; ".join(sub_problems)[:160]))
+            else:
+                out[name] = shaped_sub
+        else:
+            out[name] = v
+    # Keys the schema does not declare pass through untouched: the schema says what we
+    # NEED, and an extra field the model volunteered is not a defect.
+    for k, v in obj.items():
+        if k not in props:
+            out[k] = v
+    return out, problems
+
+
+def _schema_shortfall(schema, obj):
+    """The problems shape() reports at the top level. Kept as a name because the tests
+    and the retry log refer to it; the behaviour lives in shape()."""
+    _, problems = shape(schema, obj, "")
+    return problems
 
 
 def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5):
@@ -322,7 +381,7 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                             "structured fields; retrying (%d/%d)" % (label, attempt + 1, retries))
                         time.sleep(delay); delay *= 2
                         break
-                    short = _schema_shortfall(schema, got)
+                    shaped, short = shape(schema, got, label)
                     if short and attempt < retries - 1:
                         with _stats_lock:
                             _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
@@ -351,17 +410,27 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                         correction = (
                             "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
                             "You returned: " + "; ".join(short) + ".\n"
-                            "Every one of those fields is REQUIRED and the schema states a minimum "
-                            "number of items for it. An empty array is not an answer; it is a "
-                            "malformed response, and it silently breaks every later stage that "
-                            "reads the contract.\n"
+                            "Each of those is a schema violation: a required field missing, an array "
+                            "shorter than its declared minimum, an enum value that is not one of the "
+                            "allowed values, or a boolean that is not true/false. It is not an "
+                            "answer; it is a malformed response, and it silently breaks every later "
+                            "stage that reads it.\n"
                             "If the question seems too broad, too narrow or badly posed, that is "
                             "NOT a reason to return nothing - state the difficulty as one of the "
                             "assumptions and fill the fields anyway. Produce at least the minimum "
                             "number of items for each, and keep them short if that helps.")
                         time.sleep(delay); delay *= 2
                         break
-                    return got
+                    if short:
+                        # Last attempt and still unrepairable at the top level. The seam
+                        # never guesses at a leaf: a `support` outside its enum or a
+                        # `refuted` that is not a bool would otherwise reach the kill
+                        # decision as a coerced value. None is what every caller handles.
+                        log("  [%s] gave up after %d attempt(s): %s" % (label, retries, "; ".join(short)[:200]))
+                        with _stats_lock:
+                            _stats["errors"] += 1
+                        return None
+                    return shaped
             else:
                 # No StructuredOutput block in the response. Say what DID come back:
                 # this path returned None silently, and a caller three phases later
@@ -513,7 +582,8 @@ S_FACT = {
 }
 S_REPORT = {
     "type": "object", "required": ["summary", "findings", "caveats",
-                                   "strongestArgumentAgainst", "whatWouldChangeThisCall"],
+                                   "strongestArgumentAgainst", "whatWouldChangeThisCall",
+                                    "hypothesisVerdicts"],
     "properties": {
         "summary": {"type": "string"},
         "answerFirst": {"type": "string"},
@@ -610,7 +680,7 @@ def p_plan(q, n, contract):
     discriminate between the stated hypotheses rather than to confirm one."""
     ctx = ""
     if contract:
-        hyp = dicts(contract.get("hypotheses"), "framing.hypotheses")
+        hyp = contract.get("hypotheses", [])
         ctx = ("## Framing already agreed\n"
                "Key question: " + webtext(contract.get("keyQuestion", ""), 400) + "\n"
                "Decision at stake: " + webtext(contract.get("decisionAtStake", ""), 300) + "\n"
@@ -619,7 +689,7 @@ def p_plan(q, n, contract):
                                                           webtext(h.get("killCriterion", ""), 200)) for h in hyp)
                   + "\n" if hyp else "")
                + ("Findings that would flip the answer: "
-                  + "; ".join(webtext(x, 150) for x in as_str_list(contract.get("whatWouldChangeTheAnswer"))[:5]) + "\n"
+                  + "; ".join(webtext(x, 150) for x in contract.get("whatWouldChangeTheAnswer", [])[:5]) + "\n"
                   if contract.get("whatWouldChangeTheAnswer") else "")
                + "\n")
     return (
@@ -748,7 +818,7 @@ def p_critic(k, total, q, subqs, persps, confirmed, summary, findings):
         "## The executive summary produced\n\"" + webtext(summary, 3000) + "\"\n\n"
         "## The findings produced\n" +
         "\n".join("%d. [%s] %s" % (i + 1, f.get("confidence"), webtext(f.get("claim", ""), 400))
-                  for i, f in enumerate(dicts(findings))) + "\n\n"
+                  for i, f in enumerate(findings or [])) + "\n\n"
         "## Your checks\n"
         "1. **Traceability.** Go sentence by sentence through the summary and each finding. Does EVERY factual "
         "assertion trace to a numbered claim above? List any that does not - inserted facts, inflated certainty, a "
@@ -927,12 +997,18 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
         pick = agent(p_pick(q, p, hits), S_PICK, label="pick:" + p["label"])
         if not pick:
             return None
-        by_url = {h["url"]: h for h in hits}
+        by_url = {norm_url(h["url"]): h for h in hits}
         chosen = []
-        for r in sorted(dicts(pick.get("results"), "pick:" + p["label"]), key=lambda r: REL.get(r.get("relevance"), 3)):
-            h = by_url.get(r.get("url"))
+        for r in sorted(pick["results"], key=lambda r: REL.get(r["relevance"], 3)):
+            h = by_url.get(norm_url(r["url"]))
             if h:
-                chosen.append(dict(h, relevance=r.get("relevance", "medium")))
+                chosen.append(dict(h, relevance=r["relevance"]))
+            else:
+                # A picked URL that is not in the hit list - trailing slash, rewritten
+                # scheme, or invented. This was the one silent discard left at the pick
+                # seam after the parse seam was instrumented: `8 hits -> 0 picked` with
+                # no line saying why, indistinguishable from the model choosing fewer.
+                log("  [pick:%s] URL not in hit list, dropped: %r" % (p["label"], str(r["url"])[:120]))
         log("  [%s] %s: %d hits -> %d picked" % (tag, p["label"], len(hits), len(chosen)))
         return {"persp": p["label"], "chosen": chosen}
 
@@ -962,7 +1038,7 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
         if not ext:
             return None
         claims = []
-        for c in dicts(ext.get("claims"), "extract"):
+        for c in ext["claims"]:
             c = dict(c)
             c["sourceUrl"] = s["url"]
             c["sourceQuality"] = ext.get("sourceQuality", "unreliable")
@@ -1089,15 +1165,15 @@ def deepresearch(question, depth="standard"):
     # returned nothing" and is why this took a live watch to diagnose. The retry now
     # grows the budget on its own, but starting in the right place saves a whole call.
     framing = agent(p_framing(question), S_FRAMING, label="framing", max_tokens=4000)
-    contract = framing if isinstance(framing, dict) else {}
+    contract = framing or {}
     if not contract:
         log("NOTE: framing agent failed - continuing without a scope contract")
     else:
         if contract.get("keyQuestion"):
             log("Key question: " + str(contract["keyQuestion"])[:100])
-        globals()["HYPOTHESES"] = dicts(contract.get("hypotheses"), "framing.hypotheses")
+        globals()["HYPOTHESES"] = contract.get("hypotheses", [])
         log("Assumptions stated: %d | hypotheses w/ kill criteria: %d"
-            % (len(as_str_list(contract.get("assumptions"))), len(dicts(contract.get("hypotheses"), "framing.hypotheses"))))
+            % (len(contract.get("assumptions", [])), len(contract.get("hypotheses", []))))
     if not HYPOTHESES:
         # Say it loudly here as well as in the report. A run with no hypotheses is
         # not doing the thing this tool leads with, and the only previous signal was
@@ -1112,9 +1188,8 @@ def deepresearch(question, depth="standard"):
         plan = agent(p_plan(question, T["perspectives"], contract), S_PLAN,
                      label=("plan" if attempt == 1 else "plan:retry"), max_tokens=4000)
         if plan:
-            subqs = as_str_list(plan.get("subQuestions"), "plan.subQuestions")
-            persps = [x for x in dicts(plan.get("perspectives"), "plan.perspectives")
-                      if x.get("label") and x.get("query")][:T["perspectives"]]
+            subqs = plan["subQuestions"]
+            persps = plan["perspectives"][:T["perspectives"]]
             if subqs and persps:
                 break
         log("Plan attempt %d unusable (%d sub-questions, %d perspectives) - %s"
@@ -1122,9 +1197,9 @@ def deepresearch(question, depth="standard"):
     if not subqs or not persps:
         return {"error": "Search plan unusable after 2 attempts (%d sub-questions, %d perspectives). %s"
                          % (len(subqs), len(persps), shape_report(plan, REQ))}
-    if len(dicts(plan.get("perspectives"), "plan.perspectives")) > len(persps):
+    if len(plan["perspectives"]) > len(persps):
         log("NOTE: planner returned %d perspectives; capped to %d for depth=%s"
-            % (len(dicts(plan.get("perspectives"), "plan.perspectives")), len(persps), depth))
+            % (len(plan["perspectives"]), len(persps), depth))
     log("Checklist: %d sub-questions" % len(subqs))
     log("Perspectives: " + " | ".join(p["label"] for p in persps))
 
@@ -1144,9 +1219,9 @@ def deepresearch(question, depth="standard"):
                     S_GAP, label="gap:r%d" % rnd, max_tokens=3000)
         if not gap:
             log("Deepen %d: analyst failed, stopping" % rnd); break
-        coverage = dicts(gap.get("coverage"), "gap.coverage")
-        contradictions += gap.get("contradictions") or []
-        follow = [f for f in dicts(gap.get("followUps"), "gap.followUps") if f.get("query") and f.get("label")][:n_follow]
+        coverage = gap["coverage"]
+        contradictions += gap.get("contradictions", [])
+        follow = gap["followUps"][:n_follow]
         open_n = sum(1 for c in (coverage or []) if c.get("status") != "answered")
         log("Round %d: %d/%d sub-questions still open, %d contradictions, %d follow-ups"
             % (rnd, open_n, len(subqs), len(gap.get("contradictions") or []), len(follow)))
@@ -1375,7 +1450,7 @@ def deepresearch(question, depth="standard"):
             f = agent(p_fact(c["claim"], c["sourceUrl"], text), S_FACT,
                       label="cite:" + (host_of(c["sourceUrl"]) or "?"), max_tokens=1200)
             return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f) if f else None
-        fact_rows = [f for f in pmap(audit, voted) if isinstance(f, dict) and f.get("support")]
+        fact_rows = [f for f in pmap(audit, voted) if f]
         nS = sum(1 for f in fact_rows if f["support"] == "supported")
         nP = sum(1 for f in fact_rows if f["support"] == "partial")
         nU = sum(1 for f in fact_rows if f["support"] == "unsupported")
@@ -1451,7 +1526,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     cov_b = ""
     if coverage:
         rows = []
-        for c in dicts(coverage):
+        for c in coverage:
             try:
                 idx = int(c.get("subQuestionIndex", 0))
             except Exception:
@@ -1582,7 +1657,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # traceability of the summary, not just whether links resolve.
     def critic(k):
         return agent(p_critic(k, T["critics"], q, subqs, persps, confirmed,
-                              report.get("summary", ""), dicts(report.get("findings"))),
+                              report.get("summary", ""), report["findings"]),
                      S_CRITIC, label="critic:%d" % (k + 1), max_tokens=3000)
 
     crits = [c for c in pmap(critic, list(range(T["critics"]))) if c]
@@ -1594,7 +1669,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
 
     out = dict(base)
     out.update(report)
-    out["contradictions"] = (report.get("contradictions") or []) + contradictions
+    out["contradictions"] = report.get("contradictions", []) + contradictions
     out["citationAudit"] = fact_metrics
     out["citationDetail"] = [{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
                               "support": f["support"], "reasoning": webtext(f.get("reasoning", ""), 400)}
@@ -1703,7 +1778,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out["sources"] = src_rows()
     out["stats"] = stats(claimsVerified=len(voted), lensesPerClaim=len(lenses), confirmed=len(confirmed),
                          killed=len(killed), unverifiedCount=len(unver),
-                         afterSynthesis=len(dicts(report.get("findings"))))
+                         afterSynthesis=len(report["findings"]))
     return out
 
 

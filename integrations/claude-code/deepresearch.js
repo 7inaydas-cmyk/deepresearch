@@ -128,25 +128,65 @@ const hasUnknownSentinel = (o, d = 0) => {
 // assumptions and zero hypotheses, so every later phase that reads the contract
 // silently had nothing to read and the report still printed. An empty required
 // array is a schema violation, not an answer — retry it like the sentinel.
-const schemaShortfall = (schema, obj) => {
-  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return []
-  const props = (schema && schema.properties) || {}
-  const out = []
-  for (const name of (schema && schema.required) || []) {
-    const spec = props[name] || {}
-    // A required key that is ABSENT is a violation whatever its type. Measured in the
-    // Python build 2026-09-06: a run wrote 4 hypotheses and came back with
-    // `hypothesisVerdicts` missing entirely — not empty, absent — so the contract was
-    // written and never adjudicated, with nothing saying so. An empty list stays legal;
-    // some required fields are legitimately empty.
-    if (!(name in obj)) { out.push(name + ' MISSING (required)'); continue }
-    if (spec.type !== 'array' || !spec.minItems) continue
-    const got = obj[name]
-    const n = Array.isArray(got) ? got.length : 0
-    if (n < spec.minItems) out.push(name + '=' + n + ' (schema requires ' + spec.minItems + ')')
+// The model seam. Coerce a response to the schema that requested it; return
+// {shaped, problems}. Declared arrays become lists (a double-encoded string is
+// recovered by asList); arrays of objects keep only real objects carrying every
+// required key - the rest are DROPPED AND LOGGED, never defaulted; enums and
+// booleans are checked. `problems` are what could not be repaired at this level:
+// at the top level agentChecked retries with a correction and then returns null;
+// inside an array the same list means "drop this item". Mirrors engine.shape().
+const shape = (schema, obj, label) => {
+  const tag = label || 'field'
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+    return { shaped: null, problems: ['response was ' + (obj === null ? 'null' : typeof obj) + ', not an object'] }
   }
-  return out
+  const props = (schema && schema.properties) || {}
+  const required = new Set((schema && schema.required) || [])
+  const out = {}, problems = []
+  for (const name of Object.keys(props)) {
+    const spec = props[name] || {}, here = tag + '.' + name
+    if (!(name in obj)) { if (required.has(name)) problems.push(name + ' MISSING (required)'); continue }
+    const v = obj[name], t = spec.type
+    if (t === 'array') {
+      const items = spec.items || {}
+      let lst = asList(v, here)
+      if (items.type === 'object') {
+        const kept = []
+        lst.forEach((item, i) => {
+          const r = shape(items, item, here + '[' + i + ']')
+          if (r.problems.length) { log('[' + here + '[' + i + ']] dropped an item: ' + r.problems.join('; ').slice(0, 160)); return }
+          kept.push(r.shaped)
+        })
+        lst = kept
+      } else if (items.type === 'string') {
+        const bad = lst.filter(x => typeof x !== 'string')
+        if (bad.length) log('[' + here + '] dropped ' + bad.length + ' non-string item(s), e.g. ' + String(bad[0]).slice(0, 80))
+        lst = lst.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim())
+      }
+      if (spec.minItems && lst.length < spec.minItems) problems.push(name + '=' + lst.length + ' (schema requires ' + spec.minItems + ')')
+      out[name] = lst
+    } else if (spec.enum) {
+      if (spec.enum.includes(v)) out[name] = v
+      else problems.push(name + '=' + String(v).slice(0, 40) + ' not in [' + spec.enum.join(',') + ']')
+    } else if (t === 'boolean') {
+      if (typeof v === 'boolean') out[name] = v
+      else problems.push(name + '=' + String(v).slice(0, 40) + ' is not a boolean')
+    } else if (t === 'integer') {
+      const n = parseInt(v, 10)
+      if (Number.isFinite(n)) out[name] = n
+      else problems.push(name + '=' + String(v).slice(0, 40) + ' is not an integer')
+    } else if (t === 'object') {
+      const r = shape(spec, v, here)
+      if (r.problems.length) {
+        if (required.has(name)) problems.push(...r.problems.map(x => name + '.' + x))
+        else log('[' + here + '] dropped malformed object: ' + r.problems.join('; ').slice(0, 160))
+      } else out[name] = r.shaped
+    } else out[name] = v
+  }
+  for (const k of Object.keys(obj)) if (!(k in props)) out[k] = obj[k]
+  return { shaped: out, problems }
 }
+const schemaShortfall = (schema, obj) => shape(schema, obj, '').problems
 // A blind retry re-sends the identical prompt, so a deterministic failure just repeats.
 // Watched live in the Python build on 2026-09-06: the framing call returned zero
 // assumptions and zero hypotheses on three consecutive attempts with the same input.
@@ -171,13 +211,20 @@ const agentChecked = async (prompt, opts) => {
       log('[' + label + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
       continue
     }
-    const short = schemaShortfall(schema, got)
-    if (short.length && attempt < 3) {
-      log('[' + label + '] response violates its own schema: ' + short.join(', ') + '; retrying (' + attempt + '/3) with a corrective prompt')
-      correction = SHORTFALL_CORRECTION.replace('%s', short.join('; '))
+    if (got === null || got === undefined) return null
+    const { shaped, problems } = shape(schema, got, label)
+    if (problems.length && attempt < 3) {
+      log('[' + label + '] response violates its own schema: ' + problems.join(', ') + '; retrying (' + attempt + '/3) with a corrective prompt')
+      correction = SHORTFALL_CORRECTION.replace('%s', problems.join('; '))
       continue
     }
-    return got
+    if (problems.length) {
+      // Last attempt, still unrepairable at the top level. The seam never guesses at a
+      // leaf; null is what every caller already handles.
+      log('[' + label + '] gave up after 3 attempts: ' + problems.join('; ').slice(0, 200))
+      return null
+    }
+    return shaped
   }
   return null
 }
@@ -610,8 +657,10 @@ for (let attempt = 1; attempt <= 2; attempt++) {
     { label: attempt === 1 ? 'plan' : 'plan:retry', schema: PLAN_SCHEMA }
   )
   if (plan) {
-    SUBQ = asStrList(plan.subQuestions)
-    PERSPECTIVES = asObjList(plan.perspectives).filter(x => x.label && x.query).slice(0, T.perspectives)
+    // Shaped at the seam: subQuestions is a list of strings, perspectives a list of
+    // objects carrying label/lens/query. Nothing to re-validate here.
+    SUBQ = plan.subQuestions
+    PERSPECTIVES = plan.perspectives.slice(0, T.perspectives)
     if (SUBQ.length && PERSPECTIVES.length) break
   }
   log('Plan attempt ' + attempt + ' unusable (' + SUBQ.length + ' sub-questions, ' + PERSPECTIVES.length +
@@ -621,8 +670,8 @@ if (!SUBQ.length || !PERSPECTIVES.length) {
   return { error: 'Search plan unusable after 2 attempts (' + SUBQ.length + ' sub-questions, ' +
                   PERSPECTIVES.length + ' perspectives). ' + shapeReport(plan, PLAN_REQ) }
 }
-if (asObjList(plan.perspectives).length > PERSPECTIVES.length) {
-  log('NOTE: planner returned ' + asObjList(plan.perspectives).length + ' perspectives; capped to ' +
+if (plan.perspectives.length > PERSPECTIVES.length) {
+  log('NOTE: planner returned ' + plan.perspectives.length + ' perspectives; capped to ' +
       PERSPECTIVES.length + ' for depth=' + DEPTH)
 }
 log('Checklist: ' + SUBQ.length + ' sub-questions')
@@ -1222,10 +1271,12 @@ const worst = ['sound', 'minor-gaps', 'material-gaps']
 const critVerdict = critiques.length
   ? critiques.map(c => c.verdict).sort((a, b) => worst.indexOf(b) - worst.indexOf(a))[0]
   : 'unknown'
-const untraceable = [...new Set(critiques.flatMap(c => asStrList(c.untraceableStatements, 'critic.untraceableStatements')))]
-const untraceableVerbatim = [...new Set(critiques.flatMap(c => asStrList(c.untraceableVerbatim, 'critic.untraceableVerbatim')))]
-const gaps = [...new Set(critiques.flatMap(c => asStrList(c.coverageGaps, 'critic.coverageGaps')))]
-const planFlaws = [...new Set(critiques.flatMap(c => asStrList(c.planFlaws, 'critic.planFlaws')))]
+// Shaped at the seam: every declared array is a list of strings. Optional ones may be
+// absent, which is what the `|| []` covers - absence, not malformation.
+const untraceable = [...new Set(critiques.flatMap(c => c.untraceableStatements))]
+const untraceableVerbatim = [...new Set(critiques.flatMap(c => c.untraceableVerbatim || []))]
+const gaps = [...new Set(critiques.flatMap(c => c.coverageGaps))]
+const planFlaws = [...new Set(critiques.flatMap(c => c.planFlaws || []))]
 // Strike only sentences we can actually LOCATE. Prefer the verbatim field; fall back to
 // pulling a quoted fragment out of the prose description, trying the quote characters
 // the critic actually writes — the Python build matched only on " and therefore reported
