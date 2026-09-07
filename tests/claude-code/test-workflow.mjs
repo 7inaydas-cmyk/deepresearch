@@ -35,7 +35,7 @@ const ok = (c, m) => { if (c) { pass++; console.log('  ✅ ' + m) } else { fail+
 {
   const q = await run('T2a quick', { question: 'Q', depth: 'quick' })
   ok(q.out.stats.perspectives === 4, 'quick CAPS an over-eager scoper (6 returned) down to 4 perspectives')
-  ok(q.out.stats.lensesPerClaim === 2, 'quick = 2 lenses')
+  ok(q.out.stats.lensesPerClaim === 3, 'quick runs all 3 lenses: with 2 and a 2-of-3 rule, a 1-1 split survives and nothing can ever be killed')
   ok(q.out.citationAudit === null, 'quick SKIPS the citation audit')
   ok(!q.logs.some(l => l.includes('Round 1')), 'quick does no deepening round')
   ok(q.out.processCritique.rationales.length === 1, 'quick = 1 process critic')

@@ -34,7 +34,7 @@ export const meta = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const TIERS = {
-  quick:      { perspectives: 4, wave1: 10, deepenRounds: 0, wavePerRound: 0,  maxVerify: 14, lenses: 2, factAudit: false, critics: 1, rescue: false, calibrate: 0 },
+  quick:      { perspectives: 4, wave1: 10, deepenRounds: 0, wavePerRound: 0,  maxVerify: 14, lenses: 3, factAudit: false, critics: 1, rescue: false, calibrate: 0 },
   standard:   { perspectives: 6, wave1: 16, deepenRounds: 1, wavePerRound: 10, maxVerify: 30, lenses: 3, factAudit: true,  critics: 2, rescue: true, calibrate: 0 },
   exhaustive: { perspectives: 9, wave1: 24, deepenRounds: 2, wavePerRound: 14, maxVerify: 50, lenses: 3, factAudit: true,  critics: 3, rescue: true, calibrate: 0 },
 }
