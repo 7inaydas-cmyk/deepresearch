@@ -694,7 +694,7 @@ ok("topically related" in _floor,
    "of passing a page that is 1/9 relevant")
 ok(_S.relevant(_junk, "") == _junk, "an empty query cannot be judged, so nothing is dropped")
 _ssrc = open(_S.__file__, encoding="utf-8").read()
-ok("one host owning the whole page" in _ssrc,
+ok("one host owning the" in _ssrc and "serving junk" in _ssrc,
    "and one host owning almost every result is refused too - a different tell for the "
    "same failure")
 _esrc = open(dr.__file__, encoding="utf-8").read()
