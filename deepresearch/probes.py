@@ -258,7 +258,19 @@ def run_critic_probes(rep):
     depth = rep.get("depth") or "standard"
     n_critics = (E.TIERS.get(depth) or E.TIERS["standard"])["critics"]
     q = rep.get("question") or ""
-    subqs = [c.get("subQuestion", "") for c in (rep.get("coverage") or []) if isinstance(c, dict)]
+    # Python reports key coverage by `subQuestionIndex` (an int); JS reports by
+    # `subQuestion` (the text). Reading only the JS key against a Python report gave the
+    # critic a checklist of EMPTY STRINGS, so the probe measured it on a paraphrase of the
+    # prompt - through the data rather than the prompt text, which is what lifting
+    # p_critic to module level was meant to prevent. Accept both.
+    subqs = []
+    for c in (rep.get("coverage") or []):
+        if not isinstance(c, dict):
+            continue
+        if c.get("subQuestion"):
+            subqs.append(str(c["subQuestion"]))
+        elif c.get("subQuestionIndex") is not None:
+            subqs.append("sub-question %s (%s)" % (c["subQuestionIndex"], c.get("status", "?")))
     persps = [p for p in (rep.get("perspectives") or []) if isinstance(p, dict)]
     confirmed = [{"claim": d.get("claim", "")} for d in (rep.get("citationDetail") or [])
                  if isinstance(d, dict) and d.get("claim")]
