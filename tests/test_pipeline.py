@@ -715,6 +715,32 @@ ok('"via": "crossref-fallback"' in _src and '"abstractOnly": True' in _src,
    "the fallback labels itself an abstract, so the auditor is not judging a claim against "
    "a stub while believing it read the paper")
 
+print("\n-- every report exit carries the instruments, not just the happy path --")
+# Architecture review, 2026-09-07: I had reported this fixed. It was fixed on ONE of
+# four exits. Verify by counting every `return dict(base` site in the source rather
+# than by driving each exit live - some (all-refuted, all-demoted-by-audit) need a
+# specific model-response sequence to reach and are already covered end to end by the
+# happy-path tests; what was actually missing was the KEYWORD ARGUMENT, and that is
+# what this checks.
+import inspect as _insp2
+_eng_src_full = _insp2.getsource(dr)
+_exits = [i for i in range(len(_eng_src_full)) if _eng_src_full.startswith("return dict(base", i)]
+ok(len(_exits) == 4, "still four report-assembly exits (not_ranked, all_refuted, "
+                     "all_demoted, happy) - a fifth would need this test extended")
+_carries = [(("honestLimits" in _eng_src_full[i:i + 1100]),
+            ("calibration=calibration" in _eng_src_full[i:i + 1100]),
+            ("droppedSample=dropped_sample" in _eng_src_full[i:i + 1100]))
+           for i in _exits]
+ok(all(hl for hl, _, _ in _carries),
+   "ALL FOUR exits carry honestLimits now - previously 2 of 4 did, including the "
+   "all-refuted exit where killRateMeans is most load-bearing")
+ok(sum(1 for _, cal, drop in _carries if cal and drop) == 3,
+   "the three exits reached AFTER calibration/droppedSample are computed all carry "
+   "them; only the not-ranked exit (before verification even starts) correctly omits "
+   "them, because they do not exist yet")
+ok("def _honest_limits(" in _eng_src_full,
+   "honestLimits is a single shared function now, not five hand-copied dict literals")
+
 print("\n-- the framing-contract intake: supplied fields win, the model drafts the rest --")
 import json as _json, os as _os, tempfile as _tmp
 _sup = {"decisionAtStake": "whether to buy standing desks for 40 people",

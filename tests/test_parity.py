@@ -98,6 +98,20 @@ def read(paths):
     return out
 
 
+def check_tier_data():
+    """Marker-string parity only proves `tierOf` exists in both files - it cannot see
+    WHAT the rules say. Measured 2026-09-07: researchgate.net graded T4 in Python and T3
+    in JS, listverse.com T5-excluded in Python and T3-citable in JS, and the marker check
+    passed the whole time. tools/sync_tiers.py generates the JS block FROM
+    contract/tiers.json; this just asks it whether the two still match."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import sync_tiers
+    contract = __import__("json").load(open(sync_tiers.TIERS_JSON, encoding="utf-8"))
+    generated = sync_tiers.render(contract)
+    js = read(JS)
+    return generated in js
+
+
 def main():
     py, js = read(PY), read(JS)
     missing_py, missing_js = [], []
@@ -117,15 +131,23 @@ def main():
     for k, why in sorted(PYTHON_ONLY.items()):
         print("    - %-24s %s" % (k, why.split(". ")[0].rstrip(".") + "."))
 
-    if missing_js or missing_py:
+    tiers_ok = check_tier_data()
+    print("  %s  %-28s python=contract/tiers.json  js=%s"
+          % ("ok " if tiers_ok else "GAP", "tier DATA (not just tierOf)",
+             "generated, matches" if tiers_ok else "STALE - run tools/sync_tiers.py"))
+
+    if missing_js or missing_py or not tiers_ok:
         print("\n  DRIFT DETECTED — a feature exists in one runtime and not the other.")
         for f, m in missing_js:
             print("    JS build is missing %r (marker %r)" % (f, m))
         for f, m in missing_py:
             print("    Python build is missing %r (marker %r)" % (f, m))
+        if not tiers_ok:
+            print("    JS tier rules do not match contract/tiers.json - "
+                  "run `python3 tools/sync_tiers.py` and commit the result.")
         print("\n  Port it, or move it to PYTHON_ONLY with a reason. Do not delete the row.")
         return 1
-    print("\n  ======== parity: %d shared features, 0 drift ========" % len(SHARED))
+    print("\n  ======== parity: %d shared features + tier data, 0 drift ========" % len(SHARED))
     return 0
 
 

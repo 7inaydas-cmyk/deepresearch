@@ -316,20 +316,23 @@ const shapeReport = (o, required) => {
 // and inverts the confidence signal during a search outage — when a DOI index is
 // the only backend still answering, every result is a doi.org link and the census
 // reports "all top-tier" on the least diverse evidence the run has ever had.
-const RESOLVERS = new Set(['doi.org', 'dx.doi.org', 'hdl.handle.net', 'handle.net', 'purl.org'])
+// ── BEGIN GENERATED FROM contract/tiers.json — run tools/sync_tiers.py, do not hand-edit ──
+const RESOLVERS = new Set(["doi.org", "dx.doi.org", "handle.net", "hdl.handle.net", "purl.org"])
 const TIER_RULES = [
-  ['T1', /(^|\.)(arxiv\.org|sec\.gov|europa\.eu|[\w-]+\.gov|[\w-]+\.gov\.[\w-]+|nih\.gov|who\.int|oecd\.org|worldbank\.org|ietf\.org|w3\.org|iso\.org|nist\.gov|patents\.google\.com)$/i],
-  ['T2', /(^|\.)(nature\.com|science\.org|sciencedirect\.com|springer\.com|wiley\.com|acm\.org|ieee\.org|jstor\.org|pubmed\.ncbi\.nlm\.nih\.gov|reuters\.com|apnews\.com|bloomberg\.com|ft\.com|wsj\.com|economist\.com|nytimes\.com|bbc\.co\.uk|bbc\.com|theguardian\.com|en\.wikipedia\.org|openalex\.org)$/i],
-  ['T3', /(^|\.)(github\.com|gitlab\.com|medium\.com|substack\.com|dev\.to|news\.ycombinator\.com|stackoverflow\.com|reddit\.com|hashnode\.dev|blogspot\.com|wordpress\.com)$/i],
-  ['T4', /(^|\.)(indeed\.[\w.]+|glassdoor\.[\w.]+|levels\.fyi|linkedin\.com|ziprecruiter\.com|g2\.com|capterra\.com|trustpilot\.com|producthunt\.com|crunchbase\.com|payscale\.com|comparably\.com)$/i],
+  ['T1', new RegExp("(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$", 'i')],
+  ['T2', new RegExp("(^|\\.)(nature\\.com|pnas\\.org|europepmc\\.org|semanticscholar\\.org|cochranelibrary\\.com|nejm\\.org|jamanetwork\\.com|thelancet\\.com|plos\\.org|frontiersin\\.org|mdpi\\.com|tandfonline\\.com|sagepub\\.com|cambridge\\.org|oup\\.com|elsevier\\.com|arxiv-sanity\\.com|lemonde\\.fr|faz\\.net|spiegel\\.de|elpais\\.com|corriere\\.it|nrc\\.nl|asahi\\.com|nikkei\\.com|scmp\\.com|thehindu\\.com|abc\\.net\\.au|cbc\\.ca|npr\\.org|propublica\\.org|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$", 'i')],
+  ['T3', new RegExp("(^|\\.)(github\\.com|gitlab\\.com|medium\\.com|substack\\.com|dev\\.to|news\\.ycombinator\\.com|stackoverflow\\.com|reddit\\.com|hashnode\\.dev|blogspot\\.com|wordpress\\.com)$", 'i')],
+  ['T4', new RegExp("(^|\\.)(scholar\\.google\\.com|researchgate\\.net|academia\\.edu|semanticscholar\\.org\\.cache|quora\\.com|answers\\.com|ask\\.com|indeed\\.[\\w.]+|glassdoor\\.[\\w.]+|levels\\.fyi|linkedin\\.com|ziprecruiter\\.com|g2\\.com|capterra\\.com|trustpilot\\.com|producthunt\\.com|crunchbase\\.com|payscale\\.com|comparably\\.com)$", 'i')],
+  ['T5', new RegExp("(^|\\.)(ezinearticles\\.com|articlesbase\\.com|hubpages\\.com|buzzfeed\\.com|listverse\\.com|thoughtcatalog\\.com|contentgrow\\.com|articlecity\\.com)$", 'i')],
 ]
-const FARM_TELLS = /\b(top \d+ best|ultimate guide|you won'?t believe|listicle|sponsored content|affiliate link)\b/i
+const FARM_TELLS = new RegExp("\\b(top \\d+ best|ultimate guide|you won'?t believe|listicle|sponsored content|affiliate link)\\b", 'i')
+const TIER_RANK = {"T1": 0, "T2": 1, "T?": 2, "T3": 3, "T4": 4, "T5": 5}
+const CITABLE = new Set(["T1", "T2", "T?", "T3"])
+// ── END GENERATED ─────────────────────────────────────────────────────────────────────
 // Key on claim + source URL. Identical claim text extracted from two different
 // URLs is two different citations; keying on the text alone let one audit
 // verdict silently govern both.
 const auditKey = (claim, url) => String(claim) + '\u0000' + String(url)
-const TIER_RANK = { T1: 0, T2: 1, 'T?': 2, T3: 3, T4: 4, T5: 5 }
-const CITABLE = new Set(['T1', 'T2', 'T?', 'T3'])   // T4 discovery-only, T5 excluded
 const hostOf = u => { const m = String(u).match(URL_HOST_PATTERN); return m ? m[1].toLowerCase() : '' }
 const tierOf = (url, title) => {
   const h = hostOf(url)

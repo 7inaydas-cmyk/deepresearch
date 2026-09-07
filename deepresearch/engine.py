@@ -974,6 +974,66 @@ def load_contract(path):
     return {k: v for k, v in shaped.items() if k in raw}
 
 
+def _honest_limits(extra=None):
+    """The caveats that travel WITH every report, not just the happy one.
+
+    Found on today's own architecture review: of six return paths, only the happy path
+    and the synthesis-failed path carried honestLimits at all - the all-refuted and
+    all-demoted-by-audit exits carried NONE of it, including killRateMeans ("the kill
+    rate reports how much was removed, never whether removal was correct"), which is
+    most load-bearing on exactly the exit where every claim was killed.
+
+    `extra` merges in whatever is specific to the exit that is calling this - a
+    synthesis failure, an absent framing contract.
+    """
+    out = {
+        "falseKillRateUnmeasured": (
+            "This report kills claims. How often it kills a TRUE one has never been "
+            "measured — here or anywhere in the published literature. Read `refuted` "
+            "before concluding something is unsupported."),
+        "reliabilityNotValidity": (
+            "`calibration` measures whether the panel repeats itself, not whether it is "
+            "right. An LLM panel has been recorded agreeing with itself at alpha 0.77 "
+            "while being systematically wrong. A high kappa never licenses 'the panel is "
+            "correct'."),
+        "confirmedMeans": (
+            "`confirmed` means 'survived a filter of unknown accuracy', not 'true'."),
+        "killRateMeans": (
+            "The kill rate reports how much was removed, never whether removal was "
+            "correct."),
+        "partialCitationsAreKept": (
+            "A `partial` citation verdict means the page points this way but the statement "
+            "adds scope, certainty or specificity the page does not carry - and it does NOT "
+            "remove the claim. Only `unsupported` does. Measured with injected defects: an "
+            "inflated number, an invented attribution and an inflated scope all came back "
+            "`partial`, so all three would have been published. Read `citationPartials` "
+            "before quoting a number or an attribution from this report."),
+        "framingProvenance": (
+            "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the "
+            "model DRAFTED it. A drafted assumption and a supplied one look identical in the "
+            "JSON and mean opposite things: a supplied field is a decision to respect, a "
+            "drafted one is a premise the run should have tested."),
+        "irrelevantSearchResults": (
+            "stats.pickStarvation counts how often the source picker was handed search hits "
+            "and chose NONE of them. A high rate means search returned results that were not "
+            "about the question - a poisoned or rate-limited upstream engine - and NOT that "
+            "the web is silent. searchHealth counts results, not relevance, so it reads as "
+            "healthy in exactly this case."),
+        "abstractOnlySources": (
+            "stats.fetchVia counts how each source was READ. `crossref-fallback` means the "
+            "publisher blocked the fetch and only the abstract was available, and those "
+            "sources carry `abstractOnly: true`. A claim verified against an abstract has "
+            "been checked against a summary of the paper, not the paper."),
+        "searchCoverage": (
+            "Check stats.searchHealth. If every general-web backend reports 0 results, "
+            "this run saw a scholarly-only slice of the web and its coverage gaps are a "
+            "search artefact rather than evidence that nothing exists."),
+    }
+    if extra:
+        out.update(extra)
+    return out
+
+
 def _via_census(sources):
     """How the run actually read its sources. A run whose evidence is mostly
     `crossref-fallback` read abstracts, not papers, and should say so."""
@@ -1483,7 +1543,8 @@ def deepresearch(question, depth="standard", contract=None):
                 msg = ("No claims survived extraction. %d sources fetched, all empty, paywalled or "
                        "irrelevant." % len(sources))
         return dict(base, summary=msg, findings=[], sources=src_rows(),
-                    stats=stats(claimsVerified=0, confirmed=0, searchHealth=h))
+                    stats=stats(claimsVerified=0, confirmed=0, searchHealth=h),
+                    honestLimits=_honest_limits())
 
     # Phase 5 - Verify
     lenses = LENSES[:T["lenses"]]
@@ -1622,6 +1683,8 @@ def deepresearch(question, depth="standard", contract=None):
                "Inconclusive - this is a real result, not an error." % (len(killed), len(lenses)))
         return dict(base, summary=msg, findings=[], refuted=[to_ref(c) for c in killed],
                     sources=src_rows(), rescue=rescue,
+                    calibration=calibration, droppedSample=dropped_sample,
+                    honestLimits=_honest_limits(),
                     stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed),
                                 unverifiedCount=len(unver)))
 
@@ -1668,6 +1731,10 @@ def deepresearch(question, depth="standard", contract=None):
                                       "This is a real result - the sources do not say what they were read as saying.",
                         findings=[], citationAudit=fact_metrics, rescue=rescue,
                         refuted=[to_ref(c) for c in killed], sources=src_rows(),
+                        citationDetail=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
+                                         "support": f["support"]} for f in fact_by.values()],
+                        calibration=calibration, droppedSample=dropped_sample,
+                        honestLimits=_honest_limits(),
                         stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed)))
 
     fact_by = {(f["claim"], f.get("url")): f for f in fact_rows}
@@ -1825,12 +1892,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                     citationPartials=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
                                        "reasoning": webtext(f.get("reasoning", ""), 400)}
                                       for f in fact_by.values() if f["support"] == "partial"],
-                    honestLimits={"synthesisFailed": (
+                    honestLimits=_honest_limits({"synthesisFailed": (
                         "Synthesis did not return a usable report, so there are no findings and no "
                         "summary. Everything BEFORE synthesis did run and is reported here: the "
                         "verified claims, what was refuted and why, the citation audit, and the "
                         "calibration if one was requested. Read `confirmedRaw` and `refuted` "
-                        "directly. This is an incomplete report, not an empty one.")},
+                        "directly. This is an incomplete report, not an empty one.")}),
                     sources=src_rows(), stats=stats(claimsVerified=len(voted), confirmed=len(confirmed),
                                                     killed=len(killed), afterSynthesis=0))
 
@@ -1863,49 +1930,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out["droppedSample"] = dropped_sample
     # These limits travel WITH the report. A caveat that only exists in the README
     # is a caveat the person reading a pasted JSON blob never sees.
-    out["honestLimits"] = {
-        "falseKillRateUnmeasured": (
-            "This report kills claims. How often it kills a TRUE one has never been "
-            "measured — here or anywhere in the published literature. Read `refuted` "
-            "before concluding something is unsupported."),
-        "reliabilityNotValidity": (
-            "`calibration` measures whether the panel repeats itself, not whether it is "
-            "right. An LLM panel has been recorded agreeing with itself at alpha 0.77 "
-            "while being systematically wrong. A high kappa never licenses 'the panel is "
-            "correct'."),
-        "confirmedMeans": (
-            "`confirmed` means 'survived a filter of unknown accuracy', not 'true'."),
-        "killRateMeans": (
-            "The kill rate reports how much was removed, never whether removal was "
-            "correct."),
-        "partialCitationsAreKept": (
-            "A `partial` citation verdict means the page points this way but the statement "
-            "adds scope, certainty or specificity the page does not carry - and it does NOT "
-            "remove the claim. Only `unsupported` does. Measured with injected defects: an "
-            "inflated number, an invented attribution and an inflated scope all came back "
-            "`partial`, so all three would have been published. Read `citationPartials` "
-            "before quoting a number or an attribution from this report."),
-        "framingProvenance": (
-            "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the "
-            "model DRAFTED it. A drafted assumption and a supplied one look identical in the "
-            "JSON and mean opposite things: a supplied field is a decision to respect, a "
-            "drafted one is a premise the run should have tested."),
-        "irrelevantSearchResults": (
-            "stats.pickStarvation counts how often the source picker was handed search hits "
-            "and chose NONE of them. A high rate means search returned results that were not "
-            "about the question - a poisoned or rate-limited upstream engine - and NOT that "
-            "the web is silent. searchHealth counts results, not relevance, so it reads as "
-            "healthy in exactly this case."),
-        "abstractOnlySources": (
-            "stats.fetchVia counts how each source was READ. `crossref-fallback` means the "
-            "publisher blocked the fetch and only the abstract was available, and those "
-            "sources carry `abstractOnly: true`. A claim verified against an abstract has "
-            "been checked against a summary of the paper, not the paper."),
-        "searchCoverage": (
-            "Check stats.searchHealth. If every general-web backend reports 0 results, "
-            "this run saw a scholarly-only slice of the web and its coverage gaps are a "
-            "search artefact rather than evidence that nothing exists."),
-    }
+    out["honestLimits"] = _honest_limits()
     if not HYPOTHESES:
         out["honestLimits"]["noFramingContract"] = (
             "The framing agent returned no hypotheses, so nothing was adjudicated. "
