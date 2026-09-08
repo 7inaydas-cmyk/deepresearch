@@ -982,6 +982,36 @@ def read_provenance(url, text):
     return True, "", ""
 
 
+# Matching a verdict back to the hypothesis it judges. Measured on a live run
+# 2026-09-08: framing registered 4 hypotheses, synthesis adjudicated the same 4, and a
+# first version marked ALL FOUR post-hoc - because the synthesis step prefixes each with
+# "H1: ", and because that version truncated BOTH sides to 80 characters before testing
+# containment. Truncating both then asking "is one inside the other" is simply wrong: a
+# four-character prefix shifts the alignment and containment can never hold. The report
+# then asserted that four pre-registered hypotheses had been written after the fact,
+# which is the same class of false claim this whole change exists to remove.
+_HYP_LABEL = re.compile(r"^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*", re.I)
+_HYP_PROBE = 60
+
+
+def _hyp_key(text):
+    """Normalised hypothesis text with any 'H1:' style label removed."""
+    return _HYP_LABEL.sub("", norm_quote(text)).strip()
+
+
+def _same_hypothesis(a, b):
+    """Is this the same hypothesis, allowing for relabelling and light rewording?
+
+    Compares a probe from one side against the WHOLE of the other, never probe against
+    probe - that is what broke the first version.
+    """
+    if not a or not b:
+        return False
+    if a in b or b in a:
+        return True
+    return a[:_HYP_PROBE] in b or b[:_HYP_PROBE] in a
+
+
 def to_ref(c):
     """A killed claim, with EVERY reason it died and every source that contradicted it.
 
@@ -2553,16 +2583,16 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # line that should have warned them. Stamp every verdict with whether the hypothesis
     # it judges was actually registered before the search, the way scopeContract.provenance
     # already stamps the framing fields.
-    _registered = [norm_quote(h.get("hypothesis", ""))[:80]
+    _registered = [_hyp_key(h.get("hypothesis", ""))
                    for h in (HYPOTHESES or []) if isinstance(h, dict) and h.get("hypothesis")]
     _verdicts = [v for v in as_list(out.get("hypothesisVerdicts"), "hypothesisVerdicts")
                  if isinstance(v, dict)]
     for _v in _verdicts:
-        _t = norm_quote(_v.get("hypothesis", ""))[:80]
+        _t = _hyp_key(_v.get("hypothesis", ""))
         # Conservative on purpose: an unmatched verdict is marked post-hoc. A false
         # "pre-registered" is the failure this exists to prevent; a false "post-hoc" only
-        # understates.
-        _v["preRegistered"] = bool(_t) and any(_t in r or r in _t for r in _registered if r)
+        # understates - but it still misleads, so the matching has to be right.
+        _v["preRegistered"] = bool(_t) and any(_same_hypothesis(_t, r) for r in _registered if r)
     if _verdicts:
         out["hypothesisVerdicts"] = _verdicts
     _posthoc = [v for v in _verdicts if not v.get("preRegistered")]

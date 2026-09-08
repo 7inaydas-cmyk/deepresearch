@@ -609,6 +609,23 @@ ok('_v["preRegistered"] = ' in _engine_src,
 ok("postHocHypotheses" in _engine_src and "not a test of anything" in _engine_src,
    "and a post-hoc verdict raises its own honest limit rather than passing as a "
    "pre-registered adjudication")
+# From a real run, 2026-09-08. Framing registered these; synthesis adjudicated the same
+# four and relabelled them "H1:".."H4:". A first version of this matcher truncated BOTH
+# sides to 80 chars before testing containment, so the 4-character prefix shifted the
+# alignment and all four were stamped post-hoc — the report then asserted that four
+# pre-registered hypotheses had been invented after the evidence.
+_REG = "Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive"
+_VER = "H1: Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive"
+ok(dr._same_hypothesis(dr._hyp_key(_VER), dr._hyp_key(_REG)),
+   "an 'H1:' relabelling still matches its registered hypothesis - comparing two "
+   "truncated strings for containment can never work when a prefix shifts them")
+ok(dr._same_hypothesis(dr._hyp_key(_REG + " and durable over time"), dr._hyp_key(_REG)),
+   "and light rewording on either side still matches")
+ok(not dr._same_hypothesis(dr._hyp_key("H9: something nobody ever registered anywhere"),
+                           dr._hyp_key(_REG)),
+   "but a genuinely invented hypothesis does NOT match - the stamp has to mean something")
+ok(not dr._same_hypothesis("", dr._hyp_key(_REG)) and not dr._same_hypothesis(dr._hyp_key(_REG), ""),
+   "and an empty side never matches, so a missing hypothesis is never called pre-registered")
 ok("NOTHING here was pre-registered" in _engine_src,
    "the no-contract caveat now describes what the field actually holds, instead of "
    "asserting it is empty while it is not")

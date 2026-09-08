@@ -1573,12 +1573,19 @@ log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untracea
 // hypothesis it judges was registered before the search, the way scopeContract.provenance
 // already stamps the framing fields. Conservative on purpose: an unmatched verdict is
 // marked post-hoc, because a false "pre-registered" is the failure this exists to prevent.
-const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 80)
+// Measured on a live Python run 2026-09-08: framing registered 4 hypotheses, synthesis
+// adjudicated the same 4, and a first version marked ALL FOUR post-hoc — because the
+// synthesis step prefixes each with "H1: ", and because that version truncated BOTH
+// sides before testing containment. Truncating both then asking "is one inside the
+// other" is simply wrong: a four-character prefix shifts the alignment and containment
+// can never hold. Compare a probe from one side against the WHOLE of the other.
+const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
+const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
+const sameHyp = (a, b) => !!a && !!b && (a.includes(b) || b.includes(a) || b.includes(a.slice(0, 60)) || a.includes(b.slice(0, 60)))
 const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
 const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => ({
   ...v,
-  preRegistered: !!normHyp(v.hypothesis) &&
-    REGISTERED.some(r => normHyp(v.hypothesis).includes(r) || r.includes(normHyp(v.hypothesis))),
+  preRegistered: !!normHyp(v.hypothesis) && REGISTERED.some(r => sameHyp(normHyp(v.hypothesis), r)),
 }))
 const POST_HOC = VERDICTS.filter(v => !v.preRegistered)
 

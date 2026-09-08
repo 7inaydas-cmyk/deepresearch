@@ -36,6 +36,7 @@ SHARED = {
     "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
     "wasted recovery re-asked":  ("if bare_items and not lst:", "if (bareItems.length && !lst.length)"),
     "verdict provenance stamp":  ("_v[\"preRegistered\"] = ", "preRegistered:"),
+    "hypothesis relabel match":  ("def _same_hypothesis(", "const sameHyp = "),
     "framing-contract intake":   ("def load_contract(", "const intakeContract = "),
     "per-field provenance":      ('contract["provenance"] = {', "CONTRACT.provenance = "),
     "critic reads provenance":   ("def _plan_flaws_check(", "const planFlawsCheck = "),
