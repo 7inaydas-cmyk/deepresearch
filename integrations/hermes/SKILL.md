@@ -198,6 +198,17 @@ Report these six things. Do not bury them.
    world - so it is your job to say "this rests on N sources", not the tool's job to
    hide it.
 
+0c. **`stats.quoteLocation` and `quoteAudit`** - whether each claim's verbatim quote was
+   actually FOUND on the page it is cited to, decided in code rather than asked of a
+   model. `onPageRate` is the headline. Before quoting any claim to the user verbatim,
+   check its `quoteAudit` row: a `partial` means part of that quote is genuine page text
+   and part is not, and a `not-found` means the quote is not on its own source. Both are
+   defects in the EVIDENCE, separate from whether the claim happens to be true.
+   `unverifiable` means the page was empty or the quote too short to judge, and is never
+   evidence of fabrication - do not report it as one. Measured 2026-09-08: a PDF whose
+   font encoding defeated extraction produced four fluent, entirely invented quotes, and
+   this is the check that caught them.
+
 1. **`citationAudit.citationAccuracy`** - of every verified claim, the percentage whose
    cited page, re-fetched blind, actually supports it. **The single most important number.**
    Under ~70% means treat the report as provisional and say so. Also report
@@ -290,6 +301,9 @@ Claude Code command on the host to refresh it.
 - **`stats.usageUnrecorded` should be empty.** A key there means the API reports a token
   field the build does not name, so `inputTokens`/`outputTokens` are incomplete by that
   much. That IS worth reporting.
+- **A source with `via: wayback` was read from the Internet Archive, not live.** The
+  publisher blocked the fetch. `snapshotDate` says when the copy was captured - say so if
+  recency matters to the answer, because an archived page is as old as its snapshot.
 - **`stats.pageFetchCache`** - page re-reads served from memory rather than the network.
   Expect 0 hits at `quick` depth, which runs no citation audit and so re-reads nothing.
 - **Search failover is driven here, not by the tool's `auto` mode.** `auto` only cascades
