@@ -148,6 +148,20 @@ encoding defeats extraction yields control characters, and a model shown those r
 fluent invented quotes - so the text is refused as unreachable instead.
 _Avoid_: sanity check, garbage filter
 
+**Pre-registered hypothesis**:
+A hypothesis with its kill criterion written into the framing contract BEFORE any search
+ran. Every entry in `hypothesisVerdicts` is stamped `preRegistered`, because the synthesis
+step can also invent a hypothesis after seeing the evidence and adjudicate that — which is
+a summary of the evidence, never a test of anything.
+_Avoid_: hypothesis (unqualified), verdict
+
+**Wasted recovery**:
+The seam rescuing a model-supplied payload and its consumer discarding it — recovered
+`<item>`-wrapped strings meeting an array that requires objects. Worse than never
+recovering, because the corrective retry re-asks the same question and gets the same shape,
+so the whole retry budget burns on a payload already in hand.
+_Avoid_: parse failure, dropped item
+
 **Read provenance**:
 How the engine actually obtained the page behind a [claim] — the full page, an abstract
 because the publisher blocked it, an archived copy, or nothing at all. Recorded at the

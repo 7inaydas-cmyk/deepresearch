@@ -534,6 +534,85 @@ ok(len(set(_ref_keys.values())) == 1 and len(_ref_keys) >= 2,
    "every exit builds refuted rows with the SAME keys (%d exits checked): %s"
    % (len(_ref_keys), ", ".join(sorted(set(_ref_keys.values()))[0]) if _ref_keys else "none"))
 
+print("\n-- tag recovery is worthless unless it survives its CONSUMER --")
+# 332 tests were green on a commit where framing died end to end. The tests asserted
+# as_list('<item>a</item>...') == ['a', ...] - the plumbing - and never that shape()
+# does anything useful with those items on an object-typed array. The test right above
+# this one even used <hypothesis>, the exact field that broke, and checked only the half
+# that worked. So: every array-of-object field, driven from a table.
+def _minimal(schema, skip):
+    """An object satisfying every required field of `schema` except `skip`."""
+    out = {}
+    for k in (schema.get("required") or []):
+        if k == skip:
+            continue
+        spec = (schema.get("properties") or {}).get(k) or {}
+        t = spec.get("type")
+        if "enum" in spec:      out[k] = spec["enum"][0]
+        elif t == "array":
+            n = spec.get("minItems") or 1
+            it = (spec.get("items") or {}).get("type")
+            out[k] = ([_minimal(spec["items"], None) for _ in range(n)] if it == "object"
+                      else ["x%d" % i for i in range(n)])
+        elif t == "integer":    out[k] = 0
+        elif t == "boolean":    out[k] = False
+        elif t == "object":     out[k] = _minimal(spec, None)
+        else:                   out[k] = "x"
+    return out
+
+_OBJ_ARRAYS = []
+for _n in sorted(x for x in dir(dr) if x.startswith("S_")):
+    _sc = getattr(dr, _n)
+    if not isinstance(_sc, dict):
+        continue
+    for _f, _sp in (_sc.get("properties") or {}).items():
+        if isinstance(_sp, dict) and _sp.get("type") == "array" \
+           and (_sp.get("items") or {}).get("type") == "object":
+            _OBJ_ARRAYS.append((_n, _sc, _f, _sp))
+ok(len(_OBJ_ARRAYS) == 8,
+   "every array-of-object field is covered by this table: %d found" % len(_OBJ_ARRAYS))
+
+for _n, _sc, _f, _sp in _OBJ_ARRAYS:
+    _need = _sp.get("minItems") or 2
+    _payload = "".join("<item>recovered text %d for this field</item>" % i for i in range(_need))
+    _obj = _minimal(_sc, _f); _obj[_f] = _payload
+    _shaped, _probs = dr.shape(_sc, _obj, "t")
+    _joined = " | ".join(_probs)
+    _req = ", ".join((_sp.get("items") or {}).get("required") or [])
+    ok(any("bare strings" in p for p in _probs),
+       "%s.%s: a tag-recovered payload is reported as recovered-but-unusable, not as a "
+       "bare shortfall" % (_n, _f))
+    ok("recovered text 0" in _joined and (not _req or _req.split(", ")[0] in _joined),
+       "%s.%s: and the retry is told WHAT arrived and WHICH keys were needed, so it is "
+       "not the identical re-ask that burned all five attempts" % (_n, _f))
+
+# The narrowing that the pre-existing drop-a-bad-item test caught. A bare string beside
+# enough good objects is still just a malformed item: logged, dropped, no retry forced.
+_shaped, _probs = dr.shape(dr.S_EXTRACT, {"sourceQuality": "primary", "claims": [
+    {"claim": "good", "quote": "q", "importance": "central"}, "not an object"]}, "t")
+ok(_probs == [] and [c["claim"] for c in _shaped["claims"]] == ["good"],
+   "but a bare string beside surviving objects forces NO retry - the informed path fires "
+   "only when the loss actually costs the array")
+
+# Mapping a bare string onto the item's single required key was the obvious fix and it
+# cannot work here: not one of the eight declares fewer than two required keys.
+ok(all(len(((_sp.get("items") or {}).get("required") or [])) >= 2
+       for _n, _sc, _f, _sp in _OBJ_ARRAYS),
+   "and every one of the 8 requires >=2 keys, so a bare string can never satisfy one on "
+   "its own - which is why the fix is an informed retry, not a mapping")
+
+print("\n-- a verdict never claims a hypothesis the contract did not hold --")
+ok('_v["preRegistered"] = ' in _engine_src,
+   "every hypothesisVerdict is stamped with whether its hypothesis was registered BEFORE "
+   "the search - it used to be published unstamped, beside a caveat asserting the field "
+   "was empty")
+ok("postHocHypotheses" in _engine_src and "not a test of anything" in _engine_src,
+   "and a post-hoc verdict raises its own honest limit rather than passing as a "
+   "pre-registered adjudication")
+ok("NOTHING here was pre-registered" in _engine_src,
+   "the no-contract caveat now describes what the field actually holds, instead of "
+   "asserting it is empty while it is not")
+
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
 # rules, which sat out of sync between the two runtimes while the marker test passed.
@@ -1098,6 +1177,7 @@ ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
    "every caller downstream treated as page text")
 
 _eng = open(dr.__file__, encoding="utf-8").read()
+_engine_src = _eng
 
 # Exercise the real web_fetch against a stubbed _search.fetch, rather than asserting a
 # source substring. The substring version passed for months and then failed the moment a

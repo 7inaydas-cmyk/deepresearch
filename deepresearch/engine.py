@@ -349,9 +349,22 @@ def shape(schema, obj, label=""):
         if t == "array":
             items = spec.get("items") or {}
             lst = as_list(v, here)
+            bare_items = []
             if items.get("type") == "object":
                 kept = []
                 for i, item in enumerate(lst):
+                    # A bare string here is almost always tag-recovery output: as_list
+                    # rescued an <item>-wrapped array into strings, and this array wants
+                    # objects. Recovering a payload and then dropping it silently is the
+                    # worst of both - and because the corrective retry re-asks the SAME
+                    # question, the model returns the SAME shape and the whole retry
+                    # budget burns deterministically on a payload already in hand.
+                    # Measured 2026-09-08: framing spent 5 of 5 attempts this way while
+                    # holding all four hypotheses, and the run degraded to "an ordinary
+                    # literature summary".
+                    if isinstance(item, str) and item.strip():
+                        bare_items.append(item.strip())
+                        continue
                     shaped_item, item_problems = shape(items, item, "%s[%d]" % (here, i))
                     if item_problems:
                         log("  [%s[%d]] dropped an item: %s" % (here, i, "; ".join(item_problems)[:160]))
@@ -363,6 +376,27 @@ def shape(schema, obj, label=""):
                 if bad:
                     log("  [%s] dropped %d non-string item(s), e.g. %r" % (here, len(bad), str(bad[0])[:80]))
                 lst = [x.strip() for x in lst if isinstance(x, str) and x.strip()]
+            # Fire when the RECOVERY WAS WASTED: bare strings arrived and not one item
+            # survived. Not tied to minItems, because a field without one - `claims`,
+            # `coverage`, `followUps` - would otherwise drop the whole recovered payload
+            # with no problem, no retry and no signal at all, which is a worse silence
+            # than the framing case that started this.
+            #
+            # A bare string BESIDE surviving objects stays what it was: a malformed item,
+            # logged and dropped, no retry forced. And mapping a bare string onto the
+            # item's single required key cannot work - not one of the eight
+            # array-of-object fields declares fewer than two required keys - which is why
+            # this is an informed re-ask rather than a repair.
+            if bare_items and not lst:
+                req = ", ".join(items.get("required") or []) or "the declared keys"
+                log("  [%s] %d item(s) arrived as bare strings, not objects, and none "
+                    "survived - asking again WITH the recovered text rather than "
+                    "re-asking blind" % (here, len(bare_items)))
+                problems.append(
+                    "%s: %d item(s) came back as bare strings such as %r, but each item "
+                    "must be an OBJECT with the keys: %s. Re-send exactly those %d items, "
+                    "each as an object, keeping the wording you already wrote"
+                    % (name, len(bare_items), bare_items[0][:120], req, len(bare_items)))
             need = spec.get("minItems")
             if need and len(lst) < need:
                 problems.append("%s=%d (schema requires %d)" % (name, len(lst), need))
@@ -2511,12 +2545,46 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # These limits travel WITH the report. A caveat that only exists in the README
     # is a caveat the person reading a pasted JSON blob never sees.
     out["honestLimits"] = honest_limits()
+    # `hypothesisVerdicts` arrives from the synthesis model through out.update(report)
+    # and was never gated. When framing produced no hypotheses the model invents them
+    # AFTER seeing the evidence and adjudicates those - which is exactly what this tool
+    # sells against - while the caveat beside it asserted the field was empty. A reader
+    # then saw a pre-registered adjudication that never happened, contradicted by the one
+    # line that should have warned them. Stamp every verdict with whether the hypothesis
+    # it judges was actually registered before the search, the way scopeContract.provenance
+    # already stamps the framing fields.
+    _registered = [norm_quote(h.get("hypothesis", ""))[:80]
+                   for h in (HYPOTHESES or []) if isinstance(h, dict) and h.get("hypothesis")]
+    _verdicts = [v for v in as_list(out.get("hypothesisVerdicts"), "hypothesisVerdicts")
+                 if isinstance(v, dict)]
+    for _v in _verdicts:
+        _t = norm_quote(_v.get("hypothesis", ""))[:80]
+        # Conservative on purpose: an unmatched verdict is marked post-hoc. A false
+        # "pre-registered" is the failure this exists to prevent; a false "post-hoc" only
+        # understates.
+        _v["preRegistered"] = bool(_t) and any(_t in r or r in _t for r in _registered if r)
+    if _verdicts:
+        out["hypothesisVerdicts"] = _verdicts
+    _posthoc = [v for v in _verdicts if not v.get("preRegistered")]
+    if _posthoc:
+        out["honestLimits"]["postHocHypotheses"] = (
+            "%d of %d entries in `hypothesisVerdicts` adjudicate a hypothesis that was NOT "
+            "registered before the search - the synthesis step wrote them after seeing the "
+            "evidence. Each carries `preRegistered: false`. A hypothesis invented after the "
+            "evidence and then judged against it is not a test of anything, and this tool's "
+            "whole claim is that kill criteria are written first. Read those entries as a "
+            "summary of what the evidence showed, never as a prediction that survived."
+            % (len(_posthoc), len(_verdicts)))
     if not HYPOTHESES:
         out["honestLimits"]["noFramingContract"] = (
-            "The framing agent returned no hypotheses, so nothing was adjudicated. "
-            "`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT "
-            "because every hypothesis survived - the two look identical in this JSON and "
-            "mean opposite things. Read this report as an ordinary literature summary.")
+            "The framing agent returned no hypotheses, so NOTHING here was pre-registered. "
+            + ("`hypothesisVerdicts` holds %d verdict(s) the synthesis step wrote after "
+               "seeing the evidence, every one stamped `preRegistered: false`. "
+               % len(_verdicts) if _verdicts else
+               "`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT "
+               "because every hypothesis survived - the two look identical in this JSON and "
+               "mean opposite things. ")
+            + "Read this report as an ordinary literature summary.")
     # A `partial` citation verdict does NOT demote the claim - only `unsupported`
     # does. Measured 2026-09-06 with injected defects: of five fabrications the
     # auditor caught all five, but called three of them `partial` rather than

@@ -205,9 +205,16 @@ const shape = (schema, obj, label) => {
     if (t === 'array') {
       const items = spec.items || {}
       let lst = asList(v, here)
+      const bareItems = []
       if (items.type === 'object') {
         const kept = []
         lst.forEach((item, i) => {
+          // A bare string here is almost always tag-recovery output: asList rescued an
+          // <item>-wrapped array into strings and this array wants objects. Recovering a
+          // payload then dropping it silently is the worst of both — and because the
+          // corrective retry re-asks the SAME question the model returns the SAME shape,
+          // so the whole retry budget burns deterministically on a payload already held.
+          if (typeof item === 'string' && item.trim()) { bareItems.push(item.trim()); return }
           const r = shape(items, item, here + '[' + i + ']')
           if (r.problems.length) { log('[' + here + '[' + i + ']] dropped an item: ' + r.problems.join('; ').slice(0, 160)); return }
           kept.push(r.shaped)
@@ -217,6 +224,20 @@ const shape = (schema, obj, label) => {
         const bad = lst.filter(x => typeof x !== 'string')
         if (bad.length) log('[' + here + '] dropped ' + bad.length + ' non-string item(s), e.g. ' + String(bad[0]).slice(0, 80))
         lst = lst.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim())
+      }
+      // Fire when the RECOVERY WAS WASTED: bare strings arrived and not one item
+      // survived. Deliberately NOT tied to minItems — a field without one would
+      // otherwise drop the whole recovered payload with no problem, no retry and no
+      // signal at all, a worse silence than the framing case that started this. A bare
+      // string BESIDE surviving objects stays a malformed item: logged, dropped, no
+      // retry. Mapping it onto one required key cannot work; every array-of-object field
+      // declares two or more.
+      if (bareItems.length && !lst.length) {
+        const req = (items.required || []).join(', ') || 'the declared keys'
+        log('[' + here + '] ' + bareItems.length + ' item(s) arrived as bare strings, not objects, and none survived — asking again WITH the recovered text rather than re-asking blind')
+        problems.push(name + ': ' + bareItems.length + ' item(s) came back as bare strings such as "' +
+          bareItems[0].slice(0, 120) + '", but each item must be an OBJECT with the keys: ' + req +
+          '. Re-send exactly those ' + bareItems.length + ' items, each as an object, keeping the wording you already wrote')
       }
       if (spec.minItems && lst.length < spec.minItems) problems.push(name + '=' + lst.length + ' (schema requires ' + spec.minItems + ')')
       out[name] = lst
@@ -1545,11 +1566,28 @@ if (UNTRACEABLE_POLICY === 'strike' && untraceable.length) {
 }
 log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untraceable statements, ' + gaps.length + ' coverage gaps, ' + planFlaws.length + ' plan flaws')
 
+// `hypothesisVerdicts` arrives from the synthesis model inside ...report and was never
+// gated. When framing produced no hypotheses the model invents them AFTER seeing the
+// evidence and adjudicates those — precisely what this tool sells against — while the
+// caveat beside it asserted the field was empty. Stamp every verdict with whether the
+// hypothesis it judges was registered before the search, the way scopeContract.provenance
+// already stamps the framing fields. Conservative on purpose: an unmatched verdict is
+// marked post-hoc, because a false "pre-registered" is the failure this exists to prevent.
+const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 80)
+const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
+const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => ({
+  ...v,
+  preRegistered: !!normHyp(v.hypothesis) &&
+    REGISTERED.some(r => normHyp(v.hypothesis).includes(r) || r.includes(normHyp(v.hypothesis))),
+}))
+const POST_HOC = VERDICTS.filter(v => !v.preRegistered)
+
 return {
   question: QUESTION,
   depth: DEPTH,
   scopeContract: CONTRACT,
   ...report,
+  ...(VERDICTS.length ? { hypothesisVerdicts: VERDICTS } : {}),
   contradictions: (report.contradictions || []).concat(allContradictions),
   coverage: lastCoverage,
   citationAudit: factMetrics,
@@ -1557,7 +1595,16 @@ return {
   calibration,
   // These limits travel WITH the report. A caveat that only exists in the README
   // is one the person reading a pasted JSON blob never sees.
-  honestLimits: honestLimits(),
+  honestLimits: honestLimits({
+    ...(POST_HOC.length ? { postHocHypotheses:
+      POST_HOC.length + ' of ' + VERDICTS.length + ' entries in `hypothesisVerdicts` adjudicate a hypothesis that was NOT registered before the search — the synthesis step wrote them after seeing the evidence. Each carries `preRegistered: false`. A hypothesis invented after the evidence and then judged against it is not a test of anything, and this tool\'s whole claim is that kill criteria are written first. Read those entries as a summary of what the evidence showed, never as a prediction that survived.' } : {}),
+    ...(HYP.length ? {} : { noFramingContract:
+      'The framing agent returned no hypotheses, so NOTHING here was pre-registered. ' +
+      (VERDICTS.length
+        ? '`hypothesisVerdicts` holds ' + VERDICTS.length + ' verdict(s) the synthesis step wrote after seeing the evidence, every one stamped `preRegistered: false`. '
+        : '`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT because every hypothesis survived — the two look identical in this JSON and mean opposite things. ') +
+      'Read this report as an ordinary literature summary.' }),
+  }),
   // `locatedQuote` is the auditor's own verbatim pull from the page. It is demanded on
   // every audit call and was read by nothing — a silent discard, the same one the Python
   // build carried until 2026-09-08. This build cannot check it against the page (its

@@ -292,6 +292,18 @@ import fs2 from 'node:fs'
   // The auditor is asked for locatedQuote on every call; for months nothing read it.
   ok(/locatedQuote: webText\(f\.locatedQuote/.test(src),
      'the auditor\'s own verbatim pull is published rather than demanded and discarded')
+  // The synthesis model can invent hypotheses AFTER seeing the evidence and adjudicate
+  // them; the caveat beside the field used to assert the field was empty.
+  ok(/preRegistered: !!normHyp/.test(src) && /POST_HOC/.test(src),
+     'every hypothesisVerdict is stamped with whether its hypothesis was registered before the search')
+  ok(/NOTHING here was pre-registered/.test(src) && /postHocHypotheses/.test(src),
+     'and the no-contract caveat describes what the field actually holds instead of asserting it is empty')
+  // as_list recovering a payload that shape() then discards was the defect that killed
+  // framing on a live run while holding all four hypotheses.
+  ok(/bareItems\.length && !lst\.length/.test(src),
+     'a wasted tag-recovery triggers an INFORMED re-ask, and only when nothing survived')
+  ok(/each item must be an OBJECT with the keys/.test(src),
+     'and the re-ask names the recovered text and the required keys, so it is not the identical question again')
   ok(/refutedBy: refuters\.map/.test(src) && /contradictedBy: refuters/.test(src),
      'a killed claim lists every refuter and every named counter-source: `why` used to be '
      + 'the first refuter only, and counterSource was demanded on every counter call and read by nothing')
