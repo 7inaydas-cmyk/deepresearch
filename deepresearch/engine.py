@@ -1302,7 +1302,14 @@ def norm_quote(s):
     hyphenation broken across a line, and arbitrary whitespace.
     """
     s = unicodedata.normalize("NFKC", str(s or "")).translate(_PUNCT_MAP)
-    s = re.sub(r"-\s*\n\s*", "", s)      # PDF line-break hyphenation
+    # PDF line-break hyphenation: "con-\nclusive" -> "conclusive". The newline form is
+    # rarely what arrives, because the reader has already collapsed it to a space by the
+    # time this sees it - measured 2026-09-08, real quotes carried "con- clusive",
+    # "standard- ized" and "fol- lowing", and every one of them scored a false `partial`.
+    # Requiring a letter on both sides is what keeps a real dash ("the result - which")
+    # from being welded shut: that one has a space BEFORE the hyphen too.
+    s = re.sub(r"(?<=[A-Za-z])-\s*\n\s*(?=[A-Za-z])", "", s)
+    s = re.sub(r"(?<=[A-Za-z])-\s+(?=[A-Za-z])", "", s)
     s = re.sub(r"\s+", " ", s).strip().lower()
     # A quote handed back wrapped in its own quotation marks is still that quote; the
     # page it came from does not carry the wrapper. Strip it rather than let it turn a
@@ -1321,7 +1328,7 @@ def _despace(s):
     accusation produced by our own extractor, so spacing is ignored on the second
     pass. The character sequence must still match exactly; only the gaps are forgiven.
     """
-    return re.sub(r"\s+", "", s)
+    return re.sub(r"[\s-]+", "", s)
 
 
 def _coverage(page, nq, win=40, step=10):

@@ -155,6 +155,29 @@ not a benchmark. And the survivors-only 91.3% is the number to compare with publ
 commercial figures (Perplexity 90.2%, Gemini 81.4%, OpenAI 78.0%) because it is measured
 their way; the 83.3% is ours, on a harsher denominator.
 
+### The archive fallback, live (`v5-nudge-wayback.json`)
+
+A question whose sources include a Cloudflare-blocked publisher.
+
+    fetchVia: {crossref-api: 12, http: 7, failed: 2, wayback: 1, pdf: 1, crossref-fallback: 2}
+
+`pnas.org/content/pnas/119/1/e2107346118.full.pdf` was read from the Internet Archive's
+raw capture and graded T2. Without the fallback it would have been a third `failed`.
+Citation accuracy 73.3% pooled / 83.3% survivors-only; 165 calls, 442.9s.
+
+The on-page rate on this run first read **78.3%**, well below the 97% of
+`v5-4day-quotes.json`, and the gap was ours rather than the extractor's: four published
+quotes carried PDF line-break hyphenation - `con- clusive`, `standard- ized`,
+`fol- lowing`. The de-hyphenation rule only fired on a newline, and the reader collapses
+the newline to a space before the matcher sees it. Fixed, and the same 23 quotes
+re-scored at **87.0%** with nothing else changed.
+
+**The on-page rate is a lower bound on quote fidelity.** What still reads `partial` on
+PDF sources is largely our own extraction damage: the reader drops the `fi` ligature, so
+a page reads `signicant` and a faithful quote scores short. Whitespace and hyphenation
+are normalised away; characters dropped inside a word are not, and could not be without
+making the matcher too loose to mean anything.
+
 ## The files
 
 | Prefix | What it is |

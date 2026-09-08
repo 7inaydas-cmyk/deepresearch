@@ -369,6 +369,20 @@ ok(dr.quote_span(_PAGE, "\u201cproductivity rose 13 percent over six months\u201
 ok(dr.quote_span(_PAGE, "productivity rose 13 percent ... attrition fell by half")["status"]
    == "located-elided",
    "an ellipsis is honest quoting of a long passage, not evasion")
+# PDF line-break hyphenation. The reader collapses the newline to a space before this
+# sees it, so the real shape is "con- clusive", not "con-\nclusive". Measured
+# 2026-09-08: four published quotes carrying "con- clusive", "standard- ized" and
+# "fol- lowing" each scored a false `partial`, and fixing it moved the on-page rate on
+# that run's own quotes from 78.3% to 87.0% with no other change.
+ok(dr.norm_quote("are not fully con- clusive. Whilst") == "are not fully conclusive. whilst",
+   "a word split across a PDF line break is rejoined")
+ok(dr.norm_quote("the result - which was good") == "the result - which was good",
+   "a real dash is NOT welded shut: it carries a space before the hyphen too")
+ok(dr.quote_span("studies are not fully conclusive whilst some have shown otherwise here",
+                 "studies are not fully con- clusive whilst some have shown otherwise here"
+                 )["status"] == "located",
+   "so a faithful quote from a hyphenated PDF is located, not accused")
+
 # THE regression that matters. Measured 2026-09-08: an exact-match-or-nothing scorer
 # called a PMC quote `not-found` at fraction 0.0 while the quote was on the page in
 # full - a manufactured fabrication signal, the worst thing this check could do.

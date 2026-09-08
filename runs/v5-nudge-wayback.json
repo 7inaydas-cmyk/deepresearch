@@ -1,0 +1,1247 @@
+{
+ "question": "Does the published evidence support nudges as an effective policy tool after correcting for publication bias?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "Have Mertens 2022 raw pooled effect size context and DellaVigna/Linos citation, but missing actual raw effect size numbers (e.g. Cohen's d value) and explicit list of bias-correction methods applied per meta-analysis (p-curve, PET-PEESE, trim-and-fill results specifically for Mertens)."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No concrete pre/post-correction effect size numbers or significance comparisons (e.g. d=0.4 raw vs d=0.08 corrected) have been extracted yet."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "DellaVigna & Linos 126 RCTs and a related 124-RCT dataset are referenced as comparison points, but no direct numeric comparison (academic vs government effect sizes) has been captured."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "COVID vaccine nudge subgroup data (social norms vs defaults vs reminders) shows variation, but this is domain-specific (vaccination) and not tied to publication-bias correction; broader nudge-category bias-correction breakdown from Mertens is missing."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Good methodological critique of PET-PEESE reliability under heterogeneity is captured, but no direct comparison of convergence/divergence across p-curve vs PET-PEESE vs trim-and-fill applied to the same nudge dataset."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No evidence gathered yet on cost-effectiveness of nudges relative to other policy tools post-correction."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "COVID vaccine nudge meta-analysis (2022/2023) shows weakening effects over time, but no broader post-2020 pre-registered multi-site replication evidence outside health/vaccine domain."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "COVID nudge effect weakening over time and 'small magnitude' conclusion offers a partial counter-example, but no high-powered null-result flagship study (e.g. behavioral science mega-studies) has been identified."
+  }
+ ],
+ "contradictions": [
+  "The Vlaev et al. 2016 review concluded nudges are 'powerful policy tools for influencing health behavior' based on pre-2020 published literature, but this specific pro-nudge conclusion claim was explicitly killed by the adversarial panel (support+provenance issues) and cannot be used as evidence; meanwhile post-2020 bias-correction work (Maier et al. 2022) directly challenges the pre-correction literature this review relied on.",
+  "Two peer-reviewed methodological sources disagree on the reliability of PET-PEESE-family corrections under realistic conditions: doi.org/10.1002/jrsm.1298 states FPP 'becomes unreliable' under heterogeneity (the realistic case for literatures like nudge research), while doi.org/10.1177/1948550617693062 (Stanley/Doucouliagos lineage) claims PET-PEESE has statistical properties 'much better than conventional meta-analysis' even under adverse conditions.",
+  "The Vlaev et al. 2016 Public Administration Review piece concludes nudges are 'powerful policy tools' based on pre-2020 published literature, while later bias-correction work (Mertens 2022 critique, PET-PEESE reliability studies) implies raw published effects are likely inflated and unreliable under heterogeneity — these framings are in tension though not a direct empirical contradiction yet, since no corrected effect size number has been extracted to confirm the discrepancy.",
+  "Stanley & Doucouliagos-related source (doi.org/10.1177/1948550617693062) claims PET-PEESE has statistical properties 'much better than conventional meta-analysis' even under adverse conditions, while doi.org/10.1002/jrsm.1298 claims FAT-PET-PEESE 'becomes unreliable' for heterogeneous data (the realistic case for nudge research) — these two secondary/primary sources offer conflicting reliability assessments of the same correction method under similar problematic conditions (small samples, heterogeneity)."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether a policymaker, funder, or research team should continue treating nudges as a reliably effective, low-cost policy lever worth prioritizing/scaling (vs. treating published nudge effect sizes as inflated and either downgrading expected impact, demanding larger pre-registered trials before scaling, or shifting resources toward alternative interventions like mandates/incentives).",
+  "keyQuestion": "After applying publication-bias correction methods to the nudge literature, do corrected/bias-adjusted average effect sizes remain large and consistent enough (e.g., comparable to those found in large unpublished/pre-registered government trials) to justify nudges as an effective standalone policy tool, or do they shrink toward null/trivial?",
+  "assumptions": [
+   "Scope covers behavioral/nudge interventions as popularized post-Thaler & Sunstein (2008), primarily in public policy contexts (health, savings, energy, tax compliance) rather than pure marketing/private-sector nudges.",
+   "Geography: evidence base is predominantly US/UK/EU/Australia government and academic trials; findings may not generalize to low-income countries or non-WEIRD populations.",
+   "Time horizon: literature through ~2023-2024, including the major meta-analyses and bias-correction papers (e.g., DellaVigna & Linos 2022; Mertens et al. 2022; Maier et al. 2022) that triggered the 'nudge replication crisis' debate.",
+   "'Effective' is interpreted as producing statistically and practically meaningful behavior change (not just p<0.05) relative to a plausible counterfactual policy (e.g., regulation, incentives, defaults vs. no intervention).",
+   "'Corrected for publication bias' means applying formal methods (p-curve, trim-and-fill, PET-PEER, funnel plot asymmetry tests, or comparing registered/pre-registered large-scale field trials vs. published lab/small studies) rather than just noting bias exists qualitatively.",
+   "Currency/units: effect sizes assumed reported in percentage-point behavior change or standardized mean differences as commonly used in this literature.",
+   "Excludes COVID-specific nudge studies unless part of broader meta-analytic samples, since that literature has its own idiosyncratic conditions."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "If bias-correction techniques (p-curve, PET-PEER, funnel asymmetry) applied to major meta-analyses show corrected effect sizes shrink by >50% but remain statistically/practically significant → supports 'modest but real' verdict.",
+   "If large-scale registered field trials/government mega-studies (e.g., DellaVigna & Linos analysis of 126 RCTs run by US/UK nudge units) show effects roughly an order of magnitude smaller than published academic literature → strongly supports 'inflated, not effective at scale' verdict.",
+   "If corrected effects vary drastically by nudge type (e.g., defaults remain robust while social-norm messaging collapses to null) → flips answer from a single verdict to a conditional, type-dependent verdict.",
+   "If evidence shows publication bias is minimal or bias-correction methods themselves are contested/unreliable for this literature → supports 'evidence remains credible' verdict, undermining the premise of the question.",
+   "If newer pre-registered replications and multi-site trials (post-2020) show effects converging with corrected meta-analytic estimates rather than diverging → supports credibility of nudges despite historical bias.",
+   "Discovery that bias correction primarily affects lab/survey-based nudge studies but not field RCTs (or vice versa) would change which subset of 'nudge evidence' the conclusion applies to."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Nudges remain an effective policy tool: bias-corrected effect sizes, while smaller than raw published estimates, are still meaningfully positive and comparable across independent large-scale/registered trials.",
+    "killCriterion": "Finding that bias-corrected meta-analytic estimates (e.g., via p-curve/PET-PEER) are statistically indistinguishable from zero, OR that large pre-registered government mega-studies show near-zero average effects."
+   },
+   {
+    "hypothesis": "Nudges are substantially overstated: publication bias inflated effect sizes considerably (e.g., 2-8x), and corrected effects, though nonzero, are too small to justify nudges as a primary/standalone policy tool (better as a low-cost complement, not a substitute for stronger interventions).",
+    "killCriterion": "Finding that corrected effects remain large (e.g., within ~20-30% of original published estimates) and consistent with unpublished/registered trial results, showing publication bias was not a major driver of the literature's headline claims."
+   },
+   {
+    "hypothesis": "Effectiveness is heterogeneous/type-dependent: some nudge categories (e.g., defaults, active choice) survive bias correction with real effects, while others (e.g., social norms, simplification messaging) shrink to near-null, making a single yes/no verdict inappropriate.",
+    "killCriterion": "Finding that bias-correction effects are roughly uniform across nudge types (all shrink similarly or all remain robust similarly), removing the basis for a differentiated verdict."
+   },
+   {
+    "hypothesis": "The publication-bias-correction methods themselves are too unreliable/contested in this literature (due to heterogeneity, non-independence of effects, or p-curve misapplication) to draw a confident corrected estimate either way, making the question currently unanswerable with high confidence.",
+    "killCriterion": "Finding strong methodological consensus (multiple independent bias-correction approaches converging on similar corrected estimates) that resolves the direction and magnitude of publication bias impact."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Meta-analyst constructor",
+   "lens": "A quantitative meta-scientist who trusts only raw effect-size data and re-runs bias-correction methods themselves, distrusting any narrative summary of 'what the meta-analysis found' without seeing the funnel plot/p-curve output.",
+   "query": "nudge meta-analysis p-curve PET-PEESE funnel plot corrected effect size publication bias"
+  },
+  {
+   "label": "Nudge-unit defender (steelman)",
+   "lens": "A behavioral science practitioner/advocate (e.g., from BIT or a government nudge unit) who believes nudges work and distrusts academic meta-analyses for excluding real-world, pre-registered, high-powered field trials that never show the same bias problems as small lab studies.",
+   "query": "DellaVigna Linos RCTs nudge units effect size government field trials effectiveness"
+  },
+  {
+   "label": "Bias-correction skeptic",
+   "lens": "A methodologist skeptical of the bias-correction tools themselves (p-curve, trim-and-fill, PET-PEESE), distrusting the idea that these corrections give reliable point estimates given known problems with heterogeneous, non-independent, small-sample psychology data.",
+   "query": "limitations p-curve PET-PEESE bias correction methods critique heterogeneous effects psychology"
+  },
+  {
+   "label": "Cost-effectiveness policy analyst",
+   "lens": "A government/philanthropic cost analyst who distrusts effect-size debates in isolation and instead asks whether even a shrunk bias-corrected effect remains cost-effective compared to alternative policy levers, given nudges' near-zero implementation cost.",
+   "query": "cost-effectiveness nudge interventions versus traditional policy interventions per dollar impact"
+  },
+  {
+   "label": "Category-by-category auditor",
+   "lens": "A data auditor who distrusts pooled 'nudges' as one lever and disaggregates by nudge type (defaults, social norms, simplification, reminders, framing) to check whether bias-correction effects are heterogeneous across categories.",
+   "query": "nudge type comparison effect size defaults social norms simplification meta-analysis subgroup"
+  },
+  {
+   "label": "Replication historian",
+   "lens": "A historian of the replication crisis who distrusts declarations of 'nudges work/don't work' without tracking how estimates have evolved chronologically — from early enthusiastic studies, through the 2022 bias-correction controversies, to newer post-2020 pre-registered replications.",
+   "query": "nudge replication crisis timeline pre-registered studies post-2020 effect size trends"
+  }
+ ],
+ "summary": "The confirmed evidence documents that a major pro-nudge meta-analysis (Mertens et al. 2022, PNAS, 455 effect sizes/214 studies/N=2.1M) exists and was directly challenged by a bias-correction rebuttal (Maier et al. 2022, PNAS), but the actual bias-corrected effect-size numbers from that rebuttal were never captured or audited in this evidence set, so no direct quantitative before/after comparison can be reported. Independently, peer-reviewed methodological sources show that the standard bias-correction technique underlying such rebuttals (FAT-PET-PEESE/PET-PEESE) is reliable only under an unrealistic fixed-effects assumption and becomes unreliable - for detecting bias, for hypothesis-testing, and less efficient for mean-effect estimation - precisely under the heterogeneous, small-sample conditions typical of behavioral literatures like nudge research, and these methodological sources themselves disagree on how much to trust the correction under adverse conditions. Domain-specific evidence in COVID-19 vaccination nudges shows real but modest, significant pooled effects (RR 1.19), alongside qualitative acknowledgment across the broader literature of \"growing concern\" about efficacy and \"mixed\" empirical results for digital nudging. Given the missing hinge number and the documented unreliability/contestation of the correction methods themselves, the evidence supports H4 (methodological unreliability precludes a confident corrected verdict) rather than a clean yes (H1) or no (H2) answer.",
+ "answerFirst": "The published evidence does NOT allow a confident \"yes, nudges remain effective after bias correction\" — nor does it allow a confident \"no.\" The gathered claims establish that (a) the flagship pro-nudge meta-analysis (Mertens et al. 2022, PNAS) exists and was directly challenged by Maier et al. (2022, PNAS) using publication-bias-correction methods, but (b) the specific bias-corrected effect-size numbers, and the pre/post-correction magnitude comparison, were never captured in the confirmed evidence set, and (c) the correction method itself (FAT-PET-PEESE/PET-PEESE) is shown by methodological sources to be unreliable precisely in the heterogeneous, small-sample, high-variance conditions that characterize the nudge literature. The most defensible verdict is H4 (the correction methods are too contested/unreliable in this literature to yield a high-confidence corrected estimate), with H1–H3 untested for lack of a captured hinge number.",
+ "hingeNumber": {
+  "value": "Not established - no confirmed claim reports Maier et al.'s (2022) actual bias-corrected pooled effect size or its confidence interval relative to zero.",
+  "why": "The entire question (does nudging remain effective after bias correction) hinges on comparing Mertens et al.'s raw pooled effect size to Maier et al.'s bias-corrected estimate; without both numbers side by side, no magnitude-of-shrinkage or distinguishability-from-zero judgment can be made.",
+  "sensitivity": "Because this number was never captured, the overall verdict cannot be sensitivity-tested; any assumed value would be fabrication. This absence is itself the reason the call must be H4 (unresolved) rather than H1 or H2.",
+  "source": "Missing - flagged as unanswered in the coverage checklist ('By what magnitude do bias-corrected effect sizes shrink relative to raw published estimates...')"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Nudges remain an effective policy tool - bias-corrected effect sizes, while smaller than raw estimates, remain meaningfully positive and comparable across independent large-scale/registered trials.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim reports an actual bias-corrected effect-size estimate (from Maier et al. or otherwise) with a magnitude and CI that could be judged 'meaningfully positive.' The COVID-vaccine domain findings (claims [7], [19]) show small-but-significant raw pooled effects, but these are not publication-bias-corrected estimates of the general nudge literature, so they cannot confirm or kill H1.",
+   "claimsCited": [
+    7,
+    19
+   ]
+  },
+  {
+   "hypothesis": "H2: Nudges are substantially overstated - publication bias inflated effects considerably, and corrected effects, though nonzero, are too small to be a primary policy tool.",
+   "verdict": "untested",
+   "reasoning": "The existence of the Maier et al. (2022) rebuttal titled 'No evidence for nudging after adjusting for publication bias' (claim [3]) is suggestive but was only audited via a secondary citation, not the primary paper's actual numeric results. No confirmed claim quantifies the shrinkage magnitude (e.g., 2-8x) needed to positively confirm H2, nor does any claim show corrected effects remaining large enough to kill H2. Genuinely untested pending the missing hinge number.",
+   "claimsCited": [
+    3,
+    9
+   ]
+  },
+  {
+   "hypothesis": "H3: Effectiveness is heterogeneous/type-dependent - some nudge categories survive correction, others do not.",
+   "verdict": "untested",
+   "reasoning": "The only nudge-type subgroup breakdown that was gathered (social norms vs. defaults vs. reminders effect sizes) was explicitly refuted/killed by the adversarial panel and cannot be cited as evidence. No surviving confirmed claim compares bias-corrected effects across nudge categories.",
+   "claimsCited": []
+  },
+  {
+   "hypothesis": "H4: The publication-bias-correction methods themselves are too unreliable/contested in this literature to draw a confident corrected estimate either way, making the question currently unanswerable with high confidence.",
+   "verdict": "surviving",
+   "reasoning": "Multiple peer-reviewed methodological sources directly support this: FAT-PET-PEESE performs well only under an unrealistic fixed-effects assumption and becomes unreliable for bias-testing and hypothesis-testing under heterogeneity (claim [0], [8], [22]); PET-PEESE separately is shown to perform poorly with few studies, small samples, and high heterogeneity (claim [18]) - conditions plausible for the nudge literature. Additionally, the methodological sources themselves disagree with each other on how reliable PET-PEESE is under adverse conditions (flagged contradiction), which is direct evidence of contested methodological consensus rather than convergence. This does not 'kill' H4's kill-criterion (which required strong convergence across methods) - instead the evidence affirmatively supports persistent contestation, so H4 survives.",
+   "claimsCited": [
+    0,
+    8,
+    18,
+    22
+   ]
+  }
+ ],
+ "strongestArgumentAgainst": "The strongest case against concluding \"insufficient evidence\" is that the mere existence of a dedicated, PNAS-published rebuttal paper titled \"No evidence for nudging after adjusting for publication bias\" (Maier et al. 2022) is itself strong prima facie evidence that when a leading team applied standard bias-correction methods to the Mertens et al. dataset, the corrected effect was not distinguishable from zero — that is a fact this report was unable to independently quote/verify, but its existence and title (confirmed via citation) point toward H2/a near-null corrected result rather than genuine unanswerability. If one credits the plain meaning of that title over the methodological critique of PET-PEESE's unreliability under heterogeneity, the more assertive conclusion is that bias-corrected nudge effects are close to zero, which would argue against nudges as a broadly effective policy tool. This report treats that as unconfirmed only because the primary Maier et al. quote/numbers were not fetched and audited — a genuine researcher with more budget might reasonably weight the title alone as sufficient signal to lean toward H2.",
+ "whatWouldChangeThisCall": [
+  "Directly fetching and auditing Maier et al. (2022)'s reported bias-corrected effect size (with CI) and comparing it numerically to Mertens et al.'s raw pooled Cohen's d - this is the single missing hinge number.",
+  "Finding a peer-reviewed source applying multiple independent bias-correction methods (p-curve, PET-PEESE, trim-and-fill, selection models) to the same nudge dataset and reporting whether they converge - would resolve H4 in favor of H1 or H2.",
+  "Locating large pre-registered government/nudge-unit trial data (e.g., DellaVigna & Linos's 126 RCTs) with a directly reported average effect size comparable to the corrected academic estimate.",
+  "Verifying nudge-category-specific bias-corrected effect sizes (defaults vs. social norms vs. reminders) from a source that survives adversarial audit, to test H3.",
+  "Any cost-effectiveness analysis of nudges versus alternative policy tools post-correction, which was never gathered and is necessary to complete the practical policy-relevance half of the question."
+ ],
+ "baseRate": "No outside-view base rate for 'fraction of published behavioral-economics/psychology effects that survive rigorous publication-bias correction' was present in the confirmed evidence. Its absence is notable: prior general literature (e.g., psychology replication crisis findings) commonly cites base rates like ~50% of significant published effects failing to replicate or shrinking substantially under bias correction, but no such general base rate appears in the audited claims here, so none is asserted as fact in this report.",
+ "findings": [
+  {
+   "claim": "Mertens et al. (2022, PNAS) meta-analysis found nudging effective across a large pooled sample (455 effect sizes, 214 publications, N=2,149,683), using Cohen's d as the effect measure and excluding studies that combined choice architecture with other interventions to isolate the pure nudge effect.",
+   "confidence": "high",
+   "sources": [
+    "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf"
+   ],
+   "evidence": "Verbatim-matched quotes on sample composition (455 effect sizes/214 publications/N=2,149,683), Cohen's d as effect measure, and exclusion criteria; audit supported on all three.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Maier et al. (2022, PNAS) published a direct rebuttal, 'No evidence for nudging after adjusting for publication bias,' explicitly re-analyzing the same/related literature using bias-correction methods and reaching the opposite headline conclusion from Mertens et al.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.nature.com/articles/s41562-023-01555-3.pdf"
+   ],
+   "evidence": "Bibliographic citation confirms title, authorship, journal, year, and DOI; the claim is corroborated by a secondary source (a Nature Human Behaviour piece) rather than by fetching the Maier paper itself.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "partial - the cited page is a third-party manifesto article, not the Maier et al. paper; it confirms the paper's existence/title/venue via its own reference list but was not used to verify Maier's actual corrected effect-size results or methodology in detail."
+  },
+  {
+   "claim": "The core statistical method used to 'correct' for publication bias in this literature (FAT-PET-PEESE / PET-PEESE) is unreliable for testing bias and for hypothesis-testing the true effect - and less efficient at estimating the mean effect - precisely under heterogeneity (differing population effects across and within studies), which is the realistic condition for a literature as varied as nudge research. It performs especially poorly with few studies, small samples, and high heterogeneity.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.1002/jrsm.1298",
+    "https://doi.org/10.1177/1948550617693062"
+   ],
+   "evidence": "Two independent peer-reviewed methodological sources converge: jrsm.1298 shows FPP only performs well under an unrealistic fixed-effects assumption and becomes unreliable under heterogeneity (for bias-testing and hypothesis-testing), and is less efficient for mean-effect estimation; a separate 2017 source states PET-PEESE performs poorly with few studies, small samples, and high heterogeneity - conditions plausibly present in nudge meta-analyses.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported on both; the connection of these general statistical findings specifically to the nudge literature's own heterogeneity profile is this report's inference, not a directly audited claim."
+  },
+  {
+   "claim": "There is a genuine, documented methodological contradiction in the literature about how well PET-PEESE-type corrections work: one source (jrsm.1298) says FPP 'becomes unreliable' under heterogeneity, while a related Stanley/Doucouliagos-lineage source claims PET-PEESE has properties 'much better than conventional meta-analysis' even under adverse conditions.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1002/jrsm.1298",
+    "https://doi.org/10.1177/1948550617693062"
+   ],
+   "evidence": "Explicitly flagged as a contradiction during gap analysis; both sources are peer-reviewed methods papers, but they disagree on how much confidence to place in PET-PEESE-family corrections under realistic (heterogeneous, small-sample) conditions.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - both underlying claims individually passed audit; the contradiction between them is a synthesis-level observation, not itself audited as a single claim."
+  },
+  {
+   "claim": "There is broader academic acknowledgment (independent of the Mertens/Maier dispute) that empirical effectiveness of nudge-type interventions is mixed across domains: digital nudging studies show inconsistent effects on user behavior, and a 2023 policy-administration piece notes 'growing concern' about the efficacy of some nudge interventions despite nudging's continued policy popularity.",
+   "confidence": "medium",
+   "sources": [
+    "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+    "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941"
+   ],
+   "evidence": "PLOS ONE systematic review states digital nudging effectiveness is 'not fully conclusive' with mixed study results; Public Administration Review 2023 paper states nudging faces 'growing concern' about efficacy of some interventions and proposes a 4S framework (sufficient, scalable, subjective, statistically significant) beyond mere significance.",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported on both; note these are domain-general/qualitative statements, not quantitative bias-correction results."
+  },
+  {
+   "claim": "In the one domain with detailed quantitative evidence captured (COVID-19 vaccination nudges), effects are real but small: a meta-analysis of 15 RCTs (167,127 individuals) found a significant but modest pooled effect (RR 1.19, 95% CI 1.07-1.33, p<0.01), and a separate large-scale study (two RCTs totaling N=336,854, plus a 124-RCT/20M-participant dataset) concluded nudges promote vaccination only 'with small magnitude' and require combination with other strategies to meaningfully move behavior.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+    "https://doi.org/10.2139/ssrn.3971192"
+   ],
+   "evidence": "Both sources are primary but of unconfirmed/lower tier (T?, includes a preprint and an SSRN working paper, not peer-reviewed journal publications); numbers directly quoted and audit-supported, but this is a single applied domain (vaccination), not a publication-bias-corrected estimate of the general nudge literature.",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported on the quoted numbers; caution: T? tier (preprint/working paper) means this is not yet peer-reviewed, and it does not itself represent a publication-bias correction of the broader literature - it is a domain-specific raw/pooled effect."
+  }
+ ],
+ "caveats": "The confirmed evidence set never captured the single most decisive fact needed to answer the question directly: Maier et al.'s actual bias-corrected effect-size number(s) versus Mertens et al.'s raw pooled effect size, or a p-curve/PEESE-corrected estimate with a confidence interval showing whether it crosses zero. The coverage checklist explicitly lists this as unanswered (\"By what magnitude do bias-corrected effect sizes shrink... and do corrected estimates remain distinguishable from zero?\" - unanswered). Several supporting claims are T? tier (unconfirmed source tier, including a preprint and an SSRN working paper) rather than T1/T2 peer-reviewed journal sources, and one key claim (Maier et al.'s paper details) was audited only via a third-party citation, not the primary source itself (partial). 16 lower-ranked claims were never verified due to research budget limits and are excluded here. Several claims were explicitly refuted/killed during adversarial review, including a claimed Science study on court-appearance nudges, a claimed COVID-vaccine-nudge time-decay finding, a claimed successful \"dark room\" dishonesty replication, a claimed pro-nudge conclusion from the 2016 Vlaev et al. review, a claimed DellaVigna-Linos linkage, a claimed nudge-category subgroup breakdown, and a claimed DellaVigna & Linos NBER working paper citation - none of these can be used as evidence in either direction. Nudge-type heterogeneity (H3) and cost-effectiveness comparisons were never evidenced in the confirmed set. The topic is time-sensitive: the Mertens (2022) vs. Maier (2022) dispute is recent and actively contested, and methodological consensus on PET-PEESE-family corrections is itself unsettled (see contradiction below), so any verdict here should be treated as provisional pending resolution of that methods debate.",
+ "citationAudit": {
+  "citationAccuracy": 73.3,
+  "citationAccuracySurvivorsOnly": 83.3,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 22,
+  "supported": 22,
+  "partial": 7,
+  "unsupported": 1,
+  "unreachable": 0,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 1
+ },
+ "citationDetail": [
+  {
+   "claim": "The FAT-PET-PEESE (FPP) procedure performs well for testing publication bias, testing statistical significance, and estimating true effect only under the unrealistic assumption of fixed effects where all estimates derive from a single population value.",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the FPP procedure is used for three purposes: (1) testing publication bias, (2) testing statistical significance of the effect, and (3) estimating the mean true effect. It then states that the procedure performs well in the unrealistic environment of fixed effects, where all estimates are assumed to derive from a single population value. This directly matches th…",
+   "locatedQuote": "Our findings indicate that the FPP procedure performs well in the basic but unrealistic environment of fixed effects, where all estimates are assumed to derive from a single population value and sampling error is the only reason for why studies produce different estimates.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The Mertens et al. meta-analysis of nudging comprised 455 effect sizes from 214 publications with a pooled sample size of 2,149,683 participants.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "support": "supported",
+   "reasoning": "The cited page (the Mertens et al. PNAS paper itself) explicitly states this exact figure verbatim, matching the statement precisely.",
+   "locatedQuote": "The final sample comprised 455 effect sizes from 214 publications with a pooled sample size of 2,149,683 participants (N ranging from 14 to 813,990).",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "DellaVigna & Linos's 2020 NBER working paper on RCTs to scale provides comprehensive evidence from two nudge units, cited as comparison data to published meta-analytic estimates.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "support": "unsupported",
+   "reasoning": "The cited page is a PNAS meta-analysis (Mertens et al.) that lists the DellaVigna & Linos 2020 NBER paper as reference #31 in its bibliography, with the correct title. However, the fetched page text only shows the bare citation entry - it does not contain any discussion, quotation, or elaboration of how this paper's evidence was used, nor does it explicitly frame it as being 'cited as comparison d…",
+   "locatedQuote": "31. S. DellaVigna, E. Linos, RCTs to scale: Comprehensive evidence from two nudge units (Working Paper 27594, National Bureau of Economic Research, 2020; https://www.nber.org/papers/w27594).",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The 4S framework proposes that nudges should be evaluated on being sufficient, scalable, and subjective, in addition to being statistically significant, to be considered an effective policy response.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941",
+   "support": "supported",
+   "reasoning": "The abstract directly states the 4S framework (sufficient, scalable, subjective, plus statistically significant) as criteria for nudges to be effective policy responses, matching the statement closely.",
+   "locatedQuote": "Our 4S framework highlights the importance of nudges being sufficient , scalable , and subjective , in addition to being statistically significant , to be an effective policy response.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Maier et al. (2022) published a paper in PNAS titled 'No evidence for nudging after adjusting for publication bias,' directly challenging the Mertens et al. findings using bias-correction methods.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "support": "partial",
+   "reasoning": "The cited page is a Nature Human Behaviour manifesto article, not the Maier et al. PNAS paper itself. In its reference list, it does cite Maier, M. et al. No evidence for nudging after adjusting for publication bias. Proc. Natl Acad. Sci. USA 119, e2200300119 (2022) alongside the Mertens et al. 2022 PNAS citation, confirming the existence, title, journal, and year of the Maier et al. paper, and it…",
+   "locatedQuote": "Maier, M. et al. No evidence for nudging after adjusting for publication bias. Proc. Natl Acad. Sci. USA 119 , e2200300119 (2022).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Empirical findings on the effectiveness of digital nudging on user behaviors are mixed and not fully conclusive, with some studies showing behavior change and others finding no effect.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "support": "supported",
+   "reasoning": "The page directly states that empirical studies on digital nudging effectiveness are not fully conclusive, with some showing behavior change and others finding no effect, which matches the statement's claim almost verbatim in meaning.",
+   "locatedQuote": "Empirical studies on the effectiveness of digital nudging on user behaviors are not fully conclusive. Whilst some studies have shown that digital nudging can change user behaviors [6] some others have found no such effect [7].",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "This is a systematic literature review and meta-analysis of privacy nudges for disclosure of personal information, published in PLOS ONE.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "support": "supported",
+   "reasoning": "The page's title (Privacy nudges for disclosure of personal information) appears alongside the PLOS ONE journal header and DOI, confirming publication venue. The Method section explicitly states the study is a systematic literature review following PRISMA guidelines, and the introduction states the need for a systematic review and meta-analysis of the literature on nudging effectiveness for privac…",
+   "locatedQuote": "Privacy nudges for disclosure of personal information PLOS ONE ... This systematic literature review was conducted following the guidelines proposed by PRISMA (2015) as well as by Kitchenham and Charters [13]... there is an urgent need for a systematic review and meta-analysis of the literature to establish the effectiveness of nudging interventions in changing privacy-related behaviors and decisi…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The study includes two large-scale RCTs encouraging COVID-19 vaccinations with sample sizes of N=187,134 and N=149,720.",
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the study draws on two large-scale RCTs encouraging COVID-19 vaccinations with the exact sample sizes N=187,134 and N=149,720, directly matching the statement.",
+   "locatedQuote": "Drawing on two large-scale RCTs encouraging COVID-19 vaccinations (N = 187,134 and 149,720)",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The authors concluded that nudging interventions promote COVID-19 vaccination behavior only with small magnitude and require combination with other intervention strategies to meaningfully increase vaccination.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "supported",
+   "reasoning": "The abstract's conclusion directly states that nudging interventions promote COVID-19 vaccination behavior (and intentions) with small magnitude and need to be combined with other intervention strategies to promote vaccination, closely matching the statement's claim.",
+   "locatedQuote": "Nudging interventions can promote COVID-19 vaccination behavior and intentions, albeit with small magnitude, and need to be combined with other intervention strategies to promote vaccination.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "When heterogeneity exists in population effects across and within studies (a realistic scenario for literatures like nudge research), the FPP procedure becomes unreliable for detecting publication bias and testing whether effects differ from zero, and is less efficient than alternative estimators fo…",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that under heterogeneity in population effects across and within studies (a more realistic environment), the FPP procedure becomes unreliable for the first two purposes (testing publication bias and testing whether effect differs from zero) and is less efficient than other estimators for estimating overall mean effect. This directly matches the statement's claims, in…",
+   "locatedQuote": "However, when we study its performance in more realistic data environments, where there is heterogeneity in the population effects across and within studies, the FPP procedure becomes unreliable for the first 2 purposes and is less efficient than other estimators when estimating overall mean effect.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Mertens et al. (2022) published a meta-analysis in PNAS titled 'The effectiveness of nudging: a meta-analysis of choice architecture interventions across behavioral domains'.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "support": "supported",
+   "reasoning": "The cited page's reference list contains an entry for Mertens et al. (2022) with the exact title The effectiveness of nudging: a meta-analysis of choice architecture interventions across behavioral domains, published in Proc. Natl Acad. Sci. USA (PNAS), volume 119, 2022. This directly matches the statement's claim about authorship, year, title, and journal (PNAS = Proceedings of the National Acade…",
+   "locatedQuote": "Mertens, S., Herberz, M., Hahnel, U. J. & Brosch, T. The effectiveness of nudging: a meta-analysis of choice architecture interventions across behavioral domains. Proc. Natl Acad. Sci. USA 119 , e2107346118 (2022).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Fishbane, Ouss & Shah (2020) published a study in Science showing behavioral nudges reduce failure to appear for court, an example of a large-scale field trial outcome relevant to comparing published vs. unpublished/government trial effect sizes.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "support": "partial",
+   "reasoning": "The cited page is a Nature Human Behaviour manifesto article whose reference list includes the Fishbane, Ouss & Shah (2020) citation confirming it was published in Science and titled Behavioral nudges reduce failure to appear for court. This confirms the existence and journal/title of the study, supporting the basic bibliographic claim. However, the page itself (as fetched, which is mostly a paywa…",
+   "locatedQuote": "Fishbane, A., Ouss, A. & Shah, A. K. Behavioral nudges reduce failure to appear for court. Science 370 , eabb6591 (2020).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The meta-analysis excludes studies that combined choice architecture with other interventions like significant economic incentives or education programs, isolating the unique effect of choice architecture.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "support": "supported",
+   "reasoning": "The page explicitly states that studies combining choice architecture with other interventions like significant economic incentives or education programs were excluded, specifically to isolate the unique effect of choice architecture. This directly matches the statement's claim, using nearly identical language.",
+   "locatedQuote": "Studies that examined choice architecture in combination with other intervention measures, such as significant economic incentives or education programs, were excluded from our analyses to isolate the unique effects of choice architecture interventions on behavior.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "There is growing concern in the policy literature about the efficacy of some nudge interventions, despite nudging's popularity as a policymaking approach.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941",
+   "support": "supported",
+   "reasoning": "The abstract directly states that nudging is popular in policymaking, and that there is growing concern about the efficacy of some nudge interventions, which matches the statement almost verbatim in meaning.",
+   "locatedQuote": "Nudging is a popular and influential approach in policymaking. Yet, it has faced substantial criticism from several policy perspectives, with growing concern raised about the efficacy of some nudge interventions.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The systematic review's literature search, conducted across five databases (Scopus, Google Scholar, ACM Digital Library, Web of Science, Science Direct) in September 2020, excluded papers published before 2006 due to changing conceptions of privacy.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "support": "supported",
+   "reasoning": "The page explicitly states the five databases used (Scopus, Google Scholar, ACM Digital Library, Web of Science, Science Direct), the search timing (September 2020), and the exclusion of papers published before 2006 due to changing conceptions of privacy (mentioning new technologies like smartphones and IoT affecting the meaning of privacy). This directly matches all elements of the statement.",
+   "locatedQuote": "The search was conducted in five digital libraries and databases: Scopus, Google Scholar, ACM Digital Library, Web of Science, and Science Direct. All searches were based on title, abstract, and key- words, and took place in September 2020... Since in the last decade the privacy of individuals has been affected by new technological solutions such as smartphones and Internet of things, papers publi…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The effectiveness of nudging interventions on COVID-19 vaccine uptake was found to weaken significantly over time (p < 0.0001), suggesting diminishing real-world effects that may contrast with initially published estimates.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "partial",
+   "reasoning": "The abstract directly supports the core claim that nudging effectiveness on COVID-19 vaccine uptake weakened significantly over time with p < 0.0001, matching the statement's central assertion. However, the statement adds an interpretive extension - suggesting diminishing real-world effects that may contrast with initially published estimates - which is not stated or implied in the abstract. The a…",
+   "locatedQuote": "Additionally, the effect of nudging interventions on COVID-19 vaccine uptake weakened over time(p < 0.0001).",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Stanley and Doucouliagos developed PET-PEESE, a meta-regression approximation method designed to reduce publication selection bias in meta-analyses.",
+   "url": "https://doi.org/10.1002/jrsm.1095",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bare Crossref metadata: title, journal, year, authors, and DOI. The title Meta-regression approximations to reduce publication selection bias and authorship by Stanley and Doucouliagos support the general idea that these authors developed a meta-regression method to reduce publication selection bias in meta-analyses. However, the page does not contain any abstract or…",
+   "locatedQuote": "Meta-regression approximations to reduce publication selection bias ... Authors: T. D. Stanley, Hristos Doucouliagos",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "The meta-analysis used Cohen's d as the standardized effect size measure for comparing treatment and control conditions across studies.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "support": "supported",
+   "reasoning": "The page explicitly states that Cohen's d was calculated as the standardized effect size measure for the mean difference between control and treatment conditions, directly supporting the statement.",
+   "locatedQuote": "Due to the large variation in behavioral outcome measures, we calculated Cohens d (40) for a standardized effect size measure of the mean difference between control and treatment conditions.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "A dataset of 124 randomized controlled trials from the broader nudge literature covering over 20 million participants was used to analyze variation in intervention efficacy across evaluations.",
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the dataset of 124 RCTs from the broader nudge literature covering over 20 million participants was used to analyze/explain variation in intervention efficacy across evaluations, matching the statement closely.",
+   "locatedQuote": "a dataset of 124 randomized controlled trials (RCTs) from the broader nudge literature covering over 20 million participants, we show that variation in estimated intervention efficacy across evaluations can be explained by systematic differences in target population composition and outcome measurement",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The meta-analysis extends and casts a wider net than a prior meta-analysis on nudging effectiveness (Hummel and Maedche), which had only examined studies citing Thaler and Sunstein's original nudge definition.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "support": "supported",
+   "reasoning": "The page explicitly states that the present meta-analysis casts a much wider net than Hummel and Maedche's prior meta-analysis, and that Hummel and Maedche's work only examined studies citing [3] — where [3] is the citation for Thaler and Sunstein's nudge definition, as established earlier in the text (A nudge is ...[3] (p.6)). This directly matches the statement's claims: that the meta-analysis e…",
+   "locatedQuote": "The present work casts a much wider net than Hummel and Maedche's [12], which only examined studies citing [3], thus providing a more comprehensive assessment of the literature.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A pre-registered conceptual replication using lux-controlled brightness and a coin toss task found that dishonesty increased in the dark condition, replicating the original directional effect.",
+   "url": "https://doi.org/10.31234/osf.io/9vpuf",
+   "support": "supported",
+   "reasoning": "The title explicitly labels this as A pre-registered conceptual replication of Experiment 1 of Zhong, Bohns, and Gino (2010). The abstract confirms lux-controlled brightness was used, a coin toss task was used, and dishonesty increased in the dark condition, which directly replicates the original directional effect (darkness promotes dishonesty). All elements of the statement—pre-registration, lux…",
+   "locatedQuote": "This study employed lux as a unit to accurately control the brightness within the experiment room. Moreover, the coin toss task which is frequently employed in dishonesty-detection experiments, was utilized instead of the task in the original experiment. The findings revealed that despite altering the content of the task, dishonesty increased in the dark condition.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The article is a 2016 review published in Public Administration Review by Vlaev, King, Dolan, and Darzi that summarizes evidence on nudging using the Mindspace framework, without conducting its own meta-analysis or publication-bias correction.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "support": "partial",
+   "reasoning": "The page confirms the article is a 2016 Public Administration Review piece by Vlaev, King, Dolan, and Darzi that reviews evidence on nudging structured by the Mindspace framework, matching most of the statement. However, the abstract does not explicitly state that the review avoids conducting its own meta-analysis or publication-bias correction; that specific claim about methodology is not address…",
+   "locatedQuote": "This article considers the theoretical basis for why nudges might work and reviews the evidence in health behavior change. The evidence is structured according to the Mindspace framework for behavior change.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "PET-PEESE meta-regression performs poorly (produces unreliable bias-corrected effect estimates) when there are only a few studies, all studies use small samples, and there is very high heterogeneity of results from study to study.",
+   "url": "https://doi.org/10.1177/1948550617693062",
+   "support": "supported",
+   "reasoning": "The abstract directly states this finding almost verbatim, matching the statement's claim about PET-PEESE performing poorly under conditions of few studies, small samples, and high heterogeneity.",
+   "locatedQuote": "PET-PEESE performs poorly in research areas where there are only a few studies, all studies use small samples, and where there is very high heterogeneity of results from study to study.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The authors conclude that behavioral economics insights (nudges) offer powerful policy tools for influencing health behavior, a pre-2020 pro-nudge conclusion based on published literature predating major publication-bias corrections like Mertens et al. 2022.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "support": "partial",
+   "reasoning": "The abstract directly supports the first part of the statement: the authors do conclude that behavioral economics insights (nudges) offer powerful policy tools for influencing health behavior. This is verbatim supported by the abstract text. However, the statement adds significant interpretive framing not present in the page: it characterizes this as a pre-2020 pro-nudge conclusion based on publis…",
+   "locatedQuote": "The conclusion is that insights from behavioral economics offer powerful policy tools for influencing behavior in health care.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study's findings help explain the academic-government effect-size gap documented by DellaVigna and Linos (2022), suggesting divergence between academic and government trial effect sizes is driven by population composition and outcome measurement differences rather than solely publication bias.",
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the paper's findings on population composition and outcome measurement help explain divergent effect sizes across evaluations, explicitly naming the academic-government effect-size gap documented by DellaVigna and Linos (2022) as one such divergence explained by these factors. This matches the statement's claim almost verbatim, including the mechanism (population …",
+   "locatedQuote": "Together, these patterns help explain divergent effect sizes across evaluations in the literature, including the academic-government effect-size gap documented by Della Vigna and Linos (2022)",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A meta-analysis of 15 RCTs involving 167,127 individuals found nudge strategies significantly increased COVID-19 vaccine uptake, with a pooled risk ratio of 1.19 (95% CI 1.07-1.33, p<0.01).",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the same numbers: 15 RCTs, 167,127 individuals, pooled RR 1.19, 95% CI 1.07-1.33, p<0.01, and that nudge strategies significantly increased COVID-19 vaccine uptake. This directly matches the statement's claims with no added scope or certainty.",
+   "locatedQuote": "A total of 15 RCTs involving 167,127 individuals were included. Nudge strategies significantly boosted the COVID-19 vaccine uptake rate (RR: 1.19, 95% CI [1.07, 1.33], p &lt; 0.01).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The replication study did not find support for perceived anonymity as the mechanism driving the darkness-dishonesty effect, contrary to the original 2010 study's proposed mechanism.",
+   "url": "https://doi.org/10.31234/osf.io/9vpuf",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the replication's results did not substantiate perceived anonymity as the driving mechanism of the darkness-dishonesty effect, directly contrasting with the original 2010 study's proposed mechanism. This directly supports the statement.",
+   "locatedQuote": "Contrary to the findings in the original experiment, however, the results did not substantiate that perceived anonymity was the driving factor of the effect of brightness on dishonesty.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study references Egger et al.'s funnel plot asymmetry test (1997) and Vevea & Woods' sensitivity analysis using a priori weight functions (2005) as methodological tools relevant to detecting publication bias.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "support": "supported",
+   "reasoning": "The reference list confirms the paper cites both Egger et al. (1997), Bias in meta-analysis detected by a simple, graphical test (the funnel plot asymmetry test paper), and Vevea & Woods (2005), Publication bias in research synthesis: Sensitivity analysis using a priori weight functions. Both are listed as references (44 and 43 respectively), consistent with the statement that the study references…",
+   "locatedQuote": "43. J. L. Vevea, C. M. Woods, Publication bias in research synthesis: Sensitivity analysis using a priori weight functions. Psychol. Methods 10, 428443 (2005). 44. M. Egger, G. Davey Smith, M. Schneider, C. Minder, Bias in meta-analysis detected by a simple, graphical test. BMJ 315, 629634 (1997).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Subgroup analysis showed differing effect sizes by nudge category: social norms (RR 2.04, 95% CI 1.61-2.57), defaults (RR 1.32, 95% CI 1.03-1.69), and salient reminders (RR 1.19, 95% CI 1.04-1.36), indicating substantial variation in magnitude across nudge types.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "partial",
+   "reasoning": "The page confirms the exact numerical values (RR and CIs) for social norms, defaults, and salient reminders subgroups, matching the statement precisely. However, the statement's framing (indicating substantial variation in magnitude across nudge types) is an interpretive addition not stated in the source text. The source actually characterizes these effects collectively as a weak positive effect, …",
+   "locatedQuote": "Subgroup analysis showed that there was a weak positive effect on vaccine uptake of social norms (RR: 2.04, 95% Cl [1.61, 2.57]), defaults (RR: 1.32, 95% CI [1.03, 1.69]), and salient reminders (RR: 1.19, 95% CI [1.04, 1.36]).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Hypothesis tests about the mean true effect using the FPP procedure are frequently unreliable in realistic heterogeneous data environments.",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that in heterogeneous data environments, hypothesis tests about the mean true effect using the FPP procedure are frequently unreliable. This directly matches the statement's claim, including the heterogeneous data environments qualifier and frequently unreliable language.",
+   "locatedQuote": "However, when we study its performance in more realistic data environments, where there is heterogeneity in the population effects across and within studies, the FPP procedure becomes unreliable for the first 2 purposes and is less efficient than other estimators when estimating overall mean effect. Further, hypothesis tests about the mean true effect are frequently unreliable.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "The FAT-PET-PEESE (FPP) procedure performs well for testing publication bias, testing statistical significance, and estimating true effect only under the unrealistic assumption of fixed effects where all estimates derive from a single population value.",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "quote": "Our findings indicate that the FPP procedure performs well in the basic but unrealistic environment of fixed effects , where all estimates are assumed to derive from a single population value and sampling error is the only reason for why studies produce different estimates.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 723
+  },
+  {
+   "claim": "The Mertens et al. meta-analysis of nudging comprised 455 effect sizes from 214 publications with a pooled sample size of 2,149,683 participants.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quote": "The nal sample comprised 455 effect sizes from 214 publications with a pooled sample size of 2,149,683 participants ( N ranging from 14 to 813,990).",
+   "onPage": "located-approx",
+   "foundFraction": 0.909,
+   "offset": 8945
+  },
+  {
+   "claim": "The 4S framework proposes that nudges should be evaluated on being sufficient, scalable, and subjective, in addition to being statistically significant, to be considered an effective policy response.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941",
+   "quote": "Our 4S framework highlights the importance of nudges being sufficient , scalable , and subjective , in addition to being statistically significant , to be an effective policy response.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 558
+  },
+  {
+   "claim": "Maier et al. (2022) published a paper in PNAS titled 'No evidence for nudging after adjusting for publication bias,' directly challenging the Mertens et al. findings using bias-correction methods.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "quote": "Maier, M. et al. No evidence for nudging after adjusting for publication bias. Proc. Natl Acad. Sci. USA 119 , e2200300119 (2022).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5816
+  },
+  {
+   "claim": "Empirical findings on the effectiveness of digital nudging on user behaviors are mixed and not fully conclusive, with some studies showing behavior change and others finding no effect.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "quote": "Empirical studies on the effectiveness of digital nudging on user behaviors are not fully con- clusive. Whilst some studies have shown that digital nudging can change user behaviors [6] some others have found no such effect [7].",
+   "onPage": "partial",
+   "foundFraction": 0.789,
+   "offset": 2549
+  },
+  {
+   "claim": "This is a systematic literature review and meta-analysis of privacy nudges for disclosure of personal information, published in PLOS ONE.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "quote": "Privacy nudges for disclosure of personal information: A systematic literature review and meta-analysis",
+   "onPage": "not-found",
+   "foundFraction": 0.286,
+   "offset": null
+  },
+  {
+   "claim": "The study includes two large-scale RCTs encouraging COVID-19 vaccinations with sample sizes of N=187,134 and N=149,720.",
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "quote": "Drawing on two large-scale RCTs encouraging COVID-19 vaccinations (N = 187,134 and 149,720) and a dataset of 124 randomized controlled trials",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 482
+  },
+  {
+   "claim": "The authors concluded that nudging interventions promote COVID-19 vaccination behavior only with small magnitude and require combination with other intervention strategies to meaningfully increase vaccination.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "quote": "Nudging interventions can promote COVID-19 vaccination behavior and intentions, albeit with small magnitude, and need to be combined with other intervention strategies to promote vaccination.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1620
+  },
+  {
+   "claim": "When heterogeneity exists in population effects across and within studies (a realistic scenario for literatures like nudge research), the FPP procedure becomes unreliable for detecting publication bias and testing whether effects differ from zero, and is less efficient than alternative estimators fo…",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "quote": "However, when we study its performance in more realistic data environments, where there is heterogeneity in the population effects across and within studies, the FPP procedure becomes unreliable for the first 2 purposes and is less efficient than other estimators when estimating overall mean effect.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 998
+  },
+  {
+   "claim": "Mertens et al. (2022) published a meta-analysis in PNAS titled 'The effectiveness of nudging: a meta-analysis of choice architecture interventions across behavioral domains'.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "quote": "Mertens, S., Herberz, M., Hahnel, U. J. & Brosch, T. The effectiveness of nudging: a meta-analysis of choice architecture interventions across behavioral domains. Proc. Natl Acad. Sci. USA 119 , e2107346118 (2022).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5567
+  },
+  {
+   "claim": "The meta-analysis excludes studies that combined choice architecture with other interventions like significant economic incentives or education programs, isolating the unique effect of choice architecture.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quote": "Studies that examined choice architecture in combination with other intervention measures, such as signicant economic incentives or education programs, were excluded from our analyses to isolate the unique effects of choice architecture inter- ventions on behavior.",
+   "onPage": "partial",
+   "foundFraction": 0.739,
+   "offset": 8669
+  },
+  {
+   "claim": "There is growing concern in the policy literature about the efficacy of some nudge interventions, despite nudging's popularity as a policymaking approach.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941",
+   "quote": "Nudging is a popular and influential approach in policymaking. Yet, it has faced substantial criticism from several policy perspectives, with growing concern raised about the efficacy of some nudge interventions.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 246
+  },
+  {
+   "claim": "The systematic review's literature search, conducted across five databases (Scopus, Google Scholar, ACM Digital Library, Web of Science, Science Direct) in September 2020, excluded papers published before 2006 due to changing conceptions of privacy.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "quote": "papers published before 2006 are excluded because the meaning of privacy might have changed in the years fol- lowing 2006 [14]",
+   "onPage": "partial",
+   "foundFraction": 0.857,
+   "offset": 8735
+  },
+  {
+   "claim": "Stanley and Doucouliagos developed PET-PEESE, a meta-regression approximation method designed to reduce publication selection bias in meta-analyses.",
+   "url": "https://doi.org/10.1002/jrsm.1095",
+   "quote": "Meta-regression approximations to reduce publication selection bias",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "The meta-analysis used Cohen's d as the standardized effect size measure for comparing treatment and control conditions across studies.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quote": "Due to the large variation in behavioral outcome measures, we calculated Cohens d (40) for a standard- ized effect size measure of the mean difference between control and treat- ment conditions.",
+   "onPage": "partial",
+   "foundFraction": 0.438,
+   "offset": 9350
+  },
+  {
+   "claim": "A dataset of 124 randomized controlled trials from the broader nudge literature covering over 20 million participants was used to analyze variation in intervention efficacy across evaluations.",
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "quote": "a dataset of 124 randomized controlled trials (RCTs) from the broader nudge literature covering over 20 million participants, we show that variation in estimated intervention efficacy across evaluations can be explained by systematic differences in target population composition and outcome measurement",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 578
+  },
+  {
+   "claim": "The meta-analysis extends and casts a wider net than a prior meta-analysis on nudging effectiveness (Hummel and Maedche), which had only examined studies citing Thaler and Sunstein's original nudge definition.",
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "quote": "Through our focus on personal information disclosure, we extend a recent meta-analysis on the effectiveness of nudging in online and offline environments [12]. The present work casts a much wider net than Hummel and Maedche's [12], which only examined studies citing [3], thus providing a more comprehensive assessment of the literature.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5433
+  },
+  {
+   "claim": "The article is a 2016 review published in Public Administration Review by Vlaev, King, Dolan, and Darzi that summarizes evidence on nudging using the Mindspace framework, without conducting its own meta-analysis or publication-bias correction.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "quote": "This article considers the theoretical basis for why nudges might work and reviews the evidence in health behavior change. The evidence is structured according to the Mindspace framework for behavior change.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 817
+  },
+  {
+   "claim": "PET-PEESE meta-regression performs poorly (produces unreliable bias-corrected effect estimates) when there are only a few studies, all studies use small samples, and there is very high heterogeneity of results from study to study.",
+   "url": "https://doi.org/10.1177/1948550617693062",
+   "quote": "PET-PEESE performs poorly in research areas where there are only a few studies, all studies use small samples, and where there is very high heterogeneity of results from study to study.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 664
+  },
+  {
+   "claim": "A meta-analysis of 15 RCTs involving 167,127 individuals found nudge strategies significantly increased COVID-19 vaccine uptake, with a pooled risk ratio of 1.19 (95% CI 1.07-1.33, p<0.01).",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "quote": "A total of 15 RCTs involving 167,127 individuals were included. Nudge strategies significantly boosted the COVID-19 vaccine uptake rate (RR: 1.19, 95% CI [1.07, 1.33], p < 0.01).",
+   "onPage": "located-approx",
+   "foundFraction": 1.0,
+   "offset": 976
+  },
+  {
+   "claim": "The replication study did not find support for perceived anonymity as the mechanism driving the darkness-dishonesty effect, contrary to the original 2010 study's proposed mechanism.",
+   "url": "https://doi.org/10.31234/osf.io/9vpuf",
+   "quote": "Contrary to the findings in the original experiment, however, the results did not substantiate that perceived anonymity was the driving factor of the effect of brightness on dishonesty.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1305
+  },
+  {
+   "claim": "The study references Egger et al.'s funnel plot asymmetry test (1997) and Vevea & Woods' sensitivity analysis using a priori weight functions (2005) as methodological tools relevant to detecting publication bias.",
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quote": "M. Egger, G. Davey Smith, M. Schneider, C. Minder, Bias in meta-analysis detected by a simple, graphical test. BMJ 315, 629634 (1997).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": null
+  },
+  {
+   "claim": "Hypothesis tests about the mean true effect using the FPP procedure are frequently unreliable in realistic heterogeneous data environments.",
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "quote": "Further, hypothesis tests about the mean true effect are frequently unreliable.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1299
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 25,
+   "floor": 5,
+   "thin": false,
+   "verdict": "25 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "Maier et al. (2022) published a paper in PNAS titled 'No evidence for nudging after adjusting for publication bias,' directly challenging the Mertens et al. findings using bias-correction methods.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "support": "partial",
+   "reasoning": "The cited page is a Nature Human Behaviour manifesto article, not the Maier et al. PNAS paper itself. In its reference list, it does cite Maier, M. et al. No evidence for nudging after adjusting for publication bias. Proc. Natl Acad. Sci. USA 119, e2200300119 (2022) alongside the Mertens et al. 2022 PNAS citation, confirming the existence, title, journal, and year of the Maier et al. paper, and it…",
+   "locatedQuote": "Maier, M. et al. No evidence for nudging after adjusting for publication bias. Proc. Natl Acad. Sci. USA 119 , e2200300119 (2022).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Fishbane, Ouss & Shah (2020) published a study in Science showing behavioral nudges reduce failure to appear for court, an example of a large-scale field trial outcome relevant to comparing published vs. unpublished/government trial effect sizes.",
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "support": "partial",
+   "reasoning": "The cited page is a Nature Human Behaviour manifesto article whose reference list includes the Fishbane, Ouss & Shah (2020) citation confirming it was published in Science and titled Behavioral nudges reduce failure to appear for court. This confirms the existence and journal/title of the study, supporting the basic bibliographic claim. However, the page itself (as fetched, which is mostly a paywa…",
+   "locatedQuote": "Fishbane, A., Ouss, A. & Shah, A. K. Behavioral nudges reduce failure to appear for court. Science 370 , eabb6591 (2020).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The effectiveness of nudging interventions on COVID-19 vaccine uptake was found to weaken significantly over time (p < 0.0001), suggesting diminishing real-world effects that may contrast with initially published estimates.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "partial",
+   "reasoning": "The abstract directly supports the core claim that nudging effectiveness on COVID-19 vaccine uptake weakened significantly over time with p < 0.0001, matching the statement's central assertion. However, the statement adds an interpretive extension - suggesting diminishing real-world effects that may contrast with initially published estimates - which is not stated or implied in the abstract. The a…",
+   "locatedQuote": "Additionally, the effect of nudging interventions on COVID-19 vaccine uptake weakened over time(p < 0.0001).",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Stanley and Doucouliagos developed PET-PEESE, a meta-regression approximation method designed to reduce publication selection bias in meta-analyses.",
+   "url": "https://doi.org/10.1002/jrsm.1095",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bare Crossref metadata: title, journal, year, authors, and DOI. The title Meta-regression approximations to reduce publication selection bias and authorship by Stanley and Doucouliagos support the general idea that these authors developed a meta-regression method to reduce publication selection bias in meta-analyses. However, the page does not contain any abstract or…",
+   "locatedQuote": "Meta-regression approximations to reduce publication selection bias ... Authors: T. D. Stanley, Hristos Doucouliagos",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "The article is a 2016 review published in Public Administration Review by Vlaev, King, Dolan, and Darzi that summarizes evidence on nudging using the Mindspace framework, without conducting its own meta-analysis or publication-bias correction.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "support": "partial",
+   "reasoning": "The page confirms the article is a 2016 Public Administration Review piece by Vlaev, King, Dolan, and Darzi that reviews evidence on nudging structured by the Mindspace framework, matching most of the statement. However, the abstract does not explicitly state that the review avoids conducting its own meta-analysis or publication-bias correction; that specific claim about methodology is not address…",
+   "locatedQuote": "This article considers the theoretical basis for why nudges might work and reviews the evidence in health behavior change. The evidence is structured according to the Mindspace framework for behavior change.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The authors conclude that behavioral economics insights (nudges) offer powerful policy tools for influencing health behavior, a pre-2020 pro-nudge conclusion based on published literature predating major publication-bias corrections like Mertens et al. 2022.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "support": "partial",
+   "reasoning": "The abstract directly supports the first part of the statement: the authors do conclude that behavioral economics insights (nudges) offer powerful policy tools for influencing health behavior. This is verbatim supported by the abstract text. However, the statement adds significant interpretive framing not present in the page: it characterizes this as a pre-2020 pro-nudge conclusion based on publis…",
+   "locatedQuote": "The conclusion is that insights from behavioral economics offer powerful policy tools for influencing behavior in health care.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Subgroup analysis showed differing effect sizes by nudge category: social norms (RR 2.04, 95% CI 1.61-2.57), defaults (RR 1.32, 95% CI 1.03-1.69), and salient reminders (RR 1.19, 95% CI 1.04-1.36), indicating substantial variation in magnitude across nudge types.",
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "support": "partial",
+   "reasoning": "The page confirms the exact numerical values (RR and CIs) for social norms, defaults, and salient reminders subgroups, matching the statement precisely. However, the statement's framing (indicating substantial variation in magnitude across nudge types) is an interpretive addition not stated in the source text. The source actually characterizes these effects collectively as a weak positive effect, …",
+   "locatedQuote": "Subgroup analysis showed that there was a weak positive effect on vaccine uptake of social norms (RR: 2.04, 95% Cl [1.61, 2.57]), defaults (RR: 1.32, 95% CI [1.03, 1.69]), and salient reminders (RR: 1.19, 95% CI [1.04, 1.36]).",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 7,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "Domain-specific evidence in COVID-19 vaccination nudges shows real but modest, significant pooled effects (RR 1.19), alongside qualitative acknowledgment across the broader literature of growing concern about efficacy and mixed empirical results for digital nudging.",
+   "Finding 4's claim that a Stanley/Doucouliagos-lineage source claims PET-PEESE has properties 'much better than conventional meta-analysis' even under adverse conditions does not correspond to any text in claims [0], [8], [13], [18], or [22]; no such comparative superiority claim appears anywhere in the claim pool.",
+   "a 2023 policy-administration piece notes 'growing concern' about the efficacy of some nudge interventions despite nudging's continued policy popularity.",
+   "one source (jrsm.1298) says FPP 'becomes unreliable' under heterogeneity, while a related Stanley/Doucouliagos-lineage source claims PET-PEESE has properties 'much better than conventional meta-analysis' even under adverse conditions."
+  ],
+  "untraceableStatements": [
+   "Claim that item 19's COVID meta-analysis and item 6/7's large-scale study/124-RCT dataset are 'the one domain with detailed quantitative evidence captured' representing the broader nudge literature - this framing conflates three separate, unlinked studies (claims 6, 7, 15, 19) into one coherent 'domain-specific evidence' narrative not established by the claim pool.",
+   "Finding 4's characterization of a 'Stanley/Doucouliagos-lineage source claims PET-PEESE has properties much better than conventional meta-analysis even under adverse conditions' - no claim in the pool states this; claim 13 only says Stanley and Doucouliagos developed PET-PEESE, it does not attribute this specific comparative claim to them or any source.",
+   "Finding 4's characterization of a 'Stanley/Doucouliagos-lineage source' claiming PET-PEESE has properties 'much better than conventional meta-analysis' even under adverse conditions does not trace to any numbered claim - no claim in the pool contains this statement or attributes it to Stanley/Doucouliagos.",
+   "The phrase 'growing concern about efficacy of some nudge interventions' is dated to '2023 policy-administration piece' in Finding 5, but claim 11 carries no date or specific year attribution.",
+   "The summary states 'Domain-specific evidence in COVID-19 vaccination nudges shows real but modest, significant pooled effects (RR 1.19)' and frames this as evidence bearing on the publication-bias-correction question, but claim [19] does not indicate this meta-analysis applied any publication-bias correction, so using it as part of a 'corrected vs raw' comparison is an unlicensed inferential leap.",
+   "The summary's claim that 'these methodological sources themselves disagree on how much to trust the correction under adverse conditions' is built on the same unsupported attribution as Finding 4.",
+   "The summary's claim that Maier et al. (2022) is a 'bias-correction rebuttal' that reached 'the opposite headline conclusion' is reasonable given claim [3]'s title, but the summary further asserts 'the actual bias-corrected effect-size numbers from that rebuttal were never captured' as if this were itself a notable finding - this is an accurate description of an evidence gap, not an untraceable fact, so it is acceptable."
+  ],
+  "coverageGaps": [
+   "Beshears & Kosowsky (named explicitly in checklist item 1) never appears anywhere in the claim pool or findings.",
+   "No claim addresses trim-and-fill or funnel-plot-asymmetry results specifically applied to Mertens/Maier data (claim 21 only references these as general tools, not as applied findings).",
+   "No primary-source data (e.g., the actual PET-PEESE regression output, funnel plots, or Maier et al.'s reported effect size) was retrieved despite claim [3] establishing the paper's existence - the research never pulled the actual numbers from Maier et al. 2022, which is the single most decision-relevant number for the entire research question.",
+   "Sub-question 2 (magnitude of shrinkage from raw to bias-corrected estimates) is never answered: the claim pool contains no actual bias-corrected effect-size numbers from Maier et al. 2022, only the existence/title of the paper (claim [3]). The report explicitly admits this but the checklist item is left completely unaddressed rather than partially addressed.",
+   "Sub-question 2 (magnitude of shrinkage, whether corrected estimates remain distinguishable from zero) is explicitly unanswered - the report admits 'the actual bias-corrected effect-size numbers from that rebuttal were never captured' - Maier et al.'s actual point estimates and confidence intervals were never retrieved despite being central to the question.",
+   "Sub-question 3 (comparison of bias-corrected meta-analytic estimates to DellaVigna & Linos's 126 US/UK RCTs) is never answered - DellaVigna & Linos is named in the checklist but no claim in the pool references it or its effect sizes at all.",
+   "Sub-question 3 (comparison of bias-corrected meta-analytic estimates to DellaVigna & Linos's 126 US/UK RCTs) is not answered at all - DellaVigna & Linos is named in the checklist but has zero claims in the evidence pool and is absent from findings.",
+   "Sub-question 4 (category-by-category breakdown: defaults vs social norms vs simplification vs reminders) is entirely unaddressed - no claim in the pool disaggregates by nudge type despite a dedicated 'Category-by-category auditor' perspective being tasked with this.",
+   "Sub-question 4 (heterogeneity of bias-correction magnitude by nudge category - defaults vs. social norms vs. simplification vs. reminders) is not addressed; no claim in the pool disaggregates by nudge type.",
+   "Sub-question 6 (cost-effectiveness of nudges relative to alternative policy tools even after shrinkage) is not addressed - no claims about implementation cost or comparative cost-effectiveness appear in the pool despite a dedicated 'Cost-effectiveness policy analyst' perspective.",
+   "Sub-question 6 (cost-effectiveness of nudges relative to alternative policy tools even after shrinkage) is not addressed at all - no claim in the pool discusses cost of nudges vs. other interventions.",
+   "Sub-question 7 (post-2020 pre-registered replications/multi-site trials converging or diverging from bias-corrected estimates) is not substantively answered - only tangential/unrelated claims (e.g., claim 20 on darkness-dishonesty replication) exist, none tied to nudge effect-size convergence.",
+   "Sub-question 7 (post-2020 pre-registered replications/multi-site trials converging or diverging from bias-corrected estimates) is only thinly touched by the COVID vaccination RCTs and the darkness-dishonesty replication (claim [20]), but the darkness-dishonesty replication finding is not even used in the report's findings, and no synthesis is offered on convergence/divergence.",
+   "Sub-question 8 (strongest documented counter-examples/failures in high-powered, low-bias-risk settings) is not answered with concrete examples - no specific null-result study is identified or characterized as representative or unrepresentative.",
+   "Sub-question 8 (strongest documented counter-examples/failures in high-powered, low-bias-risk settings) is not really answered - the darkness-dishonesty replication (claim [20]) is a candidate but is never surfaced in the summary or findings, and no assessment of representativeness is given.",
+   "The 'Nudge-unit defender' perspective's core evidence (large-scale pre-registered government/nudge-unit trials such as the 124-RCT/20M-participant dataset in claim [15]) is mentioned only in passing in finding 6 without being analyzed for what it implies about publication-bias-corrected estimates versus raw meta-analytic ones.",
+   "The actual Maier et al. (2022) bias-corrected effect size (e.g., their reported near-zero or negative estimate) - the single most decision-relevant number for the whole question - was never retrieved from the primary source despite Maier et al. being cited three times in the pool (claims 3 and referenced in findings)."
+  ],
+  "planFlaws": [
+   "DellaVigna & Linos and Beshears & Kosowsky were named specifically in the scoper's checklist item 1 as key sources to examine, but neither ever appears in the verified claim pool - the scoping named specific must-check sources that the search execution then failed to retrieve, and no flaw was surfaced in the final report about this failure until the meta-analyst's own conclusion papered over it with a heterogeneity-based hedge.",
+   "No perspective focused on directly extracting Maier et al.'s numbers, despite Maier et al. being the crux of the entire question (checklist item 2) - the meta-analyst constructor perspective description claims to 're-run bias-correction methods themselves' but no computed/independent numbers appear in the claim pool.",
+   "The 'Bias-correction skeptic' perspective produced claims [0], [8], [18], [22] all seemingly from a single methodological source (jrsm.1298) - no independent/opposing methodological source was actually captured to substantiate the report's own claim of 'genuine documented contradiction' in finding 4, meaning the perspective's stated goal (checking convergence/divergence of independent correction methods, checklist item 5) was not fulfilled with real evidence.",
+   "The 'Category-by-category auditor' and 'Cost-effectiveness policy analyst' perspectives were included in the search plan but produced zero claims in the final pool - suggesting either their searches failed or their outputs were dropped in aggregation, and this failure was not flagged or corrected before the report was written.",
+   "The cost-effectiveness policy analyst perspective apparently produced zero claims in the final pool - checklist item 6 is entirely unaddressed, suggesting this searched perspective failed to contribute any usable evidence to the pool, and this failure was not flagged in the final report.",
+   "The perspective set has no representative tasked specifically with locating DellaVigna & Linos or other large pre-registered government trial literature (checklist item 3) as primary sources - the 'Nudge-unit defender' perspective description mentions such trials but the claim pool shows no DellaVigna & Linos data was ever pulled in, indicating this perspective's searches didn't fulfill its stated remit.",
+   "The perspective set lacks a 'replication historian' output despite being listed - the pool contains no chronological/evolution-of-estimates evidence, so sub-question 7 was structurally unanswerable from the start.",
+   "The report conflates unrelated COVID-vaccine-nudge studies (claims 6, 7, 15, 19) as if they form one coherent 'domain-specific evidence' body, when they may use different methodologies, samples, and are not explicitly linked to the bias-correction debate - this is a synthesis flaw enabled by not requiring claims to be explicitly tied to the sub-question they answer.",
+   "The scoping and search process surfaced abundant claims ABOUT the Mertens/Maier dispute's existence and about PET-PEESE's general reliability properties, but never retrieved the actual numbers from Maier et al. 2022 - the paper that is the crux of the entire question. This is a critical execution gap given the paper was clearly identified (claim 3) and readily accessible.",
+   "The scoping checklist presupposes that bias-corrected numbers from Maier et al. 2022 (and DellaVigna & Linos numbers) would be readily retrievable, but the executed research never actually captured them, and no perspective/agent was explicitly tasked with 'go get the Maier et al. effect-size table' as a discrete, verifiable sub-task - this is a process failure since it's the single most decision-relevant number in the entire question."
+  ],
+  "rationales": [
+   "The report is admirably honest about its central limitation (missing Maier et al. numbers) and correctly avoids overclaiming a definitive yes/no answer. However, it fails on two fronts. First, traceability: finding 4 attributes a specific claim ('much better than conventional meta-analysis... even under adverse conditions') to a Stanley/Doucouliagos-lineage source that does not appear anywhere in the verified claim pool - this is a fabricated methodological contrast presented as a documented con…",
+   "The report is honest about its central missing number (Maier et al.'s actual corrected effect size) and correctly flags PET-PEESE's known unreliability under heterogeneity, which is a legitimate and well-supported finding. However, the process left five of eight checklist sub-questions essentially unanswered (2, 3, 4, 6, 7, 8), with two named must-check sources (DellaVigna & Linos, Beshears & Kosowsky) never retrieved at all, and two tasked perspectives (category auditor, cost-effectiveness anal…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "Fishbane, Ouss & Shah (2020) published a study in Science showing behavioral nudges reduce failure to appear for court, an example of a large-scale field trial outcome relevant to comparing published vs. unpublished/government trial effect sizes.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "why": "The quote is merely a bibliographic citation entry (Fishbane, A., Ouss, A. & Shah, A. K. Behavioral nudges reduce failure to appear for court. Science 370, eabb6591 (2020)) with no accompanying text describing the study's findings, methodology, or framing it as an example of a large-scale field trial outcome relevant to comparing published vs. unpublished/government trial effect sizes. The claim adds substantial interpretive content—that this is a large-scale field trial, and that it is relevant…"
+  },
+  {
+   "claim": "The effectiveness of nudging interventions on COVID-19 vaccine uptake was found to weaken significantly over time (p < 0.0001), suggesting diminishing real-world effects that may contrast with initially published estimates.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "why": "The quote itself only states a bare finding: nudging interventions' effect on COVID-19 vaccine uptake weakened over time (p<0.0001). It does not say the effect weakened significantly in the sense of diminishing real-world effects that may contrast with initially published estimates - that framing is an added interpretive gloss not licensed by the quote. The quote gives no comparison to initially published estimates nor any statement about publication bias or contrast with prior estimates; the cl…"
+  },
+  {
+   "claim": "A pre-registered conceptual replication using lux-controlled brightness and a coin toss task found that dishonesty increased in the dark condition, replicating the original directional effect.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.31234/osf.io/9vpuf",
+   "why": "The claim asserts specific methodological details not present in the quote itself: that the study was pre-registered, used lux-controlled brightness, and involved a coin toss task. The supporting quote only states The findings revealed that despite altering the content of the task, dishonesty increased in the dark condition. The quote does not mention pre-registration, lux-control, or a coin toss specifically - these details may appear elsewhere on the page, but the quote provided does not licen…"
+  },
+  {
+   "claim": "The authors conclude that behavioral economics insights (nudges) offer powerful policy tools for influencing health behavior, a pre-2020 pro-nudge conclusion based on published literature predating major publication-bias corrections like Mertens et al. 2022.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "why": "The quote only says The conclusion is that insights from behavioral economics offer powerful policy tools for influencing behavior in health care - it says nothing about the 2016 authors' awareness of or relationship to Mertens et al. 2022 (a paper published six years later), nor does it characterize the conclusion as being based on published literature predating major publication-bias corrections. That entire framing (labeling it a pre-2020 pro-nudge conclusion tied to publication-bias correcti…"
+  },
+  {
+   "claim": "The study's findings help explain the academic-government effect-size gap documented by DellaVigna and Linos (2022), suggesting divergence between academic and government trial effect sizes is driven by population composition and outcome measurement differences rather than solely publication bias.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.2139/ssrn.3971192",
+   "why": "The quote only says the study's patterns help explain divergent effect sizes across evaluations... including the academic-government effect-size gap - it does not specify what those patterns are, nor does it state that the divergence is driven by population composition and outcome measurement differences rather than solely publication bias. The claim inserts a specific causal attribution (population composition + outcome measurement, explicitly excluding publication bias as sole driver) that is …"
+  },
+  {
+   "claim": "Subgroup analysis showed differing effect sizes by nudge category: social norms (RR 2.04, 95% CI 1.61-2.57), defaults (RR 1.32, 95% CI 1.03-1.69), and salient reminders (RR 1.19, 95% CI 1.04-1.36), indicating substantial variation in magnitude across nudge types.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "why": "The claim states the numbers accurately (RR 2.04 for social norms, 1.32 for defaults, 1.19 for salient reminders) but mischaracterizes what the quote says about them. The source quote explicitly describes these as a weak positive effect across all three categories, whereas the claim reframes this as differing effect sizes... indicating substantial variation in magnitude across nudge types. This is an overreach: the quote's own characterization is that the effects are uniformly weak/positive, not…"
+  },
+  {
+   "claim": "DellaVigna & Linos's 2020 NBER working paper on RCTs to scale provides comprehensive evidence from two nudge units, cited as comparison data to published meta-analytic estimates.",
+   "killedBy": "support+citation-audit",
+   "vote": "2-1",
+   "source": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "why": "The quote is merely a bibliographic reference entry (title, working paper number, NBER link) for DellaVigna & Linos 2020 - it is a citation listing, not text describing what the paper provides or how it was cited as comparison data to published meta-analytic estimates. The claim asserts specific framing (that the PNAS paper uses it as comparison data against meta-analytic estimates) that is nowhere present in the quoted reference-list text itself. Additionally, the quote is only 53% located on t…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.1177/25152459221109259/v1/review1",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1177/25152459221109259/v1/review2",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1177/25152459221109259/v1/review3",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1016/b978-0-443-13428-9.00012-4",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://openalex.org/W3045217171",
+   "quality": "unreliable",
+   "perspective": "Nudge-unit defender (steelman)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.pnas.org/content/pnas/119/1/e2107346118.full.pdf",
+   "quality": "primary",
+   "perspective": "Nudge-unit defender (steelman)",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC11449432",
+   "quality": "unreliable",
+   "perspective": "Nudge-unit defender (steelman)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13367774",
+   "quality": "unreliable",
+   "perspective": "Nudge-unit defender (steelman)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.2139/ssrn.3971192",
+   "quality": "primary",
+   "perspective": "Nudge-unit defender (steelman)",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1177/1948550617693062",
+   "quality": "secondary",
+   "perspective": "Bias-correction skeptic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1002/jrsm.1298",
+   "quality": "primary",
+   "perspective": "Bias-correction skeptic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1177/25152459221109259/v2/decision1",
+   "quality": "unreliable",
+   "perspective": "Bias-correction skeptic",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0256822&type=printable",
+   "quality": "primary",
+   "perspective": "Category-by-category auditor",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "pdf"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC8396794",
+   "quality": "unreliable",
+   "perspective": "Category-by-category auditor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.21203/rs.3.rs-2430314/v1",
+   "quality": "primary",
+   "perspective": "Category-by-category auditor",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/puar.12564",
+   "quality": "secondary",
+   "perspective": "Category-by-category auditor",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://openalex.org/W3005557096",
+   "quality": "unreliable",
+   "perspective": "DellaVigna & Linos academic-government effect size gap numbers",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/padm.12941",
+   "quality": "secondary",
+   "perspective": "DellaVigna & Linos academic-government effect size gap numbers",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://www.nature.com/articles/s41562-023-01555-3.pdf",
+   "quality": "secondary",
+   "perspective": "DellaVigna & Linos academic-government effect size gap numbers",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.31219/osf.io/s4w2x_v2",
+   "quality": "unreliable",
+   "perspective": "Post-2020 pre-registered mega-study replication of nudges",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.31234/osf.io/ngkdp",
+   "quality": "unreliable",
+   "perspective": "Post-2020 pre-registered mega-study replication of nudges",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.31234/osf.io/9vpuf",
+   "quality": "primary",
+   "perspective": "Post-2020 pre-registered mega-study replication of nudges",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1002/jrsm.1095",
+   "quality": "primary",
+   "perspective": "Reconcile PET-PEESE reliability dispute",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.31234/osf.io/cjz56",
+   "quality": "primary",
+   "perspective": "Reconcile PET-PEESE reliability dispute",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.4324/9780203111710",
+   "quality": "secondary",
+   "perspective": "Reconcile PET-PEESE reliability dispute",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 25,
+  "claimsExtracted": 46,
+  "urlDupes": 6,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 16,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 41,
+    "ok": 31,
+    "fail": 10,
+    "results": 7
+   },
+   "crossref": {
+    "attempts": 40,
+    "ok": 30,
+    "fail": 10,
+    "results": 162
+   },
+   "europepmc": {
+    "attempts": 10,
+    "ok": 10,
+    "fail": 0,
+    "results": 35
+   },
+   "openalex": {
+    "attempts": 7,
+    "ok": 7,
+    "fail": 0,
+    "results": 25
+   },
+   "pubmed": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "results": 23
+   }
+  },
+  "sourceTiers": {
+   "T?": 11,
+   "T2": 14
+  },
+  "killsByLens": {
+   "support": 6,
+   "counter": 2,
+   "provenance": 5
+  },
+  "fetchVia": {
+   "crossref-api": 12,
+   "http": 7,
+   "failed": 2,
+   "wayback": 1,
+   "pdf": 1,
+   "crossref-fallback": 2
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 4,
+   "hits": 88,
+   "rate": 0.364
+  },
+  "agentCalls": 165,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 383654,
+  "outputTokens": 91860,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 35,
+   "partial": 7,
+   "located-approx": 2,
+   "not-found": 1,
+   "unverifiable": 1,
+   "onPageRate": 0.804
+  },
+  "pageFetchCache": {
+   "hits": 30,
+   "misses": 25,
+   "charsServedFromCache": 170728,
+   "hitRate": 0.545
+  },
+  "wallSeconds": 442.9,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 23,
+  "killed": 7,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}
