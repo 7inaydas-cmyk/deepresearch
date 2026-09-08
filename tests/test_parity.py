@@ -46,6 +46,7 @@ SHARED = {
     "audit key (claim,url)":     ('fact_by.get((c["claim"]', "auditKey(c.claim"),
     "rescue pass":               ("RESCUE:", "RESCUE:"),
     "citation audit":            ("citationAccuracy", "citationAccuracy"),
+    "unread page != unsupported": ("def read_provenance(", "returns only an ABSTRACT rather than the cited page"),
     "survivor-only citation acc": ("citationAccuracySurvivorsOnly", "citationAccuracySurvivorsOnly"),
     "kills attributed by lens":  ("killsByLens", "killsByLens"),
     "answer-first synthesis":    ("answerFirst", "answerFirst"),

@@ -218,6 +218,45 @@ Same run, with the other review fixes in:
 One run on one question. The `struck: 2` is the load-bearing number here, not the
 accuracy: it is a mechanism moving off zero for the first time.
 
+## An unread page is not an unsupported claim (2026-09-08)
+
+Hermes filed this as waste: the audit spends a model call on an empty page. Testing it
+found the efficiency finding sitting on top of a correctness one. Same claim, same URL,
+12 audit calls each:
+
+| what the auditor was shown | verdict |
+|---|---|
+| an EMPTY page | `unreachable` **12/12** — correct, so the call buys nothing |
+| an ABSTRACT STUB | `unsupported` **12/12** — wrong, and `unsupported` is the only verdict that demotes a claim the panel already passed |
+
+`if not text.strip()` catches the case the model already handles perfectly and misses
+the case it gets wrong every time. The real question is not *empty versus non-empty* but
+**did we read the page this claim cites**, which `_fetch_meta[url]["via"]` had recorded
+all along and no judgement ever consulted.
+
+**A/B before shipping the prompt change**, 6 reps per cell, control = the same prompt run
+twice:
+
+| claim against an abstract | control ×2 | with the note |
+|---|---|---|
+| detail an abstract cannot carry | `unsupported` 6/6 | **`unreachable` 6/6** |
+| genuinely not supported | `unsupported` 6/6 | `unsupported` 6/6 |
+| the abstract's own finding | `supported` 6/6 | `supported` 6/6 |
+
+Zero control noise, and only the intended verdict moved — so it is not a blanket escape
+hatch.
+
+**Exposure, honestly:** across 12 recorded runs there are 4 abstract-only sources out of
+226, and 1 of 10 `unsupported` verdicts landed on one. A latent defect with one observed
+false kill, not a systemic one — and the archive fallback added the same day shrinks it
+further by preferring archived full text over the abstract.
+
+**The same note on the provenance LENS changed nothing**, across 4 claim types and both
+provenance kinds at 6 reps each, against a zero-noise control. It ships because
+withholding true information from the lens whose subject it is cannot be defended, and
+it reuses a seam the audit already needed — not because it was shown to help. Recorded
+so nobody later assumes it is load-bearing.
+
 ## The files
 
 | Prefix | What it is |

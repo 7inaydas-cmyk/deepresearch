@@ -148,6 +148,13 @@ encoding defeats extraction yields control characters, and a model shown those r
 fluent invented quotes - so the text is refused as unreachable instead.
 _Avoid_: sanity check, garbage filter
 
+**Read provenance**:
+How the engine actually obtained the page behind a [claim] — the full page, an abstract
+because the publisher blocked it, an archived copy, or nothing at all. Recorded at the
+fetch seam and, from 2026-09-08, consulted by the judgements rather than only reported.
+An unread page is an infrastructure limit, never a finding about the claim.
+_Avoid_: fetch status, source quality, via
+
 **Evidence base**:
 How many citable sources a finished report actually rests on, carried as a number and a
 `thin` flag. A label on the report, never a reason to withhold it: a thin run is evidence

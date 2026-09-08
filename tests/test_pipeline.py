@@ -367,6 +367,49 @@ ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- how a page was READ reaches the judgements about it --")
+# _fetch_meta recorded `via` from the day the fetch seam was instrumented, and NOTHING
+# that makes a judgement read it: the panel zero references, the audit zero references.
+# The engine knew it had only a citation stub and asked four models to judge as though
+# it held the paper. Measured 2026-09-08 over 12 calls each: shown an EMPTY page the
+# auditor says `unreachable` 12/12 (so the call buys nothing), and shown an ABSTRACT it
+# says `unsupported` 12/12 - the one verdict that demotes a claim the panel passed.
+_saved_meta = dict(dr._fetch_meta)
+try:
+    dr._fetch_meta.clear()
+    dr._fetch_meta.update({
+        "https://p.org/dead":     {"via": "failed", "error": "403"},
+        "https://p.org/binary":   {"via": "pdf-unreadable"},
+        "https://p.org/abstract": {"via": "crossref-fallback", "abstractOnly": True},
+        "https://p.org/archived": {"via": "wayback", "snapshotDate": "20250707101147"},
+        "https://p.org/normal":   {"via": "http"},
+    })
+    ok(dr.read_provenance("https://p.org/dead", "text")[0] is False
+       and dr.read_provenance("https://p.org/binary", "text")[0] is False,
+       "a failed fetch and an unreadable PDF are UNREACHABLE in code - no model is asked "
+       "to self-report an infrastructure failure the engine already observed")
+    ok(dr.read_provenance("https://p.org/normal", "")[0] is False,
+       "and an empty page is unreachable whatever `via` says")
+    ok(dr.read_provenance("https://p.org/normal", "real text")[0] is True
+       and dr.read_provenance("https://p.org/normal", "real text")[2] == "",
+       "an ordinary page is reachable and adds NOTHING to the prompt, so the common path "
+       "is byte-identical to before")
+    _abs = dr.read_provenance("https://p.org/abstract", "stub text")
+    ok(_abs[0] is True and "ABSTRACT ONLY" in _abs[2] and "`unreachable`, NOT `unsupported`" in _abs[2],
+       "an abstract-only page IS judged, but the auditor is told what it is holding and "
+       "told which verdict an infrastructure limit deserves")
+    _wb = dr.read_provenance("https://p.org/archived", "text")
+    ok(_wb[0] is True and "20250707101147" in _wb[2],
+       "an archived copy carries its snapshot date, because the provenance lens judges "
+       "recency and an archive is as old as its capture")
+    ok(dr.read_provenance("https://p.org/unknown-url", "text") == (True, "", ""),
+       "a URL with no recorded provenance is not treated as suspect")
+    _p = dr.p_fact("c", "https://p.org/abstract", "stub", _abs[2])
+    ok("ABSTRACT ONLY" in _p and dr.p_fact("c", "u", "t") == dr.p_fact("c", "u", "t", ""),
+       "the note reaches the audit prompt, and no note leaves that prompt unchanged")
+finally:
+    dr._fetch_meta.clear(); dr._fetch_meta.update(_saved_meta)
+
 print("\n-- the gate refuses impossible input instead of passing it --")
 ok(_cal.interpret(1.5, n=30)[0] == "undefined"
    and _cal.interpret(-1.5, n=30)[0] == "undefined",

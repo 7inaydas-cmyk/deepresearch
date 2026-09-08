@@ -906,6 +906,48 @@ def p_gap(q, subqs, digest, n_follow, rnd, total):
         "Each needs a label, a real search query, and the reason it deserves a slot. If coverage is genuinely "
         "complete, return followUps: [] - do not invent busywork.")
 
+# How a page was read decides what a verdict about it can mean. `_fetch_meta[url]["via"]`
+# has recorded this since the fetch seam was instrumented, and until now NOTHING that
+# makes a judgement read it: the three-lens panel referenced it zero times, the citation
+# audit zero times. The engine knew it had only ever seen a citation stub, and then asked
+# four models to judge the claim as though it were holding the paper.
+_UNREAD_VIA = {"failed": "the fetch failed outright",
+               "pdf-unreadable": "the PDF's text extraction was not readable prose"}
+
+
+def read_provenance(url, text):
+    """(reachable, why, note) for the page behind a claim.
+
+    `reachable` False means the engine KNOWS it does not have the cited page, so no
+    model needs to be asked - and must not be, because asking spends a call on a
+    question the code has already answered, and invites the model to report an
+    infrastructure failure as a finding.
+
+    `note` is what to tell a model that IS asked: which page it is actually holding.
+    """
+    meta = _fetch_meta.get(str(url)) or {}
+    via = meta.get("via")
+    if not (text or "").strip():
+        return False, (_UNREAD_VIA.get(via) or "the fetch returned no text"), ""
+    if via in _UNREAD_VIA:
+        return False, _UNREAD_VIA[via], ""
+    if meta.get("abstractOnly") or via == "crossref-fallback":
+        return True, "", (
+            "\n**WHAT YOU ARE READING: the publisher blocked this page, so the text below is "
+            "the ABSTRACT ONLY, not the full paper.** Judge only what an abstract can settle. "
+            "If the statement concerns a detail an abstract cannot carry - a subgroup, a "
+            "table value, a method - answer `unreachable`, NOT `unsupported`: the page that "
+            "would settle it was never read, and that is an infrastructure limit rather than "
+            "a finding about the claim.\n")
+    if via == "wayback":
+        return True, "", (
+            "\n**WHAT YOU ARE READING: an archived copy from %s, captured because the live "
+            "page was unreachable.** It is the real page text, but it is as old as that "
+            "snapshot - weigh recency against the capture date, not against today.\n"
+            % (meta.get("snapshotDate") or "an unstated date"))
+    return True, "", ""
+
+
 def to_ref(c):
     """A killed claim, with EVERY reason it died and every source that contradicted it.
 
@@ -983,7 +1025,8 @@ def _quote_line(c):
             % (pct, qc.get("why", "")))
 
 
-def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""):
+def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block="",
+             provenance_note=""):
     return (
         "## Adversarial Verifier %d/%d - %s\n\n" % (idx + 1, total, lens_title) +
         "You are ONE of %d verifiers, each with a different lens. Stay in YOUR lane. " % total +
@@ -992,13 +1035,14 @@ def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""
         "## Claim under review\n" + WEB_NOTE + "\"" + webtext(c["claim"], 800) + "\"\n\n"
         "**Source:** " + webtext(c["sourceUrl"], 250) + " (quality: " + webtext(c.get("sourceQuality", "?")) + ")\n"
         "**Publish date:** " + webtext(c.get("publishDate") or "unstated", 60) + "\n"
+        + (provenance_note or "") +
         "**Supporting quote:** \"" + webtext(c.get("quote", ""), 900) + "\"\n" + _quote_line(c) + "\n" + counter_block +
         "## Your lens\n" + lens_task + "\n\n"
         "Set refuted=true if your lens finds the claim wanting; false only if it passes YOUR check cleanly. Default to "
         "refuted=true when genuinely uncertain, but never refute for a reason belonging to another verifier's lens. "
         "Evidence MUST be specific: name the exact overreach, the exact counter-source, or the exact provenance defect.")
 
-def p_fact(claim, url, text):
+def p_fact(claim, url, text, provenance_note=""):
     """The blind citation audit.
 
     The page text is ~3000 of this prompt's ~3300 tokens, and several claims are
@@ -1014,7 +1058,8 @@ def p_fact(claim, url, text):
         "A research report is about to assert the statement below and cite the URL below as its support. You have NOT "
         "been shown what the report author quoted. Judge independently from the page text.\n\n"
         "## Statement\n" + WEB_NOTE + "\"" + webtext(claim, 800) + "\"\n\n"
-        "## Cited URL\n" + webtext(url, 300) + "\n\n"
+        "## Cited URL\n" + webtext(url, 300) + "\n"
+        + (provenance_note or "") + "\n"
         "## Page content as fetched now\n" + (webtext(text, 12000) if text.strip() else "(FETCH RETURNED NOTHING)") + "\n\n"
         "## Task\nFind text supporting the statement; quote it VERBATIM in locatedQuote. Then rule:\n"
         "- **supported** - the page states this, or entails it with no interpretive leap.\n"
@@ -1730,7 +1775,21 @@ def run_panel(q, claims, lenses):
                                                               webtext(h["snippet"], 240)) for h in hits) + "\n\n")
             else:
                 counter_block = "## Search results for counter-evidence\n(search returned nothing - absence of results is NOT evidence the claim is false)\n\n"
-        v = agent(p_verify(q, c, key, title, task, i, len(lenses), counter_block),
+        # Only the provenance lens is told. Its whole job is whether the source can carry
+        # the weight of the claim and whether it is current, and it was being asked that
+        # without being told the run never reached the publisher, or that it is reading a
+        # year-old archive snapshot. The other two lenses judge the argument, not the
+        # source, so telling them would be noise in their lane.
+        #
+        # MEASURED AND UNPROVEN, 2026-09-08. A/B'd over 4 claim types across both
+        # provenance kinds (abstract-only, archived copy), 6 reps each, against the same
+        # prompt run twice as a control: the control had zero self-noise and the note
+        # moved ZERO verdicts. It is shipped because withholding true information from
+        # the lens whose subject it is cannot be defended, and it reuses a seam the audit
+        # already needed - not because it was shown to help. Do not assume it is
+        # load-bearing; the audit note beside it IS, and was measured to be.
+        pnote = read_provenance(c.get("sourceUrl"), "x")[2] if key == "provenance" else ""
+        v = agent(p_verify(q, c, key, title, task, i, len(lenses), counter_block, pnote),
                   S_VERDICT, label=key, max_tokens=1500)
         return (id(c), dict(v, lens=key)) if v else (id(c), None)
 
@@ -2156,7 +2215,21 @@ def deepresearch(question, depth="standard", contract=None):
         # web_fetch caches per URL, so a page cited by five claims is pulled once.
         def audit(c):
             text = web_fetch(c["sourceUrl"], cap=12000)
-            f = agent(p_fact(c["claim"], c["sourceUrl"], text), S_FACT,
+            reachable, why, note = read_provenance(c["sourceUrl"], text)
+            if not reachable:
+                # Answer in code. Measured 2026-09-08: asked about an empty page the
+                # model returns `unreachable` 12 times out of 12, so the call buys
+                # nothing - and asking a model to self-report an infrastructure failure
+                # is the one thing this pipeline refuses everywhere else.
+                return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"],
+                            support="unreachable",
+                            reasoning="Decided in code, not by a model: %s, so the cited "
+                                      "page was never read. This is an infrastructure "
+                                      "limit, not a finding about the claim." % why,
+                            locatedQuote="",
+                            locatedQuoteCheck={"status": "unverifiable", "offset": None,
+                                               "foundFraction": None, "why": why})
+            f = agent(p_fact(c["claim"], c["sourceUrl"], text, note), S_FACT,
                       label="cite:" + (host_of(c["sourceUrl"]) or "?"), max_tokens=1200)
             if not f:
                 return None

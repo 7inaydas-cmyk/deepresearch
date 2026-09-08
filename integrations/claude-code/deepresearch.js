@@ -606,6 +606,13 @@ const FETCH_PROMPT = (source, angleLabel, subQuestions) =>
   '## Task\n' +
   '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality.\n' +
   '1. WebFetch the page.\n' +
+  // The orchestrator never sees this fetch - the subagent makes it - so the rule has
+  // to travel in the prompt. Measured in the Python twin 2026-09-08: shown an
+  // ABSTRACT instead of the cited page, the auditor answered `unsupported` 12 times
+  // out of 12, and `unsupported` is the only verdict that demotes a claim the panel
+  // already passed. That is an infrastructure limit recorded as a finding.
+  '   If the fetch fails, or returns a paywall shell, or returns only an ABSTRACT rather than the cited page, answer `unreachable` — NOT `unsupported`. `unsupported` means you read the page and it does not say this. If a statement concerns a detail an abstract cannot carry — a subgroup, a table value, a method — you did not read the page that would settle it, and that is an infrastructure limit rather than a finding about the claim.\n' +
+
   '2. Rate source quality: primary (original research//institution/official doc/source code) · secondary (reporting on primary work) · blog · forum · unreliable.\n' +
   '3. Extract 2-5 FALSIFIABLE claims bearing on the question. Each claim MUST:\n' +
   '   - be concrete and checkable — a number, a date, a named mechanism, a stated limit. NOT a vague generality.\n' +
