@@ -52,12 +52,60 @@ ones. Nothing fabricated was cited (the source picker rejected all of it), but i
 15 source-picks and the run finished with 12 verified claims instead of 30. Treat its
 numbers as compromised. Qwant is disabled from `v2-minimum-wage-employment` onward.
 
+## Prompt A/B: the audit's section order
+
+`ab-audit-prompt-order-2026-09-08.json`. Anthropic's prompt cache covers a *prefix*, so
+caching the audit's ~3000-token page block requires moving it above the statement. That
+is a change to the prompt behind the headline number, so it was measured before it
+shipped rather than argued about.
+
+30 identical `(claim, url, page)` triples from `v3-nudge-contract.json`, replayed through
+the current prompt **twice** — the control for how much the judge disagrees with itself —
+and then through the reordered prompt.
+
+| comparison | verdicts that differ | n |
+|---|---|---|
+| current vs current (control) | **0.000** | 30 |
+| current vs reordered | **0.200** | 30 |
+
+Zero self-disagreement, so all six changed verdicts are attributable to the reorder. They
+ran both ways (3 `partial`→`supported`, 2 `supported`→`partial`, 1 `partial`→`unreachable`)
+and the net moved headline citation accuracy 77.8% → 84.6%. The reorder was reverted and
+prompt caching refused; see `docs/adr/0003-no-prompt-caching.md`.
+
+**What this cannot show:** n=30 on one question detects a shift of roughly this size. A
+smaller systematic drift would not clear this sample.
+
+## Production check: the page cache and the token census
+
+`v4-4day-pagecache.json`, a standard run on the current regime.
+
+| what | result |
+|---|---|
+| `stats.pageFetchCache` | 19 hits / 12 misses, **61.3% hit rate**, 97,280 chars served from memory |
+| `stats.usageUnrecorded` | 3 fields the build does not name, **2 of them unpredicted** |
+
+The cache result is the audit re-reading pages the sweep already pulled: 19 network
+round-trips that no longer happen. The census result is the more interesting one — it
+reported `cache_creation.ephemeral_5m_input_tokens` and
+`cache_creation.ephemeral_1h_input_tokens` alongside the expected
+`output_tokens_details.thinking_tokens`. The API breaks cache creation down by TTL under a
+*nested* object, which is not what either the external review or this change predicted. A
+hardcoded list of missing fields would have shipped looking correct and still been short by
+two.
+
+**Caveat on this file:** it was produced mid-change. The process loaded the engine before
+`honestLimits.evidenceBase` was added, so this report does not carry that field. Everything
+else in it is current-regime.
+
 ## The files
 
 | Prefix | What it is |
 |---|---|
 | `v2-*` | Current regime: SearXNG on, all five fixes in, `--calibrate 30 --sample-dropped 10`. |
 | `probes-*` | Injected-defect probe results for the citation auditor and the process critic. |
+| `ab-*` | Prompt A/B experiments: identical inputs replayed through two prompt shapes, with a same-prompt control for the judge's own noise. |
+| `v4-*` | Current regime plus the per-URL page cache and the full token census. |
 | `calibration-*` | Panel reliability runs, superseded — the first two are the ones the gate amendment was written against. |
 | `*-BLOCKED-*` | A run that died on a server-side credential revocation. Kept because it is why `preflight()` exists. |
 | everything else | Superseded regime. See above. |

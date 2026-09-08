@@ -134,3 +134,15 @@ selects for verifiability.
 **Probe**:
 A defect injected into a finished report on purpose, to measure whether a checker catches
 it. The only ground truth this domain has.
+
+**Evidence base**:
+How many citable sources a finished report actually rests on, carried as a number and a
+`thin` flag. A label on the report, never a reason to withhold it: a thin run is evidence
+about the retrieval path, and twice it has been the only signature of a real bug.
+_Avoid_: source count, coverage, thin-run abort
+
+**Silent accounting**:
+A number the engine reports as complete while a contributing quantity goes uncounted. The
+token totals were this for the tool's whole life: cache tokens were never added, and read
+as zero either way, so the omission had no signature. Distinct from a [silent discard],
+which loses data rather than mis-sums it.

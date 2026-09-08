@@ -1,0 +1,224 @@
+{
+ "experiment": "audit prompt section order: page-before-statement (cacheable) vs statement-before-page (current)",
+ "date": "2026-09-08",
+ "source": "runs/v3-nudge-contract.json citationDetail, replayed",
+ "design": "A1/A2 = current prompt twice (control for judge self-noise); B = reordered prompt. Same (claim,url,page) triples throughout.",
+ "n": 30,
+ "disagreementOldVsOld": 0.0,
+ "disagreementOldVsNew": 0.2,
+ "reading": "the judge disagrees with itself on 0 of 30, and with the reordered prompt on 6 of 30, so the shift is attributable to the reorder rather than to noise. Net effect on headline citation accuracy: 77.8% -> 84.6%.",
+ "decision": "reorder rejected; prompt caching refused. See docs/adr/0003-no-prompt-caching.md",
+ "limits": "n=30 on one question. Detects a shift of roughly this size; a smaller systematic drift would not clear this sample.",
+ "rows": [
+  {
+   "claim": "Random-effects meta-analysis of nudge studies (raw, uncorrec",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "After correcting for publication bias using robust Bayesian ",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "Despite evidence against a mean effect after bias correction",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "RoBMA (robust Bayesian meta-analysis) integrates multiple pu",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "A megastudy involving 680,000 people tested nudges to encour",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "partial"
+  },
+  {
+   "claim": "The megastudy was a large-scale collaboration involving doze",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "supported"
+  },
+  {
+   "claim": "A 2017 study by Benartzi, Beshears, Milkman, Sunstein, Thale",
+   "url": "https://anderson-review.ucla.edu/nudge-worth/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "Yeager and colleagues' (2019) large, pre-registered national",
+   "url": "https://psychology.a-z-topics.com/applied-psychology/behavioral-public-policy/evidence-synthesis-in-behavioral-policy/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "The underlying study, 'Should Governments Invest More in Nud",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "Egger's regression test on the original meta-analysis datase",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "partial"
+  },
+  {
+   "claim": "A selection model (4PSM) applied to the same data produced a",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "partial"
+  },
+  {
+   "claim": "Bias-corrected subgroup analysis found evidence against an e",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "A recent review of 1000 meta-analyses across ten disciplines",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "supported"
+  },
+  {
+   "claim": "A large-scale, pre-registered megastudy (N = 47,306) tested ",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "A1": "unreachable",
+   "A2": "unreachable",
+   "B": "unreachable"
+  },
+  {
+   "claim": "A large-scale field trial study is titled 'RCTs to Scale: Co",
+   "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "partial"
+  },
+  {
+   "claim": "A workplace retirement-savings nudge that prompted new emplo",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "Unadjusted (uncorrected) meta-analytic estimates tend to ove",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "The selection model (4PSM) adjustment on the same dataset lo",
+   "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "unreachable"
+  },
+  {
+   "claim": "Within the megastudy, effectiveness varied across the 19 dif",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "A1": "unreachable",
+   "A2": "unreachable",
+   "B": "unreachable"
+  },
+  {
+   "claim": "Existing frequentist methods for handling within-study depen",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "The study was published in Proceedings of the National Acade",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "A nudge-based mailing that prompted employees to write down ",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "After correcting for the publication bias identified by Mert",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "In a large-scale field experiment with 68,915 employees acro",
+   "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "The best-performing single intervention among the 19 tested ",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33926993/",
+   "A1": "unreachable",
+   "A2": "unreachable",
+   "B": "unreachable"
+  },
+  {
+   "claim": "This tutorial demonstrates PET-PEESE, selection models (3PSM",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "A large-scale cluster-randomized field experiment (N=27,298 ",
+   "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "Study co-author Shlomo Benartzi stated that the cost-effecti",
+   "url": "https://www.sciencedaily.com/releases/2017/06/170608072859.htm",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  },
+  {
+   "claim": "In the demonstration dataset, PET-PEESE (via a weighted regr",
+   "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+   "A1": "partial",
+   "A2": "partial",
+   "B": "supported"
+  },
+  {
+   "claim": "Skeptics argue that nudge effectiveness varies substantially",
+   "url": "https://en.wikipedia.org/wiki/Nudge_theory",
+   "A1": "supported",
+   "A2": "supported",
+   "B": "supported"
+  }
+ ]
+}

@@ -1,0 +1,780 @@
+{
+ "question": "Does a four-day work week maintain output in knowledge work?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No controlled studies with objective output metrics (revenue, error rates, client satisfaction) have been cited yet; only tangential Hawthorne effect research."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No data gathered on selection bias of trial-participating firms; need info on how pilots recruited volunteer companies."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "unanswered",
+   "note": "No sector-by-sector or task-type breakdown found yet."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "unanswered",
+   "note": "Only generic novelty-effect decay curve from education research cited; no 4-day-week-specific long-term follow-up data."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No evidence yet on work intensification, unpaid overtime, or compressed after-hours work in 4-day trials."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No cases of abandoned/reversed four-day-week trials or reasons cited."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No comparison of self-report survey vs. objective KPI measurement methodologies across studies."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "UK pilot mentioned as 'a success' per one source, but no detail on metrics, sample, or comparison to Iceland/Belgium/Japan trials."
+  }
+ ],
+ "contradictions": [
+  "The Hawthorne-effect Wikipedia article contains a claimed re-analysis (Levitt & List) suggesting weak evidence for novelty/observation effects, which would undercut the 30%-SD decay claim [0] and the relay-assembly finding [6] — but that re-analysis claim was itself killed by the citation audit, leaving the novelty-effect claims standing but on a source that internally reports it was disputed.",
+  "The claim that the UK four-day-week pilot was 'a success' [4] is based on a single author's opinion-piece headline with no disclosed objective metrics, while no contrary source documenting output decline, cost increases, or reversal at UK pilot firms was found or checked against it — so the 'success' framing should not be read as adjudicated fact.",
+  "The Wikipedia Hawthorne-effect summary presents two competing accounts of the same phenomenon: one claims novelty/observation effects reliably boost performance ~30% of a SD before decaying, while the Levitt & List re-analysis of the original illumination data found only slight, weak evidence of any Hawthorne effect at all — these cannot both be strongly true of the same underlying phenomenon.",
+  "The claim that the UK four-day-week pilot was 'a success' (single source, DOI citation, likely self-reported survey data) is not yet corroborated by any objective KPI data, and no contrary source (e.g., a firm that reversed the policy or reported output decline) has been checked to see if it contradicts this success narrative."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether an organization (or policymaker) should pilot or adopt a four-day work week, or whether an individual/manager should advocate for it, versus sticking with a standard five-day schedule",
+  "keyQuestion": "Does reducing knowledge workers' schedule from five to four days (with full pay) maintain or improve measurable output compared to a standard five-day week?",
+  "assumptions": [
+   "'Knowledge work' refers to office/professional roles (e.g., tech, consulting, admin, creative) rather than manufacturing, healthcare, or shift-based work",
+   "'Output' means productivity/performance metrics (revenue, output-per-hour, project completion, quality) rather than just hours worked or employee sentiment",
+   "Four-day work week means reduced hours (32hr) with same pay, not compressed hours (same total hours over 4 days)",
+   "Time horizon of interest is short-to-medium term (pilot studies, 6 months to 2 years), not multi-decade effects",
+   "Geography/scope is not restricted to one country; global evidence including UK, Iceland, Japan, US pilots is relevant unless stated otherwise",
+   "'Maintain' means output stays roughly the same or better, not a strict statistical null-hypothesis test"
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Evidence that output metrics (revenue, deliverables, client satisfaction) declined in rigorous 4-day pilots despite self-reported productivity gains",
+   "Findings that reported productivity gains are driven by selection bias (only high-performing/willing firms trial it) rather than the schedule change itself",
+   "Evidence that gains fade over time (novelty effect) when measured beyond 6-12 months",
+   "Sector-specific findings showing knowledge work benefits while other sectors (retail, healthcare) do not, which would narrow the answer's scope",
+   "Data showing hidden costs like work intensification, unpaid overtime, or burnout that offset apparent output maintenance",
+   "Presence/absence of rigorous control-group (RCT-style) studies versus only self-selected opt-in pilots with no counterfactual"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Four-day weeks maintain or increase output in knowledge work because of efficiency gains, reduced burnout, and better focus",
+    "killCriterion": "Multiple independent studies (with control groups) show statistically significant output decline (>5-10%) in 4-day pilots"
+   },
+   {
+    "hypothesis": "Four-day weeks reduce output roughly proportional to hours lost, i.e., output does not fully hold up",
+    "killCriterion": "Majority of peer-reviewed or large-sample pilot studies report output maintained within noise (no significant drop) across multiple sectors"
+   },
+   {
+    "hypothesis": "Effects are highly context-dependent: output is maintained in some knowledge-work subsectors/firm types (e.g., tech, creative) but not others (e.g., client-facing consulting with fixed deadlines)",
+    "killCriterion": "Evidence shows uniform outcomes across knowledge-work subsectors with no meaningful variation by task type or firm structure"
+   },
+   {
+    "hypothesis": "Apparent 'maintained output' findings are artifacts of self-selection, short pilot duration, or self-reported (non-objective) productivity measures rather than a genuine causal effect",
+    "killCriterion": "Existence of long-duration (2+ years), randomized or quasi-experimental studies with objective output metrics confirming sustained output parity"
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Primary-literature academic",
+   "lens": "An academic researcher who distrusts press releases and organizational self-reports, wants peer-reviewed studies with control groups and objective output metrics",
+   "query": "four-day work week randomized controlled trial productivity peer-reviewed study"
+  },
+  {
+   "label": "Steelman advocate",
+   "lens": "A workplace efficiency researcher building the strongest honest case that output is maintained or improved, distrusts dismissive skepticism that ignores mechanism (focus, burnout reduction, Parkinson's law)",
+   "query": "four-day work week increased productivity efficiency gains evidence knowledge workers"
+  },
+  {
+   "label": "Skeptic hunting counter-cases",
+   "lens": "A critical analyst actively searching for pilots or firms where output declined, distrusts uniformly positive coverage from 4-day-week advocacy organizations",
+   "query": "four-day work week failed pilot productivity decline abandoned company"
+  },
+  {
+   "label": "Data auditor / constructor from primary evidence",
+   "lens": "A quantitative auditor who distrusts secondhand summaries and wants raw pilot data, KPIs, revenue figures, and methodology sections from original trial reports",
+   "query": "4 day week global pilot 2022 2023 results report revenue KPI data appendix methodology"
+  },
+  {
+   "label": "Sector/context differentiator",
+   "lens": "An organizational consultant comparing outcomes across knowledge-work subsectors (tech, law, consulting, creative) versus other sectors, distrusts one-size-fits-all conclusions",
+   "query": "four-day work week outcomes by industry sector comparison tech consulting law creative"
+  },
+  {
+   "label": "Longitudinal/novelty-effect tracker",
+   "lens": "A labor economist tracking studies beyond the initial pilot window, distrusts short 6-week trials and wants multi-year follow-up data on whether gains persist or fade",
+   "query": "four-day work week long-term follow-up two years later results sustained"
+  }
+ ],
+ "summary": "Across 12 confirmed claims, no rigorous controlled study using objective output metrics (revenue, error rates, deliverables) was found that directly tests a four-day work week in knowledge work; the one identified RCT with objective KPIs studies work-from-home vs. hybrid arrangements, not a 4-day week, and remains incomplete with no published data [10][11][7]. The most-cited large-scale trial (via Nature) reports workers \"happier and feel just as productive\" — a subjective self-report finding, not an objective output measurement [1][2]. A 2022 review article concludes cross-country 4-day-week studies have generally been positive [3], and a single opinion piece calls the UK pilot \"a success\" [4], but neither discloses objective methodology and the UK source's tier is unverified. General novelty/observer-effect research shows performance gains from workplace changes can average ~30% of a standard deviation before decaying substantially within about eight weeks [0][6], raising doubt about whether early positive pilot results reflect a durable effect or short-term reactivity. On the whole, the evidence is insufficient to confirm or deny that output is maintained under a four-day week in knowledge work; the honest answer is \"not yet demonstrated with rigorous, objective, long-duration evidence.\"",
+ "answerFirst": "The available evidence cannot confirm that a four-day work week maintains output in knowledge work. The only large-scale evidence cited (Nature's report on the \"biggest trial\") measures subjective self-reported productivity, not objective output metrics, and no rigorous controlled study with objective output data (revenue, error rates, deliverables) was found. Treat the \"success\" narrative as unproven rather than false: it rests on self-report, short/undisclosed follow-up periods, and likely self-selected volunteer organizations. This question remains substantively open pending objective-metric, longer-duration, non-self-selected trials.",
+ "hingeNumber": {
+  "value": "0 (no objective-metric, completed, output-measuring 4-day-week study exists in the confirmed evidence)",
+  "why": "The entire question hinges on whether output was measured objectively or just self-reported ('feel just as productive'). Since zero controlled studies with objective output metrics for an actual 4-day-week intervention were found (the only objective-KPI RCT tests WFH vs hybrid, not a 4-day week, and is incomplete), the answer to 'does output hold up' cannot be given a confidence-bearing numeric answer at all -- it is not a number that could move 10-20%, it is a complete absence of load-bearing data.",
+  "sensitivity": "Not applicable in the usual sense: there is no single number to perturb. If even one objective-metric, completed 4-day-week study appeared, the entire evidentiary picture would change qualitatively rather than just quantitatively — this is a data-existence gap, not a parameter-sensitivity issue.",
+  "source": "https://doi.org/10.1257/rct.12741-1.0 (incomplete, wrong intervention type); https://doi.org/10.1038/d41586-025-02295-2 (subjective measure only)"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Four-day weeks maintain or increase output in knowledge work because of efficiency gains, reduced burnout, and better focus",
+   "verdict": "surviving",
+   "reasoning": "Two secondary sources report generally positive conclusions across studies and a 'success' framing for the UK pilot, and no confirmed claim shows a statistically significant output decline in a controlled 4-day pilot. However, this survival is weak: the positive evidence rests on self-report ('feel just as productive') and an unverified-tier opinion piece, not objective KPIs, so the kill criterion (multiple controlled studies showing >5-10% decline) was never actually tested either way.",
+   "claimsCited": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "hypothesis": "H2: Four-day weeks reduce output roughly proportional to hours lost, i.e., output does not fully hold up",
+   "verdict": "surviving",
+   "reasoning": "Untriggered by its stated kill criterion (majority of peer-reviewed/large-sample pilots reporting maintained output with objective metrics) because no confirmed claim uses objective output metrics for an actual 4-day-week trial -- the positive claims [1][2][3][4] rely on self-report or unverified sourcing, not rigorous objective KPI confirmation, so the kill criterion's requirement for large-sample studies with credible measurement is not met and H2 cannot be ruled out.",
+   "claimsCited": [
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "hypothesis": "H3: Effects are highly context-dependent: output is maintained in some knowledge-work subsectors/firm types but not others",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim provides any sector-by-sector or task-type breakdown of 4-day-week outcomes; the coverage checklist explicitly flags this as unanswered with zero data gathered.",
+   "claimsCited": []
+  },
+  {
+   "hypothesis": "H4: Apparent 'maintained output' findings are artifacts of self-selection, short pilot duration, or self-reported (non-objective) productivity measures rather than a genuine causal effect",
+   "verdict": "surviving",
+   "reasoning": "The kill criterion (existence of long-duration, randomized/quasi-experimental studies with objective output metrics confirming sustained parity) was not met -- no such study was found. Meanwhile, direct evidence supports the H4 mechanism: the largest trial's finding relies on subjective 'feel just as productive' self-report [1][2], general novelty effects are documented to inflate short-run performance by ~30% of a SD before decaying within about eight weeks [0][6], and no long-term or objective-metric 4-day-week study exists to counter this. H4 is not proven but is the best-supported hypothesis given available evidence.",
+   "claimsCited": [
+    0,
+    1,
+    2,
+    6
+   ]
+  }
+ ],
+ "strongestArgumentAgainst": "The single strongest fact actually confirmed in this evidence set is that the largest cited 4-day-week trial (Nature) measured whether workers \"feel just as productive\" — a subjective self-report metric, not an objective output measure. Combined with (a) the near-total absence of any controlled study with objective KPIs actually testing a 4-day week (the one objective-KPI RCT found tests WFH-vs-hybrid, not hours reduction, and has no published results), (b) the well-documented general pattern that novelty/observation effects inflate short-run performance by ~30% of a SD before decaying within about eight weeks, and (c) the likely self-selection of enthusiastic, already-motivated volunteer firms into these pilots (an assumption, not directly evidenced here, but a standard critique of voluntary pilot programs) — the honest conclusion is that \"4-day weeks maintain output\" is an unverified, self-report-driven narrative that has not survived rigorous objective-metric testing. A critic could argue the positive review articles [3][5] give some independent corroboration, but even those are themselves reviews of studies without transparent objective-metric detail supplied here, so they do not resolve the core methodological gap.",
+ "whatWouldChangeThisCall": [
+  "Publication of the police WFH-vs-hybrid RCT (doi.org/10.1257/rct.12741-1.0) results, once completed, showing objective KPI (crimes logged, time-per-report) parity or decline under reduced-hours-equivalent conditions.",
+  "Discovery of a controlled 4-day-week study using objective output metrics (revenue, error rates, deliverables, client satisfaction) rather than self-reported 'feeling productive' surveys.",
+  "Evidence on whether firms volunteering for 4-day-week pilots are a self-selected, above-average-performing sample, which would materially deflate confidence in generalizability.",
+  "Follow-up data beyond 12 months on pilot firms showing whether reported gains persist or decay (testing against the ~8-week novelty-effect decay pattern documented in claim [0]).",
+  "Documentation of any reversed/abandoned 4-day-week pilots and the stated reasons, which was actively searched for but not found."
+ ],
+ "baseRate": "No genuine base rate for \"does output hold at 4 days\" was found in the confirmed claims. The closest analog is the general Hawthorne/novelty-effect literature: uncontrolled novelty effects average ~30% of a SD performance rise that decays to much smaller after 8 weeks (claim [0]) — an outside-view reason to discount early positive pilot results, but not a direct base rate for 4-day-week output. Absent a domain-specific base rate, any \"success\" claim should be treated as a single self-selected data point, not a generalizable prior.",
+ "findings": [
+  {
+   "claim": "The largest four-day work week trial to date (as reported by Nature) found workers happier and 'feeling' just as productive — but this rests on subjective self-report, not objective output metrics.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1038/d41586-025-02295-2"
+   ],
+   "evidence": "Quotes: 'Biggest trial of four-day work week finds workers are happier and feel just as productive'; 'workers are happier and feel just as productive'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (title match) for the 'happier/feel productive' claim itself; the subjective-vs-objective characterization is itself only supported via the phrase 'feel just as productive,' and the audit for the companion claim about it being a subjective (non-objective) measure came back 'unreachable' — the full-text methodology was never actually fetched, only Crossref metadata."
+  },
+  {
+   "claim": "A 2022 review-style journal article concludes that cross-country studies on four-day work week policies have overall been positive and supportive of the policy.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.47191/ijmra/v5-i8-04"
+   ],
+   "evidence": "Quote: 'Studies have been conducted on 4 day work week policies of workers across the world and the conclusion has been very positive and has supported the four day work week policy.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - abstract directly states this conclusion nearly verbatim."
+  },
+  {
+   "claim": "The UK's four-day working week pilot was characterized by the article's author as a success.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.64628/ab.pnrxqpjq9"
+   ],
+   "evidence": "Quote (headline): 'The UK's four-day working week pilot was a success – here's what should happen next'",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported by title only; no abstract or body text available, no output metrics disclosed, source tier unverified (T?), and this is a single author's opinion piece, not a controlled study with objective KPIs."
+  },
+  {
+   "claim": "No controlled or quasi-experimental study using objective productivity/output metrics (revenue, error rates, deliverables, client satisfaction) directly tests the four-day work week; the one identified RCT using objective KPIs (crime-logging metrics) studies work-from-home vs. hybrid arrangements, not a 4-day week, and has not yet published results.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.1257/rct.12741-1.0"
+   ],
+   "evidence": "Quotes: 'Our goal is to rigorously evaluate a randomized intervention that asks workers to work almost exclusively from home relative to a hybrid working regime.'; 'number of crimes logged... average time spent on each crime report... total amount of time spent logging crimes'; 'Is the intervention completed? No'",
+   "vote": "3-0 / 2-1 / 2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - registry page confirms the study design (WFH vs hybrid, not 4-day week), the objective KPIs used, and that the intervention is not completed with no public data available."
+  },
+  {
+   "claim": "Work-life balance is reported (in the same 2022 review article) as the most common driver of employee attrition regardless of geography or profession — relevant as a plausible mechanism for why 4-day weeks might improve retention/engagement, but this is not evidence of output maintenance per se.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.47191/ijmra/v5-i8-04"
+   ],
+   "evidence": "Quote: 'Lack of work life balance has been the most common reason of attrition irrespective of geography and profession.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - abstract states this nearly verbatim."
+  },
+  {
+   "claim": "Historical Hawthorne relay-assembly experiments show productivity rose after schedule reductions (ending workday earlier, dropping Saturday work), but this is widely interpreted as reactivity to being observed (a novelty/observer effect) rather than a durable causal effect of reduced hours — and uncontrolled novelty effects in general decay substantially within about eight weeks.",
+   "confidence": "high",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Hawthorne_effect"
+   ],
+   "evidence": "Quotes: 'Changing the end of the workday from 5:00 to 4:30 and eliminating the Saturday workday. This increased productivity.'; 'Clark and Sugrue in a review of educational research reported that uncontrolled novelty effects cause on average 30% of a standard deviation (SD) rise... decaying to a much smaller effect after eight weeks.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - Wikipedia page confirms both the schedule-change productivity increase and the general novelty-effect decay curve."
+  },
+  {
+   "claim": "General UK labour-market context (37-hour average working week per UK labour law source) provides background but no direct evidence on four-day week output effects; the UK labour law Wikipedia article does not itself address 4-day week trials or output data.",
+   "confidence": "low",
+   "sources": [
+    "https://en.wikipedia.org/wiki/United_Kingdom_labour_law"
+   ],
+   "evidence": "Quote: 'The median full-time income was £39,093 (2025) with an average working week of 37 hours.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "partial - the 37-hour figure is confirmed, but the audit flagged ambiguity about which year the 'article's stated data' refers to; this figure is background context only and adds no direct output-effect information beyond what the page states."
+  }
+ ],
+ "caveats": "This body of evidence does NOT answer the core coverage-checklist questions: (1) no controlled study with objective output metrics (revenue, error rates, deliverables, client satisfaction) directly measures 4-day-week output; (2) no data on self-selection bias among firms that volunteer for 4-day pilots; (3) no sector-by-sector breakdown (tech vs. client-facing consulting vs. law etc.); (4) no long-term (12+ month) follow-up data specific to 4-day-week trials — only generic novelty-effect decay curves from education research were found, which is an analogy, not direct evidence; (5) no evidence on work intensification, unpaid overtime, or compressed after-hours work that could mask true output loss; (6) no cases of abandoned/reversed 4-day-week pilots were found despite explicit search; (7) the UK \"success\" claim [source T?] is a single opinion-piece headline with unverified source tier and no disclosed methodology — this is a weak, likely aggregator/blog-adjacent source and should not be treated as a rigorous finding. The Nature \"biggest trial\" claim relies on subjective self-report (\"feel just as productive\"), and the audit attempting to confirm the subjective-vs-objective distinction returned \"unreachable\" (metadata-only, no full text). Two claims were explicitly refuted/killed during the audit and are excluded: a claim mischaracterizing the WFH RCT's sample size, and a claim asserting a different trial \"confirmed\" increased wellbeing and productivity — both failed citation support. A contradiction was flagged but not resolved: general Hawthorne-effect literature is split between claims of a reliable ~30%-SD novelty boost and a re-analysis (itself later killed by citation audit) suggesting weaker effects — readers should not treat the novelty-decay figure as settled science, only as one credible strand. Time-sensitivity: the Nature and 2022 review sources are recent (2022, 2025) but reflect a fast-moving, politically charged policy debate; findings could shift quickly with new large-scale trials (e.g., further UK, Iceland, Belgium, Japan pilots) not yet captured here.",
+ "openQuestions": [
+  "What do controlled studies with objective output metrics (not self-report) show for actual four-day-week interventions in knowledge work?",
+  "Are firms that volunteer for four-day-week pilots systematically higher-performing or more motivated than average, and how much does this bias reported success rates?",
+  "Do output/productivity gains reported in early pilots persist beyond 12-24 months, or do they decay similarly to the general novelty-effect pattern (~30% of a SD decaying within eight weeks) documented in unrelated educational research?",
+  "What happened to firms or national programs that piloted and then abandoned or reversed a four-day week, and what output/productivity concerns did they cite?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 66.7,
+  "citationAccuracySurvivorsOnly": 75.0,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 12,
+  "supported": 12,
+  "partial": 5,
+  "unsupported": 1,
+  "unreachable": 1,
+  "scope": "full verification pool (19 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 1
+ },
+ "citationDetail": [
+  {
+   "claim": "Novelty effects in research settings can cause a temporary performance rise of roughly 30% of a standard deviation on average, decaying to a much smaller effect after eight weeks, based on a review of educational research.",
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "support": "supported",
+   "reasoning": "The Wikipedia page directly states that Clark and Sugrue, in a review of educational research, found that novelty effects cause on average a 30% of a standard deviation rise in performance, with the effect decaying to a much smaller effect after eight weeks. This matches the statement's claims about the ~30% SD rise, the decay after eight weeks, and the basis being a review of educational research…"
+  },
+  {
+   "claim": "The study's productivity finding relies on workers' subjective feelings of being productive rather than objective output metrics",
+   "url": "https://doi.org/10.1038/d41586-025-02295-2",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only contains bibliographic metadata (title, journal, year, authors, DOI) from Crossref, with an explicit note that 'Crossref holds no abstract for this record — metadata only.' There is no actual body text, abstract, or discussion of methodology available to evaluate whether the productivity finding relied on subjective feelings versus objective metrics. While the title i…"
+  },
+  {
+   "claim": "Nature reports on the biggest trial to date of the four-day work week, finding that workers were happier and felt just as productive",
+   "url": "https://doi.org/10.1038/d41586-025-02295-2",
+   "support": "supported",
+   "reasoning": "The Crossref metadata record for this Nature article (DOI 10.1038/d41586-025-02295-2) gives the article's title itself as Biggest trial of four-day work week finds workers are happier and feel just as productive, published in Nature (2025). This title directly matches the statement being checked—that Nature reports on the biggest trial to date of the four-day work week, finding workers were happie…"
+  },
+  {
+   "claim": "A journal article published in 2022 reviews studies on four-day work week policies conducted across various countries and reports that the overall conclusions have been positive, supporting the four-day work week policy.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "supported",
+   "reasoning": "The abstract, from a 2022 journal article, explicitly states that studies on four-day work week policies conducted across the world had positive conclusions supporting the policy, matching the statement closely."
+  },
+  {
+   "claim": "This is a registered RCT dataset record about whether working from home affects worker productivity, authored by Alessandra Fenizia and Tom Kirchmaier, published via AEA RCT Registry in 2023.",
+   "url": "https://doi.org/10.1257/rct.12741-1.1",
+   "support": "supported",
+   "reasoning": "The page title matches the research question about working from home and productivity, the Type is listed as dataset, the Journal is AEA Randomized Controlled Trials (i.e., AEA RCT Registry), the Year is 2023, and the Authors are listed as Alessandra Fenizia and Tom Kirchmaier. This directly supports all elements of the statement: it is a registered RCT dataset record, about whether working from h…"
+  },
+  {
+   "claim": "Re-analysis of the original Hawthorne illumination experiment data (recovered from microfilm in 2011) by economists Steven Levitt and John List found only slight evidence for a Hawthorne-type observation effect over the long run, far weaker than originally claimed.",
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "support": "unsupported",
+   "reasoning": "The fetched Wikipedia page text does not mention Steven Levitt, John List, a 2011 microfilm re-analysis, or any re-examination of the original illumination experiment data. The article discusses the illumination experiment, relay assembly experiments, mass interviewing, bank wiring room experiments, and various interpretations (Nisbett, Adair, Parsons, Mayo, Clark and Sugrue, Braverman), but nowhe…"
+  },
+  {
+   "claim": "Researcher J.G. Adair warned that most secondary publications on the Hawthorne effect contain gross factual inaccuracies and that many subsequent studies failed to replicate the effect, cautioning that reported productivity gains from workplace interventions may not be robust.",
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "support": "partial",
+   "reasoning": "The page confirms the core claims about Adair: that most secondary publications contain gross factual inaccuracies and that many studies failed to find (replicate) the Hawthorne effect. This matches the first two parts of the statement closely. However, the statement adds an extra interpretive claim - that Adair was cautioning that reported productivity gains from workplace interventions may not b…"
+  },
+  {
+   "claim": "The UK's four-day working week pilot was assessed by the author as a success.",
+   "url": "https://doi.org/10.64628/ab.pnrxqpjq9",
+   "support": "supported",
+   "reasoning": "The title itself, attributed to author Miriam Marra, directly states that the UK's four-day working week pilot was a success. This is the title of the piece, which is a strong direct textual match to the statement being checked. No abstract or body text is available beyond metadata, but the title alone explicitly asserts the pilot was a success, matching the claim closely without requiring interpr…"
+  },
+  {
+   "claim": "A study/trial titled 'Four-day week trial confirms working less increases wellbeing and productivity' reports that reducing work to four days increased both wellbeing and productivity for participating organizations.",
+   "url": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bare Crossref metadata for the record: title, journal (unknown), year, type (posted-content), citation count, author, and DOI. Crucially, it states explicitly Crossref holds no abstract for this record — metadata only. There is no abstract, body text, or findings reported on the page beyond the title itself. The title does match the statement's claimed title and does…"
+  },
+  {
+   "claim": "The paper claims lack of work-life balance is the most common reason for employee attrition regardless of geography or profession.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states this claim nearly verbatim, matching the statement's content and scope."
+  },
+  {
+   "claim": "In the original Hawthorne relay assembly experiments, productivity increased following changes to work schedule such as ending the workday earlier and eliminating Saturday work, illustrating that reduced hours arrangements can coincide with reported productivity gains, though this may reflect reacti…",
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "support": "supported",
+   "reasoning": "The Wikipedia page explicitly states that in the relay assembly experiments, changing the workday to end earlier (5:00 to 4:30) and eliminating Saturday work increased productivity. This directly supports the claim that reduced hours arrangements coincided with reported productivity gains. The page also broadly attributes the Hawthorne effect to reactivity to being observed (workers thought they w…"
+  },
+  {
+   "claim": "The study uses objective productivity metrics such as number of crimes logged, average time spent per crime report, and total time logging crimes, illustrating a rigorous objective-KPI approach relevant to how 'output' can be measured in workplace flexibility studies.",
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "support": "partial",
+   "reasoning": "The page confirms the study's primary outcome measures include exactly the three metrics cited: number of crimes logged, average time spent per crime report, and total time spent logging crimes. This directly supports the factual claim about what objective productivity metrics are used. However, the statement adds an interpretive framing - calling this a rigorous objective-KPI approach relevant to…"
+  },
+  {
+   "claim": "The study randomly assigned 138 officers, with 69 in a treatment group asked to work from home 95% of the time and 69 in a control group continuing a status quo of about 70% work-from-home.",
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "support": "supported",
+   "reasoning": "The page explicitly states the sample size of 138 officers, randomization into 69 treatment and 69 control, the treatment group working from home ~95% of the time, and the control group continuing status quo of ~70% work-from-home. All elements of the statement are directly supported by verbatim text on the page."
+  },
+  {
+   "claim": "This Wikipedia article on UK labour law does not discuss four-day work week trials, pilots, or output/productivity data relevant to knowledge work.",
+   "url": "https://en.wikipedia.org/wiki/United_Kingdom_labour_law",
+   "support": "supported",
+   "reasoning": "The statement is a negative claim: that the page does NOT discuss four-day work week trials, pilots, or output/productivity data relevant to knowledge work. Reviewing the full fetched page content, it covers topics such as minimum wage, working time regulations, holidays, pensions, collective bargaining, trade unions, equality law, dismissal/redundancy law, and the history of UK labour law from fe…"
+  },
+  {
+   "claim": "The paper states its aim is to examine the feasibility of the four-day work week practice in the long run, addressing whether benefits persist.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "partial",
+   "reasoning": "The abstract does state that the paper would highlight the feasibility of the four-day work week in the long run, which supports the core claim about examining long-run feasibility. However, the statement adds specificity by claiming the paper explicitly addresses whether benefits persist - the abstract does not use this phrasing or explicitly frame the study as investigating persistence of benefi…"
+  },
+  {
+   "claim": "The record is a posted-content (preprint/non-peer-reviewed) item published in 2022 with zero citations recorded, indicating it has not yet been validated by the broader academic community.",
+   "url": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "support": "supported",
+   "reasoning": "The page metadata directly states Type: posted-content (indicating a preprint/non-peer-reviewed item), Year: 2022, and Cited by: 0, which together directly support the factual claims in the statement (record type, publication year, and zero citations). The interpretive clause indicating it has not yet been validated by the broader academic community is a reasonable, low-leap inference from zero ci…"
+  },
+  {
+   "claim": "As of the article's stated data, the average UK working week was 37 hours, providing general labour market context but no evidence on four-day week output effects.",
+   "url": "https://en.wikipedia.org/wiki/United_Kingdom_labour_law",
+   "support": "partial",
+   "reasoning": "The page does confirm the 37-hour average UK working week figure, matching the first part of the statement (general labour market context). However, the page provides no data as of 2026 pertains to that specific year, not necessarily matching whatever article's stated data refers to in the report - this creates some ambiguity about which year/article is being referenced. More importantly, the seco…"
+  },
+  {
+   "claim": "This UK-based RCT studies work-from-home arrangements (nearly full-time WFH vs hybrid) among police officers, not a four-day work week intervention, so it does not directly address the 4-day week question.",
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "support": "supported",
+   "reasoning": "The page describes an RCT located in the UK (Country: United Kingdom of Great Britain and Northern Ireland) involving police officers (the sample consists of officers working within a police-like schedule, logging crimes in an internal computer system). The intervention compares officers assigned to work almost exclusively from home (95% WFH) versus a hybrid control group (70% WFH, 30% office), ma…"
+  },
+  {
+   "claim": "As of the registry record, the intervention was not yet completed and no data had been published, meaning no output/productivity results are yet available from this trial.",
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "support": "supported",
+   "reasoning": "The registry page explicitly states that the intervention is not completed (Is the intervention completed? No) and that no public data is available (Is public data available? No). This directly supports the claim that as of the registry record, the intervention was not yet completed and no data had been published, implying no output/productivity results are yet available."
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "Do the firms/organizations that trial four-day weeks represent a self-selected, high-performing, or highly motivated sample, and how much does this selection bias inflate reported success?",
+   "How do outcomes differ across knowledge-work subsectors (e.g., software/tech, creative agencies, law, consulting, finance) and by task structure (deadline-driven/client-facing vs. autonomous/project-based)?",
+   "Are there documented cases of work intensification, unpaid overtime, or increased after-hours work that offset or mask apparent output maintenance?",
+   "What is the track record of four-day-week pilots or policies that were abandoned, extended, or reversed, and what reasons were given (including output/productivity concerns)?"
+  ],
+  "targeted": 4,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "Researcher J.G. Adair warned that most secondary publications on the Hawthorne effect contain gross factual inaccuracies and that many subsequent studies failed to replicate the effect, cautioning that reported productivity gains from workplace interventions may not be robust.",
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "support": "partial",
+   "reasoning": "The page confirms the core claims about Adair: that most secondary publications contain gross factual inaccuracies and that many studies failed to find (replicate) the Hawthorne effect. This matches the first two parts of the statement closely. However, the statement adds an extra interpretive claim - that Adair was cautioning that reported productivity gains from workplace interventions may not b…"
+  },
+  {
+   "claim": "A study/trial titled 'Four-day week trial confirms working less increases wellbeing and productivity' reports that reducing work to four days increased both wellbeing and productivity for participating organizations.",
+   "url": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bare Crossref metadata for the record: title, journal (unknown), year, type (posted-content), citation count, author, and DOI. Crucially, it states explicitly Crossref holds no abstract for this record — metadata only. There is no abstract, body text, or findings reported on the page beyond the title itself. The title does match the statement's claimed title and does…"
+  },
+  {
+   "claim": "The study uses objective productivity metrics such as number of crimes logged, average time spent per crime report, and total time logging crimes, illustrating a rigorous objective-KPI approach relevant to how 'output' can be measured in workplace flexibility studies.",
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "support": "partial",
+   "reasoning": "The page confirms the study's primary outcome measures include exactly the three metrics cited: number of crimes logged, average time spent per crime report, and total time spent logging crimes. This directly supports the factual claim about what objective productivity metrics are used. However, the statement adds an interpretive framing - calling this a rigorous objective-KPI approach relevant to…"
+  },
+  {
+   "claim": "The paper states its aim is to examine the feasibility of the four-day work week practice in the long run, addressing whether benefits persist.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "partial",
+   "reasoning": "The abstract does state that the paper would highlight the feasibility of the four-day work week in the long run, which supports the core claim about examining long-run feasibility. However, the statement adds specificity by claiming the paper explicitly addresses whether benefits persist - the abstract does not use this phrasing or explicitly frame the study as investigating persistence of benefi…"
+  },
+  {
+   "claim": "As of the article's stated data, the average UK working week was 37 hours, providing general labour market context but no evidence on four-day week output effects.",
+   "url": "https://en.wikipedia.org/wiki/United_Kingdom_labour_law",
+   "support": "partial",
+   "reasoning": "The page does confirm the 37-hour average UK working week figure, matching the first part of the statement (general labour market context). However, the page provides no data as of 2026 pertains to that specific year, not necessarily matching whatever article's stated data refers to in the report - this creates some ambiguity about which year/article is being referenced. More importantly, the seco…"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 5,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A 2022 review article concludes cross-country 4-day-week studies have generally been positive [3], and a single opinion piece calls the UK pilot a success [4], but neither discloses objective methodology and the UK source's tier is unverified.",
+   "General novelty/observer-effect research shows performance gains from workplace changes can average ~30% of a standard deviation before decaying substantially within about eight weeks [0][6], raising doubt about whether early positive pilot results reflect a durable effect or short-term reactivity.",
+   "The most-cited large-scale trial (via Nature) reports workers happier and feel just as productive",
+   "and the UK source's tier is unverified"
+  ],
+  "untraceableStatements": [
+   "Attribution of the ~30% SD novelty effect figure directly to the Hawthorne experiments' interpretation is a conflation not licensed by claims [0] and [6] which are distinct studies",
+   "Characterization that the Nature-reported trial is 'the most-cited large-scale trial' is an inserted evaluative claim not supported by claim [2]",
+   "Claim that the UK source's tier/verification status is unverified is an inserted meta-claim not supported by any numbered claim",
+   "The claim that novelty/observer-effect gains average ~30% of a standard deviation before decaying within eight weeks is drawn from educational research per claim [0], but the summary applies it generally to 'workplace changes' and specifically frames it as casting doubt on 4-day-week pilot results, a domain-transfer inference not licensed by [0] or [6]",
+   "The summary implies the UK pilot source's methodology/tier is 'unverified' as a qualifier, which is an inserted meta-judgment not present in claim [4]"
+  ],
+  "coverageGaps": [
+   "Checklist item 2 (self-selection/motivation bias of participating firms) is never addressed by any claim or finding in the pool - no claim discusses how trial participants were recruited or whether they were pre-screened high performers.",
+   "Checklist item 3 (subsector differentiation: tech vs law vs consulting vs finance vs creative) is completely unaddressed despite a dedicated 'Sector/context differentiator' perspective being tasked - no claim breaks down outcomes by industry or task structure.",
+   "Checklist item 4 (persistence beyond 6-12 months / longitudinal follow-up) is not answered with actual longitudinal data - only a generic 8-week novelty-decay figure from unrelated educational research [0] stands in for it, despite a dedicated 'Longitudinal/novelty-effect tracker' perspective being assigned.",
+   "Checklist item 5 (work intensification, unpaid overtime, compressed workload masking apparent maintenance) has no supporting or refuting claim at all in the pool.",
+   "Checklist item 6 (track record of pilots abandoned/reversed and reasons given) is not covered - no claim discusses any four-day-week trial that was discontinued or reversed, despite a 'Skeptic hunting counter-cases' perspective being tasked to find exactly this.",
+   "Checklist item 8 (macro/national trials like Iceland, Belgium, Japan) is not covered beyond a vague, low-tier reference to a UK pilot; Iceland's well-documented large-scale trial (widely covered in secondary literature) is entirely absent from the claim pool.",
+   "No dissenting or negative case study (a firm/pilot reporting output decline) was found despite the counter-case-hunting perspective, leaving checklist item 6 and part of item 1 unanswered.",
+   "No primary pilot report, raw KPI dataset, or original trial methodology document was actually retrieved despite a 'Data auditor' perspective being tasked to find exactly this - the pool contains no primary source with revenue/error-rate/deliverable figures.",
+   "No source type such as an official government trial report (e.g., Iceland's Reykjavik trials, Autonomy/4 Day Week Global final reports), a peer-reviewed primary study on knowledge-work productivity KPIs, or a dissenting/critical economist's analysis was captured, despite being explicitly targeted by the scoping perspectives.",
+   "Sub-question 2 (self-selection/motivation bias of trialing firms) is never addressed by any claim in the pool or in the summary/findings — no claim discusses sampling/selection of participating firms.",
+   "Sub-question 3 (variation across knowledge-work subsectors: tech, law, consulting, creative, finance; deadline-driven vs autonomous tasks) is entirely unaddressed — no claim segments results by sector or task type.",
+   "Sub-question 4 (longitudinal/follow-up beyond 6-12 months) is not answered with actual 4-day-week longitudinal data; the report substitutes general novelty-effect research from education ([0]) and century-old Hawthorne data ([6]) as a proxy, but no claim reports a real multi-year follow-up of any 4-day-week trial.",
+   "Sub-question 5 (work intensification, unpaid overtime, after-hours creep offsetting output) is not covered by any claim — no evidence located on hidden intensification.",
+   "Sub-question 6 (track record of abandoned/reversed/extended pilots and stated reasons) is not covered — no claim documents any pilot that was abandoned or reversed, despite a dedicated 'skeptic hunting counter-cases' perspective being tasked with this.",
+   "Sub-question 8 (national/macro trials like Iceland, UK, Belgium, Japan) is only thinly touched via one low-confidence opinion-piece claim about the UK pilot [4]; Iceland, Belgium, and Japan trials are not represented in the claim pool at all, despite being explicitly named in the scoping checklist.",
+   "The 'skeptic hunting counter-cases' and 'sector/context differentiator' perspectives appear to have produced no claims in the final pool that materially fulfill their mandate — no counter-case (declined output) evidence and no sector-differentiated evidence exists among the 12 claims."
+  ],
+  "planFlaws": [
+   "Several claims in the pool are explicitly noted as irrelevant to the question (claims 8, 9, 10, 11 concern UK labour law generalities, average working hours, and a WFH-not-4-day-week RCT) yet were still cited as central evidence in both the summary and finding 4, showing the scoping/search process did not adequately filter for on-topic relevance before treating near-miss sources as load-bearing.",
+   "The novelty-effect evidence relied upon ([0]) comes from educational research, and Hawthorne evidence ([6]) is from 1920s-30s factory assembly work — neither is knowledge work nor a 4-day-week trial context; using these as the primary lens for interpreting durability of 4-day-week gains is an analogical leap the plan did not vet against more directly relevant novelty-effect literature specific to modern flexible-work trials.",
+   "The perspective 'Skeptic hunting counter-cases' was included specifically to find pilots/firms with declined output, but zero claims in the pool reflect any negative or mixed outcome case — either the search failed or negative-outcome sources were filtered out/not found, and this blind spot was not flagged in the summary itself.",
+   "The perspective sweep produced six angles but the resulting claim pool shows almost no yield from four of them (sector differentiator, longitudinal tracker, counter-case skeptic, data auditor) - the plan assumed breadth of search perspectives would guarantee breadth of retrieved evidence, but no verification step caught that entire checklist items returned zero claims.",
+   "The plan treated 'objective KPI' evidence as satisfied by an unrelated WFH-vs-hybrid RCT ([10]/[7]) that explicitly does not test a 4-day week; retaining this as the closest available objective-metrics evidence risks anchoring the reader on an off-topic study rather than acknowledging a true absence of relevant primary literature.",
+   "The premise that Iceland/UK/Belgium/Japan macro trials would be found was accepted in the checklist but never tested against actual retrieval success - the plan did not include a fallback or escalation step when a perspective's searches came back empty (e.g., the UK claim [4] is a single opinion piece, not the promised large-scale government trial data), so a real gap was allowed to stand without being flagged mid-process.",
+   "The scoping checklist named specific national trials (Iceland, UK, Belgium, Japan) but the executed research only surfaced one low-tier opinion piece on the UK trial and nothing on Iceland/Belgium/Japan, indicating the search execution did not follow through on the plan's own named targets.",
+   "The scoping treated 'output' measurement methodology (checklist item 7) as a lens to apply throughout, but the final claim pool only contrasts self-report vs objective KPI qualitatively (once, via the unrelated WFH/police RCT) rather than systematically across studies - the one 'objective KPI' example in the pool [7] is from a work-from-home study, not a 4-day-week study, yet is used to stand in for what objective measurement would look like, which risks misleading readers into thinking rigorous 4-day-week KPI methodology exists somewhere.",
+   "The sector/context differentiator perspective produced no differentiated findings, suggesting the plan's division of labor across perspectives did not actually yield proportionate coverage — some perspectives (academic distrust, novelty-tracking) dominate the claim pool while others (sector differences, counter-cases, selection bias) contributed nothing, and this imbalance was not caught or corrected before reporting."
+  ],
+  "rationales": [
+   "The summary and findings are largely traceable to the claim pool with only minor overreach (an unverified 'tier' judgment, a 'most-cited' embellishment, and a conflation of two unrelated novelty-effect claims into one). The far bigger problem is coverage: of the 8 checklist items the scoper committed to, only items 1 and 7 (partially) and 4 (superficially, via an unrelated educational-research decay statistic) are actually addressed by the claim pool. Items 2 (selection bias), 3 (subsector diffe…",
+   "The report is honest about the absence of rigorous objective-metric evidence directly testing 4-day weeks in knowledge work, and finding #4 is well-supported and appropriately high-confidence. However, the underlying research process left at least four of the eight scoped sub-questions (2: selection bias, 3: sector differences, 5: work intensification, 6: abandoned/reversed pilots) completely uncovered, with zero claims in the pool addressing them despite dedicated perspectives being assigned to…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "This is a registered RCT dataset record about whether working from home affects worker productivity, authored by Alessandra Fenizia and Tom Kirchmaier, published via AEA RCT Registry in 2023.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1257/rct.12741-1.1",
+   "why": "The claim under review is actually about a different research question than the one being investigated. The claim describes an RCT registry record studying whether working from home affects worker productivity (WFH vs. office work), not a four-day work week study. This is a topical mismatch: the research question asks about four-day work weeks and output in knowledge work, but the cited source (Fenizia & Kirchmaier, AEA RCT Registry 12741) concerns remote/home-based work arrangements, which is a…"
+  },
+  {
+   "claim": "Researcher J.G. Adair warned that most secondary publications on the Hawthorne effect contain gross factual inaccuracies and that many subsequent studies failed to replicate the effect, cautioning that reported productivity gains from workplace interventions may not be robust.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "why": "The claim adds a clause not present in the supporting quote: cautioning that reported productivity gains from workplace interventions may not be robust. The actual quote only states Adair warned of gross factual inaccuracy in most secondary publications on the Hawthorne effect and that many studies failed to find it - it says nothing about workplace interventions broadly or productivity gains generalized beyond the Hawthorne effect studies specifically. The claim also relates this to the four-da…"
+  },
+  {
+   "claim": "A study/trial titled 'Four-day week trial confirms working less increases wellbeing and productivity' reports that reducing work to four days increased both wellbeing and productivity for participating organizations.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "why": "The claim states the trial's finding as a generalized, unqualified fact (increased both wellbeing and productivity for participating organizations), but the supporting text provided is only a title/headline (Four-day week trial confirms working less increases wellbeing and productivity). A headline is not verbatim body text establishing the specifics of the claim - it doesn't specify which organizations, how many, what metric of productivity was used, or whether the increase was measured objecti…"
+  },
+  {
+   "claim": "The study randomly assigned 138 officers, with 69 in a treatment group asked to work from home 95% of the time and 69 in a control group continuing a status quo of about 70% work-from-home.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1257/rct.12741-1.0",
+   "why": "The claim also asserts specific numeric details not present in the supporting quote: that the treatment group works from home 95% of the time and the control group maintains about 70% work-from-home. The quote only states 69 officers will be randomized to be part of the treatment group. The remaining 69 officers will constitute the control group — it says nothing about the 95% or 70% work-from-home figures. Additionally, this appears to be about a study on remote work (work-from-home), yet the c…"
+  },
+  {
+   "claim": "The paper states its aim is to examine the feasibility of the four-day work week practice in the long run, addressing whether benefits persist.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "why": "The claim states the paper's aim is to examine the feasibility... addressing whether benefits persist, framing this as a stated research objective. But the supporting quote—The study would highlight the feasibility of this practice in the long run—is phrased as an anticipated outcome/projection (would highlight), not an explicit statement of aim or purpose. The claim also adds addressing whether benefits persist, a specific framing about benefit persistence that is not present in the quote at al…"
+  },
+  {
+   "claim": "The record is a posted-content (preprint/non-peer-reviewed) item published in 2022 with zero citations recorded, indicating it has not yet been validated by the broader academic community.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "why": "The supporting quote Type: posted-content Cited by: 0 is a bare metadata fragment, not verbatim page prose, and it does not state the publish year 2022 nor does it say anything about not yet been validated by the broader academic community - that phrase is an inferential gloss added by the claim, not text present in the quote. The quote only supports type=posted-content and cited by 0; the causal/interpretive leap (indicating it has not yet been validated...) is the claim's own paraphrase/infere…"
+  },
+  {
+   "claim": "Re-analysis of the original Hawthorne illumination experiment data (recovered from microfilm in 2011) by economists Steven Levitt and John List found only slight evidence for a Hawthorne-type observation effect over the long run, far weaker than originally claimed.",
+   "killedBy": "citation-audit",
+   "vote": "3-0",
+   "source": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "why": ""
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Hawthorne_effect",
+   "quality": "secondary",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.64628/ab.pnrxqpjq9",
+   "quality": "secondary",
+   "perspective": "Data auditor / constructor from primary evidence",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Gender_pay_gap",
+   "quality": "unreliable",
+   "perspective": "Sector/context differentiator",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/McKinsey_%26_Company",
+   "quality": "secondary",
+   "perspective": "Sector/context differentiator",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1038/d41586-025-02295-2",
+   "quality": "secondary",
+   "perspective": "Objective KPI studies",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.64628/ab.uxwm4jhhy",
+   "quality": "secondary",
+   "perspective": "Objective KPI studies",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "quality": "secondary",
+   "perspective": "Objective KPI studies",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1257/rct.12741-1.1",
+   "quality": "primary",
+   "perspective": "Objective KPI studies",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1257/rct.12741-1.0",
+   "quality": "primary",
+   "perspective": "Objective KPI studies",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/United_Kingdom_labour_law",
+   "quality": "secondary",
+   "perspective": "Reversed or abandoned trials",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Airbus_A380",
+   "quality": "unreliable",
+   "perspective": "Reversed or abandoned trials",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Department_of_Government_Efficiency",
+   "quality": "unreliable",
+   "perspective": "Reversed or abandoned trials",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 12,
+  "claimsExtracted": 19,
+  "urlDupes": 0,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 0,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 34,
+    "ok": 0,
+    "fail": 34,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 34,
+    "ok": 0,
+    "fail": 34,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 34,
+    "ok": 0,
+    "fail": 34,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 34,
+    "ok": 25,
+    "fail": 9,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 34,
+    "ok": 34,
+    "fail": 0,
+    "results": 122
+   },
+   "crossref": {
+    "attempts": 18,
+    "ok": 16,
+    "fail": 2,
+    "results": 95
+   },
+   "europepmc": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 13
+   }
+  },
+  "sourceTiers": {
+   "T2": 9,
+   "T?": 3
+  },
+  "killsByLens": {
+   "counter": 2,
+   "provenance": 6,
+   "support": 5
+  },
+  "fetchVia": {
+   "http": 7,
+   "crossref-api": 5
+  },
+  "pickStarvation": {
+   "calls": 15,
+   "starved": 10,
+   "hits": 120,
+   "rate": 0.667
+  },
+  "agentCalls": 113,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 239532,
+  "outputTokens": 54553,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "pageFetchCache": {
+   "hits": 19,
+   "misses": 12,
+   "charsServedFromCache": 97280,
+   "hitRate": 0.613
+  },
+  "wallSeconds": 613.3,
+  "claimsVerified": 19,
+  "lensesPerClaim": 3,
+  "confirmed": 12,
+  "killed": 7,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

@@ -293,6 +293,21 @@ const asList = (v, label) => {
       return parsed
     }
   }
+  // Second recovery, same family as the JSON string above: the array arrives as ONE
+  // string with its elements wrapped in <item> tags —
+  //   '\n<item>first</item>\n<item>second</item>'
+  // — which is markup the structured-output path leaked, not data. Every element is
+  // intact, so discarding it is a pure loss. Watched live 2026-09-08: the framing call
+  // returned this repeatedly, and because the corrective retry re-asks the same
+  // question it got the same answer back — the run spent its retry budget on a payload
+  // it was already holding.
+  if (typeof v === 'string' && v.includes('<item>')) {
+    const parts = v.split('<item>').slice(1).map(p => p.split('</item>')[0].trim()).filter(Boolean)
+    if (parts.length) {
+      log('[' + tag + '] recovered an <item>-wrapped array: the field arrived as ONE string holding ' + parts.length + ' tagged item(s), not as an array')
+      return parts
+    }
+  }
   if (v !== null && v !== undefined && v !== '') {
     log('[' + tag + '] expected an array, got ' + typeof v + ' (' + String(v).slice(0, 120) + ') — treating as empty. This is NOT the model declining; it is a shape mismatch at the seam.')
   }
@@ -875,6 +890,44 @@ const DROP_PCT = Math.round(100 * DROP_N / Math.max(1, DROP_TOTAL))
 log('Total: ' + allSources.length + ' sources → ' + allClaims.length + ' claims → verifying top ' + rankedClaims.length)
 
 const sourceRows = () => allSources.map(s => ({ url: webText(s.url), quality: s.sourceQuality, angle: s.angle, wave: s.wave, claimCount: s.claims.length }))
+
+// A run that found almost nothing still produces a report, and it reads exactly like
+// a thick one until you check the source count. Deliberately a LABEL, not an abort:
+// the thinnest run on record was thin because PDFs were reaching the model as raw
+// binary, and stopping it early would have hidden the bug instead of exposing it.
+const MIN_CITABLE_SOURCES = 5
+const evidenceBase = () => {
+  // Count CITABLE sources, not all of them. Calling the total 'citableSources' would
+  // quietly count T5 content farms toward the floor — a source the pipeline refuses to
+  // cite would have been evidence that the report is not thin.
+  // Reuse the tier computed at FETCH time (s.tier), the same value stats.sourceTiers
+  // censuses. Recomputing it here from the URL alone gave a different answer for the
+  // same source once already, so a report could disagree with itself about a tier.
+  const n = allSources.filter(s => CITABLE.has(s.tier || 'T3')).length
+  const thin = n < MIN_CITABLE_SOURCES
+  return { citableSources: n, floor: MIN_CITABLE_SOURCES, thin,
+    verdict: thin
+      ? 'THIN: ' + n + ' citable source(s), under the floor of ' + MIN_CITABLE_SOURCES +
+        '. Treat every finding as provisional and check the sources by hand — a report this thin has been recorded at 25% citation accuracy. Thinness is usually a retrieval failure rather than a silent world.'
+      : n + ' citable sources, at or above the floor of ' + MIN_CITABLE_SOURCES + '.',
+    note: 'This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having.' }
+}
+
+// These limits travel WITH the report, on EVERY exit. They used to be written inline
+// on the happy path only, so the four early exits — no claims, all killed, all demoted,
+// synthesis failed — carried none of them. The parity marker check could not see this:
+// the string `honestLimits` existed in the file, just not on the exits that needed it.
+const honestLimits = (extra) => ({
+  evidenceBase: evidenceBase(),
+  falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
+  reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
+  confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
+  killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
+  searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
+  framingProvenance: 'scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.',
+  partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry — and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.',
+  ...(extra || {}),
+})
 // A run that is all-T3 is a weak-evidence run no matter how confident it sounds,
 // and a run that is all-T? is a run whose provenance was never established.
 const tierCensus = () => {
@@ -902,7 +955,8 @@ if (rankedClaims.length === 0) {
       ? 'AGENT FAILURE, not a research finding: no source was successfully read before the run ended — the model calls did not complete. Check credentials and connectivity, then retry. Do NOT report this as "no evidence exists". '
       : 'No claims extracted. ' + allSources.length + ' sources fetched, all empty/failed. ')
       + dupes.length + ' URL dupes, ' + budgetDropped.length + ' budget-dropped.',
-    findings: [], coverage: lastCoverage, sources: sourceRows(), stats: baseStats({ claimsVerified: 0, confirmed: 0 }),
+    findings: [], coverage: lastCoverage, sources: sourceRows(), honestLimits: honestLimits(),
+    stats: baseStats({ claimsVerified: 0, confirmed: 0 }),
   }
 }
 
@@ -1003,7 +1057,8 @@ if (confirmed.length === 0) {
   return {
     question: QUESTION, depth: DEPTH, summary, findings: [], coverage: lastCoverage,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverified: unverified.length }),
+    sources: sourceRows(), honestLimits: honestLimits(),
+    stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverified: unverified.length }),
   }
 }
 
@@ -1227,7 +1282,8 @@ if (confirmed.length === 0) {
     summary: 'Every claim that survived the adversarial panel was then demoted by the blind citation audit: the arguments held, but the cited pages do not support them. Nothing is left to report. This is a real result — the sources do not say what they were read as saying.',
     findings: [], coverage: lastCoverage, citationAudit: factMetrics, rescue: rescueStats,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverifiedCount: unverified.length }),
+    sources: sourceRows(), honestLimits: honestLimits(),
+    stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverifiedCount: unverified.length }),
   }
 }
 const factByClaim = new Map(factRows.map(f => [auditKey(f.claim, f.url), f]))
@@ -1324,7 +1380,8 @@ if (!report) {
     confirmedRaw: confirmed.map(c => ({ claim: webText(c.claim), source: webText(c.sourceUrl), quote: webText(c.quote), vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes })),
     coverage: lastCoverage, citationAudit: factMetrics,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), stats: baseStats({ claimsVerified: voted.length, confirmed: confirmed.length, killed: killed.length, unverified: unverified.length, afterSynthesis: 0 }),
+    sources: sourceRows(), honestLimits: honestLimits({ synthesisFailed: 'The synthesis step returned nothing; the verified claims below are raw, unsummarised output.' }),
+    stats: baseStats({ claimsVerified: voted.length, confirmed: confirmed.length, killed: killed.length, unverified: unverified.length, afterSynthesis: 0 }),
   }
 }
 
@@ -1408,15 +1465,7 @@ return {
   calibration,
   // These limits travel WITH the report. A caveat that only exists in the README
   // is one the person reading a pasted JSON blob never sees.
-  honestLimits: {
-    falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
-    reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
-    confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
-    killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
-    searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
-    framingProvenance: 'scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.',
-    partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry — and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.',
-  },
+  honestLimits: honestLimits(),
   citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
   // A `partial` verdict does not demote the claim — only `unsupported` does — so it
   // is easy to publish an overstatement with a footnote nobody reads. Measured

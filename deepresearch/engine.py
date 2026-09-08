@@ -154,14 +154,44 @@ _pick_tally, _pick_lock = {"calls": 0, "starved": 0, "hits": 0}, threading.Lock(
 _fetch_meta = {}
 
 
+# One run fetches the same page several times: the sweep reads it to extract claims,
+# then the citation audit re-reads it once PER CLAIM cited to it. Measured over two
+# recorded 30-claim runs, 18 of the 30 audit fetches were re-downloads of a page the
+# run already held (12 unique URLs), and one PMC article was pulled five times. The
+# tokens do not bill on a flat subscription, but the network round-trips are wall
+# time, and wall time is the constraint that actually bites.
+#
+# Cached per URL with the cap it was read at: an entry fetched at cap=12000 cannot
+# serve a request for 14000, so that case refetches rather than silently returning a
+# short page. An EMPTY result is never cached - a transient failure must not be
+# frozen in for the rest of the run.
+_page_cache, _page_lock = {}, threading.Lock()
+_page_tally = {"hits": 0, "misses": 0, "charsServedFromCache": 0}
+
+
 def web_fetch(url, cap=14000):
     """Fetch, and REMEMBER how. `via` is the difference between a claim cited to a paper
-    and one cited to an abstract stub, and the report could not tell them apart."""
+    and one cited to an abstract stub, and the report could not tell them apart.
+
+    Within one run the same URL is fetched once. See _page_cache above.
+    """
+    key = str(url)
+    with _page_lock:
+        hit = _page_cache.get(key)
+        if hit is not None and hit[0] >= cap:
+            _page_tally["hits"] += 1
+            _page_tally["charsServedFromCache"] += min(len(hit[1]), cap)
+            return hit[1][:cap]
     text, meta = _search.fetch(url, cap=cap)
     with _doi_lock:
-        _fetch_meta[str(url)] = meta
+        _fetch_meta[key] = meta
         if meta.get("via") == "crossref-api":
-            _doi_meta[str(url)] = meta
+            _doi_meta[key] = meta
+    with _page_lock:
+        _page_tally["misses"] += 1
+        prev = _page_cache.get(key)
+        if text and (prev is None or prev[0] < cap):
+            _page_cache[key] = (cap, text)
     return text
 
 
@@ -207,7 +237,19 @@ def credential():
         return _CRED
 
 
-_stats = {"calls": 0, "errors": 0, "ratelimited": 0, "in_tok": 0, "out_tok": 0}
+# Every token field the API reports, not just the two we happened to know about.
+# Recording only input+output was silently incomplete: a cached call also bills
+# cache_creation_input_tokens and cache_read_input_tokens. Both read zero while
+# nothing was cached, so the omission was invisible - this project's defining bug
+# class, a fault that signals itself as silence rather than as an error. The
+# `usageUnrecorded` census closes it for good: any numeric usage field the API
+# adds that we do not name here is counted under its own key and shows up in the
+# report, so the accounting can never quietly drift again.
+_USAGE_FIELDS = {"input_tokens": "in_tok", "output_tokens": "out_tok",
+                 "cache_creation_input_tokens": "cache_write_tok",
+                 "cache_read_input_tokens": "cache_read_tok"}
+_stats = {"calls": 0, "errors": 0, "ratelimited": 0, "in_tok": 0, "out_tok": 0,
+          "cache_write_tok": 0, "cache_read_tok": 0, "usageUnrecorded": {}}
 _stats_lock = threading.Lock()
 
 # The structured-output path intermittently serialises an array field as the
@@ -333,6 +375,29 @@ def _schema_shortfall(schema, obj):
     return problems
 
 
+def _record_usage(u, into=None):
+    """Fold one API `usage` block into the running totals. Caller holds _stats_lock.
+
+    Named fields are summed; every OTHER numeric field, at the top level or one
+    level down (output_tokens_details.thinking_tokens lives there), is counted
+    under `usageUnrecorded` rather than dropped. The point is that a token we do
+    not understand still appears in the report.
+    """
+    st = _stats if into is None else into
+    for k, v in (u or {}).items():
+        if k in _USAGE_FIELDS:
+            st[_USAGE_FIELDS[k]] += v or 0
+        elif isinstance(v, bool):
+            continue
+        elif isinstance(v, (int, float)):
+            st["usageUnrecorded"][k] = st["usageUnrecorded"].get(k, 0) + v
+        elif isinstance(v, dict):
+            for k2, v2 in v.items():
+                if isinstance(v2, (int, float)) and not isinstance(v2, bool):
+                    key = "%s.%s" % (k, k2)
+                    st["usageUnrecorded"][key] = st["usageUnrecorded"].get(key, 0) + v2
+
+
 def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5):
     """One independent subagent. Returns the validated structured object, or None."""
     body = {
@@ -380,9 +445,7 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                 out = json.loads(r.read().decode())
             with _stats_lock:
                 _stats["calls"] += 1
-                u = out.get("usage") or {}
-                _stats["in_tok"] += u.get("input_tokens", 0) or 0
-                _stats["out_tok"] += u.get("output_tokens", 0) or 0
+                _record_usage(out.get("usage") or {})
             for blk in out.get("content", []):
                 if blk.get("type") == "tool_use" and blk.get("name") == "StructuredOutput":
                     got = blk.get("input")
@@ -822,6 +885,16 @@ def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""
         "Evidence MUST be specific: name the exact overreach, the exact counter-source, or the exact provenance defect.")
 
 def p_fact(claim, url, text):
+    """The blind citation audit.
+
+    The page text is ~3000 of this prompt's ~3300 tokens, and several claims are
+    routinely cited to the same page, so this looks like the one place in the
+    pipeline where Anthropic's prompt cache could pay. It cannot: a cache covers a
+    PREFIX, so the page would have to move above the statement, and that reorder was
+    measured to move 6 of 30 audit verdicts against a judge whose self-disagreement
+    on the same inputs was 0 of 30. See docs/adr/0003-no-prompt-caching.md. The
+    order below is load-bearing; do not rearrange it for token reasons.
+    """
     return (
         "## Citation Support Auditor (blind re-check)\n\n"
         "A research report is about to assert the statement below and cite the URL below as its support. You have NOT "
@@ -836,6 +909,7 @@ def p_fact(claim, url, text):
         "- **unsupported** - the page does not say this, contradicts it, or is about something else.\n"
         "- **unreachable** - the fetch returned nothing, or the page is a paywall/error shell.\n\n"
         "A working link proves the page EXISTS, not that it says this. Judge only the text above.")
+
 
 def _plan_flaws_check(provenance):
     """Generate check 3 of the critic, provenance-aware.
@@ -974,7 +1048,49 @@ def load_contract(path):
     return {k: v for k, v in shaped.items() if k in raw}
 
 
-def _honest_limits(extra=None):
+# A run that found almost nothing still produces a report, and that report looks like
+# any other until you read the source count. One recorded run published at 25% citation
+# accuracy off 2 sources and 4 claims.
+#
+# The review's fix was to ABORT below this floor. Refused - see below - so the floor is
+# used to LABEL the run instead, in a field a caller can gate on without reading prose.
+MIN_CITABLE_SOURCES = 5
+
+
+def _evidence_base(rows):
+    """How much evidence this report actually rests on, stated as a number and a flag.
+
+    Deliberately NOT an abort. A thin run is diagnostic: the thinnest run on record
+    (2 sources, 4 claims) was thin because PDFs were reaching the model as raw binary,
+    and aborting it early would have suppressed the very output that exposed the bug.
+    Every serious fault in this project's history first appeared as thin or silent
+    output, so a rule that discards thin runs would delete the evidence class the
+    project most depends on. Label it loudly; let the caller decide.
+    """
+    # Count CITABLE sources, not all of them. Calling the total "citableSources" would
+    # have quietly counted T5 content farms toward the floor - a source the pipeline
+    # refuses to cite would have been evidence that the report is not thin.
+    n = sum(1 for r in rows if (r.get("tier") or "T3") in CITABLE)
+    thin = n < MIN_CITABLE_SOURCES
+    return {
+        "citableSources": n,
+        "floor": MIN_CITABLE_SOURCES,
+        "thin": thin,
+        "verdict": (("THIN: %d citable source(s), under the floor of %d. Treat every "
+                    "finding as provisional and check the sources by hand - a report "
+                    "this thin has been recorded at 25%% citation accuracy. Thinness is "
+                    "usually a retrieval failure rather than a silent world: read "
+                    "stats.searchHealth and stats.pickStarvation before concluding the "
+                    "evidence does not exist." % (n, MIN_CITABLE_SOURCES)) if thin else
+                   ("%d citable sources, at or above the floor of %d."
+                    % (n, MIN_CITABLE_SOURCES))),
+        "note": ("This run was NOT aborted for being thin, by design. A thin run is "
+                 "evidence about the retrieval path and has twice exposed a real bug; "
+                 "discarding it would hide exactly the signal worth having."),
+    }
+
+
+def _honest_limits(extra=None, evidence=None):
     """The caveats that travel WITH every report, not just the happy one.
 
     Found on today's own architecture review: of six return paths, only the happy path
@@ -987,6 +1103,12 @@ def _honest_limits(extra=None):
     synthesis failure, an absent framing contract.
     """
     out = {
+        # A structured value among the prose, deliberately: this is the one caveat a
+        # caller should be able to gate on without parsing English, and it lives in
+        # honestLimits because that is the only block guaranteed to reach every exit.
+        "evidenceBase": evidence if evidence is not None else {
+            "citableSources": None, "thin": None,
+            "verdict": "not computed on this exit"},
         "falseKillRateUnmeasured": (
             "This report kills claims. How often it kills a TRUE one has never been "
             "measured — here or anywhere in the published literature. Read `refuted` "
@@ -1113,6 +1235,22 @@ def as_list(v, label=""):
             log("  [%s] recovered a double-encoded array: the field arrived as a JSON "
                 "STRING holding %d item(s), not as an array" % (label or "field", len(parsed)))
             return parsed
+    # Second recovery, same family as the JSON string above: the array arrives as ONE
+    # string with its elements wrapped in <item> tags -
+    #   '\n<item>first</item>\n<item>second</item>'
+    # - which is markup the structured-output path leaked, not data. Every element is
+    # present and intact, so discarding it is a pure loss. Watched live 2026-09-08: the
+    # framing call returned this on attempt after attempt, and because the corrective
+    # retry re-asks the same question it got the same answer back - the run spent its
+    # whole retry budget on a payload it was already holding.
+    if isinstance(v, str) and "<item>" in v:
+        parts = [p.split("</item>")[0].strip() for p in v.split("<item>")[1:]]
+        parts = [p for p in parts if p]
+        if parts:
+            log("  [%s] recovered an <item>-wrapped array: the field arrived as ONE "
+                "string holding %d tagged item(s), not as an array"
+                % (label or "field", len(parts)))
+            return parts
     if v not in (None, "", [], {}):
         log("  [%s] expected an array, got %s (%r) - treating as empty. This is NOT the "
             "model declining; it is a shape mismatch at the seam."
@@ -1516,8 +1654,25 @@ def deepresearch(question, depth="standard", contract=None):
                  agentCalls=_stats["calls"], agentErrors=_stats["errors"],
                  rateLimited=_stats["ratelimited"],
                  inputTokens=_stats["in_tok"], outputTokens=_stats["out_tok"],
+                 cacheWriteTokens=_stats["cache_write_tok"],
+                 cacheReadTokens=_stats["cache_read_tok"],
+                 # Empty is the healthy state. A key appearing here means the API
+                 # reports a token field this build does not name, i.e. the totals
+                 # above are incomplete by exactly that much - say so rather than
+                 # let it vanish.
+                 usageUnrecorded=dict(_stats["usageUnrecorded"]),
+                 pageFetchCache=dict(_page_tally,
+                                     hitRate=round(_page_tally["hits"] /
+                                                   (_page_tally["hits"] + _page_tally["misses"]), 3)
+                                     if (_page_tally["hits"] + _page_tally["misses"]) else None),
                  wallSeconds=round(time.time() - t0, 1))
         d.update(kw); return d
+
+    # One wrapper so the evidence-base signal cannot travel on some exits and not others.
+    # honestLimits itself was shipped on 2 of 6 exits once, and the caveat that mattered
+    # most was missing from the exit it mattered most on.
+    def honest_limits(extra=None):
+        return _honest_limits(extra, evidence=_evidence_base(src_rows()))
 
     if not ranked:
         h = search_health()
@@ -1544,7 +1699,7 @@ def deepresearch(question, depth="standard", contract=None):
                        "irrelevant." % len(sources))
         return dict(base, summary=msg, findings=[], sources=src_rows(),
                     stats=stats(claimsVerified=0, confirmed=0, searchHealth=h),
-                    honestLimits=_honest_limits())
+                    honestLimits=honest_limits())
 
     # Phase 5 - Verify
     lenses = LENSES[:T["lenses"]]
@@ -1684,13 +1839,18 @@ def deepresearch(question, depth="standard", contract=None):
         return dict(base, summary=msg, findings=[], refuted=[to_ref(c) for c in killed],
                     sources=src_rows(), rescue=rescue,
                     calibration=calibration, droppedSample=dropped_sample,
-                    honestLimits=_honest_limits(),
+                    honestLimits=honest_limits(),
                     stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed),
                                 unverifiedCount=len(unver)))
 
     # Phase 7 - Audit (full pool; can demote a panel survivor)
     fact_metrics, fact_rows = None, []
     if T["audit"]:
+        # One call per claim, all concurrent. Batching a page's claims into a single
+        # call was suggested as a saving; it is refused because each verdict must be
+        # reached without sight of the others, and the tokens do not bill anyway.
+        # The repeated FETCH that grouping would also have saved is already gone:
+        # web_fetch caches per URL, so a page cited by five claims is pulled once.
         def audit(c):
             text = web_fetch(c["sourceUrl"], cap=12000)
             f = agent(p_fact(c["claim"], c["sourceUrl"], text), S_FACT,
@@ -1756,7 +1916,7 @@ def deepresearch(question, depth="standard", contract=None):
                         citationDetail=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
                                          "support": f["support"]} for f in fact_by.values()],
                         calibration=calibration, droppedSample=dropped_sample,
-                        honestLimits=_honest_limits(),
+                        honestLimits=honest_limits(),
                         stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed)))
 
     fact_by = {(f["claim"], f.get("url")): f for f in fact_rows}
@@ -1770,6 +1930,11 @@ CONF = {"high": 0, "medium": 1, "low": 2}
 def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
                 lenses, T, all_claims, calibration=None, dropped_sample=None):
+    # Same wrapper as the run function's, for the same reason: the evidence-base
+    # signal must not reach some exits and not others.
+    def honest_limits(extra=None):
+        return _honest_limits(extra, evidence=_evidence_base(src_rows()))
+
     blocks = []
     for i, c in enumerate(confirmed):
         good = sorted([v for v in dicts(c["verdicts"]) if not v.get("refuted")],
@@ -1914,7 +2079,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                     citationPartials=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
                                        "reasoning": webtext(f.get("reasoning", ""), 400)}
                                       for f in fact_by.values() if f["support"] == "partial"],
-                    honestLimits=_honest_limits({"synthesisFailed": (
+                    honestLimits=honest_limits({"synthesisFailed": (
                         "Synthesis did not return a usable report, so there are no findings and no "
                         "summary. Everything BEFORE synthesis did run and is reported here: the "
                         "verified claims, what was refuted and why, the citation audit, and the "
@@ -1952,7 +2117,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out["droppedSample"] = dropped_sample
     # These limits travel WITH the report. A caveat that only exists in the README
     # is a caveat the person reading a pasted JSON blob never sees.
-    out["honestLimits"] = _honest_limits()
+    out["honestLimits"] = honest_limits()
     if not HYPOTHESES:
         out["honestLimits"]["noFramingContract"] = (
             "The framing agent returned no hypotheses, so nothing was adjudicated. "

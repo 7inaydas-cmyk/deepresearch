@@ -58,10 +58,13 @@ SHARED = {
     "balanced calib. sample":    ("calibration_sample", "calibrationSample"),
     "amended gate (n + lens)":   ("MIN_LENS_KAPPA", "MIN_LENS_KAPPA"),
     "double-encoded recovery":   ("recovered a double-encoded array", "recovered a double-encoded array"),
+    "<item>-wrapped recovery":   ("recovered an <item>-wrapped array", "recovered an <item>-wrapped array"),
     "verbatim strike":           ("untraceableVerbatim", "untraceableVerbatim"),
     "process critic":            ("processCritique", "processCritique"),
     "partial citations surfaced": ("citationPartials", "citationPartials"),
     "critique leads with count":  ("untraceableCount", "untraceableCount"),
+    "evidence-base label":       ("def _evidence_base(", "const evidenceBase = "),
+    "limits on EVERY exit":      ("def honest_limits(extra=None)", "const honestLimits = (extra)"),
 }
 
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
@@ -84,6 +87,13 @@ PYTHON_ONLY = {
     "dropped-claim sampling":
         "Needs a second panel pass over discarded claims. Portable in principle; "
         "not yet ported, and tracked as a known gap rather than an oversight.",
+    "per-URL page cache":
+        "The JS build never holds page text: its audit and extract subagents each call the "
+        "runtime's WebFetch themselves, so there is no orchestrator-side fetch to cache. "
+        "Python holds the text because the CLI fetches it to build the prompt.",
+    "full token accounting":
+        "The Claude Code Workflow runtime owns the API call and reports no usage block to "
+        "the script, so the JS build has no token numbers to record - complete or otherwise.",
     "injected-defect probes":
         "probes.py and its runner operate on a finished report, not on the engine, so "
         "`python3 -m deepresearch.probes --report <any report.json>` already scores a "

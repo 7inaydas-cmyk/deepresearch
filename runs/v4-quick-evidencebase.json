@@ -1,0 +1,461 @@
+{
+ "question": "Is remote onboarding effective for junior engineers?",
+ "depth": "quick",
+ "coverage": null,
+ "contradictions": [],
+ "scopeContract": {
+  "decisionAtStake": "Whether an engineering organization should design its junior-engineer onboarding as primarily remote/self-serve, invest heavily in structured remote onboarding (mentorship, pairing, synchronous check-ins), or instead require in-person/hybrid onboarding for new junior hires.",
+  "keyQuestion": "Do junior engineers onboarded remotely reach comparable productivity, retention, and skill-development outcomes as those onboarded in-person, given comparable investment in structure and mentorship?",
+  "assumptions": [
+   "\"Junior engineers\" refers to early-career software/hardware engineers (0-2 years experience) hired into tech or tech-adjacent companies",
+   "Scope is companies with fully remote or hybrid-remote onboarding processes implemented roughly 2020-2024, primarily in US/Western tech industry context",
+   "\"Effective\" is measured by proxies such as time-to-productivity, 90-day/1-year retention, manager/peer satisfaction ratings, and skill ramp-up speed compared to in-person onboarding baselines",
+   "The reader is an engineering manager, HR/L&D leader, or startup founder deciding how to structure onboarding for new junior hires, not a policy researcher",
+   "No single global standard exists for 'remote onboarding' - practices vary widely (structured programs with mentors vs. ad-hoc self-serve), and this variance itself may be the main driver of outcomes rather than remoteness per se"
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Evidence that time-to-first-commit/time-to-productivity is meaningfully longer (e.g. >20-30%) for remote-onboarded juniors even with structured programs, vs. minimal difference",
+   "Evidence that 6-12 month attrition or performance-review outcomes are significantly worse for remote-onboarded juniors specifically (not just remote workers generally)",
+   "Evidence that the quality/structure of the onboarding program (mentor assignment, pairing cadence, documentation) matters far more than remote-vs-in-person as a variable, making the original question moot",
+   "Evidence that outcomes differ sharply by sub-population (e.g. new-grads with no prior internship vs. juniors with 1-2 years experience, or those with prior remote-work exposure vs. none)",
+   "New large-scale post-2022 studies/surveys specifically isolating onboarding modality's causal effect versus confounds like company support, cohort size, or hiring bar"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Remote onboarding is roughly as effective as in-person onboarding for junior engineers when paired with strong structure (assigned mentors, regular synchronous check-ins, clear 30/60/90 plans) - the modality matters less than program design.",
+    "killCriterion": "Data showing a persistent, structure-controlled productivity/retention gap of >15-20% favoring in-person onboarding even after matching for mentorship quality and program rigor."
+   },
+   {
+    "hypothesis": "Remote onboarding is measurably less effective for junior engineers specifically (as opposed to experienced hires) due to their greater need for informal learning, ambient mentorship, and psychological safety that in-person settings provide.",
+    "killCriterion": "Multiple independent studies/surveys showing no significant gap in ramp-time, retention, or performance ratings between remote- and in-person-onboarded juniors when other factors are controlled."
+   },
+   {
+    "hypothesis": "Effectiveness is highly context-dependent - it hinges on company investment/maturity of remote onboarding practices, not remoteness itself, meaning the question as posed has no single answer.",
+    "killCriterion": "Consistent findings that remote onboarding effectiveness is uniform across companies regardless of structure/investment (i.e., remoteness alone predicts outcomes independent of program quality)."
+   },
+   {
+    "hypothesis": "Remote onboarding is effective for technical/task ramp-up but specifically fails for softer outcomes (culture fit, network-building, long-term career trajectory), making it a mixed/partial answer rather than clearly effective or ineffective.",
+    "killCriterion": "Evidence that remote-onboarded juniors show no measurable deficit in networking, culture integration, or promotion velocity compared to in-person peers over 1-2 year horizons."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Primary-literature academic",
+   "lens": "An organizational psychology / management-science researcher who distrusts anecdote and vendor case studies, wants peer-reviewed or rigorously controlled empirical studies isolating onboarding modality from confounds like tenure, seniority, and company support.",
+   "query": "peer-reviewed study remote onboarding new employee productivity retention controlled study 2022 2023"
+  },
+  {
+   "label": "Practitioner steelman for structured remote onboarding",
+   "lens": "A senior engineering manager or onboarding program lead at a remote-first tech company who has run 30/60/90 mentorship programs and distrusts theoretical claims that ignore program quality; builds the strongest honest case that remote onboarding works when well-resourced.",
+   "query": "how we onboard junior engineers remotely mentorship pairing 30 60 90 plan case study results"
+  },
+  {
+   "label": "Skeptic hunting the in-person advantage",
+   "lens": "A skeptical hiring/L&D consultant or return-to-office advocate who distrusts self-reported remote-onboarding success stories and actively searches for data showing junior engineers specifically suffer from lack of ambient mentorship and osmotic learning.",
+   "query": "junior developers struggle remote onboarding lack mentorship isolation attrition data"
+  },
+  {
+   "label": "Data auditor / people-analytics constructor",
+   "lens": "An internal people-analytics or HR-data analyst who distrusts qualitative narratives entirely and wants to construct the answer directly from primary datasets - time-to-first-commit, PR cycle time, 6-12 month attrition rates, performance ratings - segmented by onboarding modality and experience level.",
+   "query": "time to first commit onboarding remote vs in-office engineers dataset benchmark attrition performance review"
+  }
+ ],
+ "summary": "The confirmed evidence does not answer whether remote onboarding is effective for junior engineers - no claim isolates junior engineers, software engineering roles, or a direct remote-vs-in-person effectiveness comparison with measurable results. What is confirmed is more general: robust onboarding programs (modality unspecified) are associated with higher job satisfaction, faster integration, and reduced turnover, and onboarding is theorized to counter attrition by building person-organization value fit. A paper explicitly titled as a remote-vs-in-person onboarding comparison exists, but only its title and journal were verified, not its actual findings or effect sizes. Two related claims (physician/provider onboarding, and pre/post-COVID productivity methodology) were explicitly refuted and are irrelevant to software engineers. Given this, all four pre-registered hypotheses remain untested rather than confirmed or killed.",
+ "answerFirst": "The evidence does not directly answer \"is remote onboarding effective for junior engineers\" — no confirmed claim isolates junior engineers, software engineering, or a remote-vs-in-person effectiveness gap with data. What is confirmed is that (a) onboarding quality in general (regardless of modality) is linked to retention, satisfaction, and faster integration, and (b) a comparative remote-vs-in-person paper exists but its actual findings/effect sizes were never verified. Recommendation: treat \"remote onboarding works if well-structured\" as a plausible but unproven inference, not a demonstrated fact — none of the four hypotheses can be confirmed or killed with this evidence set.",
+ "hingeNumber": {
+  "value": "No single load-bearing number exists in the confirmed evidence.",
+  "why": "None of the confirmed claims provide an effect size, gap percentage, ramp-time difference, retention-rate delta, or productivity differential specifically comparing remote vs. in-person onboarding for junior engineers. The one paper whose title promises exactly this comparison (JETIR study) had only its title/journal confirmed - its actual quantitative findings were never verified.",
+  "sensitivity": "N/A - there is nothing to be sensitive to. If the JETIR paper's actual findings were retrieved and showed e.g. a >15-20% gap, H1 would flip to killed and H2 could move to surviving; if it showed near-parity, H1 would gain strong support. Until then, the entire question rests on an unverified gap, i.e., a coin flip wearing a suit.",
+  "source": "https://doi.org/10.56975/jetir.v13i3.576728 (title only, no results extracted)"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Remote onboarding is roughly as effective as in-person onboarding for junior engineers when paired with strong structure - modality matters less than program design.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim compares remote vs. in-person onboarding outcomes with structure controlled, nor measures a productivity/retention gap. The one study explicitly designed to make this comparison (claim 3) had only its title verified, not its findings. General onboarding-retention claims (0,1,4) are modality-agnostic and cannot confirm or kill this hypothesis.",
+   "claimsCited": [
+    0,
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "hypothesis": "H2: Remote onboarding is measurably less effective for junior engineers specifically due to greater need for informal learning/ambient mentorship/psychological safety.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim addresses junior engineers as a distinct population, nor compares ramp-time, retention, or performance ratings between remote- and in-person-onboarded juniors. No claim measures a gap in either direction for this specific population.",
+   "claimsCited": []
+  },
+  {
+   "hypothesis": "H3: Effectiveness is context-dependent, hinging on company investment/maturity of remote onboarding practices rather than remoteness itself.",
+   "verdict": "untested",
+   "reasoning": "Confirmed claim 4 (robust onboarding frameworks correlate with better outcomes) is consistent with this hypothesis's premise that program quality matters, but it does not test or compare against remoteness as a variable, nor does any claim show uniformity across companies independent of investment. Suggestive but not testing the actual hinge (remoteness vs. investment as the driver).",
+   "claimsCited": [
+    4
+   ]
+  },
+  {
+   "hypothesis": "H4: Remote onboarding works for technical/task ramp-up but fails for softer outcomes (culture fit, networking, career trajectory) - a mixed/partial answer.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim distinguishes technical ramp-up outcomes from cultural/networking/career-trajectory outcomes under remote onboarding, nor provides any 1-2 year horizon data on promotion velocity or network-building for remote- vs in-person-onboarded juniors.",
+   "claimsCited": []
+  }
+ ],
+ "strongestArgumentAgainst": "See strongestArgumentAgainst field above (duplicated key note not needed).",
+ "whatWouldChangeThisCall": [
+  "Retrieval and verification of the actual results/effect sizes from the JETIR comparative study (claim 3) rather than just its title.",
+  "A confirmed claim isolating junior/entry-level engineers specifically (vs. general employees or healthcare providers) in a remote-onboarding context.",
+  "Any confirmed claim quantifying a ramp-time, retention, or performance gap (or lack thereof) between remote- and in-person-onboarded cohorts.",
+  "Verification of the 3 lower-ranked claims that were never checked, which might independently bear on H2 or H4.",
+  "Longitudinal data (1-2 year horizon) on culture integration, networking, or promotion velocity for remote- vs in-person-onboarded juniors (needed for H4)."
+ ],
+ "baseRate": "No outside-view base rate for junior-engineer-specific remote onboarding success/failure rates is present in any confirmed claim. The closest analog — general onboarding-retention research — is not engineer-specific, not remote-specific, and provides no quantified success rate to anchor a base rate. Absence flagged.",
+ "findings": [
+  {
+   "claim": "Robust, well-executed onboarding programs (general, not modality-specific) are studied as a mitigator of attrition and driver of retention.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.28953/2375-8643.1083"
+   ],
+   "evidence": "Article explicitly frames itself as studying whether robust onboarding mitigates attrition and drives retention; near-verbatim match to source.",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - near-verbatim paraphrase of source quote, no added scope or numbers."
+  },
+  {
+   "claim": "Organizations with robust onboarding frameworks (unspecified modality) report higher job satisfaction, faster integration, and reduced turnover, per survey/interview research with HR professionals and new hires.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.2139/ssrn.5270069"
+   ],
+   "evidence": "Quote: 'the research uncovers that organizations with robust onboarding frameworks consistently report higher levels of job satisfaction, faster integration of new hires, and reduced turnover.'",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "partial - claim adds an unverified attribution of methodology ('survey and interview research with HR professionals and new hires') not confirmed as being directly evidenced in the quoted excerpt; also non-peer-reviewed SSRN preprint, not engineer- or remote-specific."
+  },
+  {
+   "claim": "A dedicated comparative study exists titled 'A Comparative Study on Remote vs. In-Person Onboarding Effectiveness: Impact on Productivity and Retention,' published in the Journal of Emerging Technologies and Innovative Research - but its actual findings/effect sizes were not verified in this research pass.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.56975/jetir.v13i3.576728"
+   ],
+   "evidence": "Title and journal name confirmed verbatim; no result, effect size, or population (e.g., engineers, juniors) was confirmed.",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for title/journal only - the claim does not and cannot speak to remote-onboarding effectiveness itself, only that such a study exists; source flagged unreliable/undated."
+  },
+  {
+   "claim": "Person-organization value alignment (a factor onboarding can influence) is linked to job satisfaction, organizational commitment, and intent to stay - a general org-behavior finding, not remote-onboarding-specific.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.28953/2375-8643.1083"
+   ],
+   "evidence": "Quote closely matches claim; grounded in established organizational behavior literature per verifier.",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - near-verbatim, well-established finding, not novel or extraordinary."
+  },
+  {
+   "claim": "The 2020 pandemic intensified pre-existing competition for talent by introducing new remote/hybrid work modalities - contextual background, not an effectiveness finding.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.28953/2375-8643.1083"
+   ],
+   "evidence": "Quote closely paraphrased; unanimous 3-0 vote.",
+   "vote": "3-0",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - clean paraphrase, no added causal claims."
+  },
+  {
+   "claim": "A separate study frames technological accessibility, work-life balance, and degree of supervision as candidate variables affecting productivity changes under remote work generally (not junior-engineer- or onboarding-specific).",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.21203/rs.3.rs-2926406/v1"
+   ],
+   "evidence": "Quote closely matches claim; explicitly hedged/tentative ('may have contributed').",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for the hedged framing only; source is unreliable-rated and its related methodology claim was separately refuted, undermining overall confidence in this source's rigor."
+  }
+ ],
+ "caveats": "Unanswered sub-questions: no evidence isolates junior engineers (vs. general employees, physicians, or experienced hires), no evidence isolates software/tech engineering roles, and no evidence quantifies a remote-vs-in-person outcome gap. Weak sources: claims 3 and 5 come from sources explicitly tiered/rated as \"unreliable\" (JETIR comparative study, undated; and the RS.3 preprint, 2023); claim 4 rests on a non-peer-reviewed SSRN 2025 preprint. Unverified claims: 3 lower-ranked claims from the original panel were never verified at all and are excluded here - readers should treat the finding set as incomplete, not exhaustive. Dropped/refuted claims: two claims about physician/provider onboarding (not software engineering) and one about pre/post-COVID methodology were explicitly killed and are reported above for transparency but excluded from findings. Time-sensitivity: the pandemic-era framing (claim on 2020 disruption) is now several years old; remote-work norms and tooling have evolved since 2020-2023, so conclusions drawn from that period may not reflect current remote-onboarding practice maturity. No T1 source was available for any load-bearing claim; several sources carry provisional \"T?\" tiers, meaning tier confidence itself is unresolved.",
+ "openQuestions": [
+  "Does the JETIR comparative study (claim 3) find a meaningful productivity/retention gap between remote and in-person onboarding, and if so, of what magnitude?",
+  "Do any studies specifically track junior/entry-level software engineers (as opposed to general employees or healthcare providers) through remote onboarding?",
+  "What do the 3 unverified lower-ranked claims from the original panel say, and would they change this picture?",
+  "Is there longitudinal (1-2 year) data on culture integration, informal network-building, or promotion velocity comparing remote- vs in-person-onboarded junior engineers?"
+ ],
+ "citationAudit": null,
+ "citationDetail": [],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 7,
+   "floor": 5,
+   "thin": false,
+   "verdict": "7 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "processCritique": {
+  "untraceableCount": 2,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "4. [medium] Person-organization value alignment (a factor onboarding can influence) is linked to job satisfaction, organizational commitment, and intent to stay - a general org-behavior finding, not remote-onboarding-specific.",
+   "5. [high] The 2020 pandemic intensified pre-existing competition for talent by introducing new remote/hybrid work modalities - contextual background, not an effectiveness finding."
+  ],
+  "untraceableStatements": [
+   "The claim that person-organization value fit findings are 'general org-behavior finding, not remote-onboarding-specific' is an added interpretive label not present in claim [1]",
+   "The framing of claim [5] as 'contextual background, not an effectiveness finding' is an editorial characterization added by the researcher, not part of the verified claim"
+  ],
+  "coverageGaps": [
+   "No people-analytics/HR dataset was located despite a dedicated 'data auditor' perspective being commissioned for this purpose.",
+   "No primary/peer-reviewed empirical study isolating onboarding modality was found; no official company case-study documentation (e.g., GitLab, Zapier remote onboarding data) was found despite the practitioner perspective being scoped for exactly this.",
+   "No source type from three of the four searched perspectives (practitioner steelman, skeptic hunting in-person advantage, data auditor) produced any claims in the final pool - suggesting those searches either failed or their results were discarded without explanation, and this is not flagged in the summary.",
+   "Sub-question 1 (time-to-productivity/time-to-first-commit data) is entirely unanswered - no dataset or study on this metric was found or even attempted beyond a title search.",
+   "Sub-question 2 (6-12 month attrition/performance-review outcomes with mentorship/structure held constant) is unanswered - no controlled comparison was located.",
+   "Sub-question 3 (specific onboarding structures like 30/60/90 plans, mentor cadence) is unanswered - the practitioner-steelman perspective's output is completely absent from the claim pool, meaning that search track appears to have failed or was not reported.",
+   "Sub-question 4 (soft outcomes: culture integration, sponsorship, promotion velocity) is unanswered - no claims address this at all.",
+   "Sub-question 5 (dose-response: structure investment vs. modality) is unanswered.",
+   "Sub-question 6 (sub-population differences: new grads vs. experienced juniors, prior remote exposure) is unanswered.",
+   "Sub-question 7 (junior engineers' own lived-experience survey/forum/exit-interview data) is unanswered - no first-person or survey-of-engineers source was retrieved.",
+   "Sub-question 8 (post-2022 causal-isolation studies) is unanswered - the one paper found that claims to compare remote vs in-person was never actually read for findings, and no other post-2022 study was located."
+  ],
+  "planFlaws": [
+   "No triangulation attempt across perspectives is visible - findings 1,2,4 all derive from generic HR/onboarding literature, essentially the same source type (survey/interview HR research), giving an illusion of multiple confirmations when it's a single evidentiary vein.",
+   "The checklist conflates 'junior engineers' with general 'new hires' throughout the claim pool without flagging that none of the underlying sources are software-engineering-specific, risking the report being used to answer a narrower question than the evidence supports.",
+   "The one claim [3] that is most directly on-topic (a titled remote-vs-in-person comparative study) was never actually read for its content/findings - the research stopped at title-level verification, which is a process gap: the team should have retrieved and reported the actual findings of that paper before finalizing.",
+   "The scoping assumed such rigorous, isolated remote-vs-in-person junior-engineer studies exist and are findable via web search; when none were found, the plan had no fallback to explicitly report 'no evidence exists' as a distinct, load-bearing finding versus simply listing weak tangential claims.",
+   "Three of four commissioned perspectives (practitioner steelman, skeptic, data auditor) yielded zero claims in the final pool, but neither the summary nor findings flag this as a process failure - a reader cannot tell whether those searches were run and came up empty, or were never properly executed; this should have been surfaced as a critical limitation rather than silently omitted."
+  ],
+  "rationales": [
+   "The executive summary is largely honest about the core null result (no isolated junior-engineer remote-vs-in-person evidence was found), which is good epistemic hygiene. However, two problems push this to material-gaps. First, several editorializing phrases ('a general org-behavior finding, not remote-onboarding-specific', 'contextual background, not an effectiveness finding') are analytical judgments layered onto the claims that go beyond what the claims themselves state - minor but real untrac…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "This is a journal article about healthcare physician/provider onboarding (not software engineering), published in Management in Healthcare: A Peer-Reviewed Journal in 2022",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.69554/nwmy9584",
+   "why": "The supporting quote only gives bibliographic metadata (Journal name, Year, Type, Cited by count, Authors). It does not contain any verbatim text stating the article's subject matter is healthcare physician/provider onboarding or that it is not software engineering. The claim asserts a specific topical content (physician/provider onboarding, contrasted with software engineering) that is not present anywhere in the quoted text itself — the quote merely lists journal/year/authors metadata, not a d…"
+  },
+  {
+   "claim": "The paper argues that establishing a positive relationship during onboarding is foundational to provider morale, retention and reduced revenue disruption from turnover",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.69554/nwmy9584",
+   "why": "The claim frames this as the paper argues a foundational thesis with three distinct outcomes (morale, retention, reduced revenue disruption), but the quote itself is a single declarative sentence describing onboarding as an investment in these things - it does not use argumentative language (argues, foundational) and there is no indication from the quote alone that this is a central thesis of the paper versus an incidental statement. Additionally, the claim's topic (provider onboarding) is unspe…"
+  },
+  {
+   "claim": "The paper claims that adopting technology and streamlined onboarding processes can make new providers more effective and productive earlier in their practice",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.69554/nwmy9584",
+   "why": "The supporting quote only states that the paper provides several options for streamlining processes and adopting technology to support onboarding — it describes the paper's content/recommendations, not an outcome claim. The claim under review asserts the paper claims that adopting technology and streamlined onboarding processes can make new providers more effective and productive earlier in their practice — this outcome (effectiveness/productivity earlier in practice) is not present anywhere in …"
+  },
+  {
+   "claim": "The study uses a mixed-methods approach (surveys, interviews, focus groups) to compare employee productivity and well-being in remote work settings between pre-COVID-19 and post-COVID-19 eras.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.21203/rs.3.rs-2926406/v1",
+   "why": "The claim states the study compare[s] employee productivity and well-being in remote work settings between pre-COVID-19 and post-COVID-19 eras, but the supporting quote says nothing about productivity, well-being, or a pre/post-COVID comparison. The quote only describes the methodology (mixed-methods approach... surveys, interviews, and focus groups) and mentions the sample is employees working remotely in various organisations. The quote uses future tense (will be carried out), indicating a stu…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.56975/jetir.v13i3.576728",
+   "quality": "unreliable",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.2139/ssrn.5270069",
+   "quality": "secondary",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.21203/rs.3.rs-2926406/v1",
+   "quality": "unreliable",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.28953/2375-8643.1083",
+   "quality": "primary",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.69554/nwmy9584",
+   "quality": "primary",
+   "perspective": "Primary-literature academic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.4324/9781351275927-6",
+   "quality": "unreliable",
+   "perspective": "Practitioner steelman for structured remote onboarding",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.4324/9780080575315-10",
+   "quality": "unreliable",
+   "perspective": "Practitioner steelman for structured remote onboarding",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "quick",
+  "perspectives": 4,
+  "subQuestions": 8,
+  "sourcesFetched": 7,
+  "claimsExtracted": 13,
+  "urlDupes": 0,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 3,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 14,
+    "ok": 0,
+    "fail": 14,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 14,
+    "ok": 0,
+    "fail": 14,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 14,
+    "ok": 0,
+    "fail": 14,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 14,
+    "ok": 13,
+    "fail": 1,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 14,
+    "ok": 14,
+    "fail": 0,
+    "results": 22
+   },
+   "crossref": {
+    "attempts": 10,
+    "ok": 7,
+    "fail": 3,
+    "results": 41
+   },
+   "europepmc": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 21
+   }
+  },
+  "sourceTiers": {
+   "T2": 3,
+   "T?": 4
+  },
+  "killsByLens": {
+   "support": 4,
+   "provenance": 4,
+   "counter": 1
+  },
+  "fetchVia": {
+   "crossref-api": 4,
+   "crossref-fallback": 1,
+   "http": 2
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 2,
+   "hits": 32,
+   "rate": 0.5
+  },
+  "agentCalls": 51,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 88675,
+  "outputTokens": 31920,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "pageFetchCache": {
+   "hits": 0,
+   "misses": 7,
+   "charsServedFromCache": 0,
+   "hitRate": 0.0
+  },
+  "wallSeconds": 357.0,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 6,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}

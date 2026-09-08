@@ -15,6 +15,10 @@ from deepresearch import engine as dr          # noqa: E402
 from deepresearch import tiers                 # noqa: E402
 from deepresearch import search as searchmod   # noqa: E402
 
+# The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
+# anything wanting the REAL one has to hold a reference from before that happens.
+_REAL_WEB_FETCH = dr.web_fetch
+
 PASS = FAIL = 0
 
 # The engine source, read once: several tests assert on the SHAPE of the code
@@ -57,6 +61,7 @@ def install(cfg):
         # Route every fixture through the SEAM, so the pipeline tests see exactly what a
         # production caller sees. The guards those callers used to carry are gone; if a
         # fixture is malformed the stub now returns None the way agent() would.
+        #
         got = _raw_fake_agent(prompt, schema, label, model, max_tokens, retries)
         if got is not None and dr._has_unknown_sentinel(got):
             # agent() retries a sentinel; the *_once fixtures behave on the second call.
@@ -308,6 +313,41 @@ ok(bool(r11.get("confirmedRaw")), "synthesis failure salvages the verified claim
 r12 = run({"kill_all": True}, depth="quick")
 ok(r12["stats"]["confirmed"] == 0 and "refuted" in r12["summary"].lower(),
    "everything-killed is reported as a real result, not an error")
+
+print("\n-- how much evidence the report rests on, on EVERY exit --")
+# honestLimits itself once shipped on 2 of 6 exits, so this is asserted across the
+# exits rather than on the happy path alone.
+for _name, _r in (("happy path", r), ("all claims killed", r3),
+                  ("synthesis failed", r11), ("killed at quick depth", r12)):
+    _eb = ((_r.get("honestLimits") or {}).get("evidenceBase") or {})
+    ok(isinstance(_eb, dict) and isinstance(_eb.get("citableSources"), int)
+       and isinstance(_eb.get("thin"), bool),
+       "%s: evidenceBase carries a real source count and a thin flag" % _name)
+ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
+   and dr._evidence_base([{"tier": "T2"}] * dr.MIN_CITABLE_SOURCES)["thin"] is False
+   and dr._evidence_base([{"tier": "T5"}] * 20)["citableSources"] == 0,
+   "the floor is %d citable sources, and it is a label rather than an abort - the "
+   "thinnest run on record was thin because of a PDF bug, and aborting it would have "
+   "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- an <item>-wrapped array is data, not a decline --")
+ok(dr.as_list('\n<item>first</item>\n<item>second</item>', "t") == ["first", "second"],
+   "the structured-output path leaks <item> markup around array elements; every element "
+   "is intact, so it is recovered rather than discarded")
+ok(dr.as_list("<item>a<item>b", "t") == ["a", "b"],
+   "and recovered when the closing tags are absent too")
+ok(dr.as_list("just a sentence", "t") == []
+   and dr.as_list("a <item> in prose", "t") == ["in prose"],
+   "a plain string is still rejected - the 226-one-character-claims bug must not return")
+ok(dr.as_list(["already", "a", "list"], "t") == ["already", "a", "list"],
+   "a real array is untouched")
+# Costed, not cosmetic: the corrective retry re-asks the SAME question, so a
+# deterministic shape leak used to consume the whole retry budget and could fail the
+# framing call outright - the first call of the run.
+ok("<item>" in open(dr.__file__, encoding="utf-8").read(),
+   "the recovery lives at the seam, so every array field in every schema gets it")
+
+ok("25%" in dr._evidence_base([{"tier": "T2"}])["verdict"],
+   "a thin verdict says what a thin run has actually scored, not just that it is thin")
 
 print("\n-- issue #3: the five verified bugs --")
 
@@ -664,9 +704,75 @@ ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
    "every caller downstream treated as page text")
 
 _eng = open(dr.__file__, encoding="utf-8").read()
-ok("_fetch_meta[str(url)] = meta" in _eng and '"via": (_fetch_meta.get' in _eng,
-   "every source row records HOW it was read, so a paper and an abstract stub are no "
-   "longer indistinguishable in the report")
+
+# Exercise the real web_fetch against a stubbed _search.fetch, rather than asserting a
+# source substring. The substring version passed for months and then failed the moment a
+# variable was renamed, which is the wrong signal in both directions: it never checked
+# that `via` was recorded, only that a line of code looked a certain way.
+_real_fetch, _calls = dr._search.fetch, []
+try:
+    def _stub_fetch(u, cap=14000):
+        _calls.append((u, cap))
+        return ("body of " + u)[:cap], {"via": "crossref-api", "doi": "10.1/x"}
+    dr._search.fetch = _stub_fetch
+    dr._page_cache.clear(); dr._fetch_meta.clear()
+    dr._page_tally.update({"hits": 0, "misses": 0, "charsServedFromCache": 0})
+    _t1 = _REAL_WEB_FETCH("https://p.org/a", cap=500)
+    ok(dr._fetch_meta.get("https://p.org/a", {}).get("via") == "crossref-api",
+       "every source row records HOW it was read, so a paper and an abstract stub are no "
+       "longer indistinguishable in the report")
+    _t2 = _REAL_WEB_FETCH("https://p.org/a", cap=500)
+    ok(_t2 == _t1 and len(_calls) == 1 and dr._page_tally["hits"] == 1,
+       "the same page is fetched once per run: the audit re-reads pages the sweep already "
+       "pulled, 18 of 30 times in each of two recorded runs")
+    _REAL_WEB_FETCH("https://p.org/a", cap=9000)
+    ok(len(_calls) == 2,
+       "a cache entry read at a smaller cap does NOT serve a larger one - it refetches, "
+       "rather than silently handing back a truncated page")
+    def _empty_fetch(u, cap=14000):
+        _calls.append((u, cap)); return "", {"via": "failed"}
+    dr._search.fetch = _empty_fetch
+    _REAL_WEB_FETCH("https://dead.org/x"); _REAL_WEB_FETCH("https://dead.org/x")
+    ok(len([c for c in _calls if c[0] == "https://dead.org/x"]) == 2,
+       "an empty fetch is never cached: one transient failure must not delete a source "
+       "for the rest of the run")
+finally:
+    dr._search.fetch = _real_fetch
+    dr._page_cache.clear(); dr._fetch_meta.clear()
+    dr._page_tally.update({"hits": 0, "misses": 0, "charsServedFromCache": 0})
+
+print("\n-- token accounting cannot go silently incomplete again --")
+_u = {"in_tok": 0, "out_tok": 0, "cache_write_tok": 0, "cache_read_tok": 0, "usageUnrecorded": {}}
+dr._record_usage({"input_tokens": 100, "output_tokens": 20,
+                  "cache_creation_input_tokens": 3000, "cache_read_input_tokens": 300}, into=_u)
+ok(_u["cache_write_tok"] == 3000 and _u["cache_read_tok"] == 300,
+   "cache tokens are counted: recording only input+output made a cached run's totals "
+   "wrong by exactly the amount the cache handled, and it read as zero either way")
+dr._record_usage({"output_tokens_details": {"thinking_tokens": 77},
+                  "some_future_field": 5, "service_tier": "standard", "flagged": True}, into=_u)
+ok(_u["usageUnrecorded"].get("output_tokens_details.thinking_tokens") == 77,
+   "a nested token field is censused, not dropped - thinking tokens live one level down")
+ok(_u["usageUnrecorded"].get("some_future_field") == 5,
+   "a usage field this build has never heard of is still counted, under its own name: "
+   "the accounting says what it missed instead of quietly under-reporting")
+ok("service_tier" not in _u["usageUnrecorded"] and "flagged" not in _u["usageUnrecorded"],
+   "non-numeric and boolean usage fields are not counted as tokens")
+
+print("\n-- prompt caching is refused, and the reasons stay checkable (ADR-0003) --")
+_fp = dr.p_fact("the claim", "https://x.org/p", "P" * 12000)
+ok(_fp.index("## Statement") < _fp.index("## Page content"),
+   "the audit states the claim BEFORE the page. Caching needs the page first, and that "
+   "reorder moved 6 of 30 verdicts against a 0-of-30 self-disagreement control")
+ok("cache_control" not in open(dr.__file__, encoding="utf-8").read(),
+   "no prompt block is marked for caching anywhere")
+ok(len(dr.CC_SYSTEM_PREFIX) // 4 < 1024,
+   "the system block is far UNDER that minimum (47 tokens), which is why it is not "
+   "marked for caching: the marker would cache nothing and bill a 25% write surcharge")
+_lens = dr.p_verify("q", {"claim": "c", "sourceUrl": "u", "quote": "z"},
+                    *dr.LENSES[0], 0, 3)
+ok(len(_lens) // 4 < 1024,
+   "an ENTIRE verify prompt is ~350 tokens, also under the floor - caching the lens "
+   "boilerplate, as suggested, would have cached nothing at all")
 ok("fetchVia=_via_census" in _eng and "abstractOnlySources" in _eng,
    "and the run censuses it, with an honest limit explaining what crossref-fallback means")
 

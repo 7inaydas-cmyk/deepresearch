@@ -269,6 +269,29 @@ import fs2 from 'node:fs'
   ok(out.scopeContract.provenance && Object.values(out.scopeContract.provenance).every(v => v === 'supplied'),
      'every field reads supplied: ' + JSON.stringify(out.scopeContract.provenance))
 }
+{
+  // The four early exits used to carry NO honestLimits at all, while the parity marker
+  // check passed because the string existed on the happy path. Assert the effect.
+  const fs3 = await import('node:fs')
+  const src = fs3.readFileSync(new URL('../../integrations/claude-code/deepresearch.js', import.meta.url).pathname, 'utf8')
+  // Every path that returns a report calls sourceRows(); every one must also build
+  // the limits. Comparing the two counts catches a new exit added without them.
+  const nExits = (src.match(/sources: sourceRows\(\)/g) || []).length
+  const nLimits = (src.match(/honestLimits: honestLimits\(/g) || []).length
+  ok(nExits === nLimits && nExits === 5,
+     'every one of the ' + nExits + ' report exits builds honestLimits (' + nLimits + ' do)')
+  ok(/honestLimits: honestLimits\(\)/.test(src) && !/honestLimits: \{/.test(src),
+     'there is ONE honestLimits builder, so a caveat cannot be added to one exit and missed on the others')
+  ok(/evidenceBase: evidenceBase\(\)/.test(src) && /MIN_CITABLE_SOURCES = 5/.test(src),
+     'every exit reports how many citable sources the report rests on')
+  // Must reuse s.tier, the value computed at fetch time and censused by
+  // stats.sourceTiers. Recomputing from the URL alone made a report disagree with
+  // itself about one source's tier once already.
+  ok(/CITABLE\.has\(s\.tier \|\| 'T3'\)/.test(src) && /const c = \{\}[\s\S]{0,200}s\.tier/.test(src),
+     'the citable count and the tier census read the same fetch-time tier, so one report cannot disagree with itself')
+  ok(!/citableSources < MIN_CITABLE_SOURCES\) return/.test(src) && /NOT aborted for being thin/.test(src),
+     'a thin run is labelled, never aborted: the thinnest run on record was thin because of a bug, and aborting would have hidden it')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)
