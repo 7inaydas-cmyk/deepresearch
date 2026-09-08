@@ -60,6 +60,7 @@ SHARED = {
     "double-encoded recovery":   ("recovered a double-encoded array", "recovered a double-encoded array"),
     "<item>-wrapped recovery":   ("recovered an <item>-wrapped array", "recovered an <item>-wrapped array"),
     "verbatim strike":           ("untraceableVerbatim", "untraceableVerbatim"),
+    "strike matches the view":   ("def webtext_pattern(", "const webTextPattern = "),
     "process critic":            ("processCritique", "processCritique"),
     "partial citations surfaced": ("citationPartials", "citationPartials"),
     "auditor quote published":   ("\"locatedQuote\": webtext(", "locatedQuote: webText("),

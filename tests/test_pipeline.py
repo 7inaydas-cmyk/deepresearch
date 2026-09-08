@@ -330,6 +330,47 @@ ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- a model quoting text back is quoting the webtext VIEW of it --")
+# The same asymmetry as the quote matcher, in two more places. The critic is shown
+# webtext(summary): quote lookalikes DELETED, whitespace collapsed. Matching its
+# verbatim copy with a plain `in` against the raw summary misses on any summary
+# containing a quotation mark, which is most of them - and that is why `policy: strike`
+# could flag nine untraceable statements and remove none.
+_raw_sum = ('Trials show gains. The pilot reported a \u201c13% rise\u201d in output '
+            'across all teams. Costs fell.')
+_frag = "The pilot reported a 13% rise in output across all teams."
+ok(_frag in dr.webtext(_raw_sum), "the critic really is shown the fragment")
+ok(_frag not in _raw_sum, "and a plain substring test against the raw summary fails")
+ok(dr.webtext_pattern(_frag).search(_raw_sum) is not None,
+   "the tolerant pattern finds it, so the strike policy can actually strike")
+ok(dr.webtext_pattern("Something never written here at all").search(_raw_sum) is None,
+   "and it is NOT fuzzy: text that is absent still does not match")
+_nl = "Trials show gains. The pilot reported\na 13% rise in output. Costs fell."
+ok(dr.webtext_pattern("The pilot reported a 13% rise in output.").search(_nl) is not None,
+   "a newline the critic saw as a space is matched too")
+
+print("\n-- a picked URL is matched against the form the model was SHOWN --")
+# The pick list renders each hit as webtext(url, 200), which appends an ellipsis when it
+# truncates. For a URL over 200 characters the model faithfully copies a string that can
+# never match the original, and a good source is dropped for obeying "copy each url
+# EXACTLY as given".
+_long = "https://www.ncbi.nlm.nih.gov/pmc/articles/" + "/".join(
+    "section-%d-of-the-document" % i for i in range(9)) + "/full.pdf"
+ok(len(_long) > 200, "the fixture URL is long enough to be truncated: %d chars" % len(_long))
+_shown = dr.webtext(_long, 200)
+ok(dr.norm_url(_shown) != dr.norm_url(_long),
+   "a faithful copy of the truncated form does NOT match the original")
+_by = {}
+for _h in [{"url": _long, "title": "t", "snippet": "s"}]:
+    _by[dr.norm_url(_h["url"])] = _h
+    _by.setdefault(dr.norm_url(dr.webtext(_h["url"], 200)), _h)
+ok(_by.get(dr.norm_url(_shown)) is not None
+   and _by[dr.norm_url(_shown)]["url"] == _long,
+   "indexing by both forms resolves it, and resolves to the REAL url")
+ok('by_url.setdefault(norm_url(webtext(h["url"], 200)), h)'
+   in open(dr.__file__, encoding="utf-8").read(),
+   "and the engine's picker does exactly that")
+
 print("\n-- no schema field is demanded of a model and then never read --")
 # The bug class this project keeps rediscovering. Three instances found on 2026-09-08
 # alone: `locatedQuote` (the auditor's own verbatim pull, ~30 calls a run, read by

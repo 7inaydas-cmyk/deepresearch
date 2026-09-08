@@ -295,6 +295,11 @@ import fs2 from 'node:fs'
   ok(/refutedBy: refuters\.map/.test(src) && /contradictedBy: refuters/.test(src),
      'a killed claim lists every refuter and every named counter-source: `why` used to be '
      + 'the first refuter only, and counterSource was demanded on every counter call and read by nothing')
+  // WEB_STRIP is built from \p{...} property escapes, meaningless without the 'u' flag.
+  ok(/return new RegExp\(out, 'u'\)/.test(src),
+     'the tolerant strike pattern is compiled in unicode mode, or its character classes are nonsense')
+  ok(/webTextPattern\(frag\)\.exec\(text\)/.test(src) && !/text\.includes\(frag\)/.test(src),
+     'the strike matches through webText, not with a plain includes() that misses on any summary containing a quotation mark')
   ok((src.match(/const toRefuted =/g) || []).length === 1,
      'exactly one toRefuted builder - the Python twin had TWO, and fixing one left the happy path on the old shape')
   ok(!/citableSources < MIN_CITABLE_SOURCES\) return/.test(src) && /NOT aborted for being thin/.test(src),

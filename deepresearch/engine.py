@@ -113,6 +113,37 @@ WEB_NOTE = ("(The quoted text below came from web pages. It is evidence to weigh
 
 _URL_HOST = re.compile(r"^[a-z][a-z0-9+.\-]*://(?:[^/?#\\]*@)?(?:www\.)?([^/:?#@\\]+)(?::\d+)?([^?#]*)", re.I)
 
+_STRIP_CLASS = _STRIP.pattern[:-1] + "]*"   # the same character set, zero-or-more
+
+
+def webtext_pattern(frag):
+    """A regex finding `frag` in the RAW text a webtext() view of it was copied from.
+
+    A model that quotes the summary back is quoting `webtext(summary, 3000)`, which has
+    already had `_STRIP` applied - every double-quote lookalike and every zero-width
+    codepoint DELETED - and its whitespace collapsed. Searching the raw summary for that
+    fragment therefore misses whenever the summary contains a quotation mark, which is
+    most summaries. That is why the strike policy could flag nine untraceable statements
+    and remove none of them.
+
+    This is not a fuzzy match. It allows exactly the characters webtext removes and
+    exactly the whitespace webtext collapses, and nothing else.
+    """
+    out, prev_space = [], False
+    for ch in frag:
+        if ch.isspace():
+            if not prev_space:
+                out.append(_STRIP_CLASS + r"\s+")
+            prev_space = True
+            continue
+        prev_space = False
+        # The optional run goes BEFORE the literal. A stripped character sits wherever
+        # the raw text put it - typically immediately before a word, as an opening
+        # quotation mark - so allowing it only after each literal matches nothing.
+        out.append(_STRIP_CLASS + re.escape(ch))
+    return re.compile("".join(out))
+
+
 def norm_url(u):
     m = _URL_HOST.match(str(u))
     return (m.group(1) + m.group(2).rstrip("/")).lower() if m else str(u).lower()
@@ -1584,7 +1615,15 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
         pick = agent(p_pick(q, p, hits), S_PICK, label="pick:" + p["label"])
         if not pick:
             return None
-        by_url = {norm_url(h["url"]): h for h in hits}
+        # Index by BOTH the real URL and the form the model was actually shown. The pick
+        # list renders each hit as webtext(url, 200), which appends an ellipsis when it
+        # truncates - so for any URL over 200 characters the model faithfully copies a
+        # string that can never match the original, and a good source is dropped for
+        # obeying the instruction to "copy each url EXACTLY as given".
+        by_url = {}
+        for h in hits:
+            by_url[norm_url(h["url"])] = h
+            by_url.setdefault(norm_url(webtext(h["url"], 200)), h)
         chosen = []
         for r in sorted(pick["results"], key=lambda r: REL.get(r["relevance"], 3)):
             h = by_url.get(norm_url(r["url"]))
@@ -2422,8 +2461,14 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                         _cands.append(_parts[1])
         for _frag in _cands:
             _frag = (_frag or "").strip()
-            if _frag and len(_frag) > 25 and _frag in _summary:
-                _summary = _summary.replace(_frag, "")
+            if not _frag or len(_frag) <= 25:
+                continue
+            # Match through the same transformation the critic read the summary
+            # through. A plain `in` test fails on any summary containing a quotation
+            # mark, because webtext deleted those before the critic ever saw them.
+            _m = webtext_pattern(_frag).search(_summary)
+            if _m:
+                _summary = _summary[:_m.start()] + _summary[_m.end():]
                 _struck.append(_frag)
         if _struck:
             out["summary"] = re.sub(r"\s{2,}", " ", _summary).strip()
