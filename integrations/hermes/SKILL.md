@@ -209,6 +209,15 @@ Report these six things. Do not bury them.
    font encoding defeated extraction produced four fluent, entirely invented quotes, and
    this is the check that caught them.
 
+0d. **`unreachable` now means the engine KNOWS it did not read the page.** When the fetch
+   failed or the PDF was unreadable, the audit answers `unreachable` in code and spends no
+   model call - do not report those as claims that failed their citation check. When only
+   the ABSTRACT was reachable because the publisher blocked us, the auditor is told so and
+   answers `unreachable` for anything an abstract cannot settle. Measured 2026-09-08: without
+   that, it answered `unsupported` 12 times out of 12 on an abstract, and `unsupported` is the
+   only verdict that removes a claim the panel already passed. So a run with abstract-only
+   sources used to lose good claims to a blocked publisher.
+
 1. **`citationAudit.citationAccuracy`** - of every verified claim, the percentage whose
    cited page, re-fetched blind, actually supports it. **The single most important number.**
    Under ~70% means treat the report as provisional and say so. Also report
