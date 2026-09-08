@@ -273,6 +273,19 @@ ok(not tiers.host_is_ambiguous("https://\u0430mazon.com/idn"),
    "is one host in two encodings, not two hosts")
 ok(searchmod.doi_of("https://doi.org/10.1038/nature12373") == "10.1038/nature12373",
    "DOI extracted from a resolver URL")
+# The pattern used `\S+`, which swallowed the fragment and the query. A link to
+# `#abstract`, or a `?utm_source=` tag, produced a DOI Crossref could not resolve - and
+# because doi.org is a resolver rather than a fetchable page, the source was then lost
+# outright. The sibling pattern doi_in_url had always excluded both.
+ok(searchmod.doi_of("https://doi.org/10.1038/x#abstract") == "10.1038/x"
+   and searchmod.doi_of("https://doi.org/10.1038/x?utm_source=news") == "10.1038/x",
+   "a fragment or a tracking parameter does not corrupt the DOI")
+ok(searchmod.doi_of("https://doi.org/10.1038/x#abstract")
+   == searchmod.doi_in_url("https://doi.org/10.1038/x#abstract"),
+   "and the two DOI extractors agree, which is why one was wrong for as long as nobody "
+   "compared them")
+ok(searchmod.doi_of("https://doi.org/10.1038/a.b-c_d/e") == "10.1038/a.b-c_d/e",
+   "a legitimate DOI with dots, dashes and slashes is still extracted whole")
 ok(searchmod.doi_of("https://example.com/page") is None, "non-DOI URLs are left alone")
 
 # ── Full pipeline ───────────────────────────────────────────────────────────

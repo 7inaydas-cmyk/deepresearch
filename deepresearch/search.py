@@ -542,7 +542,12 @@ def search(query: str, n: int = 8, backends: list[str] | None = None,
 
 
 # ── Fetching ────────────────────────────────────────────────────────────────
-_DOI_URL = re.compile(r"^https?://(?:dx\.)?doi\.org/(10\.\d{4,9}/\S+)$", re.I)
+# `\S+` used to run here, which swallowed the fragment and the query: a link to
+# `https://doi.org/10.1038/x#abstract` yielded the DOI `10.1038/x#abstract`, Crossref
+# could not resolve it, and because doi.org is a resolver rather than a fetchable page
+# the source was lost outright. A `?utm_source=...` did the same. The sibling pattern
+# `_DOI_IN_URL` had always excluded both; these two must agree.
+_DOI_URL = re.compile(r"^https?://(?:dx\.)?doi\.org/(10\.\d{4,9}/[^\s?#]+)", re.I)
 _JATS = re.compile(r"<[^>]+>")
 
 
@@ -579,6 +584,7 @@ def crossref_record(doi: str) -> tuple[str | None, dict | None]:
 
 
 def _readable(html_text: str) -> str:
+    html_text = html_text or ""
     """Strip a page to readable text. Uses trafilatura when installed, else a
     conservative tag strip. Optional dependency, never required."""
     try:
