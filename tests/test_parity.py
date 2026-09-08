@@ -39,6 +39,7 @@ SHARED = {
     "critic reads provenance":   ("def _plan_flaws_check(", "const planFlawsCheck = "),
     "corrective retry prompt":   ("YOUR PREVIOUS RESPONSE WAS REJECTED", "YOUR PREVIOUS RESPONSE WAS REJECTED"),
     "deterministic tiering":     ("def tier_of", "const tierOf"),
+    "ambiguous-host refusal":    ("def host_is_ambiguous(", "const hostIsAmbiguous = "),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),
     "citable enforcement":       ("citable_only", "citableOnly"),
     "tier-first ranking":        ("TIER_RANK.get", "tierRankOf"),

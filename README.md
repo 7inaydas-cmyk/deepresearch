@@ -206,6 +206,7 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 
 ## Where it fails
 
+- **A URL two parsers disagree about is excluded, not graded.** `https://nature.com\\@evil.example/x` reads as `nature.com` to a host regex and as `evil.example` to urllib — the parser the fetcher actually uses — so it graded T2, peer-reviewed journal, while the page would be served by evil.example. Both orderings now grade T5-excluded with the reason stated. Across ordinary URLs — ports, `www.`, userinfo, backslashes in the *path*, IDN hosts — the two parsers agree everywhere, so this costs nothing real.
 - **The kill rate is not a quality metric.** It reports how much was removed, not whether removal was correct. There is no ground truth here and the **false-kill rate is unmeasured**.
 - **The frame is unaudited.** The contract is fixed before the evidence, which is the point — but nothing checks whether the frame was the *right* one. A well-executed answer to a subtly wrong question is the failure mode this cannot catch.
 - **Roughly one in eight surviving claims still fails its own citation audit.** 86.7% and 88.1% are real numbers, honestly reported, and they are not 100%.

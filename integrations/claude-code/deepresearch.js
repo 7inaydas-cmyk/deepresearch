@@ -378,7 +378,41 @@ const CITABLE = new Set(["T1", "T2", "T?", "T3"])
 // verdict silently govern both.
 const auditKey = (claim, url) => String(claim) + '\u0000' + String(url)
 const hostOf = u => { const m = String(u).match(URL_HOST_PATTERN); return m ? m[1].toLowerCase() : '' }
+// Do two competent parsers read two different hosts out of this URL? Measured
+// 2026-09-08: `https://nature.com\@evil.example/x` is read as `nature.com` by the host
+// regex and as `evil.example` by the standard URL parser, so it graded T2 (peer-reviewed
+// journal) while the page would be served by evil.example. Tiering is the one thing this
+// project grades in code rather than by vibes, and T2-versus-T5 decides whether a claim
+// may be cited at all. Across normal URLs — ports, `www.`, userinfo, backslashes in the
+// PATH — the two agree everywhere; they part company only on a backslash inside the
+// authority, which is the attack shape. A URL two parsers disagree about has no single
+// host, so it is excluded rather than graded on a guess.
+//
+// Honest note on THIS runtime: the backslash case above is not ambiguous here. WHATWG
+// URL parsing normalises a backslash in the authority to a slash, so both parsers agree
+// on `nature.com` and the runtime's WebFetch would genuinely go there - grading it T2 is
+// correct for this build. The guard is kept because it is cheap and because the two
+// parsers disagreeing is the thing worth refusing, whatever produces it.
+const hostIsAmbiguous = u => {
+  let std = ''
+  // A URL the standard parser cannot read at all is UNPARSEABLE, not ambiguous, and
+  // conflating the two excluded ordinary fixtures. It is safe to fall through: the host
+  // regex requires a scheme, so anything the standard parser rejects yields no host from
+  // the regex either, and lands on the unclassified tier rather than a trusted one.
+  try { std = (new URL(String(u))).hostname.toLowerCase() } catch { return false }
+  let mine = hostOf(u)
+  if (!std || !mine) return false
+  // Put the regex host through the SAME parser before comparing, or an IDN host is
+  // flagged for being spelled differently rather than for being a different host: this
+  // parser punycodes, so `аmazon.com` becomes `xn--mazon-3ve.com` while the regex
+  // returns the Unicode form. That is one host in two spellings, not two hosts.
+  try { mine = (new URL('https://' + mine)).hostname.toLowerCase() } catch { /* keep raw */ }
+  return std.startsWith('www.') ? (mine !== std && mine !== std.slice(4)) : mine !== std
+}
 const tierOf = (url, title) => {
+  if (hostIsAmbiguous(url)) {
+    return { tier: 'T5', why: 'AMBIGUOUS HOST: the host regex and the standard URL parser read different hosts out of this URL, which is what a tier-spoof looks like. Excluded rather than graded on a guess.' }
+  }
   const h = hostOf(url)
   if (RESOLVERS.has(h)) return { tier: 'T?', why: 'resolver (' + h + ') — provenance unverified, publisher unknown' }
   for (const [tier, re] of TIER_RULES) if (re.test(h)) return { tier, why: 'host rule: ' + h }

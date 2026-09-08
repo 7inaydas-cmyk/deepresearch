@@ -248,6 +248,29 @@ ok(not dr._has_unknown_sentinel({"subQuestions": ["real", "values"]}),
 print("\n-- URL parsing --")
 ok(tiers.host_of("https://evil.com\\@trusted.org/x") == "evil.com",
    "backslash-userinfo URL resolves to the REAL host, not the trusted-looking one")
+# That assertion only ever covered the HARMLESS ordering, with the untrusted host first,
+# where the regex happens to be right. Reversed, it is wrong: the regex reads
+# `nature.com` out of `https://nature.com\@evil.example/x` while urllib - the parser the
+# fetcher itself uses - reads `evil.example`. So the URL graded T2, peer-reviewed
+# journal, while the page would be served by evil.example. Tiering is the one thing this
+# project grades in code rather than by vibes.
+ok(tiers.host_of("https://nature.com\\@evil.example/x") == "nature.com"
+   and tiers.host_is_ambiguous("https://nature.com\\@evil.example/x"),
+   "the reversed ordering IS ambiguous: the two parsers read two different hosts")
+ok(tiers.tier_of("https://nature.com\\@evil.example/x")[0] == "T5"
+   and tiers.tier_of("https://evil.com\\@trusted.org/x")[0] == "T5",
+   "so both orderings are EXCLUDED rather than graded on a guess - a URL two parsers "
+   "disagree about has no single host, and the cost of picking wrong is a content farm "
+   "published as a journal")
+for _good in ("https://www.nature.com/articles/x", "https://nature.com/x",
+              "https://pmc.ncbi.nlm.nih.gov/articles/PMC1/", "https://nber.org:443/p?x=1",
+              "https://user:pw@example.org/p", "https://example.org/path\\with\\backslash",
+              "https://sub.domain.example.co.uk/a/b"):
+    ok(not tiers.host_is_ambiguous(_good),
+       "and an ordinary URL is untouched: %s" % _good[:52])
+ok(not tiers.host_is_ambiguous("https://\u0430mazon.com/idn"),
+   "an IDN host is not flagged for being SPELLED differently by the two parsers - that "
+   "is one host in two encodings, not two hosts")
 ok(searchmod.doi_of("https://doi.org/10.1038/nature12373") == "10.1038/nature12373",
    "DOI extracted from a resolver URL")
 ok(searchmod.doi_of("https://example.com/page") is None, "non-DOI URLs are left alone")

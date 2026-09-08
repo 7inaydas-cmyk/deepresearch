@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import urllib.parse
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _CONTRACT = os.environ.get(
@@ -35,6 +36,38 @@ def host_of(url: str) -> str:
     return m.group(1).lower() if m else ""
 
 
+def host_is_ambiguous(url: str) -> bool:
+    """Do two competent parsers read two different hosts out of this URL?
+
+    Measured 2026-09-08. `https://nature.com\\@evil.example/x` is read as `nature.com`
+    by the host regex and as `evil.example` by urllib, which is the parser the fetcher
+    itself uses - so the URL graded T2 (peer-reviewed journal) while the page would be
+    served by evil.example. Tiering is the one thing this project grades in code rather
+    than by vibes, and T2-versus-T5 decides whether a claim may be cited at all.
+
+    The pre-existing test covered only the harmless ordering, with the untrusted host
+    FIRST, where the regex happens to be right. Reversed, it is wrong.
+
+    Checked across normal URLs - ports, `www.`, userinfo, backslashes in the PATH - the
+    two parsers agree everywhere. They part company only on a backslash inside the
+    authority, which is the attack shape and essentially never legitimate. So the answer
+    is not to pick a winner: a URL two parsers disagree about has no single host, and
+    grading it on either reading is a guess.
+    """
+    u = str(url or "")
+    try:
+        std = (urllib.parse.urlsplit(u).hostname or "").lower()
+    except ValueError:
+        # Unparseable is not ambiguous. Falling through is safe because the host regex
+        # requires a scheme, so anything urllib rejects yields no host here either and
+        # lands on the unclassified tier rather than a trusted one.
+        return False
+    mine = host_of(u)
+    if not std or not mine:
+        return False
+    return mine != std and mine != std[4:] if std.startswith("www.") else mine != std
+
+
 def tier_of(url: str, title: str = "", text: str = "", resolved_journal: str | None = None):
     """Return ``(tier, why)``.
 
@@ -43,6 +76,13 @@ def tier_of(url: str, title: str = "", text: str = "", resolved_journal: str | N
     is peer-reviewed literature, but the bare ``doi.org`` link is not evidence of
     anything.
     """
+    if host_is_ambiguous(url):
+        # Excluded, not merely downgraded. A URL two parsers read as two different
+        # hosts is the shape of a tier-spoof, and the cost of being wrong is a content
+        # farm published as a journal.
+        return "T5", ("AMBIGUOUS HOST: the host regex and urllib read different hosts out "
+                      "of this URL, which is what a tier-spoof looks like. Excluded rather "
+                      "than graded on a guess.")
     h = host_of(url)
     if h in RESOLVERS:
         if resolved_journal:
