@@ -1579,9 +1579,30 @@ log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untracea
 // sides before testing containment. Truncating both then asking "is one inside the
 // other" is simply wrong: a four-character prefix shifts the alignment and containment
 // can never hold. Compare a probe from one side against the WHOLE of the other.
+// Three attempts, each earlier failure putting a FALSE statement in a report — which is
+// the defect this stamp exists to prevent. Calibrated on real pairs, not reasoned about:
+// over 8 true pairs and 24 cross pairs from two live runs, true pairs scored 0.95–1.00
+// content-word overlap and cross pairs peaked at 0.22. The threshold sits mid-gap.
+// Prefix matching was the wrong tool — the model rewords mid-sentence, and word overlap
+// does not care where the rewording happened.
 const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
+const HYP_STOP = new Set(('the a an of to in is are and or that this it its as be for with by on at from than ' +
+  'not but so if then also more most some other others their there was were has have').split(' '))
+const HYP_MATCH_THRESHOLD = 0.6
+const HYP_MIN_TOKENS = 4
 const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
-const sameHyp = (a, b) => !!a && !!b && (a.includes(b) || b.includes(a) || b.includes(a.slice(0, 60)) || a.includes(b.slice(0, 60)))
+const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
+const sameHyp = (a, b) => {
+  if (!a || !b) return false
+  if (a.includes(b) || b.includes(a)) return true
+  const ta = hypTokens(a), tb = hypTokens(b)
+  // Too few content words to judge by overlap: a two-word hypothesis would match
+  // anything containing both.
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
+  let shared = 0
+  ta.forEach(w => { if (tb.has(w)) shared++ })
+  return shared / Math.min(ta.size, tb.size) >= HYP_MATCH_THRESHOLD
+}
 const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
 const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => ({
   ...v,

@@ -982,16 +982,32 @@ def read_provenance(url, text):
     return True, "", ""
 
 
-# Matching a verdict back to the hypothesis it judges. Measured on a live run
-# 2026-09-08: framing registered 4 hypotheses, synthesis adjudicated the same 4, and a
-# first version marked ALL FOUR post-hoc - because the synthesis step prefixes each with
-# "H1: ", and because that version truncated BOTH sides to 80 characters before testing
-# containment. Truncating both then asking "is one inside the other" is simply wrong: a
-# four-character prefix shifts the alignment and containment can never hold. The report
-# then asserted that four pre-registered hypotheses had been written after the fact,
-# which is the same class of false claim this whole change exists to remove.
+# Matching a verdict back to the hypothesis it judges. This took three attempts and each
+# failure put a FALSE statement in a report, which is the defect the stamp exists to
+# prevent - so the final version is calibrated on real pairs rather than reasoned about.
+#
+#   1. Truncated BOTH sides to 80 chars and tested containment. Cannot work: the
+#      synthesis step relabels each hypothesis "H1: " and a 4-character prefix shifts the
+#      alignment. Live run: 4 of 4 pre-registered hypotheses stamped post-hoc.
+#   2. Stripped the label, compared a 60-character probe against the whole other side.
+#      Better, and still wrong: the model rewords mid-sentence. "the debate is largely a
+#      definitional/measurement artifact" is 56 characters of exact agreement and then
+#      diverges, so a 60-character probe missed it. Live run: 2 of 4 stamped post-hoc.
+#   3. Content-word overlap, below. Measured over 8 true pairs and 24 cross pairs drawn
+#      from two live runs:
+#
+#          true pairs (same hypothesis, reworded) : 0.95 - 1.00
+#          cross pairs (different hypotheses)     : max 0.22
+#
+#      The threshold sits in the middle of that 0.73 gap, roughly three times the highest
+#      cross pair observed and well clear of the lowest true pair. Prefix matching was
+#      the wrong tool: word overlap does not care where the rewording happened.
 _HYP_LABEL = re.compile(r"^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*", re.I)
-_HYP_PROBE = 60
+_HYP_STOP = frozenset(
+    "the a an of to in is are and or that this it its as be for with by on at from than "
+    "not but so if then also more most some other others their there was were has have".split())
+HYP_MATCH_THRESHOLD = 0.6
+_HYP_MIN_TOKENS = 4
 
 
 def _hyp_key(text):
@@ -999,17 +1015,23 @@ def _hyp_key(text):
     return _HYP_LABEL.sub("", norm_quote(text)).strip()
 
 
-def _same_hypothesis(a, b):
-    """Is this the same hypothesis, allowing for relabelling and light rewording?
+def _hyp_tokens(text):
+    return {w for w in re.findall(r"[a-z0-9]+", _hyp_key(text))
+            if len(w) > 2 and w not in _HYP_STOP}
 
-    Compares a probe from one side against the WHOLE of the other, never probe against
-    probe - that is what broke the first version.
-    """
+
+def _same_hypothesis(a, b):
+    """Is this the same hypothesis, allowing for relabelling and rewording?"""
     if not a or not b:
         return False
     if a in b or b in a:
         return True
-    return a[:_HYP_PROBE] in b or b[:_HYP_PROBE] in a
+    ta, tb = _hyp_tokens(a), _hyp_tokens(b)
+    # Too few content words to judge by overlap - a two-word hypothesis would match
+    # anything containing both. Fall back to the exact test above, which already failed.
+    if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
+        return False
+    return len(ta & tb) / min(len(ta), len(tb)) >= HYP_MATCH_THRESHOLD
 
 
 def to_ref(c):

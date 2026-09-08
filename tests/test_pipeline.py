@@ -619,8 +619,32 @@ _VER = "H1: Nudges remain broadly effective: bias-corrected effect sizes are att
 ok(dr._same_hypothesis(dr._hyp_key(_VER), dr._hyp_key(_REG)),
    "an 'H1:' relabelling still matches its registered hypothesis - comparing two "
    "truncated strings for containment can never work when a prefix shifts them")
-ok(dr._same_hypothesis(dr._hyp_key(_REG + " and durable over time"), dr._hyp_key(_REG)),
-   "and light rewording on either side still matches")
+# Attempt 2 also shipped a false stamp: a 60-character probe. These are the VERBATIM
+# strings from the run that exposed it - not a fixture, because a fixture is something I
+# could shape until it passed, and typing an approximation of these is exactly how the
+# first version of this test went green on data the engine had never seen.
+_R4 = ("The debate is largely a definitional/measurement artifact: 'deliberate practice' "
+       "as narrowly defined by Ericsson is hard to measure reliably, so disagreements "
+       "stem from methodology rather than a true underlying difference in effect size.")
+_V4 = ("H4: The debate is largely a definitional/measurement artifact rather than a true "
+       "underlying difference in effect size.")
+_R3 = ("The effect of deliberate practice is genuinely overstated: other factors (innate "
+       "ability/genetics, starting age, working memory, cumulative non-deliberate "
+       "experience) explain more variance than practice itself once properly controlled.")
+_V3 = ("H3: The effect is genuinely overstated because other factors (genetics, starting "
+       "age, working memory, cumulative non-deliberate experience) explain more variance "
+       "than practice once properly controlled.")
+ok(dr._same_hypothesis(dr._hyp_key(_V4), dr._hyp_key(_R4)),
+   "rewording that starts 56 characters in still matches - a 60-character probe missed "
+   "exactly this, and prefix matching will always miss somewhere")
+ok(dr._same_hypothesis(dr._hyp_key(_V3), dr._hyp_key(_R3)),
+   "and so does rewording in the middle of the sentence")
+ok(not dr._same_hypothesis(dr._hyp_key(_V4), dr._hyp_key(_R3))
+   and not dr._same_hypothesis(dr._hyp_key(_V3), dr._hyp_key(_R4)),
+   "while two DIFFERENT hypotheses from that same run still do not match each other - "
+   "measured separation was 0.95-1.00 for true pairs against 0.22 for cross pairs")
+ok(dr.HYP_MATCH_THRESHOLD == 0.6,
+   "the threshold is the measured mid-gap, not a guess: %s" % dr.HYP_MATCH_THRESHOLD)
 ok(not dr._same_hypothesis(dr._hyp_key("H9: something nobody ever registered anywhere"),
                            dr._hyp_key(_REG)),
    "but a genuinely invented hypothesis does NOT match - the stamp has to mean something")
