@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from deepresearch import engine as dr          # noqa: E402
 from deepresearch import tiers                 # noqa: E402
 from deepresearch import search as searchmod   # noqa: E402
+from deepresearch import calibration as _cal   # noqa: E402
 import deepresearch as dr_pkg                  # noqa: E402
 
 # The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
@@ -330,6 +331,19 @@ ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- the gate refuses impossible input instead of passing it --")
+ok(_cal.interpret(1.5, n=30)[0] == "undefined"
+   and _cal.interpret(-1.5, n=30)[0] == "undefined",
+   "a kappa outside [-1, 1] is an arithmetic impossibility, so it is a defect upstream, "
+   "not a strong result - it used to return `calibrated`")
+ok(_cal.interpret(1.0, n=30)[0] == "calibrated"
+   and _cal.interpret(-1.0, n=30)[0] == "noise",
+   "and the legitimate endpoints still adjudicate normally")
+_empty = _cal.agreement([], [])
+ok(_empty["n"] == 0 and _empty["cohenKappa"] is None and _empty["verdictFlips"] == 0,
+   "agreement on an empty pool reports undefined rather than raising KeyError - a "
+   "module whose contract is 'never coerce, never blow up' must not blow up")
+
 print("\n-- a model quoting text back is quoting the webtext VIEW of it --")
 # The same asymmetry as the quote matcher, in two more places. The critic is shown
 # webtext(summary): quote lookalikes DELETED, whitespace collapsed. Matching its
@@ -623,9 +637,22 @@ ok(dr.as_list('\n<item>first</item>\n<item>second</item>', "t") == ["first", "se
    "is intact, so it is recovered rather than discarded")
 ok(dr.as_list("<item>a<item>b", "t") == ["a", "b"],
    "and recovered when the closing tags are absent too")
+# The tag NAME varies - it is the singular of the field being filled. Watched live
+# 2026-09-08: a framing call returned `\n<hypothesis>\n<hypothesis>Output is...`, so
+# matching the literal string "<item>" had fixed exactly one symptom of the leak.
+ok(dr.as_list("\n<hypothesis>\n<hypothesis>Output is sustained</hypothesis>"
+              "\n<hypothesis>It is not</hypothesis>", "t")
+   == ["Output is sustained", "It is not"],
+   "any tag the string opens with is recovered, not just <item>, and a repeated "
+   "opening tag does not produce an empty leading element")
+ok(dr.as_list("the result was < 5 percent overall", "t") == [],
+   "a stray angle bracket in prose is still not a list - the match is anchored at the "
+   "start, which is what markup leakage looks like and prose does not")
 ok(dr.as_list("just a sentence", "t") == []
-   and dr.as_list("a <item> in prose", "t") == ["in prose"],
-   "a plain string is still rejected - the 226-one-character-claims bug must not return")
+   and dr.as_list("a <item> in prose", "t") == [],
+   "a plain string is still rejected, and a tag appearing MID-sentence no longer "
+   "triggers recovery either: anchoring the match tightened this, because markup "
+   "leakage always opens the string. The 226-one-character-claims bug must not return.")
 ok(dr.as_list(["already", "a", "list"], "t") == ["already", "a", "list"],
    "a real array is untouched")
 # Costed, not cosmetic: the corrective retry re-asks the SAME question, so a

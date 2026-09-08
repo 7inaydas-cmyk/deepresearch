@@ -108,7 +108,12 @@ def agreement(run_a, run_b):
                          % (len(run_a), len(run_b)))
     k, detail = _kappa_like(run_a, run_b, pooled=False)
     pi, _ = _kappa_like(run_a, run_b, pooled=True)
-    flips = detail["confusion"]["survive_then_kill"] + detail["confusion"]["kill_then_survive"]
+    # The n=0 detail carries no confusion matrix, and reaching into it raised KeyError -
+    # a crash in a module whose entire contract is "report undefined honestly, never
+    # coerce and never blow up". Unreachable through the engine today, because the
+    # caller guards on a non-empty pool, but a pure function must hold its own line.
+    conf = detail.get("confusion") or {}
+    flips = conf.get("survive_then_kill", 0) + conf.get("kill_then_survive", 0)
     out = dict(detail)
     out.update({
         "cohenKappa": k,
@@ -202,6 +207,14 @@ def interpret(kappa, thresholds=(0.4, 0.6), n=None, per_lens=None):
     two amended preconditions apply.
     """
     lo, hi = thresholds
+    # A coefficient outside [-1, 1] is not a poor result, it is an arithmetic
+    # impossibility - so it is evidence of a bug upstream, and the one thing the gate
+    # must not do with it is return "calibrated". It did: interpret(1.5, n=30) passed.
+    if kappa is not None and not (-1.0 <= kappa <= 1.0):
+        return ("undefined",
+                "IMPOSSIBLE VALUE: kappa = %s lies outside [-1, 1], so it is not a weak "
+                "result but a computation defect upstream of this gate. Adjudicate "
+                "nothing on it; find out what produced it." % kappa)
     if kappa is not None and n is not None and n < MIN_N:
         return ("underpowered",
                 "PRECONDITION FAILED: n=%d, below the pre-registered minimum of %d. One "

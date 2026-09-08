@@ -1471,6 +1471,15 @@ def quote_span(page, quote):
 QUOTE_ON_PAGE = ("located", "located-elided", "located-approx")
 
 
+# The structured-output path leaks XML-ish markup around array elements, and the TAG
+# NAME VARIES: `<item>` was seen first, then `<hypothesis>` on a framing call - the
+# singular of the field being filled. Matching one literal tag fixed one symptom, so
+# this matches whatever tag the string actually opens with. It is deliberately anchored:
+# a string must BEGIN with the tag, which is what markup leakage looks like and what
+# ordinary prose containing an angle bracket does not.
+_TAGGED_LIST = re.compile(r"\s*<([A-Za-z][\w-]*)>")
+
+
 def as_list(v, label=""):
     """Model output is not a contract - a schema is what we asked for, not what we got.
 
@@ -1515,13 +1524,18 @@ def as_list(v, label=""):
     # framing call returned this on attempt after attempt, and because the corrective
     # retry re-asks the same question it got the same answer back - the run spent its
     # whole retry budget on a payload it was already holding.
-    if isinstance(v, str) and "<item>" in v:
-        parts = [p.split("</item>")[0].strip() for p in v.split("<item>")[1:]]
+    if isinstance(v, str) and _TAGGED_LIST.match(v):
+        tag = _TAGGED_LIST.match(v).group(1)
+        parts = [p.split("</%s>" % tag)[0].strip() for p in v.split("<%s>" % tag)[1:]]
+        # A nested repeat of the same opening tag leaves an empty leading fragment;
+        # dropping empties handles '<hypothesis>\n<hypothesis>text' as well as the
+        # well-formed case.
+        parts = [p.strip("<>/ \n\t") for p in parts]
         parts = [p for p in parts if p]
         if parts:
-            log("  [%s] recovered an <item>-wrapped array: the field arrived as ONE "
+            log("  [%s] recovered a <%s>-wrapped array: the field arrived as ONE "
                 "string holding %d tagged item(s), not as an array"
-                % (label or "field", len(parts)))
+                % (label or "field", tag, len(parts)))
             return parts
     if v not in (None, "", [], {}):
         log("  [%s] expected an array, got %s (%r) - treating as empty. This is NOT the "

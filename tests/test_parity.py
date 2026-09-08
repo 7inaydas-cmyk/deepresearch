@@ -58,7 +58,7 @@ SHARED = {
     "balanced calib. sample":    ("calibration_sample", "calibrationSample"),
     "amended gate (n + lens)":   ("MIN_LENS_KAPPA", "MIN_LENS_KAPPA"),
     "double-encoded recovery":   ("recovered a double-encoded array", "recovered a double-encoded array"),
-    "<item>-wrapped recovery":   ("recovered an <item>-wrapped array", "recovered an <item>-wrapped array"),
+    "tag-wrapped recovery":      ("_TAGGED_LIST = re.compile", "/^\\s*<([A-Za-z][\\w-]*)>/"),
     "verbatim strike":           ("untraceableVerbatim", "untraceableVerbatim"),
     "strike matches the view":   ("def webtext_pattern(", "const webTextPattern = "),
     "process critic":            ("processCritique", "processCritique"),

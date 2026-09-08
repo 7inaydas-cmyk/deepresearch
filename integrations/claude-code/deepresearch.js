@@ -322,10 +322,18 @@ const asList = (v, label) => {
   // returned this repeatedly, and because the corrective retry re-asks the same
   // question it got the same answer back — the run spent its retry budget on a payload
   // it was already holding.
-  if (typeof v === 'string' && v.includes('<item>')) {
-    const parts = v.split('<item>').slice(1).map(p => p.split('</item>')[0].trim()).filter(Boolean)
+  // The tag NAME varies: `<item>` was seen first, then `<hypothesis>` on a framing call
+  // — the singular of the field being filled. Matching one literal tag fixed one
+  // symptom, so match whatever tag the string actually opens with. Anchored at the
+  // start, which is what markup leakage looks like and ordinary prose does not.
+  const tagged = typeof v === 'string' && /^\s*<([A-Za-z][\w-]*)>/.exec(v)
+  if (tagged) {
+    const t = tagged[1]
+    const parts = v.split('<' + t + '>').slice(1)
+      .map(p => p.split('</' + t + '>')[0].replace(/^[<>/\s]+|[<>/\s]+$/g, ''))
+      .filter(Boolean)
     if (parts.length) {
-      log('[' + tag + '] recovered an <item>-wrapped array: the field arrived as ONE string holding ' + parts.length + ' tagged item(s), not as an array')
+      log('[' + tag + '] recovered a <' + t + '>-wrapped array: the field arrived as ONE string holding ' + parts.length + ' tagged item(s), not as an array')
       return parts
     }
   }
