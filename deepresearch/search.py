@@ -606,6 +606,120 @@ def doi_in_url(url: str):
     return m.group(1).rstrip(").,;").replace("/pdf", "")
 
 
+_STOPWORDS = re.compile(
+    r"\b(the|of|and|to|in|that|is|for|with|as|are|was|this|be|by|not|from|it)\b")
+
+
+def is_prose(text):
+    """Is this extracted text readable prose, or is it binary wearing a text costume?
+
+    The old guard counted "words over 3 characters containing a letter" and required
+    40. Measured 2026-09-08, `digamoo.free.fr/neumark1994.pdf` sailed through it: the
+    PDF uses a custom font encoding with no usable ToUnicode map, so extraction yields
+    control characters and punctuation. The model was handed 14,000 characters of that
+    and returned four fluent, entirely invented quotes about employment elasticities -
+    the page had no such words anywhere. Garbage in, confident fabrication out.
+
+    Two signals, measured across one garbage PDF and four good sources:
+
+        source        letterRatio   stopwords/Kchar
+        GARBAGE            0.137            0.0
+        good PDF           0.905           32.5
+        good PDF           0.770           24.1
+        good HTML          0.864           23.4
+        good HTML          0.960           39.1
+
+    BOTH must fail before the text is refused. Requiring both is what keeps a
+    non-English paper - high letter ratio, no English stopwords - from being thrown
+    away as binary. The thresholds sit five times clear of the nearest good page.
+    """
+    t = str(text or "")
+    if not t.strip():
+        return False, "extraction produced no text at all", {}
+    low = t.lower()
+    letter_ratio = sum(1 for c in low if c.isalpha() or c == " ") / len(t)
+    stops_per_k = 1000.0 * len(_STOPWORDS.findall(low)) / len(t)
+    sig = {"letterRatio": round(letter_ratio, 3), "stopwordsPerKchar": round(stops_per_k, 2)}
+    if stops_per_k < 2.0 and letter_ratio < 0.45:
+        return False, ("extracted text is not prose: %.0f%% letters and %.1f English "
+                       "stopwords per 1000 chars (readable text measures 77-96%% and "
+                       "23-39). Refusing to pass it off as page text - a model shown "
+                       "this will invent quotes from it."
+                       % (100 * letter_ratio, stops_per_k)), sig
+    return True, "", sig
+
+
+# The Wayback Machine is the one thing a paid scraper buys that is also free and
+# keyless. Measured 2026-09-08: pnas.org served a Cloudflare shell and the run fell
+# back to a 388-character Crossref abstract, from which the extractor duly produced a
+# claim. The archived snapshot of the same URL returns the full 14,000-character paper.
+#
+# It is tried ONLY when the direct read failed or produced an abstract-only stub, so it
+# costs nothing on the happy path. `via` always says an archived copy was read, and
+# `snapshotDate` carries the capture date - the provenance lens judges recency, and it
+# must not be told a 2025 snapshot is today's page.
+_WB_CHROME = re.compile(
+    r"wayback machine|archive team|about this capture|catchup-crawl|archive-it",
+    re.I)
+
+
+def wayback_snapshot(url, timeout=10):
+    """(raw_snapshot_url, timestamp) for the closest archived copy, or (None, None).
+
+    The `id_` modifier is the important part: it returns the ORIGINAL captured bytes
+    with no archive toolbar injected. Without it the snapshot arrives wrapped in the
+    Wayback banner - capture counts, a date strip, "About this capture", the collecting
+    organisation - which is text a model will happily quote as if the source said it.
+    Measured 2026-09-08: stripping that banner by pattern was unreliable, and an
+    unreadable PDF came back as 2,233 characters of Archive Team boilerplate that read
+    as perfectly good English prose. Asking for the raw capture removes the problem
+    rather than filtering it.
+    """
+    try:
+        api = "https://archive.org/wayback/available?url=" + urllib.parse.quote(url, safe="")
+        req = urllib.request.Request(api, headers={"user-agent": UA})
+        d = json.loads(urllib.request.urlopen(req, timeout=timeout).read().decode("utf-8", "replace"))
+        snap = ((d.get("archived_snapshots") or {}).get("closest") or {})
+        if snap.get("available") and snap.get("url") and snap.get("timestamp"):
+            raw_url = re.sub(r"(/web/\d{14})/", r"\1id_/", snap["url"], count=1)
+            return raw_url, snap.get("timestamp")
+    except Exception:
+        pass
+    return None, None
+
+
+def _try_wayback(url, cap, why):
+    """Read the archived copy. Returns (text, meta), or (None, None) if it is no better.
+
+    Refuses anything that still looks like archive furniture. A snapshot that comes back
+    as the Wayback Machine's own page is not the source, and passing it on would poison
+    extraction more thoroughly than the failed fetch it replaced - the boilerplate is
+    fluent English and sails through the prose gate.
+    """
+    # Only reached when the live read already failed, so this is pure upside on a URL
+    # that would otherwise contribute nothing - but it is not free: a blocked URL now
+    # costs an archive lookup plus a snapshot fetch before it gives up. Both are capped
+    # so a run full of blocked hosts cannot stall on the archive.
+    snap, ts = wayback_snapshot(url)
+    if not snap:
+        return None, None
+    try:
+        raw, ctype = _get_bytes(snap, timeout=30)
+        if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
+            text = pdf_text(raw, cap * 8)
+        else:
+            text = _readable(_decode(raw))
+        ok, _why, sig = is_prose(text)
+        if not ok or len(text.strip()) < 1500:
+            return None, None
+        if _WB_CHROME.search(text[:600]):
+            return None, None
+        return text[:cap], {"via": "wayback", "snapshotDate": ts, "liveFetchFailed": why,
+                            "archivedCopy": True, "snapshotUrl": snap, **sig}
+    except Exception:
+        return None, None
+
+
 def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
     """Return ``(text, meta)`` for a URL.
 
@@ -621,15 +735,16 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
         raw, ctype = _get_bytes(url, timeout=30)
         if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
             text = pdf_text(raw, cap * 8)
-            words = len([w for w in text.split() if len(w) > 3 and any(c.isalpha() for c in w)])
-            if words < 40:
+            ok, why, sig = is_prose(text)
+            if not ok:
                 # Refuse rather than hand binary downstream. An unreadable PDF is
                 # UNREACHABLE, which the citation auditor already understands; passing
                 # the bytes on made it look like a page that simply disagreed.
-                return "", {"via": "pdf-unreadable",
-                            "error": "PDF text extraction yielded %d words; refusing to pass "
-                                     "binary as page text" % words}
-            return text[:cap], {"via": "pdf", "pdfWords": words}
+                wt, wm = _try_wayback(url, cap, "pdf-unreadable: " + why)
+                if wt:
+                    return wt, wm
+                return "", {"via": "pdf-unreadable", "error": why, **sig}
+            return text[:cap], {"via": "pdf", **sig}
         return _readable(_decode(raw))[:cap], {"via": "http"}
     except Exception as e:
         # Blocked or broken. If the URL carries a DOI, the abstract is still reachable
@@ -640,9 +755,17 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
             try:
                 text, meta = crossref_record(doi)
                 if text and text.strip():
+                    # An abstract is not the paper. If the archive holds the real page,
+                    # prefer it and say so; otherwise keep the abstract, labelled.
+                    wt, wm = _try_wayback(url, cap, "%s: %s" % (type(e).__name__, e))
+                    if wt and len(wt) > len(text) * 2:
+                        return wt, dict(wm, insteadOfAbstract=True)
                     return text[:cap], {"via": "crossref-fallback", "abstractOnly": True,
                                         "blockedBy": "%s: %s" % (type(e).__name__, e),
                                         **(meta or {})}
             except Exception:
                 pass
+        wt, wm = _try_wayback(url, cap, "%s: %s" % (type(e).__name__, e))
+        if wt:
+            return wt, wm
         return "", {"via": "failed", "error": "%s: %s" % (type(e).__name__, e)}

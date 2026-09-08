@@ -1,0 +1,1239 @@
+{
+ "question": "Does a four-day work week maintain output in knowledge work?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "Nature Human Behaviour 2025 trial and UK pilot revenue figures exist but mostly relayed via secondary/blog sources, not the primary study's objective metrics; no matched-control comparison detail (562-employee control group outcomes not reported)."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Evidence notes case studies mix revenue and self-report but no source directly compares objective vs self-reported metrics within same study to test if conclusions diverge."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "unanswered",
+   "note": "No discontinued/reverted 4-day week case identified yet; only persistence stats (89-92% continued) are cited, leaving survivorship bias unexamined."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Sector variation (tech/software vs manufacturing/customer-facing) is asserted by blogs but lacks primary quantitative breakdown by role/sector."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Retention/turnover/burnout offsets are reported, but no case with declining output paired with cost-benefit calculation of offsets exists in gathered evidence."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "Iceland public-sector data present; missing Belgium's opt-in model and other mandatory/national rollout comparisons controlling for self-selection."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No 2+ year longitudinal follow-up data found; all cited studies are 6-month or 1-year snapshots."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No comparative evidence on alternative flexibility interventions (remote work, meeting reduction alone) achieving similar gains, aside from one anecdotal software team example."
+  }
+ ],
+ "contradictions": [
+  "The largest primary study (Nature Human Behaviour, T2) explicitly measured only well-being, not output - yet several lower-tier sources (blogs, news) assert output/productivity was 'maintained' or even boosted (25%, 1.4% revenue), creating a tier conflict between what the best evidence shows and what is popularly claimed.",
+  "One case study (Krystal) shows output explicitly failing to rise enough to offset the lost day, directly contradicting narratives of universal success; this sits alongside claims that 'almost all' UK pilot companies continued the policy, implying most did not report Krystal-style failures - but survivorship bias in which companies get covered by media was flagged as unexamined.",
+  "A claim asserting a '1.4% revenue rise + 57% turnover drop' figure was explicitly killed on audit (counter+provenance), yet similar-flavored claims about turnover/retention benefits (10-15pp intent-to-stay lift) survived at lower confidence - illustrating inconsistent evidential quality within the same 'benefits' narrative."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether an organization (or a manager/HR leader advising one) should pilot or adopt a four-day work week for its knowledge-work employees, versus keeping a five-day schedule or pursuing alternative flexibility policies.",
+  "keyQuestion": "Across controlled pilots and studies of knowledge-work organizations, does moving to a four-day work week (with reduced hours, no pay cut) keep measured output/productivity at or above five-day baseline levels?",
+  "assumptions": [
+   "'Knowledge work' refers to office/professional roles such as software, marketing, consulting, admin, finance, and similar cognitively-driven, non-shift-based jobs — not manufacturing, retail, or healthcare frontline work.",
+   "Four-day work week means a reduction in scheduled work time (typically 32 hours) with no pay cut, rather than compressing 40 hours into 4 days (4/10 schedule).",
+   "'Maintain output' means firm-level productivity/output/revenue per employee stays flat or improves relative to a five-day baseline, not merely that employees self-report being equally productive.",
+   "Time horizon of interest is short-to-medium term (pilot studies of 6 months to ~2 years), since long-term (5+) data barely exists.",
+   "Geographic scope is global but weighted toward where most trial data exists: UK, US, Ireland, and other English-speaking/European economies running published pilots (e.g., 4 Day Week Global trials).",
+   "Company size/context matters — assuming the question is about typical mid-size knowledge-work firms rather than large enterprises or solo/freelance workers, unless evidence shows results diverge sharply by size.",
+   "'Output' is being assessed at the organizational/team level, not just individual self-reported productivity, since self-report is a weaker and more biased proxy."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Discovery that most published '4-day week success' studies rely solely on self-reported productivity rather than objective output/revenue/client metrics, which would weaken confidence in the 'maintained' conclusion.",
+   "Evidence of survivorship/selection bias — e.g., firms that found it wasn't working quietly reverted and weren't included in follow-up publications.",
+   "Sector-specific breakdowns showing output holds in some knowledge-work categories (e.g., software, creative) but drops in others (e.g., sales, client services, consulting with billable hours) — this would flip a blanket yes/no into a conditional answer.",
+   "Longer-term (2+ years) data showing initial gains fade as workload creeps back up or as compression leads to burnout on the remaining four days.",
+   "Comparative data showing similar output gains are achievable via other flexibility interventions (remote work, meeting reduction) without cutting the workweek, which would undercut the causal attribution to the 4-day structure specifically.",
+   "Evidence on how 'output' was measured — if metrics were redefined or targets lowered during the pilot to make success more likely, this would undermine the maintained-output finding.",
+   "Data on company size/maturity — if only small, high-trust, already-efficient companies show success, that would change advice for large or bureaucratic organizations."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Output is maintained or improved: firms see flat or higher productivity/revenue with a 4-day week, driven by efficiency gains, reduced burnout, and less low-value work.",
+    "killCriterion": "Multiple rigorous (matched-control or longitudinal) studies show statistically significant declines in output, revenue, or client-facing metrics post-transition that aren't explained by other confounds."
+   },
+   {
+    "hypothesis": "Output modestly declines but is offset by other gains (retention, wellbeing, reduced absenteeism) such that net business case is still positive even though raw output isn't fully maintained.",
+    "killCriterion": "Evidence shows output is fully maintained (no measurable decline) AND wellbeing gains are trivial — undermining the 'trade-off offset by other benefits' framing, OR evidence shows output declines with no offsetting benefit large enough to justify it."
+   },
+   {
+    "hypothesis": "Effects are highly context-dependent: output is maintained only in certain conditions (e.g., roles with clear deliverables, strong prior workflow discipline, professional services) and NOT in others (e.g., high coordination-dependent or client-availability-dependent roles), making a universal answer misleading.",
+    "killCriterion": "Pilot data shows consistent results (positive or negative) across a wide range of company types/sizes/sectors with no meaningful moderating variables, meaning context-dependence is not actually a major driver of variance."
+   },
+   {
+    "hypothesis": "Self-selection and novelty/Hawthorne effects explain most reported successes: companies that volunteer for pilots are unrepresentative (already efficient, motivated to prove it works) and short pilot durations overstate sustainability, so the 'output maintained' finding won't generalize or persist.",
+    "killCriterion": "Studies with mandatory/broad-based rollouts (not opt-in volunteer pilots) or longer-duration (2+ year) follow-ups show output maintenance persists at similar rates as short opt-in pilots, undercutting the selection-bias explanation."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "RCT Primary-Literature Academic",
+   "lens": "An organizational-economics researcher who distrusts self-reported survey data and wants pre-registered designs, control groups, and objective output/revenue metrics rather than anecdote.",
+   "query": "four-day work week randomized controlled trial productivity revenue peer-reviewed study 2023 2024"
+  },
+  {
+   "label": "Skeptical Auditor of Failed/Reverted Pilots",
+   "lens": "An investigative journalist or critic hunting for companies that quietly reverted to five-day weeks or pilots that underperformed, distrusting the selection bias of press-released 'success stories'.",
+   "query": "four-day work week failed reverted back companies did not work case study"
+  },
+  {
+   "label": "Practitioner HR/Operations Lead (Steelman)",
+   "lens": "A hands-on HR director or COO who has implemented or is implementing a 4-day week, building the strongest honest case FOR the policy from operational playbooks, internal metrics, and change-management practices used to preserve output.",
+   "query": "how we implemented four-day work week maintained productivity operational changes company case study"
+  },
+  {
+   "label": "Data Auditor / Metrics Forensics",
+   "lens": "A quantitative analyst who distrusts vague claims of 'productivity' and digs into what output metric was actually used (self-report vs. objective KPIs, revenue, client satisfaction, code commits, sales figures) in each study.",
+   "query": "four-day work week productivity measurement methodology self-reported versus objective output metrics critique"
+  },
+  {
+   "label": "Sector/Context Comparator",
+   "lens": "A workforce economist comparing outcomes across industries (software, creative agencies vs. sales, client-facing services, manufacturing-adjacent knowledge work) who distrusts one-size-fits-all conclusions.",
+   "query": "four-day work week results by industry sector comparison software sales client-facing knowledge work"
+  },
+  {
+   "label": "Cost-Benefit / Business Case Analyst",
+   "lens": "A management consultant or CFO-type evaluating whether even a modest output decline is offset by retention, absenteeism, and recruitment savings, distrusting narratives that ignore bottom-line tradeoffs.",
+   "query": "four-day work week cost benefit analysis retention turnover absenteeism business case ROI"
+  }
+ ],
+ "summary": "The best-supported, highest-tier evidence (a 2025 Nature Human Behaviour study of 141 organizations and 2,896 employees across six countries) demonstrates clear improvements in employee well-being - burnout, job satisfaction, mental and physical health - after a 6-month 4-day workweek trial with no pay cut, versus 12 control companies. However, this same primary study explicitly did NOT measure objective output, revenue, or productivity metrics; it is self-reported/perception-based evidence. Claims that output was 'maintained' or that productivity rose (e.g., a 1.4% revenue increase, 25% productivity boosts, 89-92% one-year persistence rates) were either refuted on audit, sourced only to low-tier blogs, or drawn from anecdotal/single-company case studies (e.g., Krystal's reversal due to insufficient output). One rigorous case (Krystal) shows output failing to rise enough to offset the lost day in a coordination-heavy support role, illustrating context-dependence. Overall, the question \"does output stay flat\" is unresolved by rigorous objective data; what is well-established is that well-being improves and companies mostly choose to continue the policy, which is a weaker and different claim than output maintenance.",
+ "answerFirst": "Evidence does NOT show that a 4-day work week \"maintains output\" in the sense of objective business/revenue/productivity metrics - the largest, most rigorous study (Nature Human Behaviour, 141 orgs, 2,896 employees) measured only self-reported well-being outcomes (burnout, job satisfaction, mental/physical health), not output or revenue. Well-being gains are well-supported and fairly robust across studies; the output-maintenance claim itself remains largely unverified by objective data. Note: 37 of 67 extracted claims (55%) were never verified by the panel (budget cap), so this conclusion could be overturned by a lower-ranked claim that was never checked - treat this as a partial-coverage answer, not a settled one.",
+ "hingeNumber": {
+  "value": "0% (no objective output/revenue/productivity metric reported in the largest, highest-tier study)",
+  "why": "The entire question hinges on whether output was measured and found flat/improved. The single most rigorous, largest-sample study (141 orgs, 2,896 employees, matched controls) reports zero objective output/productivity/revenue metrics - only well-being. Every claim of 'maintained output' in the broader evidence set traces to lower-tier (T3), single-case, or refuted sources (e.g., the 1.4% revenue figure and 89% persistence figure were explicitly killed on audit).",
+  "sensitivity": "If even one T1/T2 primary study surfaces with matched-control objective output data (even a small effect, e.g., -5% or +5% output), the entire answer changes from 'unresolved/insufficiently evidenced' to a directional finding. Given 55% of claims were never checked, this hinge could flip on unreviewed evidence already in the corpus.",
+  "source": "https://www.nature.com/articles/s41562-025-02259-6"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Output is maintained or improved with a 4-day week.",
+   "verdict": "untested",
+   "killCriterion": "Multiple rigorous (matched-control or longitudinal) studies show statistically significant declines in output, revenue, or client-facing metrics post-transition that aren't explained by other confounds.",
+   "reasoning": "No confirmed claim provides objective, matched-control output/revenue data either confirming or statistically refuting output maintenance. The largest, highest-tier study ([0],[1],[8],[15]) explicitly measured only well-being, not output. The only direct output data point is a single anecdotal case (Krystal, [18]) showing output falling short in one company - not the 'multiple rigorous studies show statistically significant declines' needed to kill H1, but also not enough independent objective data to call it surviving/confirmed. Given the near-total absence of objective metrics in the confirmed claims, and 55% of claims unaudited, this hypothesis cannot be honestly called surviving or killed.",
+   "claimsCited": [
+    0,
+    1,
+    8,
+    15,
+    18
+   ]
+  },
+  {
+   "hypothesis": "H2: Output modestly declines but is offset by other gains (retention, wellbeing, reduced absenteeism), producing a net-positive business case.",
+   "verdict": "untested",
+   "killCriterion": "Evidence shows output is fully maintained (no measurable decline) AND wellbeing gains are trivial, OR evidence shows output declines with no offsetting benefit large enough to justify it.",
+   "reasoning": "Well-being gains are well-confirmed ([0],[1],[2],[3],[8],[11],[15]) and retention-adjacent gains (intent-to-stay lift [22], continuation decisions [14]) are reported at lower confidence. But no confirmed claim pairs a measured output decline with a quantified offset/net-business-case calculation. The kill criterion requires either full output maintenance with trivial well-being gains (not the case - well-being gains are substantial) or output decline with no offsetting benefit (not established either, since no output-decline data with cost-benefit analysis exists). The claim linking a 1.4% revenue rise to turnover drop was explicitly refuted on audit. Insufficient evidence either way.",
+   "claimsCited": [
+    0,
+    1,
+    2,
+    3,
+    22
+   ]
+  },
+  {
+   "hypothesis": "H3: Effects are highly context-dependent, positive in some roles/sectors, negative in others (e.g. coordination/client-dependent roles).",
+   "verdict": "surviving",
+   "killCriterion": "Pilot data shows consistent results (positive or negative) across a wide range of company types/sizes/sectors with no meaningful moderating variables.",
+   "reasoning": "The Krystal case ([18]) directly shows failure specifically in a coordination-heavy, client-availability-dependent support role (Monday coverage gaps), while the large well-being study spans diverse organizations with generally positive well-being results, and Iceland data ([21]) specifically notes productivity was 'neutral to positive, especially in coordination-heavy knowledge work' - implying variation by context. This pattern is consistent with context-dependence and does not meet the kill criterion (consistent results across all sectors with no moderating variables) - in fact the evidence points toward variation, not uniformity.",
+   "claimsCited": [
+    18,
+    21
+   ]
+  },
+  {
+   "hypothesis": "H4: Self-selection and novelty/Hawthorne effects explain most reported successes, so results won't generalize or persist.",
+   "verdict": "surviving",
+   "killCriterion": "Studies with mandatory/broad-based rollouts or 2+ year follow-ups show output maintenance persists at similar rates as short opt-in pilots.",
+   "reasoning": "The explicit, sourced concern that productivity gains may not persist once novelty wears off ([13]) directly supports this hypothesis's mechanism. All large-scale pilot evidence in the confirmed claims involves opt-in/volunteer organizations (the 141-org study, UK pilot) rather than mandatory rollouts, and no 2+ year follow-up data exists to test persistence - meaning the kill criterion (mandatory rollouts or 2+ year follow-ups showing similar maintenance rates) is not met by any confirmed claim. Iceland's data ([21]) is the closest to a non-opt-in (public sector, broader) sample and shows neutral-to-positive results, which is suggestive counter-evidence, but it is a single T3-sourced secondary claim and does not constitute the required 2+ year or clearly mandatory/broad-based comparison needed to kill H4.",
+   "claimsCited": [
+    13,
+    21
+   ]
+  }
+ ],
+ "strongestArgumentAgainst": "The steelman against concluding output is maintained: the single most rigorous, largest-sample, matched-control study in this entire evidence set (Nature Human Behaviour 2025) simply does not measure output, revenue, or productivity at all - it measures self-reported well-being. Every claim that speaks to output maintenance or improvement in this corpus is either (a) sourced from low-tier blogs/aggregators (T3) relaying pilot organizers' own PR-style summaries, (b) a single anecdotal case (Krystal) that actually shows a failure, or (c) explicitly refuted on audit (the 1.4% revenue and 89% persistence claims). This is a classic survivorship/selection-bias risk: 4-day week pilots are opt-in, self-selected companies motivated to prove success, evaluated over short (6-month) windows subject to Hawthorne/novelty effects, and unsuccessful trials (like Krystal) may be systematically underreported relative to successful ones in company press releases and advocacy literature. Given 55% of claims were never audited, it is entirely possible - and cannot be ruled out - that stronger disconfirming evidence exists in the unreviewed set. The honest conclusion is that 'output maintained' is an aspiration voiced by advocates and pilot organizers, not a finding demonstrated by the highest-tier data available here.",
+ "whatWouldChangeThisCall": [
+  "Discovery/audit of a primary (T1/T2) study with matched controls that directly measures objective output, revenue, or client-facing deliverables before/after a 4-day-week transition - currently absent from the confirmed evidence set.",
+  "Review of the 37 unaudited claims surfacing a high-tier source with objective productivity data (positive or negative) that was excluded only due to panel budget constraints.",
+  "A 2+ year longitudinal follow-up study (none currently exists in the evidence) showing whether well-being and/or output effects persist, fade, or reverse after novelty wears off.",
+  "Systematic data on discontinuation/reversion rates and reasons (beyond the single Krystal case) that would reveal whether survivorship bias is inflating the 'success' narrative.",
+  "A direct comparison of mandatory/broad rollouts (e.g., full Belgium or Iceland national data) versus opt-in volunteer pilots, controlling for self-selection - currently only Iceland's public-sector data exists and was not compared against opt-in pilots on the same metrics."
+ ],
+ "baseRate": "No clean outside-view base rate exists in the gathered evidence for \"% of 4-day-week pilots that maintain objective output.\" The closest proxies are behavioral (continuation rates: 'almost all' UK pilot companies continued, cited once at T3) and well-being-only metrics from the largest study. No primary source reports a base rate of output decline vs. maintenance across a representative (non-self-selected) sample of firms. Absence of this base rate should be treated as a significant evidentiary gap, not filled by inference.",
+ "findings": [
+  {
+   "claim": "The largest, highest-tier study of 4-day workweek trials (141 organizations, 2,896 employees, 6 countries, 6-month trial, no pay cut) measured well-being outcomes only - not objective output, revenue, or productivity - and found improvements in burnout, job satisfaction, mental and physical health versus 12 control companies.",
+   "confidence": "high",
+   "sources": [
+    "https://www.nature.com/articles/s41562-025-02259-6",
+    "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+    "https://econpapers.repec.org/RePEc:nat:nathum:v:9:y:2025:i:10:d:10.1038_s41562-025-02259-6"
+   ],
+   "evidence": "Quote: 'Analysis of pre- and post-trial data from 2,896 employees across 141 organizations... shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.' The abstract contains no output/revenue/productivity metric.",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (for the well-being findings); partial for the framing that the study was 'perception-based rather than objective' - the audit confirms the study measured only well-being, but does not explicitly characterize this as a limitation, which is the claim's added interpretive gloss."
+  },
+  {
+   "claim": "Three factors mediate the hours-reduction-to-well-being relationship: improved self-reported work ability, reduced sleep problems, and decreased fatigue; and larger individual-level (not company-level) hour reductions predict greater well-being gains - both findings are about well-being mechanisms, not output.",
+   "confidence": "high",
+   "sources": [
+    "https://www.nature.com/articles/s41562-025-02259-6",
+    "https://www.nature.com/articles/s41562-025-02259-6.pdf"
+   ],
+   "evidence": "Quote: 'Three key factors mediate the relationship: improved self-reported work ability, reduced sleep problems and decreased fatigue.' Quote: 'larger individual-level (but not company-level) reductions [are] associated with greater improvements in well-being.'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - near-verbatim match on both mechanisms."
+  },
+  {
+   "claim": "A single documented reversal case (Krystal, UK web-hosting) shows output failing to rise enough (needed +20%) to offset the lost day in a coordination/client-availability-dependent role (helpdesk support, Monday coverage gaps), leading the company to add staff and revert - direct evidence against universal output maintenance.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.ridiculouslyefficient.com/companies-that-tried-a-4-day-work-week/"
+   ],
+   "evidence": "Quote: 'Output didn't rise the 20% needed to offset the lost day, so Krystal added five support staff and reverted.'",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported, but single case study from a T3 blog source - not generalizable and no comparable control data."
+  },
+  {
+   "claim": "Almost all companies in the world's largest 4-day-week trial (UK 2022 pilot) chose to continue with reduced hours after the trial ended, and the 4-day week remained the most-desired flexible work arrangement in a 2021 Henley Business School follow-up survey even after COVID introduced remote work alternatives.",
+   "confidence": "medium",
+   "sources": [
+    "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502"
+   ],
+   "evidence": "Quote: 'almost all of the companies that participated have decided to continue with a reduced working hours model.' Quote: 'the four-day working week was still the desired option out of the various flexible working arrangements available.'",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported, but sourced from a single T3 opinion/news article (The Conversation), not the underlying primary trial data; continuation decisions are a behavioral proxy for satisfaction, not proof output was maintained."
+  },
+  {
+   "claim": "There is an explicit, acknowledged risk that reported productivity gains (e.g. a 25% boost claim) may not persist once novelty wears off and employees become less motivated to sustain compressed output.",
+   "confidence": "medium",
+   "sources": [
+    "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502"
+   ],
+   "evidence": "Quote (partial, not fully on cited page per audit): 'There is a danger that once the novelty has worn off... they may be less motivated to produce the 25% boost in productivity.'",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported but flagged partial on provenance (quote not 100% located on page) - treat the 25% figure and persistence-risk framing as weakly sourced."
+  },
+  {
+   "claim": "Iceland's public-sector shorter-hours experiments (2,500+ employees, evaluated by Alda/Autonomy 2021) found productivity neutral-to-positive, especially in coordination-heavy knowledge work, offering the only cited quasi-mandatory (non opt-in pilot) evidence point.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure"
+   ],
+   "evidence": "Quote: 'tracked more than 2,500 public sector employees and found that productivity was neutral to positive, especially in coordination heavy knowledge work.'",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported, but single T3 blog source relaying a secondary report; underlying Alda/Autonomy primary report itself was not directly fetched/audited."
+  },
+  {
+   "claim": "4 Day Week Global pilots (2022-2023) showed a 10-15 percentage point lift in employees' stated intent to stay, described as the most robust work-life outcome across geographies/sectors - a retention proxy, not an output metric.",
+   "confidence": "low",
+   "sources": [
+    "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure"
+   ],
+   "evidence": "Quote: 'participating organisations also showed a 10 to 15 percentage point lift in stated intent to stay, measured through pre and post trial employee surveys.'",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported on the page, but this is a single T3 blog aggregating pilot data with no link to a primary dataset; downgraded to low confidence per aggregator rule."
+  },
+  {
+   "claim": "Separate academic/advocacy literature (non-empirical review papers) argues the 4-day week could boost Australian labour productivity and should be pursued by policymakers, and asserts that global studies of the policy have been broadly positive - but these are argumentative/review papers, not new empirical output data.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1177/1037969x251345189",
+    "https://doi.org/10.47191/ijmra/v5-i8-04"
+   ],
+   "evidence": "Quote: 'This article considers whether adopting a four-day work week in Australian labour law could boost labour productivity.' Quote: 'Studies have been conducted on 4 day work week policies... and the conclusion has been very positive.'",
+   "vote": "2-1 to 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for what the papers argue/claim, but these are opinion/review articles restating other studies' findings, not primary output measurements - so they add rhetorical weight, not new evidence of maintained output."
+  }
+ ],
+ "caveats": "37 of 67 extracted claims (55%) were never verified by the adversarial panel because of a budget cap; a claim rated 'tangential' by the extractor - potentially including objective output/productivity data - is entirely invisible to this synthesis and could overturn the conclusion. Several claims that directly asserted output was maintained (e.g., '1.4% revenue rise,' '89% one-year persistence,' 'just as productive (self-reported)') were explicitly refuted on audit and are excluded from findings. The coverage checklist shows the core sub-question - what rigorous matched-control studies show about objective output/revenue metrics - remains only 'partial' or 'unanswered' across multiple dimensions: survivorship/selection bias in case studies is unexamined, sector/role variation lacks primary quantitative data, 2+ year longitudinal persistence data does not exist, and no comparison to alternative flexibility interventions was found. Several supporting findings rest on single T3 blog or news sources (theconversation.com, future-of-work.net, ridiculouslyefficient.com) which by rule cannot be treated as high-confidence and are flagged accordingly; no T4/T5 sources were used as sole support (compliant with the tiering rule). Time-sensitivity: the primary Nature Human Behaviour study is 2025, and the UK pilot follow-up data is from 2021-2023, so persistence beyond ~1-2 years is unverified.",
+ "openQuestions": [
+  "Does objective output/revenue actually stay flat, decline, or rise when measured directly (not via self-report or company press statements) in a matched-control 4-day-week trial?",
+  "Are unsuccessful or reverted 4-day-week trials (like Krystal) systematically underrepresented in the published 'success' literature due to selection bias in which companies choose to publicize results?",
+  "Do effects vary predictably by role type (coordination/client-facing vs. deliverable-based knowledge work), and is there a quantitative breakdown across sectors?",
+  "What happens to productivity and well-being gains after 2+ years, once novelty and Hawthorne effects have fully worn off?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 83.3,
+  "citationAccuracySurvivorsOnly": 91.3,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 25,
+  "supported": 25,
+  "partial": 5,
+  "unsupported": 0,
+  "unreachable": 0,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "The study measured well-being outcomes (burnout, job satisfaction, mental/physical health) rather than objective business output, revenue, or productivity metrics, indicating its evidence base is self-reported and perception-based rather than objective performance data.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "partial",
+   "reasoning": "The abstract confirms the study measured well-being outcomes—burnout, job satisfaction, mental health and physical health—rather than mentioning any objective business output, revenue, or productivity metrics. This supports the first part of the statement (that the study focused on well-being outcomes rather than objective performance data). However, the page does not explicitly characterize these…",
+   "locatedQuote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A large-scale study of 141 organizations across Australia, Canada, Ireland, New Zealand, the UK and the USA implementing a 4-day workweek trial (with no reduction in pay) found improvements in employee burnout, job satisfaction, mental health and physical health after a 6-month trial, compared to 12…",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "supported",
+   "reasoning": "The abstract directly states the study covers 141 organizations across the six named countries implementing an organization-wide 4-day workweek intervention with no reduction in pay, following a 6-month trial, and reports improvements in burnout, job satisfaction, mental health and physical health, contrasted with 12 control companies where this pattern was not observed. This matches all key eleme…",
+   "locatedQuote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The organizations studied underwent a pre-trial work reorganization phase specifically to improve efficiency and collaboration before implementing the 4-day workweek trial, implying the intervention design itself sought to offset potential output declines.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "support": "partial",
+   "reasoning": "The abstract confirms that organizations underwent a pre-trial work reorganization phase aimed at improving efficiency and collaboration before the 6-month 4-day workweek trial. This directly supports the first part of the statement. However, the page does not explicitly state that this reorganization was designed 'to offset potential output declines' - that is an interpretive inference about the …",
+   "locatedQuote": "Organizations undergo pre-trial work reorganization to improve efficiency and collaboration, followed by a 6-month trial.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Three factors were identified as mediating the relationship between hour reductions and well-being improvements: improved self-reported work ability, reduced sleep problems, and decreased fatigue.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that three key factors mediate the relationship between work hour reductions and well-being improvements: improved self-reported work ability, reduced sleep problems, and decreased fatigue. This directly matches the statement being verified, using nearly identical wording and matching all three mediating factors listed.",
+   "locatedQuote": "Three key factors mediate the relationship: improved self-reported work ability, reduced sleep problems and decreased fatigue.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Larger individual-level (but not company-level) reductions in work hours were associated with greater improvements in well-being, suggesting the magnitude of personal hours cut matters more than organization-wide policy magnitude.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "supported",
+   "reasoning": "The abstract directly states that larger individual-level reductions in hours (but not company-level reductions) were associated with greater improvements in well-being, which matches the core claim of the statement. The interpretive gloss (suggesting the magnitude of personal hours cut matters more than organization-wide policy magnitude) is a reasonable paraphrase of this finding, closely follow…",
+   "locatedQuote": "Both company-level and individual-level reductions in hours are correlated with well-being gains, with larger individual-level (but not company-level) reductions associated with greater improvements in well-being.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The underlying primary study was published in Nature Human Behaviour by Fan, Schor, Kelly & Gu in 2025.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "support": "supported",
+   "reasoning": "The Nature news article's reference list explicitly cites the primary study by Fan, Schor, Kelly & Gu, published in Nature Human Behaviour in 2025 (with DOI s41562-025-02259-6), which matches the statement's claim about authorship, journal, and year exactly.",
+   "locatedQuote": "Fan, W., Schor, J. B., Kelly, O. & Gu, G. Nature Hum. Behav. https://doi.org/10.1038/s41562-025-02259-6 (2025).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The paper's stated purpose is to examine the benefits and challenges of the four-day work week policy and its long-run feasibility.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "supported",
+   "reasoning": "The abstract directly states the paper's purpose is to study the benefits and challenges of the four-day work week policy and to highlight its long-run feasibility, matching the statement closely.",
+   "locatedQuote": "This paper would study the benefits and challenges observed with the four day work week policy. The study would highlight the feasibility of this practice in the long run.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Software company Alida piloted a four-day workweek but discontinued it after finding it created more stress for some employees who could not complete their work in four days, instead adopting unlimited vacation policy.",
+   "url": "https://www.narcity.com/41-companies-tried-out-4-day-work-week-why-none-are-going-back",
+   "support": "supported",
+   "reasoning": "The page explicitly states that Alida (a software company) piloted the four-day workweek, found it created more stress for some employees who couldn't complete their work in four days, discontinued the compressed workweek, and instead now offers unlimited vacation. This directly matches all elements of the statement: the company name, industry (software), the pilot, the discontinuation, the reason…",
+   "locatedQuote": "There were a lot of folks that loved the pilot ... the results did show a lot of positives, said Tanya Jarrett, the Chief People Officer of software company, Alida. But also it showed that it didn't work for everyone at Alida. There were some folks who were telling us that the program inadvertently created more stress, because for some of them, getting their work done in just those four days wasn'…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "A 2021 follow-up survey by the Henley Business School research team found the four-day working week remained the most desired flexible working option even after the COVID-19 pandemic introduced alternatives like remote work.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "support": "supported",
+   "reasoning": "The page explicitly describes a Henley Business School research team's survey conducted in November 2021 (a follow-up to their earlier work) that examined whether opinions about the four-day working week had changed due to pandemic-driven alternatives like remote work. The results confirmed that the four-day working week remained the most desired flexible working option compared to alternatives su…",
+   "locatedQuote": "In November 2021, we launched a second round of surveys to find out if the four-day week been overshadowed. The results showed that the four-day working week was still the desired option out of the various flexible working arrangements available.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The article argues that adopting a four-day work week could boost labour productivity in Australia.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the article considers whether a four-day work week could boost labour productivity in Australia and argues it should be seriously pursued. This directly matches the statement's claim that the article argues adopting a four-day work week could boost labour productivity in Australia.",
+   "locatedQuote": "This article considers whether adopting a four-day work week in Australian labour law could boost labour productivity. It argues that the four-day work week should be seriously pursued by policy-makers, employers, employees and unions.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A large multi-country pilot study of 141 organizations and 2,896 employees implementing a 4-day workweek (with pre-trial work reorganization for efficiency, no pay reduction) found improvements in burnout, job satisfaction, mental health and physical health after a 6-month trial, a pattern not obser…",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "support": "supported",
+   "reasoning": "The abstract directly states the key facts: 141 organizations, 2,896 employees, 4-day workweek intervention with no pay reduction, pre-trial work reorganization for efficiency, 6-month trial, improvements in burnout, job satisfaction, mental health and physical health, and this pattern not observed in 12 control companies. All elements of the statement are explicitly confirmed by the abstract text…",
+   "locatedQuote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The author advocates that the four-day work week should be actively pursued by policy-makers, employers, employees and unions as a policy option.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the four-day work week should be seriously pursued by policy-makers, employers, employees and unions, which matches the statement's claim (with seriously vs actively being a minor synonymous variation, and as a policy option being a reasonable paraphrase of the context of adopting it in labour law/policy). This directly entails the statement with no significant …",
+   "locatedQuote": "It argues that the four-day work week should be seriously pursued by policy-makers, employers, employees and unions.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The paper identifies lack of work-life balance as the most common reason for employee attrition regardless of geography or profession.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "supported",
+   "reasoning": "The abstract of the cited paper directly states this claim nearly verbatim, matching the statement's assertion about work-life balance being the most common reason for attrition regardless of geography or profession.",
+   "locatedQuote": "Lack of work life balance has been the most common reason of attrition irrespective of geography and profession.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In this study, individual-level (but not company-level) reductions in work hours were associated with greater improvements in employee well-being, suggesting heterogeneity in how the intervention was implemented across employees within organizations.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that larger individual-level (but not company-level) reductions in work hours were associated with greater improvements in well-being, directly matching the statement's core claim. The abstract does not explicitly frame this as evidence of heterogeneity in how the intervention was implemented across employees within organizations, but this is a reasonable interpretiv…",
+   "locatedQuote": "Both company-level and individual-level reductions in hours are correlated with well-being gains, with larger individual-level (but not company-level) reductions associated with greater improvements in well-being.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Australia is experiencing declining productivity growth, which the article frames as a national economic risk.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "support": "supported",
+   "reasoning": "The abstract directly states that Australia faces declining productivity growth and frames it as a risk to national prosperity, which is a national economic risk. This directly matches the statement's claim without requiring interpretive leaps.",
+   "locatedQuote": "Australia faces declining productivity growth, which risks affecting national prosperity.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "There is a risk that four-day week productivity gains may not persist long-term, as employees could become less motivated to sustain a 25% productivity boost once the novelty of the new schedule wears off.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "support": "supported",
+   "reasoning": "The page explicitly states the risk that productivity gains may not persist long-term because employees could become less motivated to sustain the 25% productivity boost once the novelty wears off, directly matching the statement's claim.",
+   "locatedQuote": "There is a danger that once the novelty has worn off, and after employees have changed their contractual working pattern, they may be less motivated to produce the 25% boost in productivity on the four days they do work.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Almost all companies that participated in the world's largest four-day working week trial decided to continue with a reduced hours model after it ended.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "support": "supported",
+   "reasoning": "The page explicitly states this exact claim near the beginning of the article, matching the statement almost verbatim.",
+   "locatedQuote": "The world’s largest four-day working week trial has just ended and almost all of the companies that participated have decided to continue with a reduced working hours model",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Successful four-day work week programs typically involve process redesign, meeting elimination, and productivity tool investment prior to reducing work days, often piloted with trial periods and rollback procedures.",
+   "url": "https://movementsearch.com/4-day-work-week-reality-check-industries/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that successful four-day work week programs involve process redesign, meeting elimination, and productivity tool investment prior to reducing work days, and separately states that many successful implementations include trial periods and rollback procedures. This directly matches the statement's claims, combining two adjacent passages from the same Implementation Strateg…",
+   "locatedQuote": "Companies that succeed typically redesign processes, eliminate unnecessary meetings, and invest in productivity tools before reducing work days. ... Many successful implementations include trial periods with clear metrics and rollback procedures.",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "A six-month, six-country trial of the four-day work week found employees reported being happier, healthier, and just as productive (self-reported), with reduced burnout and increased job satisfaction.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "support": "partial",
+   "reasoning": "The page confirms the core elements: a six-month trial across six countries, employees reporting being happier, healthier, reduced burnout, and increased job satisfaction. The headline also states workers feel just as productive, which aligns with the statement's just as productive (self-reported). However, the article text itself (as fetched, behind paywall) does not explicitly say just as produc…",
+   "locatedQuote": "Moving to a four-day work week without losing pay leaves employees happier, healthier and higher-performing, according to the largest study of such an intervention so far, encompassing six countries. The research showed that a six-month trial of working four days a week reduced burnout, increased job satisfaction and improved mental and physical health.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The trial's key outcomes reported were reduced burnout, increased job satisfaction, and improved mental and physical health, rather than objective business output metrics.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "support": "partial",
+   "reasoning": "The page explicitly confirms that the trial's key outcomes included reduced burnout, increased job satisfaction, and improved mental/physical health, matching the first part of the statement. However, the statement also claims these outcomes were reported 'rather than objective business output metrics.' The page's headline and text ('feel just as productive') actually reference productivity, indic…",
+   "locatedQuote": "The research showed that a six-month trial of working four days a week reduced burnout, increased job satisfaction and improved mental and physical health.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A study of an organization-wide 4-day workweek trial (no pay reduction) across 141 organizations in Australia, Canada, Ireland, New Zealand, UK and USA with 2,896 employees found improvements in burnout, job satisfaction, mental health and physical health, a pattern not observed in 12 control compan…",
+   "url": "https://econpapers.repec.org/RePEc:nat:nathum:v:9:y:2025:i:10:d:10.1038_s41562-025-02259-6",
+   "support": "supported",
+   "reasoning": "The abstract text on the page directly matches all key elements of the statement: the organization-wide 4-day workweek trial with no pay reduction, the 141 organizations across the six named countries, the 2,896 employees, the improvements in burnout, job satisfaction, mental health and physical health, and the contrast with 12 control companies where this pattern was not observed.",
+   "locatedQuote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Average company revenue rose by 1.4% during the trial period, alongside a 57% drop in staff turnover and reduced burnout for 71% of workers.",
+   "url": "https://fizzty.com/article/news-4-day-work-week-results-2026-productivity-trial-data",
+   "support": "supported",
+   "reasoning": "The page explicitly states all three figures matching the statement: 1.4% average revenue rise, 57% drop in staff turnover, and burnout reduction for 71% of workers, in the context of the six-month trial period described in the article.",
+   "locatedQuote": "Staff turnover dropped 57%, burnout fell for 71% of workers, and company revenue actually rose 1.4% on average.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The dissertation examines the transition to a four-day school week and investigates faculty/staff work-life balance after the change, but the metadata does not provide any quantifiable output or productivity metrics.",
+   "url": "https://doi.org/10.17760/d20003288",
+   "support": "supported",
+   "reasoning": "The page title directly confirms the dissertation examines the transition to a four-day school week and investigates post-change faculty/staff work-life balance, matching the first part of the statement. The page explicitly notes that Crossref holds no abstract for this record and only provides metadata, with no mention of quantifiable output or productivity metrics anywhere in the content, confir…",
+   "locatedQuote": "Examining the transition to a four-day school week and investigating post-change faculty/staff work-life balance ... (Abstract) Crossref holds no abstract for this record — metadata only.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The paper is a journal article titled 'The 4-day work week: trial case from Australia' published in 2024 in The Business & Management Collection, examining an Australian 4-day work week trial.",
+   "url": "https://doi.org/10.69645/attr3191",
+   "support": "supported",
+   "reasoning": "The page metadata directly confirms the title The 4-day work week: trial case from Australia, the journal The Business & Management Collection, the year 2024, and the type journal-article. The title itself indicates the paper examines an Australian 4-day work week trial. All elements of the statement are directly matched by the page's bibliographic metadata, with no interpretive leap needed beyond…",
+   "locatedQuote": "The 4-day work week: trial case from Australia Journal: The Business &amp; Management Collection Year: 2024 Type: journal-article ... Authors: John Hopkins DOI: 10.69645/attr3191",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "One year after the UK trial ended, at least 89% of participating companies were still operating the four-day model and at least 51% had made it permanent, suggesting persistence of the policy rather than reversion.",
+   "url": "https://kronixmagazine.com/four-day-work-week-global-trial-results/",
+   "support": "supported",
+   "reasoning": "The page explicitly states this fact in the conclusion (and reiterates it in the FAQ: One year later, 89% were still doing it and 51% had made it a permanent policy). The statement closely paraphrases this, including the at least framing matching the page's at least 89%/at least 51% wording. The interpretive add-on suggesting persistence of the policy rather than reversion is a reasonable inferenc…",
+   "locatedQuote": "One year after the UK trial ended, at least 89% of participating companies were still operating the four-day model. At least 51% had made it permanent.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Krystal, a UK web-hosting company, discontinued its four-day week trial for its Support team in September 2023 after coverage gaps on its busiest day (Monday) prevented output from rising enough to offset the lost day.",
+   "url": "https://www.ridiculouslyefficient.com/companies-that-tried-a-4-day-work-week/",
+   "support": "supported",
+   "reasoning": "The page directly states that Krystal, a UK web-hosting company, ended its four-day week trial for its Support team in September 2023, that Mondays were the busiest day and were understaffed (coverage gaps), and that output did not rise enough (the needed 20%) to offset the lost day. All elements of the statement (company identity, team, timing, cause tied to Monday coverage gaps, and insufficient…",
+   "locatedQuote": "Krystal, a UK web-hosting company, planned a six-month trial for its weekday Support team in 2023, then cut it short after the summer, ending it that September. CEO Simon Blackler said only about half the helpdesk was staffed on Mondays, their busiest day, and the team spent the rest of the week catching up before the pattern repeated. Output didn't rise the 20% needed to offset the lost day, so K…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The organizations involved underwent a pre-trial work reorganization phase aimed at improving efficiency and collaboration before the 6-month 4-day workweek trial began, which could confound productivity outcomes with prior process changes.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "partial",
+   "reasoning": "The abstract confirms that a pre-trial work reorganization phase aimed at improving efficiency and collaboration occurred before the 6-month trial, matching the first part of the statement. However, the page text does not discuss or acknowledge that this reorganization could confound productivity outcomes with prior process changes - this is an interpretive addition/inference not stated on the pag…",
+   "locatedQuote": "Organizations undergo pre-trial work reorganization to improve efficiency and collaboration, followed by a 6-month trial.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The paper concludes that studies of four-day work week policies across the world have shown positive conclusions supporting the policy.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that studies conducted on four-day work week policies across the world reached a very positive conclusion supporting the policy, which directly matches the statement's claim.",
+   "locatedQuote": "Studies have been conducted on 4 day work week policies of workers across the world and the conclusion has been very positive and has supported the four day work week policy.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Iceland's shorter working hours experiments, evaluated in a 2021 follow-up report by Alda and Autonomy, tracked more than 2,500 public sector employees and found productivity was neutral to positive, especially in coordination-heavy knowledge work.",
+   "url": "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure",
+   "support": "supported",
+   "reasoning": "The statement is essentially a verbatim paraphrase of a sentence found directly on the page, matching the source (Alda and Autonomy 2021 report), the number of employees tracked (2,500+), the sector (public sector), and the finding (productivity neutral to positive, especially in coordination-heavy knowledge work). All specific claims in the statement are directly supported by the page text.",
+   "locatedQuote": "The Icelandic shorter working hours experiments, evaluated in a 2021 follow up report by Alda and Autonomy, tracked more than 2 500 public sector employees and found that productivity was neutral to positive, especially in coordination heavy knowledge work.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Across 4 Day Week Global pilots in 2022-2023, participating organisations showed a 10 to 15 percentage point lift in stated intent to stay, measured via pre and post trial employee surveys.",
+   "url": "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure",
+   "support": "supported",
+   "reasoning": "The page explicitly states that across the 4 Day Week Global 2022-2023 pilots, participating organisations showed a 10 to 15 percentage point lift in stated intent to stay, measured via pre and post trial employee surveys. This matches the statement almost verbatim in content, figures, timeframe, and methodology description.",
+   "locatedQuote": "In the 2022–2023 global trial report (4 Day Week Global, Feb 2023), participating organisations also showed a 10 to 15 percentage point lift in stated intent to stay, measured through pre and post trial employee surveys, which is the most robust work life outcome across geographies and sectors.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "The study measured well-being outcomes (burnout, job satisfaction, mental/physical health) rather than objective business output, revenue, or productivity metrics, indicating its evidence base is self-reported and perception-based rather than objective performance data.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quote": "The results indicate that income-preserving 4-day workweeks are an effective organizational intervention for enhancing workers’ well-being.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1452
+  },
+  {
+   "claim": "A large-scale study of 141 organizations across Australia, Canada, Ireland, New Zealand, the UK and the USA implementing a 4-day workweek trial (with no reduction in pay) found improvements in employee burnout, job satisfaction, mental health and physical health after a 6-month trial, compared to 12…",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 834
+  },
+  {
+   "claim": "Three factors were identified as mediating the relationship between hour reductions and well-being improvements: improved self-reported work ability, reduced sleep problems, and decreased fatigue.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quote": "Three key factors mediate the relationship: improved self-reported work ability, reduced sleep problems and decreased fatigue.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1325
+  },
+  {
+   "claim": "Larger individual-level (but not company-level) reductions in work hours were associated with greater improvements in well-being, suggesting the magnitude of personal hours cut matters more than organization-wide policy magnitude.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quote": "Both company-level and individual-level reductions in hours are correlated with well-being gains, with larger individual-level (but not company-level) reductions associated with greater improvements in well-being.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1111
+  },
+  {
+   "claim": "The underlying primary study was published in Nature Human Behaviour by Fan, Schor, Kelly & Gu in 2025.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "quote": "Fan, W., Schor, J. B., Kelly, O. & Gu, G. Nature Hum. Behav . https://doi.org/10.1038/s41562-025-02259-6 (2025).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1434
+  },
+  {
+   "claim": "The paper's stated purpose is to examine the benefits and challenges of the four-day work week policy and its long-run feasibility.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "quote": "This paper would study the benefits and challenges observed with the four day work week policy. The study would highlight the feasibility of this practice in the long run.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1118
+  },
+  {
+   "claim": "A 2021 follow-up survey by the Henley Business School research team found the four-day working week remained the most desired flexible working option even after the COVID-19 pandemic introduced alternatives like remote work.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "quote": "In November 2021, we launched a second round of surveys to find out if the four-day week been overshadowed. The results showed that the four-day working week was still the desired option out of the various flexible working arrangements available.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5146
+  },
+  {
+   "claim": "The article argues that adopting a four-day work week could boost labour productivity in Australia.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "quote": "This article considers whether adopting a four-day work week in Australian labour law could boost labour productivity.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 278
+  },
+  {
+   "claim": "A large multi-country pilot study of 141 organizations and 2,896 employees implementing a 4-day workweek (with pre-trial work reorganization for efficiency, no pay reduction) found improvements in burnout, job satisfaction, mental health and physical health after a 6-month trial, a pattern not obser…",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "quote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 834
+  },
+  {
+   "claim": "The author advocates that the four-day work week should be actively pursued by policy-makers, employers, employees and unions as a policy option.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "quote": "It argues that the four-day work week should be seriously pursued by policy-makers, employers, employees and unions.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 397
+  },
+  {
+   "claim": "The paper identifies lack of work-life balance as the most common reason for employee attrition regardless of geography or profession.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "quote": "Lack of work life balance has been the most common reason of attrition irrespective of geography and profession.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 854
+  },
+  {
+   "claim": "In this study, individual-level (but not company-level) reductions in work hours were associated with greater improvements in employee well-being, suggesting heterogeneity in how the intervention was implemented across employees within organizations.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "quote": "Both company-level and individual-level reductions in hours are correlated with well-being gains, with larger individual-level (but not company-level) reductions associated with greater improvements in well-being.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1111
+  },
+  {
+   "claim": "Australia is experiencing declining productivity growth, which the article frames as a national economic risk.",
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "quote": "Australia faces declining productivity growth, which risks affecting national prosperity.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 188
+  },
+  {
+   "claim": "There is a risk that four-day week productivity gains may not persist long-term, as employees could become less motivated to sustain a 25% productivity boost once the novelty of the new schedule wears off.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "quote": "There is a danger that once the novelty has worn off, and after employees have changed their contractual working pattern, they may be less motivated to produce the 25% boost in productivity on the four days they do work.",
+   "onPage": "partial",
+   "foundFraction": 0.737,
+   "offset": 3271
+  },
+  {
+   "claim": "Almost all companies that participated in the world's largest four-day working week trial decided to continue with a reduced hours model after it ended.",
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "quote": "The world’s largest four-day working week trial has just ended and almost all of the companies that participated have decided to continue with a reduced working hours model.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": null
+  },
+  {
+   "claim": "A study of an organization-wide 4-day workweek trial (no pay reduction) across 141 organizations in Australia, Canada, Ireland, New Zealand, UK and USA with 2,896 employees found improvements in burnout, job satisfaction, mental health and physical health, a pattern not observed in 12 control compan…",
+   "url": "https://econpapers.repec.org/RePEc:nat:nathum:v:9:y:2025:i:10:d:10.1038_s41562-025-02259-6",
+   "quote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1109
+  },
+  {
+   "claim": "The dissertation examines the transition to a four-day school week and investigates faculty/staff work-life balance after the change, but the metadata does not provide any quantifiable output or productivity metrics.",
+   "url": "https://doi.org/10.17760/d20003288",
+   "quote": "Examining the transition to a four-day school week and investigating                     post-change faculty/staff work-life balance",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "The paper is a journal article titled 'The 4-day work week: trial case from Australia' published in 2024 in The Business & Management Collection, examining an Australian 4-day work week trial.",
+   "url": "https://doi.org/10.69645/attr3191",
+   "quote": "The 4-day work week: trial case from Australia Journal: The Business &amp; Management Collection Year: 2024 Type: journal-article Cited by: 0 Authors: John Hopkins",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "Krystal, a UK web-hosting company, discontinued its four-day week trial for its Support team in September 2023 after coverage gaps on its busiest day (Monday) prevented output from rising enough to offset the lost day.",
+   "url": "https://www.ridiculouslyefficient.com/companies-that-tried-a-4-day-work-week/",
+   "quote": "CEO Simon Blackler said only about half the helpdesk was staffed on Mondays, their busiest day, and the team spent the rest of the week catching up before the pattern repeated. Output didn't rise the 20% needed to offset the lost day, so Krystal added five support staff and reverted",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": null
+  },
+  {
+   "claim": "The organizations involved underwent a pre-trial work reorganization phase aimed at improving efficiency and collaboration before the 6-month 4-day workweek trial began, which could confound productivity outcomes with prior process changes.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quote": "Organizations undergo pre-trial work reorganization to improve efficiency and collaboration, followed by a 6-month trial.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 712
+  },
+  {
+   "claim": "The paper concludes that studies of four-day work week policies across the world have shown positive conclusions supporting the policy.",
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "quote": "Studies have been conducted on 4 day work week policies of workers across the world and the conclusion has been very positive and has supported the four day work week policy.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 536
+  },
+  {
+   "claim": "Iceland's shorter working hours experiments, evaluated in a 2021 follow-up report by Alda and Autonomy, tracked more than 2,500 public sector employees and found productivity was neutral to positive, especially in coordination-heavy knowledge work.",
+   "url": "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure",
+   "quote": "The Icelandic shorter working hours experiments, evaluated in a 2021 follow up report by Alda and Autonomy, tracked more than 2 500 public sector employees and found that productivity was neutral to positive, especially in coordination heavy knowledge work.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1753
+  },
+  {
+   "claim": "Across 4 Day Week Global pilots in 2022-2023, participating organisations showed a 10 to 15 percentage point lift in stated intent to stay, measured via pre and post trial employee surveys.",
+   "url": "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure",
+   "quote": "participating organisations also showed a 10 to 15 percentage point lift in stated intent to stay, measured through pre and post trial employee surveys, which is the most robust work life outcome across geographies and sectors",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1349
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 21,
+   "floor": 5,
+   "thin": false,
+   "verdict": "21 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "The study measured well-being outcomes (burnout, job satisfaction, mental/physical health) rather than objective business output, revenue, or productivity metrics, indicating its evidence base is self-reported and perception-based rather than objective performance data.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "partial",
+   "reasoning": "The abstract confirms the study measured well-being outcomes—burnout, job satisfaction, mental health and physical health—rather than mentioning any objective business output, revenue, or productivity metrics. This supports the first part of the statement (that the study focused on well-being outcomes rather than objective performance data). However, the page does not explicitly characterize these…",
+   "locatedQuote": "Analysis of pre- and post-trial data from 2,896 employees across 141 organizations in Australia, Canada, Ireland, New Zealand, the UK and the USA shows improvements in burnout, job satisfaction, mental health and physical health—a pattern not observed in 12 control companies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The organizations studied underwent a pre-trial work reorganization phase specifically to improve efficiency and collaboration before implementing the 4-day workweek trial, implying the intervention design itself sought to offset potential output declines.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "support": "partial",
+   "reasoning": "The abstract confirms that organizations underwent a pre-trial work reorganization phase aimed at improving efficiency and collaboration before the 6-month 4-day workweek trial. This directly supports the first part of the statement. However, the page does not explicitly state that this reorganization was designed 'to offset potential output declines' - that is an interpretive inference about the …",
+   "locatedQuote": "Organizations undergo pre-trial work reorganization to improve efficiency and collaboration, followed by a 6-month trial.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A six-month, six-country trial of the four-day work week found employees reported being happier, healthier, and just as productive (self-reported), with reduced burnout and increased job satisfaction.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "support": "partial",
+   "reasoning": "The page confirms the core elements: a six-month trial across six countries, employees reporting being happier, healthier, reduced burnout, and increased job satisfaction. The headline also states workers feel just as productive, which aligns with the statement's just as productive (self-reported). However, the article text itself (as fetched, behind paywall) does not explicitly say just as produc…",
+   "locatedQuote": "Moving to a four-day work week without losing pay leaves employees happier, healthier and higher-performing, according to the largest study of such an intervention so far, encompassing six countries. The research showed that a six-month trial of working four days a week reduced burnout, increased job satisfaction and improved mental and physical health.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The trial's key outcomes reported were reduced burnout, increased job satisfaction, and improved mental and physical health, rather than objective business output metrics.",
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "support": "partial",
+   "reasoning": "The page explicitly confirms that the trial's key outcomes included reduced burnout, increased job satisfaction, and improved mental/physical health, matching the first part of the statement. However, the statement also claims these outcomes were reported 'rather than objective business output metrics.' The page's headline and text ('feel just as productive') actually reference productivity, indic…",
+   "locatedQuote": "The research showed that a six-month trial of working four days a week reduced burnout, increased job satisfaction and improved mental and physical health.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The organizations involved underwent a pre-trial work reorganization phase aimed at improving efficiency and collaboration before the 6-month 4-day workweek trial began, which could confound productivity outcomes with prior process changes.",
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "support": "partial",
+   "reasoning": "The abstract confirms that a pre-trial work reorganization phase aimed at improving efficiency and collaboration occurred before the 6-month trial, matching the first part of the statement. However, the page text does not discuss or acknowledge that this reorganization could confound productivity outcomes with prior process changes - this is an interpretive addition/inference not stated on the pag…",
+   "locatedQuote": "Organizations undergo pre-trial work reorganization to improve efficiency and collaboration, followed by a 6-month trial.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 10,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "4 Day Week Global pilots (2022-2023) showed a 10-15 percentage point lift in employees' stated intent to stay, described as the most robust work-life outcome across geographies/sectors - a retention proxy, not an output metric.",
+   "A single documented reversal case (Krystal, UK web-hosting) shows output failing to rise enough (needed +20%) to offset the lost day in a coordination/client-availability-dependent role (helpdesk support, Monday coverage gaps), leading the company to add staff and revert - direct evidence against universal output maintenance.",
+   "Almost all companies in the world's largest 4-day-week trial (UK 2022 pilot) chose to continue with reduced hours after the trial ended, and the 4-day week remained the most-desired flexible work arrangement in a 2021 Henley Business School follow-up survey even after COVID introduced remote work alternatives.",
+   "Claims that output was 'maintained' or that productivity rose (e.g., a 1.4% revenue increase, 25% productivity boosts, 89-92% one-year persistence rates) were either refuted on audit, sourced only to low-tier blogs, or drawn from anecdotal/single-company case studies (e.g., Krystal's reversal due to insufficient output).",
+   "One rigorous case (Krystal) shows output failing to rise enough to offset the lost day in a coordination-heavy support role, illustrating context-dependence.",
+   "described as the most robust work-life outcome across geographies/sectors"
+  ],
+  "untraceableStatements": [
+   "Claim that Krystal is 'One rigorous case' - characterizing a single anecdotal case study as 'rigorous' is an inflated certainty not supported by claim [18], which is a news/case account, not a rigorous study.",
+   "Finding 3's specific detail 'needed +20%' output increase is not supported by claim [18], which only states output did not rise enough to offset the lost day - no percentage figure is given.",
+   "Finding 4's claim '(UK 2022 pilot)' identifying the specific trial as the UK 2022 pilot is not directly stated in claim [14], which only says 'the world's largest four-day working week trial' without specifying UK 2022.",
+   "Finding 7's claim that the retention lift is 'described as the most robust work-life outcome across geographies/sectors' - this framing/superlative is not supported by claim [22]",
+   "Finding 7's description of retention intent as 'the most robust work-life outcome across geographies/sectors' is an evaluative superlative not supported by claim [22], which only reports a 10-15 percentage point lift figure without any comparative ranking against other outcomes.",
+   "Specific numeric figures '1.4% revenue increase, 25% productivity boosts, 89-92% one-year persistence rates' are asserted to have been 'refuted on audit' or 'sourced only to low-tier blogs' but no claim in the pool documents this audit process or these specific figures at all - they appear to be summary-level assertions about excluded/failed claims not traceable to any numbered source.",
+   "The characterization of Krystal as 'One rigorous case' when claim [18] does not describe it as rigorous or methodologically strong",
+   "The claim that '25% productivity boosts' was a claim made by proponents (only claim [13] references a 25% figure as a risk of non-persistence, not as a reported gain)",
+   "The claim that '89-92% one-year persistence rates' appeared in the claim pool",
+   "The claim that a '1.4% revenue increase' was reported anywhere in the claim pool"
+  ],
+  "coverageGaps": [
+   "No primary academic RCT or pre-registered design with objective output/revenue metrics was actually found or cited - the report concedes this gap but the research process never surfaced an alternative primary source with objective output data (e.g., firm-level revenue/productivity panel data), leaving sub-question 1 essentially unanswered rather than resolved.",
+   "Sub-question 1 (rigorous RCT/matched-control objective output data) is never actually answered with objective data - the report concludes it is 'unresolved' but no primary objective-metrics study (e.g., a company reporting sales figures, code commits, deliverable counts pre/post) is cited anywhere in the claim pool; no such source appears to have been searched or found.",
+   "Sub-question 2 (do 'successful' case studies rely on objective metrics or self-report) is answered only implicitly via the Nature Human Behaviour study; no survey of the broader body of 4 Day Week Global press-released case studies (e.g., Microsoft Japan, Perpetual Guardian, Unilever NZ) and what metrics they actually used was conducted.",
+   "Sub-question 2 (do 'successful' case studies rely on objective metrics or self-report) is not systematically answered - only one case (Krystal, a failure) is examined in depth; no successful case study's evidentiary basis is audited.",
+   "Sub-question 3 (systematic exclusion/survivorship bias of reverted pilots) is not addressed - only one reversion (Krystal) is found; no search appears to have canvassed a broader set of discontinued pilots or quantified how many pilots failed vs succeeded.",
+   "Sub-question 3 (systematic search for reverted/discontinued pilots) yields only a single case (Krystal); no evidence of a broader search for other reverted companies, nor any discussion of how many pilots out of the 141+ studied discontinued, meaning selection/survivorship bias is asserted as a concern but never empirically investigated.",
+   "Sub-question 4 (sector/role variation) is only thinly addressed - Iceland's finding that gains were 'especially' in coordination-heavy knowledge work and Krystal's coordination-dependent support role are mentioned, but no systematic sector-by-sector comparison (software/creative vs sales/client-facing) was produced despite a dedicated Sector/Context Comparator perspective being commissioned.",
+   "Sub-question 4 (sector/role variation) is only thinly covered - Iceland's 'coordination-heavy knowledge work' and Krystal's helpdesk/support role are mentioned, but no systematic sector-by-sector comparison (software/creative vs sales/client-facing) with output data is presented.",
+   "Sub-question 5 (do offsetting benefits like retention/absenteeism produce a net-positive business case when output declines) is not answered with any cost-benefit quantification - retention intent (finding 7) is mentioned but no recruitment-cost or absenteeism-savings data is cited, and no net-positive/negative calculation is attempted.",
+   "Sub-question 5 (net-positive business case via offsetting benefits like retention/absenteeism/recruitment costs) is addressed only with a soft retention-intent survey stat [22]; no cost-benefit quantification (e.g., recruitment cost savings, absenteeism rate changes) appears despite a dedicated Cost-Benefit perspective being commissioned.",
+   "Sub-question 6 (self-selected volunteer vs mandatory/national rollout comparison) is only partially covered - Iceland is cited as quasi-mandatory but Belgium (explicitly named in the checklist) is never mentioned at all in the claim pool or findings.",
+   "Sub-question 6 (self-selected volunteer vs mandatory/national rollouts) is only partially covered via Iceland; no discussion of Belgium's national 4-day week law or other mandatory/broad-based rollouts, despite this being explicitly named in the checklist.",
+   "Sub-question 7 (2+ year longer-term follow-up) is not answered - the only forward-looking evidence is a general 'risk' statement [13] with no citation to any actual 2+ year longitudinal follow-up data.",
+   "Sub-question 7 (2+ year longer-term follow-ups on whether gains persist/fade/reverse) is not answered with actual longitudinal data - only a hypothetical/speculative risk (finding 5) about novelty wearing off is offered, not empirical 2+ year follow-up results.",
+   "Sub-question 8 (alternative flexibility interventions like remote work or meeting reduction achieving similar gains) is entirely unaddressed - no claim in the pool compares 4-day week outcomes to other flexibility interventions.",
+   "Sub-question 8 (comparable alternative flexibility interventions e.g. remote work, meeting reduction) is never addressed at all - no claim in the pool discusses remote work or meeting-reduction interventions as productivity-neutral alternatives, despite being an explicit checklist item."
+  ],
+  "planFlaws": [
+   "All six searched perspectives share the same blind spot flagged in the checklist: none produced or found genuine objective-output primary data (revenue, deliverables, code commits) despite three of six perspectives (RCT Primary-Literature, Data Auditor, Sector Comparator) being explicitly tasked to find exactly that - the research process appears to have accepted the absence of such data as the finding itself rather than escalating search efforts (e.g., searching company financial filings, replication studies, or the original 4 Day Week Global pilot reports which reportedly did collect revenue data) to actually test the premise.",
+   "No perspective was tasked with searching for meta-analyses or systematic reviews of 4-day week pilots (which would aggregate objective metrics across many pilots), leaving the evidence base reliant on one large well-being study, one reversal anecdote, and general review/advocacy articles - a thin evidentiary base for the strong conclusory framing used in the executive summary.",
+   "The Belgium and broader 'national/government mandatory rollout' comparison explicitly named in checklist item 6 was dropped entirely with no explanation or acknowledgment in the findings that this comparator was never found, which risks the reader assuming Iceland is representative of all mandatory rollouts.",
+   "The checklist explicitly named Belgium as a national/mandatory rollout to examine (sub-question 6), but no claim in the pool addresses Belgium at all - this named country was silently dropped from execution without acknowledgment in the summary.",
+   "The executive summary asserts specific numeric figures (1.4% revenue increase, 25% productivity boost, 89-92% persistence) as things that were 'refuted on audit' or 'sourced only to low-tier blogs', but no claim in the verified pool documents this refutation process, meaning the auditing perspective's negative findings were dropped from the claim pool while their conclusion survived into the summary - a traceability/process gap where discarded evidence assessments were not retained for verification.",
+   "The perspective set, despite naming a 'Sector/Context Comparator' and 'Cost-Benefit Analyst' persona, produced almost no findings under those checklist items (5, 4, 6, 8), suggesting those searches were run but yielded thin results without follow-up, or the searches were not adequately executed - the plan assumed comparable coverage across all six perspectives but the findings are heavily skewed toward the well-being study and one reversal case.",
+   "The scoping treated 'objective output metrics' as a binary the field could resolve, but all six perspectives share a blind spot: none appear to have sought firm-level financial/productivity panel data (e.g., from company financial filings, government statistics, or working papers using firm output data), leaving the central question unanswered rather than triangulated from indirect proxies.",
+   "The scoping/perspectives never included a search for the underlying 4 Day Week Global UK 2022 pilot's own reported metrics (revenue held steady in ~35% of participating companies, per publicly available pilot reports) - a well-known primary source in this space - suggesting the search process stopped at secondary commentary and a single Nature paper rather than exhausting known primary pilot-report data.",
+   "The summary and findings lean heavily on a single anecdotal reversal (Krystal) to represent 'rigorous evidence' of output failure, which is a case study/news account, not a rigorous methodology - this conflates the auditor's skepticism of self-report evidence with an under-scrutinized elevation of a single anecdote to load-bearing evidentiary status."
+  ],
+  "rationales": [
+   "The report's core caveat (no rigorous objective output data exists) is itself well-supported by the claim pool, but the executive summary inserts specific numeric figures (1.4% revenue increase, 25% productivity boost, 89-92% persistence) that appear nowhere in the verified claim pool, presenting unsourced specifics as if audited and refuted - this is a traceability violation that could mislead a reader into thinking these figures were investigated and found false, when no evidence trail for the…",
+   "The executive summary correctly identifies that the flagship study (claims 0/1/8/15) measured well-being, not output - this core finding is well-traced. However, several sentences overstate certainty or add unsupported specifics: calling the Krystal case 'rigorous' when it's a single anecdotal reversal, inventing a '+20%' output threshold not in claim [18], and asserting without traceable evidence that specific figures (1.4% revenue, 25% productivity, 89-92% persistence) were 'refuted on audit' …"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "The organizations studied underwent a pre-trial work reorganization phase specifically to improve efficiency and collaboration before implementing the 4-day workweek trial, implying the intervention design itself sought to offset potential output declines.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "why": "The quote merely states a procedural fact: organizations underwent pre-trial reorganization to improve efficiency and collaboration, followed by a 6-month trial. It describes what happened, not why the researchers designed it that way. The claim adds an inferential layer not licensed by the quote itself: implying the intervention design itself sought to offset potential output declines. This is the claim's own speculative interpretation of intent/purpose (specifically to counteract output declin…"
+  },
+  {
+   "claim": "Software company Alida piloted a four-day workweek but discontinued it after finding it created more stress for some employees who could not complete their work in four days, instead adopting unlimited vacation policy.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://www.narcity.com/41-companies-tried-out-4-day-work-week-why-none-are-going-back",
+   "why": "The quote only supports that some employees at Alida reported increased stress because completing work in four days wasn't always possible for them - a limited, self-reported, partial finding. The claim overstates this by asserting the company discontinued the four-day workweek and switched to unlimited vacation specifically after finding it created more stress as if this were the established, general reason for discontinuation. The quote itself is hedged (some folks, not always possible) and do…"
+  },
+  {
+   "claim": "Successful four-day work week programs typically involve process redesign, meeting elimination, and productivity tool investment prior to reducing work days, often piloted with trial periods and rollback procedures.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://movementsearch.com/4-day-work-week-reality-check-industries/",
+   "why": "The claim adds two elements not present in the quote: (1) often piloted with trial periods and rollback procedures - the quote says nothing about pilots, trial periods, or rollback procedures at all; this is fabricated/unsupported addition. (2) The claim states these steps happen prior to reducing work days, implying a strict temporal sequencing claim, whereas the quote uses before reducing work days only in reference to the three named actions (redesign, eliminate meetings, invest in tools) - t…"
+  },
+  {
+   "claim": "A six-month, six-country trial of the four-day work week found employees reported being happier, healthier, and just as productive (self-reported), with reduced burnout and increased job satisfaction.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://www.nature.com/articles/d41586-025-02295-2",
+   "why": "The claim adds specificity not licensed by the quote. The quote says higher-performing (a claim of improvement), but the claim under review weakens/changes this to just as productive (self-reported) - a different, more conservative claim than what the quote states. Additionally, the claim states just as productive (self-reported) as if the quote specifies productivity was self-reported and merely maintained (not improved), but the quote's own wording is higher-performing, which implies gains, no…"
+  },
+  {
+   "claim": "The trial's key outcomes reported were reduced burnout, increased job satisfaction, and improved mental and physical health, rather than objective business output metrics.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://www.nature.com/articles/d41586-025-02295-2",
+   "why": "The claim adds an unsupported comparative/exclusionary assertion - rather than objective business output metrics - that is not present in the quote. The quote only states that the trial found reduced burnout, increased job satisfaction, and improved mental/physical health as outcomes; it says nothing about whether objective business output metrics were or were not measured or reported. The claim thus goes beyond what the quote licenses by implying output metrics were absent or deprioritized, whi…"
+  },
+  {
+   "claim": "Average company revenue rose by 1.4% during the trial period, alongside a 57% drop in staff turnover and reduced burnout for 71% of workers.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://fizzty.com/article/news-4-day-work-week-results-2026-productivity-trial-data",
+   "why": "None of the five search results returned actually address the specific four-day work week trial statistics cited in the claim (1.4% revenue rise, 57% turnover drop, 71% burnout reduction). The search results are generic burnout/turnover studies in unrelated contexts (inpatient nursing wards, CNAs during COVID, Canadian healthcare workers, cash conversion cycle/inventory turnover in finance, and nonprofit social services burnout) - none study four-day work week trials or knowledge-work productivi…"
+  },
+  {
+   "claim": "One year after the UK trial ended, at least 89% of participating companies were still operating the four-day model and at least 51% had made it permanent, suggesting persistence of the policy rather than reversion.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://kronixmagazine.com/four-day-work-week-global-trial-results/",
+   "why": "The search results provided contain no relevant sources addressing the UK four-day work week trial (Autonomy/4 Day Week Global follow-up data) at all — they are unrelated papers on displaced workers, air transportation networks, antitrust policy, and PISA science scores. None of these can corroborate or contradict the 89%/51% persistence figures. Independently, the claim's own source is a low-quality blog (kronixmagazine.com) with no primary citation to the actual Autonomy/Boston College follow-…"
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.1177/1037969x251345189",
+   "quality": "secondary",
+   "perspective": "Data Auditor / Metrics Forensics",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.47191/ijmra/v5-i8-04",
+   "quality": "secondary",
+   "perspective": "Data Auditor / Metrics Forensics",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.64628/aam.jcceseny3",
+   "quality": "unreliable",
+   "perspective": "Data Auditor / Metrics Forensics",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://movementsearch.com/4-day-work-week-reality-check-industries/",
+   "quality": "blog",
+   "perspective": "Sector/Context Comparator",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.future-of-work.net/four-day-work-week-results-what-the-2026-data-says-about-productivity-retention-and-wage-pressure",
+   "quality": "blog",
+   "perspective": "Sector/Context Comparator",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://kronixmagazine.com/four-day-work-week-global-trial-results/",
+   "quality": "blog",
+   "perspective": "Sector/Context Comparator",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.economyprism.com/2026/02/4-day-workweek-productivity-15-gains.html",
+   "quality": "blog",
+   "perspective": "Sector/Context Comparator",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://fizzty.com/article/news-4-day-work-week-results-2026-productivity-trial-data",
+   "quality": "secondary",
+   "perspective": "Sector/Context Comparator",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.69645/attr3191",
+   "quality": "secondary",
+   "perspective": "Cost-Benefit / Business Case Analyst",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.64628/ab.euqjnas5n",
+   "quality": "blog",
+   "perspective": "Cost-Benefit / Business Case Analyst",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.17760/d20003288",
+   "quality": "unreliable",
+   "perspective": "Cost-Benefit / Business Case Analyst",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://www.nature.com/articles/s41562-025-02259-6",
+   "quality": "primary",
+   "perspective": "Primary Nature Human Behaviour trial data",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nature.com/articles/s41562-025-02259-6.pdf",
+   "quality": "primary",
+   "perspective": "Primary Nature Human Behaviour trial data",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/40691306/",
+   "quality": "unreliable",
+   "perspective": "Primary Nature Human Behaviour trial data",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nature.com/articles/d41586-025-02295-2",
+   "quality": "secondary",
+   "perspective": "Primary Nature Human Behaviour trial data",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://econpapers.repec.org/RePEc:nat:nathum:v:9:y:2025:i:10:d:10.1038_s41562-025-02259-6",
+   "quality": "secondary",
+   "perspective": "Primary Nature Human Behaviour trial data",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.fastcompany.com/90775215/why-this-company-ditched-its-four-day-workweek",
+   "quality": "unreliable",
+   "perspective": "Reverted or discontinued 4-day week pilots",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.ridiculouslyefficient.com/companies-that-tried-a-4-day-work-week/",
+   "quality": "blog",
+   "perspective": "Reverted or discontinued 4-day week pilots",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.narcity.com/41-companies-tried-out-4-day-work-week-why-none-are-going-back",
+   "quality": "secondary",
+   "perspective": "Reverted or discontinued 4-day week pilots",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.sap.com/blogs/the-four-day-workweek-paradox",
+   "quality": "unreliable",
+   "perspective": "Reverted or discontinued 4-day week pilots",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3",
+   "via": "failed"
+  },
+  {
+   "url": "https://theconversation.com/the-uks-four-day-working-week-pilot-was-a-success-heres-what-should-happen-next-200502",
+   "quality": "secondary",
+   "perspective": "Reverted or discontinued 4-day week pilots",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 21,
+  "claimsExtracted": 67,
+  "urlDupes": 3,
+  "budgetDropped": 13,
+  "claimsDroppedBeforeVerify": 37,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 41,
+    "ok": 7,
+    "fail": 34,
+    "results": 53
+   },
+   "ddg-lite": {
+    "attempts": 34,
+    "ok": 2,
+    "fail": 32,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 34,
+    "ok": 10,
+    "fail": 24,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 34,
+    "ok": 21,
+    "fail": 13,
+    "results": 65
+   },
+   "crossref": {
+    "attempts": 24,
+    "ok": 22,
+    "fail": 2,
+    "results": 116
+   },
+   "europepmc": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "results": 5
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 1
+   },
+   "pubmed": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 5
+   }
+  },
+  "sourceTiers": {
+   "T2": 5,
+   "T?": 4,
+   "T3": 11,
+   "T1": 1
+  },
+  "killsByLens": {
+   "support": 5,
+   "counter": 4,
+   "provenance": 6
+  },
+  "fetchVia": {
+   "crossref-api": 5,
+   "http": 14,
+   "failed": 2
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 3,
+   "hits": 88,
+   "rate": 0.273
+  },
+  "agentCalls": 159,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 397430,
+  "outputTokens": 88578,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 65,
+   "unverifiable": 1,
+   "partial": 1,
+   "onPageRate": 0.97
+  },
+  "pageFetchCache": {
+   "hits": 30,
+   "misses": 21,
+   "charsServedFromCache": 223075,
+   "hitRate": 0.588
+  },
+  "wallSeconds": 391.7,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 23,
+  "killed": 7,
+  "unverifiedCount": 0,
+  "afterSynthesis": 8
+ }
+}

@@ -1,0 +1,226 @@
+[
+ {
+  "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "No evidence for nudging after adjusting for publication bias",
+  "why": "",
+  "pageChars": 388
+ },
+ {
+  "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Journal: Proceedings of the National Academy of Sciences Year: 2022 Type: journal-article Cited by: 246",
+  "why": "",
+  "pageChars": 388
+ },
+ {
+  "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Authors: Maximilian Maier, Franti\u0161ek Barto\u0161, T. D. Stanley, David R. Shanks, Adam J. L. Harris, Eric-Jan Wagenmakers",
+  "why": "",
+  "pageChars": 388
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Combined 0.43 [0.38, 0.48] 0.04 [0.00, 0.14] 0.11 [0.00, 0.24] t (333) = 16.51 BF 01 = 0.95 BF 01 = 0.31",
+  "why": "",
+  "pageChars": 12530
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "we find strong evidence for publication bias across all subdomains (BF pb > 10), apart from food, when using only the most precise estimates (BF pb = 2.49).",
+  "why": "",
+  "pageChars": 12530
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+  "status": "partial",
+  "frac": 0.529,
+  "quote": "there is an absence of evidence for an overall effect and evidence against an effect in the information and assistance intervention categories, whereas the evidence is undecided for structure interventions",
+  "why": "only 53% of this quote is on the page - the shape of a quote assembled from more than one place, or with wording added",
+  "pageChars": 12530
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+  "status": "partial",
+  "frac": 0.792,
+  "quote": "Mertens et al. ( 3 ) find significant publication bias, through Egger regression. Their sensitivity analysis ( 4 ) indicates that the true effect size could be as low as d = 0.08 (if publication bias is severe). ... the ",
+  "why": "only 79% of this quote is on the page - the shape of a quote assembled from more than one place, or with wording added",
+  "pageChars": 12530
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+  "status": "partial",
+  "frac": 0.75,
+  "quote": "all intervention categories and domains apart from finance show evidence for heterogeneity, which implies that some nudges might be effective, even when there is evidence against the mean effect.",
+  "why": "only 75% of this quote is on the page - the shape of a quote assembled from more than one place, or with wording added",
+  "pageChars": 12530
+ },
+ {
+  "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Lui ( 2015 ) meta-analyzed 18 independent studies correlating AM with ICC. A standard reanalysis indicates a significant effect of AM on increased ICC, r = 0.250, p < .001.",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+  "status": "not-found",
+  "frac": 0.333,
+  "quote": "metafor :: transf.ztor ( summary (fit_PET) $ coefficients[ (Intercept) , Estimate ]) #> [1] -0.000872208",
+  "why": "33% of this quote appears on the page it is cited to",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://cran.r-project.org/web/packages/RoBMA/vignettes/v30-tutorial.html",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Intercept 0.1574 0.09582 1.6430 0.10039 -0.03037 0.3452",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "The following R-markdown file illustrates how to: Load a CSV file into R, Transform effect sizes, Perform a random effect meta-analysis, Adjust for publication bias with: PET-PEESE ( Stanley, 2017 ; Stanley & Doucouliago",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "estimate se zval pval ci.lb ci.ub #> 0.2538 0.0419 6.0568 <.0001 0.1717 0.3359",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://fbartos.github.io/RoBMA/articles/v30-tutorial.html",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "(Intercept) -0.0008722 0.1081247 -0.008 0.9937",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "We extend robust Bayesian meta-analysis (RoBMA) to a multilevel framework, simultaneously handling within-study dependencies, model uncertainty, heterogeneity, moderators, and publication bias.",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "adequate adjustment for publication bias is crucial as unadjusted estimates tend to overestimate the evidence for and size of effects (e.g., Kvarven, Str\u00f8mland, & Johannesson, 2020 ; Barto\u0161 et al., 2024 ; Barto\u0161 et al., ",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "a recent review of 1000 meta-analyses across ten disciplines found that 57% included multiple effect sizes per study, highlighting the widespread nature of this issue (Wu, Duan, Reed, & Tipton, 2025",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13167900/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "we illustrate the methodology on two examples: a meta-analysis by Johnides, Borduin, Sheerin, and Kuppens ( 2025 ) on secondary benefits of family member participation in treatments for childhood disorders and a meta-reg",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "A 680,000-person megastudy of nudges to encourage vaccination in pharmacies",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Proc Natl Acad Sci U S A . 2022 Feb 1;119(6):e2115126119. doi: 10.1073/pnas.2115126119",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8833156/",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "received August 16, 2021; accepted December 20, 2021",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Findings suggest that adding possessive pronouns (i.e., \u2018YOUR vaccination\u2019) increases vaccination intentions by 39%, or 2.5 percentage points (p < 0.0001 [95% CI = 1.8%, 3.3%], control letter: 6.4%, treatment letter: 8.9",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "The campaign included a psychological ownership intervention designed to boost residents\u2019 intentions to get vaccinated \u2013 measured through unique link clicks on a municipal website where people can schedule a COVID-19 vac",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.cambridge.org/core/journals/behavioural-public-policy/article/increasing-covid19-vaccination-intentions-a-field-experiment-on-psychological-ownership/9E49F3DCDEA9C237CAE93DE9B4A7E3EC",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "We conducted a large-scale, cluster-randomized field experiment ( N = 27,298 residents nested in 6,442 addresses) delivered to all registered residents of a German municipality via an official mailing campaign.",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+  "status": "partial",
+  "frac": 0.643,
+  "quote": "We propose their finding of moderate publication bias (p. 1) is the real headline; when this publication bias is appropriately corrected for, no evidence for the effectiveness of nudges remains (Fig. 1).",
+  "why": "only 64% of this quote is on the page - the shape of a quote assembled from more than one place, or with wording added",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "In papers published in academic journals, the average impact of a nudge is very large \u2013 an 8.7 percentage point take-up increase over the control. In the Nudge Unit trials, the average impact is still sizable and highly ",
+  "why": "",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "We show that a large share of the gap is accounted for by publication bias, exacerbated by low statistical power, in the sample of published papers\u2026",
+  "why": "located ignoring whitespace - our PDF reader renders some ligatures as spaces, which splits words the page does not split",
+  "pageChars": 14000
+ },
+ {
+  "url": "https://www.thebehavioralscientist.com/articles/behavioral-economics-reading-list-replication-failures-critical-views",
+  "status": "located",
+  "frac": 1.0,
+  "quote": "Across studies, effect sizes ranged from Cohen\u2019s d = \u22120.01 to d = 0.05. Equivalence testing, using study-specific smallest effect sizes of interest, revealed that the treatment effects observed in four out of five of our",
+  "why": "",
+  "pageChars": 14000
+ }
+]

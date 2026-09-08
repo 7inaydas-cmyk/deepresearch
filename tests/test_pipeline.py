@@ -329,6 +329,112 @@ ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- unreadable extraction is refused, not passed to a model --")
+ok(searchmod.is_prose("the quick brown fox jumps over the lazy dog and this is prose "
+                      * 30)[0],
+   "ordinary English prose passes the gate")
+_garbage = "".join(chr(1) + chr(15) + "$*-,)" for _ in range(2000))
+ok(not searchmod.is_prose(_garbage)[0],
+   "a PDF whose font encoding defeats extraction is refused: 13% letters and zero "
+   "stopwords, and a model shown it returned four fluent invented quotes")
+ok(searchmod.is_prose("Les resultats montrent que le salaire minimum affecte "
+                      "l emploi des jeunes travailleurs dans cette region " * 20)[0],
+   "a non-English paper is NOT thrown away as binary: both signals must fail, and a "
+   "French page has a high letter ratio with no English stopwords")
+_ok, _why, _sig = searchmod.is_prose(_garbage)
+ok("letterRatio" in _sig and "stopwordsPerKchar" in _sig and "%" in _why,
+   "and the refusal reports the numbers it refused on")
+
+print("\n-- a blocked publisher falls back to the archive, labelled --")
+ok(searchmod.wayback_snapshot.__doc__ and "id_" in searchmod.wayback_snapshot.__doc__,
+   "the raw-capture modifier is documented: without it the snapshot arrives wrapped in "
+   "the archive's own toolbar, which a model will quote as page text")
+ok(searchmod._WB_CHROME.search("The Wayback Machine - http://web.archive.org/")
+   and searchmod._WB_CHROME.search("Organization: Archive Team Formed in 2009"),
+   "archive furniture is recognised, so a snapshot that came back as the archive's own "
+   "page is refused rather than extracted - it is fluent English and passes the prose gate")
+ok(not searchmod._WB_CHROME.search("No evidence for nudging after adjusting for "
+                                   "publication bias | PNAS Contents Thaler and Sunstein"),
+   "and a real archived paper is not mistaken for furniture")
+
+print("\n-- the quote is located in code, not asserted in a prompt --")
+_PAGE = ("Researchers found that productivity rose 13 percent over six months, and the "
+         "effect persisted through the follow-up period. Separately, attrition fell by half.")
+ok(dr.quote_span(_PAGE, "productivity rose 13 percent over six months")["status"] == "located",
+   "an exact quote is located")
+ok(dr.quote_span(_PAGE, "productivity   rose 13\n percent over  six months")["status"] == "located",
+   "whitespace and line breaks do not break a real quote")
+ok(dr.quote_span(_PAGE, "\u201cproductivity rose 13 percent over six months\u201d")["status"] == "located",
+   "smart quotes, ligatures and non-breaking spaces are normalised away")
+ok(dr.quote_span(_PAGE, "productivity rose 13 percent ... attrition fell by half")["status"]
+   == "located-elided",
+   "an ellipsis is honest quoting of a long passage, not evasion")
+# THE regression that matters. Measured 2026-09-08: an exact-match-or-nothing scorer
+# called a PMC quote `not-found` at fraction 0.0 while the quote was on the page in
+# full - a manufactured fabrication signal, the worst thing this check could do.
+_tail = "productivity rose 13 percent over six months, and the effect persisted through the follow-up peroid"
+_r = dr.quote_span(_PAGE, _tail)
+ok(_r["status"] == "located-approx" and _r["foundFraction"] >= 0.9,
+   "one wrong character in the tail does NOT collapse the verdict to not-found: a "
+   "scorer that strict manufactures the fabrication signal it exists to detect")
+_stitch = dr.quote_span(_PAGE, "productivity rose 13 percent over six months, and the "
+                               "effect persisted through the follow-up while profits tripled "
+                               "worldwide and headcount doubled in every single region")
+ok(_stitch["status"] == "partial" and 0.3 < _stitch["foundFraction"] < 0.9,
+   "a quote half on the page and half invented reads partial, with the fraction: %s"
+   % _stitch["foundFraction"])
+ok(dr.quote_span(_PAGE, "productivity soared and every worker was happier than before ever")["status"]
+   == "not-found", "a quote that is simply not there reads not-found")
+ok(dr.quote_span("", "a quote long enough to clear the floor easily")["status"] == "unverifiable"
+   and dr.quote_span(_PAGE, "Cited by: 246")["status"] == "unverifiable",
+   "an empty page and a too-short quote are UNVERIFIABLE, never fabrication - a blocked "
+   "publisher must not look like a lying extractor")
+ok(dr.quote_span(_PAGE, "productivity rose 13 percent over six months")["offset"] is not None,
+   "a located quote carries where on the page it sits")
+
+print("\n-- the panel is told the answer, not given an impossible task --")
+_lens_src = dr.LENSES[0][2]
+ok("paraphrase rather than verbatim page text" not in _lens_src,
+   "the support lens no longer asks for a check it cannot perform: it is never shown "
+   "the page, so it could not judge whether a quote was verbatim")
+ok("already been decided in code" in _lens_src,
+   "it is told the result instead, and told to weigh it")
+_c = {"claim": "c", "sourceUrl": "u", "quote": "q",
+      "quoteCheck": {"status": "located", "foundFraction": 1.0}}
+ok("YES" in dr._quote_line(_c), "a located quote is stated as located")
+_c["quoteCheck"] = {"status": "partial", "foundFraction": 0.6, "why": "w"}
+ok("PARTLY" in dr._quote_line(_c) and "60%" in dr._quote_line(_c)
+   and "genuine page text" in dr._quote_line(_c),
+   "a partly-located quote states the fraction and says the located part IS real - "
+   "most partials are a genuine prefix with a diverging tail, not a fabrication")
+_c["quoteCheck"] = {"status": "not-found", "foundFraction": 0.05, "why": "w"}
+ok("NOT on the page" in dr._quote_line(_c),
+   "only a genuinely absent quote is reported as absent")
+_c["quoteCheck"] = {"status": "unverifiable", "foundFraction": None, "why": "blocked"}
+ok("not evidence either way" in dr._quote_line(_c),
+   "an unverifiable quote is explicitly NOT reported to the panel as a fabrication")
+ok("Quote NOT checkable" in dr.p_verify("q", _c, *dr.LENSES[0], 0, 3),
+   "and the line actually reaches the verify prompt")
+ok(dr._quote_line({"claim": "c"}) == "",
+   "a claim with no check adds nothing to the prompt rather than a misleading default")
+
+print("\n-- locatedQuote stops being a silent discard --")
+_fb = {("c", "u"): {"claim": "c", "url": "u", "support": "partial", "reasoning": "r",
+                    "locatedQuote": "the page said this",
+                    "locatedQuoteCheck": {"status": "located"}}}
+_rows = dr.citation_rows(_fb)
+ok(_rows[0]["locatedQuote"] == "the page said this"
+   and _rows[0]["locatedQuoteOnPage"] == "located",
+   "the auditor's own verbatim pull is published, with whether it is on the page. It "
+   "was demanded on every audit call and read by nothing.")
+# Effect, not source-count: the three inline copies had already drifted, with
+# `reasoning` present on the happy path and missing from both failure exits. Assert
+# the exits agree on the row shape instead of counting call sites.
+_k_happy = sorted((r.get("citationDetail") or [{}])[0].keys())
+_k_nosyn = sorted((r11.get("citationDetail") or [{}])[0].keys())
+ok(_k_happy == _k_nosyn and "locatedQuote" in _k_happy and "reasoning" in _k_nosyn,
+   "every report exit builds citation rows with the SAME keys: %s" % ", ".join(_k_happy))
+
 print("\n-- an <item>-wrapped array is data, not a decline --")
 ok(dr.as_list('\n<item>first</item>\n<item>second</item>', "t") == ["first", "second"],
    "the structured-output path leaks <item> markup around array elements; every element "

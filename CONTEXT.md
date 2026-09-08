@@ -135,6 +135,19 @@ selects for verifiability.
 A defect injected into a finished report on purpose, to measure whether a checker catches
 it. The only ground truth this domain has.
 
+**Quote location**:
+Where a [claim]'s verbatim quote actually sits in the page it was extracted from, decided
+in code rather than asked of a model. Graded, never boolean: located / located-elided /
+located-approx / partial / not-found / unverifiable. `unverifiable` means the page was
+empty or the quote too short to judge, and is never evidence of fabrication.
+_Avoid_: quote check, verbatim validation, hallucination detection
+
+**Prose gate**:
+The refusal to hand a model extracted text that is not readable prose. A PDF whose font
+encoding defeats extraction yields control characters, and a model shown those returns
+fluent invented quotes - so the text is refused as unreachable instead.
+_Avoid_: sanity check, garbage filter
+
 **Evidence base**:
 How many citable sources a finished report actually rests on, carried as a number and a
 `thin` flag. A label on the report, never a reason to withhold it: a thin run is evidence

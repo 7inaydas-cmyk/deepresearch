@@ -28,7 +28,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, json, os, re, subprocess, sys, threading, time
+import argparse, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -165,6 +165,10 @@ _fetch_meta = {}
 # serve a request for 14000, so that case refetches rather than silently returning a
 # short page. An EMPTY result is never cached - a transient failure must not be
 # frozen in for the rest of the run.
+# Census of where extracted quotes were found on their own pages. Measured over 30
+# real quotes from 10 real pages on 2026-09-08: 93% located, 3% a stitched composite
+# published as verbatim, 3% unverifiable because the publisher served a 388-char stub.
+_quote_tally, _quote_lock = {}, threading.Lock()
 _page_cache, _page_lock = {}, threading.Lock()
 _page_tally = {"hits": 0, "misses": 0, "charsServedFromCache": 0}
 
@@ -714,8 +718,10 @@ LENSES = [
     ("support", "Quote-support auditor",
      "Ignore whether the claim is TRUE in the world. Judge ONLY whether the quoted text licenses the claim AS STATED.\n"
      "Refute if the claim generalizes beyond the quote, swaps correlation for cause, drops a hedge or scope condition the "
-     "quote carries, turns a self-report or projection into fact, states a number the quote does not state, or the quote is "
-     "a paraphrase rather than verbatim page text.\n"
+     "quote carries, turns a self-report or projection into fact, or states a number the quote does not state.\n"
+     "Whether the quote is genuinely ON the page has already been decided in code and is stated under the quote below - "
+     "do not re-litigate it, but DO weigh it: a quote the engine could only partly locate was assembled from more than "
+     "one place, and a claim resting on one is refuted on that ground alone.\n"
      "This is the most common failure mode in cited reports: over 20% of citations with valid links do not support their "
      "claim. Be strict."),
     ("counter", "Counter-evidence hunter",
@@ -869,6 +875,57 @@ def p_gap(q, subqs, digest, n_follow, rnd, total):
         "Each needs a label, a real search query, and the reason it deserves a slot. If coverage is genuinely "
         "complete, return followUps: [] - do not invent busywork.")
 
+def citation_rows(fact_by):
+    """The per-citation detail rows. ONE builder for all three report exits.
+
+    There were three copies of this expression and they had already drifted: the
+    happy path carried `reasoning`, the two failure exits did not, and a field added
+    to one reached neither of the others. That is the same defect as honestLimits
+    shipping on 2 of 6 exits, in a different place.
+    """
+    return [{"claim": webtext(f["claim"], 300),
+             "url": webtext(f["url"], 250),
+             "support": f["support"],
+             "reasoning": webtext(f.get("reasoning", ""), 400),
+             # The auditor's own verbatim pull from the page, and whether the engine
+             # could find it there. Both were computed and thrown away until now.
+             "locatedQuote": webtext(f.get("locatedQuote", ""), 400),
+             "locatedQuoteOnPage": (f.get("locatedQuoteCheck") or {}).get("status")}
+            for f in fact_by.values()]
+
+
+def _quote_line(c):
+    """State the quote's page-location result to the panel as a settled fact.
+
+    The support lens used to be told to "refute if the quote is a paraphrase rather
+    than verbatim page text" while never being shown the page - an instruction it was
+    structurally unable to follow. The engine now answers that question in code before
+    the panel runs, so the lens is given the answer instead of the task.
+    """
+    qc = c.get("quoteCheck") or {}
+    st = qc.get("status")
+    if not st:
+        return ""
+    frac = qc.get("foundFraction")
+    pct = ("%.0f%%" % (100 * frac)) if isinstance(frac, float) else "n/a"
+    if st in QUOTE_ON_PAGE:
+        return ("**Quote located on the page: YES** (%s of it, checked in code, not by a model). "
+                "Treat the quote as genuine page text and judge only what the claim does with it.\n" % pct)
+    if st == "unverifiable":
+        return ("**Quote NOT checkable**: %s. Absence of a check is not evidence either way - "
+                "do not treat this as a fabrication, and do not treat it as verified.\n"
+                % qc.get("why", "unknown"))
+    if st == "partial":
+        return ("**Quote only PARTLY on the page**: %s of it appears on the page it is cited to, "
+                "checked in code. The located part is genuine page text; the rest is not on that "
+                "page. Judge whether the claim rests on the part that IS there - if it rests on "
+                "the part that is not, the evidence for it does not exist.\n" % pct)
+    return ("**Quote NOT on the page**: only %s of it appears on the page it is cited to "
+            "(checked in code). %s A quote presented as verbatim that is not on its own source is "
+            "a defect in the EVIDENCE, independent of whether the claim happens to be true.\n"
+            % (pct, qc.get("why", "")))
+
+
 def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""):
     return (
         "## Adversarial Verifier %d/%d - %s\n\n" % (idx + 1, total, lens_title) +
@@ -878,7 +935,7 @@ def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""
         "## Claim under review\n" + WEB_NOTE + "\"" + webtext(c["claim"], 800) + "\"\n\n"
         "**Source:** " + webtext(c["sourceUrl"], 250) + " (quality: " + webtext(c.get("sourceQuality", "?")) + ")\n"
         "**Publish date:** " + webtext(c.get("publishDate") or "unstated", 60) + "\n"
-        "**Supporting quote:** \"" + webtext(c.get("quote", ""), 900) + "\"\n\n" + counter_block +
+        "**Supporting quote:** \"" + webtext(c.get("quote", ""), 900) + "\"\n" + _quote_line(c) + "\n" + counter_block +
         "## Your lens\n" + lens_task + "\n\n"
         "Set refuted=true if your lens finds the claim wanting; false only if it passes YOUR check cleanly. Default to "
         "refuted=true when genuinely uncertain, but never refute for a reason belonging to another verifier's lens. "
@@ -1123,6 +1180,14 @@ def _honest_limits(extra=None, evidence=None):
         "killRateMeans": (
             "The kill rate reports how much was removed, never whether removal was "
             "correct."),
+        "quotesAreLocatedInCode": (
+            "Every claim's verbatim quote is searched for in the exact page text the "
+            "extractor was shown, in code, before the panel votes - see `quoteAudit` and "
+            "`stats.quoteLocation`. A quote the engine could not fully locate was "
+            "assembled from more than one place or had wording added, and is a defect in "
+            "the EVIDENCE regardless of whether the claim is true. `unverifiable` means "
+            "the page was empty or the quote too short to judge, and is never evidence of "
+            "fabrication. Measured over 30 real quotes on 2026-09-08: 93% located."),
         "partialCitationsAreKept": (
             "A `partial` citation verdict means the page points this way but the statement "
             "adds scope, certainty or specificity the page does not carry - and it does NOT "
@@ -1141,6 +1206,12 @@ def _honest_limits(extra=None, evidence=None):
             "about the question - a poisoned or rate-limited upstream engine - and NOT that "
             "the web is silent. searchHealth counts results, not relevance, so it reads as "
             "healthy in exactly this case."),
+        "archivedCopies": (
+            "A source whose `via` is `wayback` was read from the Internet Archive, not "
+            "live: the publisher blocked the fetch. `snapshotDate` says when the copy was "
+            "captured, and it matters - the provenance lens judges recency, and an "
+            "archived page is as old as its snapshot, not as old as today. The archive is "
+            "used ONLY after a live read failed or returned an abstract-only stub."),
         "abstractOnlySources": (
             "stats.fetchVia counts how each source was READ. `crossref-fallback` means the "
             "publisher blocked the fetch and only the abstract was available, and those "
@@ -1199,6 +1270,135 @@ def calibration_sample(voted, n):
 
 
 # --- Helpers ----------------------------------------------------------------
+# --- Quote location: is the evidence actually on the page? ---------------------
+# A Claim's verbatim quote is what every later stage reasons about, and until now
+# nothing checked it. "VERBATIM" appeared in three prompts and in no code:
+#
+#   - the extractor is told to carry a verbatim quote           -> unchecked
+#   - the quote-support lens is told to refute a paraphrased quote, and is never
+#     shown the page. It cannot do what it is instructed to do.
+#   - the citation audit is told to fill `locatedQuote`          -> nothing read it
+#
+# The check is a string search, so it costs no model call and no tokens. What it
+# costs is care: a matcher that is too strict reports a real quote as absent, which
+# is worse than not checking at all - it would manufacture the exact fabrication
+# signal this tool exists to detect. Hence normalisation, elision handling, and a
+# GRADED result rather than a boolean.
+_PUNCT_MAP = {ord(c): d for c, d in
+              [("\u2018", "'"), ("\u2019", "'"), ("\u201a", "'"), ("\u201b", "'"),
+               ("\u201c", '"'), ("\u201d", '"'), ("\u201e", '"'), ("\u201f", '"'),
+               ("\u2013", "-"), ("\u2014", "-"), ("\u2012", "-"), ("\u2212", "-"),
+               ("\u00a0", " "), ("\u2009", " "), ("\u202f", " "), ("\u200b", ""),
+               ("\ufb01", "fi"), ("\ufb02", "fl"), ("\u2026", "...")]}
+_ELLIPSIS = re.compile(r"\s*(?:\.\s*\.\s*\.|\[\s*\.\.\.\s*\])\s*")
+MIN_QUOTE_CHARS = 25
+
+
+def norm_quote(s):
+    """Fold away the differences that make a real quote miss its own page.
+
+    Every transform here is one that a faithful quoter or a PDF extractor
+    legitimately introduces: smart punctuation, ligatures, non-breaking spaces,
+    hyphenation broken across a line, and arbitrary whitespace.
+    """
+    s = unicodedata.normalize("NFKC", str(s or "")).translate(_PUNCT_MAP)
+    s = re.sub(r"-\s*\n\s*", "", s)      # PDF line-break hyphenation
+    s = re.sub(r"\s+", " ", s).strip().lower()
+    # A quote handed back wrapped in its own quotation marks is still that quote; the
+    # page it came from does not carry the wrapper. Strip it rather than let it turn a
+    # verbatim match into an approximate one.
+    return s.strip('"\'').strip()
+
+
+def _despace(s):
+    """The same text with all spacing removed.
+
+    PDF extraction inserts and drops spaces inside words. Measured 2026-09-08 on
+    nber.org/w32902: our own extractor renders the `fi` ligature as a SPACE, so the
+    page reads "magni es" where the paper says "magnifies", and the model - reading
+    our text - quoted it as "magnies". A faithful quote then scored `partial` and the
+    panel would have been told the evidence was stitched together. That is a false
+    accusation produced by our own extractor, so spacing is ignored on the second
+    pass. The character sequence must still match exactly; only the gaps are forgiven.
+    """
+    return re.sub(r"\s+", "", s)
+
+
+def _coverage(page, nq, win=40, step=10):
+    """What fraction of this quote is present on the page, by sliding window.
+
+    A single differing character must not collapse the score. Measured 2026-09-08:
+    an exact-match-or-nothing scorer reported a PMC quote as `not-found` at fraction
+    0.0 when the quote was in fact present on the page in full - the tail differed and
+    took the whole verdict with it. That is the false fabrication signal this function
+    exists to avoid, so coverage is measured in overlapping windows instead.
+    """
+    if len(nq) <= win:
+        return 1.0 if nq in page else 0.0
+    wins = [nq[i:i + win] for i in range(0, len(nq) - win + 1, step)]
+    return sum(1 for w in wins if w in page) / len(wins)
+
+
+def quote_span(page, quote):
+    """Where does this quote sit in this page? Pure function, no network, no model.
+
+    Returns `status`, `offset` (into the NORMALISED page, or None), and
+    `foundFraction` - how much of the quote is locatable.
+
+      located          the whole quote is on the page, exactly
+      located-elided   every fragment either side of an "..." is on the page, which is
+                       what honest quoting of a long passage looks like
+      located-approx   >=90% of the quote's text is on the page; the rest is
+                       punctuation or extraction noise, not invention
+      partial          a real fraction is there and a real fraction is not - the
+                       shape of a quote stitched together from more than one place
+      not-found        almost none of it is there
+      unverifiable     the page is empty, or the quote is too short to judge
+
+    `unverifiable` exists so an empty or blocked fetch can never masquerade as a
+    fabrication.
+    """
+    np_, nq = norm_quote(page), norm_quote(quote)
+    if not np_:
+        return {"status": "unverifiable", "offset": None, "foundFraction": None,
+                "why": "no page text to search"}
+    if len(nq) < MIN_QUOTE_CHARS:
+        return {"status": "unverifiable", "offset": None, "foundFraction": None,
+                "why": "quote is %d chars, under the %d-char floor - too short to "
+                       "distinguish a real quote from a coincidence" % (len(nq), MIN_QUOTE_CHARS)}
+    i = np_.find(nq)
+    if i >= 0:
+        return {"status": "located", "offset": i, "foundFraction": 1.0}
+    if _despace(nq) in _despace(np_):
+        return {"status": "located", "offset": None, "foundFraction": 1.0,
+                "why": "located ignoring whitespace - our PDF reader renders some "
+                       "ligatures as spaces, which splits words the page does not split"}
+    # An ellipsis is legitimate quoting, not evasion: check each side separately.
+    frags = [f for f in _ELLIPSIS.split(nq) if len(f) >= 12]
+    if len(frags) > 1 and all(f in np_ for f in frags):
+        return {"status": "located-elided", "offset": np_.find(frags[0]), "foundFraction": 1.0,
+                "why": "quote spans %d fragments around an ellipsis; all located" % len(frags)}
+    # Second pass ignoring spacing, for PDF extraction noise. Take the better of the
+    # two: a quote is not less real because our own PDF reader dropped a ligature.
+    frac = round(max(_coverage(np_, nq), _coverage(_despace(np_), _despace(nq))), 3)
+    anchor = next((nq[i:i + 40] for i in range(0, max(1, len(nq) - 39), 10)
+                   if nq[i:i + 40] in np_), None)
+    off = np_.find(anchor) if anchor else None
+    if frac >= 0.9:
+        return {"status": "located-approx", "offset": off, "foundFraction": frac,
+                "why": "%.0f%% of the quote is on the page; the remainder is "
+                       "punctuation or extraction noise" % (100 * frac)}
+    if frac >= 0.4:
+        return {"status": "partial", "offset": off, "foundFraction": frac,
+                "why": "only %.0f%% of this quote is on the page - the shape of a quote "
+                       "assembled from more than one place, or with wording added" % (100 * frac)}
+    return {"status": "not-found", "offset": None, "foundFraction": frac,
+            "why": "%.0f%% of this quote appears on the page it is cited to" % (100 * frac)}
+
+
+QUOTE_ON_PAGE = ("located", "located-elided", "located-approx")
+
+
 def as_list(v, label=""):
     """Model output is not a contract - a schema is what we asked for, not what we got.
 
@@ -1394,6 +1594,15 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
             c["sourceUrl"] = s["url"]
             c["sourceQuality"] = ext.get("sourceQuality", "unreliable")
             c["publishDate"] = ext.get("publishDate", "")
+            # Locate the quote in the exact text the extractor was shown. This is the
+            # only moment that text is definitively in hand, and the check is free.
+            c["quoteCheck"] = quote_span(text, c.get("quote", ""))
+            with _quote_lock:
+                _quote_tally[c["quoteCheck"]["status"]] = _quote_tally.get(c["quoteCheck"]["status"], 0) + 1
+            if c["quoteCheck"]["status"] not in QUOTE_ON_PAGE and c["quoteCheck"]["status"] != "unverifiable":
+                log("  [quote:%s] %s (%.0f%% on page): %r"
+                    % (host_of(s["url"]) or "?", c["quoteCheck"]["status"],
+                       100 * (c["quoteCheck"]["foundFraction"] or 0), str(c.get("quote", ""))[:90]))
             claims.append(c)
         _t, _why = tier_of(s["url"], s["title"], text)
         for _c in claims:
@@ -1661,6 +1870,11 @@ def deepresearch(question, depth="standard", contract=None):
                  # above are incomplete by exactly that much - say so rather than
                  # let it vanish.
                  usageUnrecorded=dict(_stats["usageUnrecorded"]),
+                 quoteLocation=dict(_quote_tally,
+                                    onPageRate=round(
+                                        sum(_quote_tally.get(k, 0) for k in QUOTE_ON_PAGE)
+                                        / sum(_quote_tally.values()), 3)
+                                    if sum(_quote_tally.values()) else None),
                  pageFetchCache=dict(_page_tally,
                                      hitRate=round(_page_tally["hits"] /
                                                    (_page_tally["hits"] + _page_tally["misses"]), 3)
@@ -1855,7 +2069,17 @@ def deepresearch(question, depth="standard", contract=None):
             text = web_fetch(c["sourceUrl"], cap=12000)
             f = agent(p_fact(c["claim"], c["sourceUrl"], text), S_FACT,
                       label="cite:" + (host_of(c["sourceUrl"]) or "?"), max_tokens=1200)
-            return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f) if f else None
+            if not f:
+                return None
+            # `locatedQuote` was demanded on every one of these calls and read by
+            # nothing - a silent discard, ~30 times a run. It is the auditor's own
+            # verbatim pull from the page, so it is worth more than the extractor's:
+            # check it against that same page and publish it.
+            lq = f.get("locatedQuote") or ""
+            f["locatedQuoteCheck"] = quote_span(text, lq) if lq.strip() else {
+                "status": "unverifiable", "offset": None, "foundFraction": None,
+                "why": "the auditor returned no locatedQuote"}
+            return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f)
         fact_rows = [f for f in pmap(audit, voted) if f]
         nS = sum(1 for f in fact_rows if f["support"] == "supported")
         nP = sum(1 for f in fact_rows if f["support"] == "partial")
@@ -1913,8 +2137,7 @@ def deepresearch(question, depth="standard", contract=None):
                                       "This is a real result - the sources do not say what they were read as saying.",
                         findings=[], citationAudit=fact_metrics, rescue=rescue,
                         refuted=[to_ref(c) for c in killed], sources=src_rows(),
-                        citationDetail=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
-                                         "support": f["support"]} for f in fact_by.values()],
+                        citationDetail=citation_rows(fact_by),
                         calibration=calibration, droppedSample=dropped_sample,
                         honestLimits=honest_limits(),
                         stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed)))
@@ -1948,7 +2171,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         tier_why = c.get("tierWhy", "")
         blocks.append(
             "### [%d] %s\nVote: %d-%d | Source: %s (%s, %s) | **TIER %s** (%s)%s\n"
-            "Quote: \"%s\"\nBest verifier evidence (%s): %s\n%s"
+            "Quote: \"%s\" %s\nBest verifier evidence (%s): %s\n%s"
             % (i, webtext(c["claim"], 700),
                len(c["verdicts"]) - c["refutedVotes"], c["refutedVotes"],
                webtext(c["sourceUrl"], 250), webtext(c.get("sourceQuality", "?")),
@@ -1956,7 +2179,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                tier, webtext(tier_why, 80),
                "  <-- AGGREGATOR: discovery only, do NOT cite as fact" if tier == "T4"
                else ("  <-- SYNTHETIC/FARM: EXCLUDE and report the exclusion" if tier == "T5" else ""),
-               webtext(c.get("quote", ""), 700), webtext(best.get("confidence", "?")),
+               webtext(c.get("quote", ""), 700),
+               ("[quote NOT fully on the cited page: %s - do not present it as a direct "
+                "quotation]" % (c.get("quoteCheck") or {}).get("status"))
+               if (c.get("quoteCheck") or {}).get("status") not in QUOTE_ON_PAGE
+               and (c.get("quoteCheck") or {}).get("status") is not None else "",
+               webtext(best.get("confidence", "?")),
                webtext(best.get("evidence", ""), 600),
                ("Blind citation audit: **%s** - %s\n" % (f["support"], webtext(f["reasoning"], 400))) if f else ""))
 
@@ -2074,8 +2302,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                                                 "quote": webtext(c.get("quote", ""), 400)} for c in confirmed],
                     citationAudit=fact_metrics, rescue=rescue, refuted=[to_ref(c) for c in killed],
                     calibration=calibration, droppedSample=dropped_sample,
-                    citationDetail=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
-                                     "support": f["support"]} for f in fact_by.values()],
+                    citationDetail=citation_rows(fact_by),
                     citationPartials=[{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
                                        "reasoning": webtext(f.get("reasoning", ""), 400)}
                                       for f in fact_by.values() if f["support"] == "partial"],
@@ -2109,9 +2336,17 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out.update(report)
     out["contradictions"] = report.get("contradictions", []) + contradictions
     out["citationAudit"] = fact_metrics
-    out["citationDetail"] = [{"claim": webtext(f["claim"], 300), "url": webtext(f["url"], 250),
-                              "support": f["support"], "reasoning": webtext(f.get("reasoning", ""), 400)}
-                             for f in fact_by.values()]
+    out["citationDetail"] = citation_rows(fact_by)
+    # The evidence itself, published so a reader can check it rather than trust it.
+    # `onPage` is decided in code against the exact page the extractor was shown;
+    # `offset` is where in that page (normalised) the quote begins.
+    out["quoteAudit"] = [{"claim": webtext(c["claim"], 300),
+                          "url": webtext(c.get("sourceUrl", ""), 250),
+                          "quote": webtext(c.get("quote", ""), 600),
+                          "onPage": (c.get("quoteCheck") or {}).get("status"),
+                          "foundFraction": (c.get("quoteCheck") or {}).get("foundFraction"),
+                          "offset": (c.get("quoteCheck") or {}).get("offset")}
+                         for c in confirmed]
     out["rescue"] = rescue
     out["calibration"] = calibration
     out["droppedSample"] = dropped_sample

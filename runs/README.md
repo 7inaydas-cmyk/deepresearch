@@ -98,6 +98,63 @@ two.
 `honestLimits.evidenceBase` was added, so this report does not carry that field. Everything
 else in it is current-regime.
 
+## Are the quotes real? (2026-09-08)
+
+`quote-location-2026-09-08.json`. Every Claim carries a verbatim quote, and until this
+date nothing checked it: "VERBATIM" appeared in three prompts and in no code. The
+quote-support lens was even instructed to "refute if the quote is a paraphrase rather
+than verbatim page text" while never being shown the page.
+
+The real extractor was run over real pages and every quote scored against the exact text
+the extractor saw.
+
+| run's sources | quotes | on page in full | partial | not found | unverifiable |
+|---|---|---|---|---|---|
+| nudge (HTML-heavy) | 28 | **82–93%** | 14% | 4% | 0–4% |
+| minwage (PDF-heavy) | 25–29 | **58–68%** | 21–28% | 0–17% | 7–10% |
+
+Two things came out of it that were not the point of the exercise:
+
+**Four fabricated quotes, from one poisoned source.** `digamoo.free.fr/neumark1994.pdf`
+uses a font encoding our extractor cannot map, so it yielded control characters — 13%
+letters, zero English stopwords. The old guard counted "words over 3 characters" and let
+it through. The model, handed 14,000 characters of that, returned four fluent invented
+quotes about employment elasticities. The quote check caught all four; a `prose gate` now
+refuses the page outright.
+
+**A false accusation of our own making.** Our PDF reader renders the `fi` ligature as a
+SPACE, so nber.org/w32902 reads `magni es` where the paper says `magnifies`. The model
+quoted our text faithfully as `magnies`, and an exact-match scorer called that quote
+defective. The scorer now also compares ignoring whitespace. An earlier version of the
+scorer had a worse form of the same fault: one differing character in a quote's tail
+collapsed the score to 0.0, and it reported a PMC quote that was on the page *in full* as
+`not-found`. That is the failure mode a checker like this must not have — it manufactures
+the fabrication signal it exists to detect — and it is why the scorer is graded and
+windowed rather than exact-match.
+
+### Live, end to end (`v5-4day-quotes.json`)
+
+The same question as `v4-4day-pagecache.json`, with quote location in the pipeline.
+
+| | v4 | v5 |
+|---|---|---|
+| quotes located on page | not checked | **97%** (65 located, 1 partial, 1 unverifiable) |
+| citation accuracy (pool) | 66.7% | **83.3%** |
+| citation accuracy (survivors, market-comparable) | 75.0% | **91.3%** |
+| unsupported / unreachable | 1 / 1 | **0 / 0** |
+| agent calls | 172 | **159** |
+| wall clock | — | **391.7s**, against a 10.6-minute median before this week |
+| page-cache hit rate | 61.3% | 58.8% |
+
+`quoteAudit` carries all 23 published claims with their quote, status, fraction and
+character offset. `citationDetail` carries `locatedQuote` on all 30 rows - the auditor's
+own verbatim pull, which was previously computed on every call and read by nothing.
+
+Two caveats on this table. One run each, on one question, so these are observations and
+not a benchmark. And the survivors-only 91.3% is the number to compare with published
+commercial figures (Perplexity 90.2%, Gemini 81.4%, OpenAI 78.0%) because it is measured
+their way; the 83.3% is ours, on a harsher denominator.
+
 ## The files
 
 | Prefix | What it is |

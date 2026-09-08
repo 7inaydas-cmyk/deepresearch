@@ -87,6 +87,22 @@ PYTHON_ONLY = {
     "dropped-claim sampling":
         "Needs a second panel pass over discarded claims. Portable in principle; "
         "not yet ported, and tracked as a known gap rather than an oversight.",
+    "quote located in code":
+        "Locating a quote needs the exact page text the extractor was shown, and in the JS "
+        "build that text never reaches the orchestrator: its extract subagent calls the "
+        "runtime's WebFetch itself and returns only the claim. The check cannot be a model "
+        "question without becoming the very thing it replaces, so it is not faked here. The "
+        "JS build's quotes are unchecked, and that is a real gap, not a design choice.",
+    "archive fallback on a blocked publisher":
+        "The Python build owns its fetch, so it can detect a blocked read and retry the "
+        "URL against the Internet Archive's raw capture. The JS build's subagents call the "
+        "runtime's WebFetch themselves; the orchestrator never learns a fetch failed, so it "
+        "has no failure to react to. Portable only as a prompt instruction, which would "
+        "make a deterministic fallback into a model judgement - a real gap, not a choice.",
+    "prose gate on PDF text":
+        "The Python build parses PDF bytes itself, so it can measure whether the result is "
+        "readable prose. The JS build never sees bytes - the runtime's WebFetch returns "
+        "text it has already extracted - so there is nothing here for it to gate.",
     "per-URL page cache":
         "The JS build never holds page text: its audit and extract subagents each call the "
         "runtime's WebFetch themselves, so there is no orchestrator-side fetch to cache. "
