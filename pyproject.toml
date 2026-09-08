@@ -1,6 +1,6 @@
 [project]
 name = "deepresearch"
-version = "1.1.0"
+version = "1.2.0"
 description = "Multi-agent research that attacks its own output: adversarial verification, blind citation audit, and a critic that catches the orchestrator inventing things."
 readme = "README.md"
 requires-python = ">=3.9"
