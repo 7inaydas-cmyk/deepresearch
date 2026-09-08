@@ -257,6 +257,30 @@ withholding true information from the lens whose subject it is cannot be defende
 it reuses a seam the audit already needed — not because it was shown to help. Recorded
 so nobody later assumes it is load-bearing.
 
+### What the live run actually showed (`v7-provenance.json`)
+
+Best headline numbers recorded — 86.2% pooled / 88.9% survivors citation accuracy, 98.7%
+of quotes located on their page, 0 `unsupported`, 163 calls. But the two things this run
+was launched to verify came back mixed, and the honest reading matters more than the
+numbers:
+
+**The code short-circuit did not fire — 0 times — and that is not a defect.** A source
+that fails to fetch produces no claims, so no claim cites it and the audit never sees it.
+And since `web_fetch` began caching per URL, the audit reuses the sweep's text instead of
+refetching, so a transient audit-time failure cannot happen either. The page cache had
+already removed most of the condition Hermes measured. The short-circuit stays as defence
+in depth, but it is now a rarely-reachable path, and this run did not exercise it.
+
+**The abstract path is verified by the A/B, not by this run.** One claim was cited to an
+abstract-only source and came back `partial` — which does not demote, so the claim
+survived, consistent with the fix. But n=1, and `partial` is not the `unreachable` the
+controlled experiment produced 6 times out of 6. The controlled A/B is the evidence here;
+this run is only compatible with it.
+
+**The archive fallback carried the run.** 5 sources read via `wayback` produced 7
+`supported` verdicts, including PNAS and SAGE — publishers that block a direct fetch.
+Without it those would have been abstracts or nothing.
+
 ## The files
 
 | Prefix | What it is |

@@ -1,0 +1,1403 @@
+{
+ "question": "After correcting for publication bias, does the evidence support nudge interventions as effective policy?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "answered",
+   "note": "Pooled d=0.43 (Mertens 2022) reported with multiple bias-detection methods (Egger, p-curve implied, PET-PEESE, trim-and-fill) documented across sources."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "answered",
+   "note": "Shrinkage from d=0.43 to d=0.04-0.08-0.31 depending on method/assumption is well documented; some estimates near zero, others distinguishable."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "answered",
+   "note": "DellaVigna & Linos 2022 Nudge Unit data (1.4pp vs 8.7pp academic) and OES/BIT Econometrica megastudy (8.1% effect) both covered as independent bias checks."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Structure/default interventions robust, information/assistance/finance collapse - documented, but reminders/social-norms/framing categories and cross-domain comparison (health, education, energy) not itemized in detail."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Only one gym megastudy on persistence (92% of effects decay after 4 weeks); no broader literature on long-term persistence across nudge types (e.g., defaults, retirement savings) is cited."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No cost-per-unit-of-behavior-change comparison between nudges and incentives/mandates/regulation has been gathered."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "Heterogeneity and BF_pb evidence discussed but no explicit synthesis judging whether evidence base (trial count, pre-registration rates) is 'sufficient' for policy verdict."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "Nudge Unit low-effect trials and gym megastudy decay noted as null/weak cases, but no explicit critic-curated list of strongest documented null/negative large low-bias studies (e.g., Beshears et al., specific failed defaults) or discussion of representativeness."
+  }
+ ],
+ "contradictions": [
+  "Mertens et al.'s RoBMA-corrected effect (d=0.04, near-zero) [8][21] and the same underlying data's sensitivity-analysis range (d=0.08 to d=0.31 depending on bias-severity assumption) [1] are presented in the literature as compatible/complementary, but the range spans a 4-8x difference and materially changes whether the conclusion is 'no effect' or 'small-but-real effect' - readers should not treat either single number as the definitive corrected estimate.",
+  "External sources describe a further disagreement (not directly confirmed in this claim set at T1 but flagged in gap analysis) about whether publication bias 'fully accounts' for the gap between academic and real-world Nudge Unit effect sizes, versus only explaining 'about 70 percent' - this claim was not independently verified in the audited set and is reported here only as an open contradiction from the broader source pool, not as a confirmed finding.",
+  "A broader megastudy source (OES/BIT, referenced in gap analysis but not independently audited at T1 here) reportedly frames an 8.1% effect as 'clear, positive' evidence for nudge effectiveness, which would sit in tension with the bias-corrected finding of evidence AGAINST an effect (BF01 up to 41) for several categories/domains [9][16] - this contradiction could not be resolved within the audited claim set.",
+  "Mertens et al. (PNAS 2022) reports RoBMA-corrected effect of d=0.04 [0.00,0.14] essentially near-zero, while the same authors' sensitivity/alternative bias-adjustment analysis (PMC9351519) reports a range of d=0.08 to d=0.31 depending on severity assumption - these are presented as compatible in the sources but the headline 'no evidence for nudging' framing (behavioralscientist.org secondary summary) conflicts with the more moderate d=0.31 estimate obtained under a 'moderate bias' assumption from the same underlying data.",
+  "DellaVigna & Linos (2022) attribute the gap between academic (8.7pp) and Nudge Unit (1.4pp) effects primarily to publication bias/low power ('can fully account for the gap'), while the secondary econpapers summary of the same paper states selective publication explains only 'about 70 percent' of the difference, with nudge characteristics (topic, channel) explaining 'most of the residual' - these two framings (full account vs. 70%+residual factors) are in tension.",
+  "The Econometrica/behavioralscientist summary of OES/BIT megastudy data claims a 'clear, positive' 8.1% effect that is treated as validating nudge effectiveness, while Mertens et al.'s bias-corrected analysis finds evidence AGAINST a true effect (BF01 up to 41) for several categories/domains - implying a disagreement over whether the surviving corrected effect is practically/policy meaningful or negligible."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether a policymaker/institution should continue investing in and scaling nudge-based interventions (behavioral 'nudge units', default-based policies, framing/messaging campaigns) as a primary tool, versus deprioritizing them in favor of stronger interventions (mandates, financial incentives, structural/regulatory changes) or treating nudges as a minor supplementary tactic.",
+  "keyQuestion": "Once meta-analytic estimates of nudge intervention effects are adjusted for publication bias (e.g., via p-curve analysis, trim-and-fill, or comparison against large pre-registered trials), do the corrected effect sizes remain large and consistent enough to justify nudges as a cost-effective standalone policy tool, or do they shrink to a level that undermines that case?",
+  "assumptions": [
+   "Scope covers 'nudge' interventions as defined broadly in behavioral economics/public policy (defaults, framing, social norms messaging, simplification) applied in government and large-institution settings, not just marketing.",
+   "Time horizon: evidence base from roughly 2000s-present, with emphasis on recent replication and meta-analytic corrections (post-2015 methodological reckoning in behavioral science).",
+   "Geography: primarily US/UK/EU/Australia government-run nudge units (e.g., BIT, OES), since that's where most registered trials and large-scale evaluations exist; findings may not generalize elsewhere.",
+   "'Publication bias correction' means using techniques like meta-analytic trim-and-fill, p-curve/z-curve analysis, or comparison of pre-registered vs non-pre-registered/unpublished trials.",
+   "'Effective policy' means producing non-trivial, cost-effective, durable behavioral change at scale (not just statistically significant in a lab study).",
+   "Effect size threshold: 'meaningful' effect assumed to be roughly >1-2 percentage points behavior change or comparable to/better than alternative policy tools, absent a reader-specified threshold."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Direct comparison of published journal-based nudge effect sizes vs. effect sizes from large government-run pre-registered trial databases (e.g., DellaVigna & Linos 2022 analyzing 126 US nudge unit trials) — if corrected effects stay similar in magnitude to registry-based effects, robustness case strengthens.",
+   "Meta-analytic bias-detection results (funnel plot asymmetry, p-curve skewness, trim-and-fill adjusted effect sizes) for major nudge meta-analyses (e.g., Mertens et al. 2022, Beshears & Kosowsky) — severity of detected bias directly changes magnitude of correction.",
+   "Whether cost-effectiveness comparisons (nudges vs. financial incentives/mandates per dollar spent or per behavior unit changed) still favor nudges after using corrected, smaller effect sizes.",
+   "Evidence on heterogeneity across nudge categories (defaults vs reminders vs social norms vs framing) — a finding that some subtypes remain robust would flip a blanket 'ineffective' conclusion to a 'selective use' conclusion.",
+   "Evidence on persistence/durability of nudge effects over time (do effects decay to zero after intervention withdrawal?) — durable effects support policy value even if initial magnitude is modest.",
+   "Sample size and pre-registration status of underlying studies — if most large corrected effects come from small non-pre-registered studies, confidence in 'still effective' hypothesis drops."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Nudges remain robustly effective: corrected effect sizes are attenuated but still meaningfully positive and cost-effective relative to alternatives, justifying continued/expanded policy use.",
+    "killCriterion": "Meta-analyses correcting for publication bias (e.g., p-curve, trim-and-fill, comparison with large pre-registered multi-site trials) show corrected average effects near zero or well below the threshold needed to be cost-effective vs alternatives."
+   },
+   {
+    "hypothesis": "Nudge effects are substantially inflated by publication bias and shrink to near-negligible/inconsistent levels once corrected, meaning nudges are not reliable standalone policy tools.",
+    "killCriterion": "Large pre-registered replications and bias-corrected meta-analyses (e.g., DellaVigna & Linos 2022 on US nudge units) show corrected effects still sizable (e.g., several percentage points) and consistent across contexts."
+   },
+   {
+    "hypothesis": "Effectiveness is highly heterogeneous by nudge type/domain: some categories (e.g., defaults) survive correction with real effects, others (e.g., simple reminders/framing) collapse to near zero — so a blanket verdict is wrong and policy should be selective.",
+    "killCriterion": "Evidence shows uniform attenuation across nudge types with no significant heterogeneity, OR shows uniform robustness across all types — either would undermine the 'it depends on type' claim."
+   },
+   {
+    "hypothesis": "The evidence base itself is too thin/heterogeneous post-correction to support any confident policy conclusion either way — verdict is 'insufficient evidence', not 'effective' or 'ineffective'.",
+    "killCriterion": "A sufficiently powered, bias-corrected synthesis (large N of pre-registered trials, low heterogeneity, consistent direction) exists that supports a clear directional conclusion, resolving the uncertainty."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Primary meta-analyst",
+   "lens": "An academic meta-scientist who distrusts single-study headline effect sizes and wants to see the raw bias-correction statistics (funnel plots, p-curves, trim-and-fill deltas) themselves rather than press summaries.",
+   "query": "nudge meta-analysis publication bias correction trim-and-fill p-curve effect size"
+  },
+  {
+   "label": "Large-trial constructor",
+   "lens": "A researcher who trusts only pre-registered, high-powered field trials run outside the publish-or-perish incentive structure (e.g., government nudge unit archives) and constructs the answer directly from those raw trial registries.",
+   "query": "DellaVigna Linos 2022 nudge units megastudy pre-registered effect size government"
+  },
+  {
+   "label": "Steelman defender",
+   "lens": "An applied behavioral economist who has run nudge programs and wants to argue the strongest honest case that corrected effects, while smaller, remain cost-effective and policy-relevant given near-zero marginal implementation cost.",
+   "query": "nudge interventions cost-effectiveness after publication bias correction still significant policy"
+  },
+  {
+   "label": "Skeptic hunting the strongest counter-case",
+   "lens": "A replication-crisis-focused critic who actively searches for null/negative megastudy results and failed high-powered replications to find the strongest case that nudge effects vanish under correction.",
+   "query": "megastudy nudge intervention null result no effect replication failure behavioral economics"
+  },
+  {
+   "label": "Heterogeneity auditor",
+   "lens": "A data auditor comparing effect sizes across nudge subtypes (defaults, reminders, social norms, framing) to test whether some categories survive correction while others collapse.",
+   "query": "nudge type heterogeneity effect size defaults vs reminders vs social norms meta-analysis comparison"
+  },
+  {
+   "label": "Cost-effectiveness/policy comparator",
+   "lens": "A government budget analyst or regulator comparing nudges against alternative levers (mandates, taxes, financial incentives) on a cost-per-behavior-change basis, distrusting effect sizes divorced from implementation cost and durability.",
+   "query": "nudge vs financial incentive vs mandate cost per behavior change comparison policy effectiveness"
+  }
+ ],
+ "summary": "After correcting for publication bias, the strongest available meta-analytic evidence (Mertens et al. 2022, re-analyzed by Maier et al. 2022) shows the pooled nudge effect shrinking from an uncorrected d=0.43 to bias-corrected estimates clustered near zero-to-small (d=0.04 via RoBMA, d=-0.01 to d=0.08 via three other methods, with a wider d=0.08-0.31 sensitivity range depending on assumed bias severity). Bayes factors show evidence AGAINST a true effect specifically for 'information' and 'assistance' nudges and the 'finance' domain, while 'structure'/default interventions remain undecided rather than refuted, and nearly all categories retain significant heterogeneity - meaning some individual nudges are likely still effective even though the category average is not reliably positive. Independent of this meta-analytic debate, specific large-scale default/active-choice interventions (retirement auto-enrollment, FAFSA assistance) show striking real-world cost-effectiveness versus traditional subsidy policies, and a large megastudy found 45% of tested interventions produced real short-term effects. The overall verdict is therefore selective rather than blanket: broad claims that 'nudges work' as a general policy class are not supported once publication bias is corrected for, but default/structural nudges retain a plausible - though not conclusively settled - case for continued targeted use. This synthesis is substantially limited by the fact that 62% of extracted claims were never independently verified.",
+ "answerFirst": "Nudges as a policy category do NOT survive publication-bias correction as a uniformly effective tool: the best-evidenced meta-analytic pooled effect (d=0.43) shrinks to near-zero-to-small (d≈0.04–0.08, with a wider sensitivity range to d=0.31) once bias-correction methods (RoBMA, Andrews-Kasy, WAAP, trim-and-fill) are applied, and Bayes factors show evidence AGAINST a true effect for 'information' and 'assistance' nudges and the 'finance' domain specifically. However, effectiveness is heterogeneous: 'structure' interventions (defaults) remain undecided/robust, some megastudy interventions (45% of tested gym interventions) show real short-term effects, and a few natural-experiment defaults (automatic enrollment) show very high cost-effectiveness versus traditional subsidies. The honest verdict is therefore selective, not blanket: broad \"nudges work\" claims are not supported post-correction, but default/structural nudges retain a plausible, though not conclusively proven, case for cost-effective policy use. Note: 49 of 79 extracted claims (62%) were never verified due to panel budget limits, so this synthesis rests on the highest-tier ~30 claims only and could be overturned by unreviewed lower-tier evidence, particularly on the unanswered cost-per-unit-of-behavior-change comparison and long-term persistence questions.",
+ "hingeNumber": {
+  "value": "RoBMA-corrected pooled effect d=0.04 [0.00, 0.14], BF01=0.95 (vs uncorrected d=0.43)",
+  "why": "This is the single number the 'nudges are effective/ineffective' verdict most directly hinges on: it is the most rigorous (selection-model + PET-PEESE combined) bias correction applied to the largest available nudge meta-analytic database, and it is the number most directly contrasted against the widely-cited uncorrected d=0.43 headline figure that has driven policy enthusiasm.",
+  "sensitivity": "The verdict is highly sensitive to this number and to method choice: alternative bias-correction methods on the same database range from d=-0.01 (Andrews-Kasy) to d=0.31 (moderate-bias assumption sensitivity analysis) [1][7]. A move of the headline estimate from ~0.04 up to ~0.15-0.20 would meaningfully change the 'near-zero' framing toward 'small but real effect'; conversely a move to negative territory (as Andrews-Kasy already suggests) would strengthen the null case. Because different legitimate methods already span this range on identical data, the overall conclusion is genuinely sensitive to analytic choice, not just to a hypothetical future data update - this is flagged explicitly as a near coin-flip in aggregate terms, though the category-level heterogeneity finding (structure vs. information/assistance) is more stable across methods.",
+  "source": "Mertens et al. 2022 PNAS via Maier et al. commentary, PMC9351501 [8][21]"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: Nudges remain robustly effective: corrected effect sizes are attenuated but still meaningfully positive and cost-effective relative to alternatives, justifying continued/expanded policy use.",
+   "verdict": "killed",
+   "killCriterion": "Meta-analyses correcting for publication bias show corrected average effects near zero or well below cost-effective threshold vs alternatives.",
+   "reasoning": "Bias-corrected estimates using RoBMA fall to d=0.04 [0.00,0.14] with BF01=0.95 (no evidence for an effect), and three additional independent correction methods on the same database also produce much smaller estimates (d=-0.01 to d=0.08), well below what would be needed for a confident 'still meaningfully positive' blanket verdict. The authors of the reanalysis explicitly state there is no reason to expect large and consistent effects except for exceptions like defaults. This directly triggers the kill criterion: corrected average effects near zero across most methods and categories.",
+   "claimsCited": [
+    8,
+    7,
+    2,
+    9
+   ]
+  },
+  {
+   "hypothesis": "H2: Nudge effects are substantially inflated by publication bias and shrink to near-negligible/inconsistent levels once corrected, meaning nudges are not reliable standalone policy tools.",
+   "verdict": "surviving",
+   "killCriterion": "Large pre-registered replications and bias-corrected meta-analyses show corrected effects still sizable and consistent across contexts.",
+   "reasoning": "The core kill criterion for H2 requires large pre-registered replications (e.g., DellaVigna & Linos on US nudge units) to show corrected effects remain sizable and consistent across contexts. The audited claim set does not contain a confirmed DellaVigna & Linos finding of sizable, consistent corrected effects; instead, available Nudge Unit forecasting evidence shows practitioners' realistic (smaller) expectations were well-calibrated, consistent with attenuated real-world effects, and the meta-analytic evidence broadly confirms substantial shrinkage. However, H2 is not fully proven either, since some individual default/structural interventions (retirement auto-enrollment, FAFSA assistance) show large real-world cost-effectiveness independent of the meta-analytic bias-correction issue, so H2's 'not reliable standalone tools' framing survives as the best-supported general verdict but with an important structure-nudge exception baked into H3.",
+   "claimsCited": [
+    8,
+    7,
+    1,
+    24
+   ]
+  },
+  {
+   "hypothesis": "H3: Effectiveness is highly heterogeneous by nudge type/domain: some categories (e.g., defaults) survive correction with real effects, others (e.g., simple reminders/framing) collapse to near zero — so a blanket verdict is wrong and policy should be selective.",
+   "verdict": "surviving",
+   "killCriterion": "Evidence shows uniform attenuation across nudge types with no significant heterogeneity, OR uniform robustness across all types.",
+   "reasoning": "Directly confirmed: bias-corrected Bayes factors show evidence against an effect specifically for 'information' and 'assistance' categories and the 'finance' domain, while 'structure' interventions (defaults) remain undecided rather than refuted (BF01=1.12, close to 1, i.e., inconclusive rather than confirming null). Additionally, nearly all categories/domains except finance retain evidence for heterogeneity post-correction, implying some individual nudges are genuinely effective even as averages are null. This is the kill criterion's negation (heterogeneity IS shown, not uniform attenuation or uniform robustness), so H3 survives as the best-supported nuanced verdict.",
+   "claimsCited": [
+    9,
+    16,
+    23
+   ]
+  },
+  {
+   "hypothesis": "H4: The evidence base itself is too thin/heterogeneous post-correction to support any confident policy conclusion either way — verdict is 'insufficient evidence', not 'effective' or 'ineffective'.",
+   "verdict": "surviving",
+   "killCriterion": "A sufficiently powered, bias-corrected synthesis with low heterogeneity and consistent direction exists that resolves the uncertainty.",
+   "reasoning": "The kill criterion requires a sufficiently powered, bias-corrected synthesis with low heterogeneity and consistent direction to resolve uncertainty and deliver a clear directional conclusion. While the RoBMA analysis is well-powered and bias-corrected, it does NOT show low heterogeneity - in fact nearly all categories/domains show significant heterogeneity post-correction, and different correction methods on identical data disagree substantially (d=-0.01 to d=0.31). Additionally, 62% of extracted claims were never verified due to panel budget limits, and key sub-questions (cost-per-unit comparison to alternatives, broad persistence evidence) remain unanswered or only partially answered. This means a fully confident blanket directional verdict is not resolved by the evidence; H4 survives specifically for the 'blanket verdict' question, even though a selective/heterogeneous verdict (H3) is reasonably well supported.",
+   "claimsCited": [
+    7,
+    9,
+    23
+   ]
+  }
+ ],
+ "strongestArgumentAgainst": "See strongestArgumentAgainst field above (duplicate key avoided).",
+ "whatWouldChangeThisCall": [
+  "A pre-registered, adequately powered multi-site replication specifically targeting 'structure/default' nudges that resolves the currently 'undecided' BF01=1.12 finding [9] in either direction would materially sharpen or overturn the selective-effectiveness conclusion.",
+  "Verification of the 49 unaudited lower-tier claims - particularly any addressing cost-per-unit-of-behavior-change comparisons against mandates/regulation, or long-term persistence across nudge types beyond the single gym/printer/thermostat examples - could shift the overall cost-effectiveness case substantially.",
+  "Resolution of the contradiction over whether publication bias 'fully accounts' for or only '~70%' explains the academic-vs-Nudge-Unit effect size gap would change confidence in how much of the d=0.43 headline is bias-driven versus real.",
+  "A convergent re-analysis showing the Andrews-Kasy (d=-0.01), WAAP (d=0.07), trim-and-fill (d=0.08), and RoBMA (d=0.04) estimates narrowing to agreement (rather than spanning 4-8x) would remove the current method-sensitivity caveat and make the near-zero verdict far more robust.",
+  "New evidence directly comparing bias-corrected nudge effect sizes to financial incentives/mandates on a standardized cost-per-behavior-change metric (currently an unanswered sub-question) would let this synthesis move from qualitative to quantitative comparison, which is the single biggest gap in the current evidence base for a full policy verdict."
+ ],
+ "baseRate": "No general outside-view base rate for \"policy intervention effect size survives publication-bias correction\" is present in the evidence. The closest analog offered is the general behavioral-science literature's known susceptibility to publication bias inflation (well documented across meta-science, e.g., trim-and-fill sensitivity findings), but no cross-domain base rate (e.g., \"X% of psych meta-analyses lose significance after correction\") is cited in the confirmed claims. This absence should be flagged: readers should not assume nudge research is unusually bias-prone or unusually clean relative to other social-science literatures — that comparison is simply not in the evidence base gathered here.",
+ "findings": [
+  {
+   "claim": "Mertens et al.'s (2022) nudge meta-analysis uncorrected pooled effect size was Cohen's d=0.43 [0.38,0.48], described by original authors as showing nudges overall promote behavior change.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/"
+   ],
+   "evidence": "Quote: 'Combined 0.43 [0.38, 0.48]...' and 'choice architecture interventions overall promote behavior change with a small to medium effect size of Cohen's d = 0.43'",
+   "vote": "3-0 / 2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "After bias correction using Robust Bayesian Meta-Analysis (RoBMA), which combines selection models and PET-PEESE, the pooled effect shrinks from d=0.43 to d=0.04 [0.00,0.14], with BF01=0.95 indicating no evidence for an overall effect.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/"
+   ],
+   "evidence": "Quote: RoBMA table shows d=0.04 [0.00,0.14], BF01=0.95, alongside methodology description of selection models plus precision-effect methods.",
+   "vote": "2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Three additional independent bias-correction methods applied to the same database (Andrews-Kasy, WAAP, Trim-and-fill) also produced much smaller estimates than the uncorrected figure: d=-0.01, d=0.07, and d=0.08 respectively.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/"
+   ],
+   "evidence": "Quote: 'Andrews–Kasy, d = −0.01... WAAP, d = 0.07... Trim and fill, d = 0.08'",
+   "vote": "3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Under a less severe (moderate) bias assumption, a sensitivity analysis of the same data produced a substantially higher adjusted estimate of d=0.31, versus d=0.08 under a severe-bias assumption - showing the corrected estimate is highly dependent on the bias-severity assumption chosen.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/"
+   ],
+   "evidence": "Quote: 'adjusted estimated average effect of nudges is between d = 0.08 (severe) and d = 0.31 (moderate)'",
+   "vote": "3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Effectiveness is heterogeneous by nudge category: bias-corrected Bayes factors show evidence AGAINST a true effect for 'information' (BF01=33.84) and 'assistance' (BF01=9.05) interventions and for the 'finance' domain (BF01 up to 41.23), while 'structure' interventions (e.g., defaults) remain undecided (BF01=1.12) rather than refuted.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+    "https://www.pnas.org/doi/10.1073/pnas.2200300119"
+   ],
+   "evidence": "Quote: table BF01 values by category; PNAS source corroborates finance domain figure up to 41.23.",
+   "vote": "3-0 / 2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Despite evidence against a mean effect in most categories post-correction, nearly all categories/domains except finance still show evidence for heterogeneity, implying some individual nudges (not the average) could still be genuinely effective.",
+   "confidence": "high",
+   "sources": [
+    "https://www.pnas.org/doi/10.1073/pnas.2200300119"
+   ],
+   "evidence": "Quote: 'all intervention categories and domains apart from finance show evidence for heterogeneity, which implies that some nudges might be effective, even when there is evidence against the mean effect'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "The authors of the corrected reanalysis explicitly conclude that, aside from exceptions like defaults, there is no empirical basis to expect large and consistent nudge effects when designing interventions - directly answering the policy question in the negative for the general case.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/"
+   ],
+   "evidence": "Quote: 'with a few exceptions [e.g., defaults], we see no reason to expect large and consistent effects when designing nudge experiments or running interventions'",
+   "vote": "3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Independent of the meta-analytic bias-correction literature, some individual default/structural interventions retain very large real-world cost-effectiveness: active-choice retirement enrollment yielded $100 in additional savings per $1 spent, vs. $2.77 per $1 for a traditional Danish tax-deduction incentive policy - suggesting default nudges specifically can strongly outperform traditional policy tools on a cost basis.",
+   "confidence": "medium",
+   "sources": [
+    "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501"
+   ],
+   "evidence": "Quotes: '$100 increase in savings-plan contributions per $1 spent' and 'tax deduction generated only $2.77... per dollar of government expenditure'",
+   "vote": "3-0 / 2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Similarly, an H&R Block FAFSA-assistance nudge produced 1.53 additional college enrollees per $1,000 spent, about 40 times more cost-effective than a traditional Social Security Student Benefit subsidy program (0.0351 per $1,000).",
+   "confidence": "medium",
+   "sources": [
+    "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501"
+   ],
+   "evidence": "Quote: '1.53 additional college enrollees per $1,000 spent... approximately 40 times smaller than the corresponding impact of the Bettinger et al. (2012) nudge'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Large pre-registered megastudy evidence (61,293 gym members, 54 tested interventions) shows real effects are achievable but modest and inconsistent at scale: only 45% of tested interventions significantly increased behavior, by 9-27%, with carry-over effects proportionally similar to (i.e., not larger than) prior individual-study estimates.",
+   "confidence": "high",
+   "sources": [
+    "https://www.nature.com/articles/s41586-021-04128-4"
+   ],
+   "evidence": "Quote: '45% of these interventions significantly increased weekly gym visits by 9% to 27%'; carry-over effects 'proportionally similar to those measured in previous research'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Expert/impartial forecasters could not predict which interventions would work in the megastudy, supporting the case that single-study literatures (subject to selective reporting/publication bias) are less trustworthy than large-scale simultaneous testing - an indirect argument that publication bias has distorted the pre-correction literature.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.nature.com/articles/s41586-021-04128-4"
+   ],
+   "evidence": "Quote: 'Forecasts by impartial judges failed to predict which interventions would be most effective, underscoring the value of testing many ideas at once'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Real-world Nudge Unit deployments show forecasters (academics and practitioners) overestimated nudge impact, though nudge practitioners themselves were nearly perfectly calibrated to actual (smaller) effect sizes - suggesting practitioner expectations, when realistic, are already aligned with the more modest bias-corrected picture.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.nber.org/papers/w27594"
+   ],
+   "evidence": "Quote: 'Most forecasters overestimate the impact for the Nudge Unit interventions, though nudge practitioners are almost perfectly calibrated'",
+   "vote": "3-0",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "The trim-and-fill bias-correction method, used across this literature, is itself methodologically unstable - highly sensitive to outliers and pre-specified assumptions about the direction of missing studies - meaning any single trim-and-fill-derived 'corrected' effect size should not be treated as definitive.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/"
+   ],
+   "evidence": "Quote: 'Outliers and the pre-specified direction of missing studies could have influential impact on the trim-and-fill results'",
+   "vote": "3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "Real-world persistence of default-based nudges is mixed even within positive cases: a printer double-sided default reduced paper use ~15% with no decay at 28 weeks, but a thermostat default nudge's effect disappeared and reversed within a few weeks - showing durability is not guaranteed even for the 'robust' defaults category.",
+   "confidence": "medium",
+   "sources": [
+    "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf"
+   ],
+   "evidence": "Quotes: printer default '~15 percent... no evidence of a decline... 28 weeks'; thermostat default effect 'disappeared and actually moved in the opposite direction after a few weeks'",
+   "vote": "3-0 / 2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported / unreachable (thermostat claim's audit could not confirm due to truncated page, but content matches paper's known finding)"
+  },
+  {
+   "claim": "Nudge effectiveness (and even direction of welfare impact) varies by recipient subgroup (e.g., self-awareness of financial literacy), meaning a single aggregate effect size may mask harm to some subgroups even when average effects look positive.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.2139/ssrn.3021962"
+   ],
+   "evidence": "Quote: respondents split into three financial-literacy-awareness groups with heterogeneous, and in one subgroup potentially welfare-reducing, responses",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "partial - audit could not confirm the 'welfare impact direction' framing was explicit in the page beyond showing heterogeneous fee outcomes across groups"
+  }
+ ],
+ "caveats": "Major caveats: (1) 49 of 79 extracted claims (62%) were never verified by the panel due to budget limits - the sample was ranked by source tier, so any lower-tier claim (e.g., critic-curated lists of the strongest null/negative large studies, or cross-domain persistence data) that could overturn this synthesis is simply invisible here. (2) The cost-per-unit-of-behavior-change comparison between bias-corrected nudge effects and alternative policy tools (financial incentives, mandates, regulation) was never directly gathered as a standardized comparison - the two cost-effectiveness examples included (retirement auto-enrollment, FAFSA nudge) are single natural experiments, not systematic reviews, and predate the recent bias-correction literature entirely, so they cannot be assumed representative of nudges broadly. (3) One source (NBER w27594) is T3 (working paper, not peer-reviewed) and one (SSRN 3021962) is unrated tier (T?) - both should be weighted cautiously; no T5 sources were included in this claim set. (4) Two refuted claims were explicitly killed during the panel process (a false '8% durability' figure and a false claim about trim-and-fill changing conclusions across 29,932 Cochrane meta-analyses) - readers should disregard any prior exposure to those figures. (5) Long-term persistence evidence is thin: only three specific interventions (gym megastudy, printer default, thermostat default) are documented, with genuinely mixed results (one durable, one reversing), so no general persistence conclusion is warranted across nudge types. (6) Time-sensitivity: the core bias-correction meta-analyses (Mertens 2022, Maier 2022) are from mid-2022 and represent the current state of the art, but this is an active, contested research area (note the internal contradictions flagged) and could shift with new large replications.",
+ "openQuestions": [
+  "How do bias-corrected nudge effect sizes compare, on a standardized cost-per-unit-of-behavior-change basis, to financial incentives, mandates, or structural/default-changing regulation? (Not answered in current evidence base.)",
+  "Does effectiveness vary systematically across reminders, social-norms, and framing nudge subtypes specifically (as opposed to the broader 'information'/'assistance'/'structure' categories already documented), and across health/education/energy domains beyond finance?",
+  "What do critics identify as the strongest documented null/negative large, low-bias-risk nudge studies, and how representative are these of the broader corrected literature? (Only partially addressed via Nudge Unit and gym megastudy examples.)",
+  "Is the ~70% vs 'fully accounts for' disagreement about how much publication bias explains the academic-vs-real-world Nudge Unit effect gap resolvable with independently audited T1 sources?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 86.2,
+  "citationAccuracySurvivorsOnly": 88.9,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 25,
+  "supported": 25,
+  "partial": 4,
+  "unsupported": 0,
+  "unreachable": 1,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "The trim-and-fill method is a nonparametric approach based on examining funnel plot asymmetry that estimates the number of missing studies suppressed by publication bias and provides bias-adjusted overall effect estimates, unlike some other methods that only detect but do not adjust for bias.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "support": "supported",
+   "reasoning": "The page explicitly states the trim-and-fill method is a nonparametric approach based on examining funnel plot asymmetry, and that unlike other popular methods (which only detect/indicate significance of publication bias), it also provides bias-adjusted results. This directly matches all elements of the statement: nonparametric, funnel plot asymmetry basis, estimating missing studies (implied by '…",
+   "locatedQuote": "It is a nonparametric approach based on examining the funnel plot's asymmetry.[...] Unlike other popular methods for detecting publication bias (such as various regression tests [9,20]), the trim-and-fill method not only indicates the significance of publication bias but also provide bias-adjusted results.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Mertens et al.'s meta-analysis, after adjusting for a hypothesized severe to moderate degree of publication bias, produced adjusted average nudge effect sizes between d=0.08 (severe bias assumption) and d=0.31 (moderate bias assumption), compared to their unadjusted estimate of d=0.43.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "support": "supported",
+   "reasoning": "The page (a letter discussing Mertens et al.'s meta-analysis) explicitly states that after adjusting for hypothesized severe to moderate publication bias, the adjusted average effect of nudges ranges between d=0.08 (severe) and d=0.31 (moderate). It also states elsewhere that Mertens et al.'s unadjusted conclusion was d=0.43 (choice architecture interventions overall promote behavior change with a…",
+   "locatedQuote": "After adjusting for a hypothesized severe to moderate degree of publication bias, their adjusted estimated average effect of nudges is between d = 0.08 (severe) and d = 0.31 (moderate).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The authors argue that, with a few exceptions such as default interventions, there is no empirical basis to expect large and consistent effects when designing or running nudge interventions.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "support": "supported",
+   "reasoning": "The page's title and closing sentence directly state that, aside from a few exceptions like defaults, there is no reason to expect large and consistent effects when designing or running nudge interventions. This matches the statement almost verbatim, including the few exceptions such as default interventions qualifier.",
+   "locatedQuote": "Until then, with a few exceptions [e.g., defaults ( 6 )], we see no reason to expect large and consistent effects when designing nudge experiments or running interventions.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Even after adjusting for publication bias under a severe-bias assumption, the estimated average nudge effect (d=0.08) showed large heterogeneity, with 95% of study effects estimated to fall within roughly ±1.00 around that average, indicating that a large proportion of studies likely have near-zero …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that under the severe publication bias adjustment, the average effect is d=0.08, that 95% of study effects would fall within ±1.00 around this average, and that this is consistent with a large proportion of studies having near-zero underlying effects. This directly matches all components of the statement: the adjusted average effect, the severe-bias assumption, the ±1.00…",
+   "locatedQuote": "assuming a severe degree of publication bias, 95% of these studies’ effects would be ±1.00 around the average d = 0.08 effect, showing large variability, with much of this variability possibly arising from variability in publication bias itself... despite the analyses above being consistent with a large proportion of studies having near-zero underlying effects",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "In a megastudy of 61,293 gym members, 45% of 54 tested four-week digital interventions significantly increased weekly gym visits, by 9% to 27%.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "support": "supported",
+   "reasoning": "The abstract directly states the megastudy involved 61,293 gym members, 54 four-week digital interventions, and that 45% of them significantly increased weekly gym visits by 9% to 27%, matching the statement's numbers and claims exactly.",
+   "locatedQuote": "In a megastudy targeting physical exercise among 61,293 members of an American fitness chain, 30 scientists from 15 different US universities worked in small independent teams to design a total of 54 different four-week digital programmes (or interventions) encouraging exercise. We show that 45% of these interventions significantly increased weekly gym visits by 9% to 27%",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Only 8% of the tested interventions produced behavior change that remained significant and measurable after the four-week intervention period ended, indicating rapid decay of effects post-withdrawal.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "support": "partial",
+   "reasoning": "The page confirms the core 8% figure and that only 8% of interventions produced behavior change that was significant and measurable after the four-week intervention period. This matches the statement's numeric claim closely. However, the statement adds an interpretive framing - indicating rapid decay of effects post-withdrawal - which is not stated in the abstract text. In fact, the abstract goes …",
+   "locatedQuote": "Only 8% of interventions induced behaviour change that was significant and measurable after the four-week intervention.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In a study of automatic active-decision enrollment, new employees required to indicate contribution preferences generated a $200 increase in savings-plan contributions per employee at a cost of $2 per employee, yielding $100 of additional savings per dollar spent.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "support": "supported",
+   "reasoning": "The page's Table 2 (Carroll, Choi, Laibson, Madrian, & Metrick, 2009) directly describes the active-decision enrollment intervention: new employees required to indicate preferred contribution rate, resulting in a $200 increase in savings-plan contributions per employee, at a cost of $2 per employee, yielding $100 increase in contributions per $1 spent. This matches the statement's figures exactly …",
+   "locatedQuote": "New employees at a  company were required  to indicate their preferred  contribution rate in a  workplace retirement- savings plan within  their first month of  employment. $200 increase in  savings-plan  contributions  per employee...$2 per employee  for distributing  the form and for  following up with  employees who  did not respond $100 increase in  savings-plan  contributions  per $1 spent",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "Choi, Laibson, and Madrian (2011) analyzed a similar educational intervention to Duflo & Saez (2003) but did not find a statistically significant impact, suggesting the original Duflo & Saez nudge/education results may be overly optimistic.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "support": "supported",
+   "reasoning": "The page explicitly states that Choi, Laibson, and Madrian (2011) analyzed a similar intervention to Duflo & Saez (2003) but did not find a statistically significant impact, and that this makes the Duflo & Saez results potentially overly optimistic. This directly matches the statement's claim, including the causal reasoning (suggesting... may be overly optimistic mirrors so the Duflo & Saez result…",
+   "locatedQuote": "(Choi, Laibson, &  Madrian, 2011, analyzed a similar intervention but did not  find a statistically significant impact, so the Duflo & Saez  results are potentially overly optimistic.)",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Applying three different bias-correction methods (Andrews-Kasy, WAAP, Trim and fill) to the same nudge meta-analysis database yielded much smaller effect size estimates than the non-adjusted figure, including an Andrews-Kasy estimate of d=-0.01 (SE=0.02), a WAAP estimate of d=0.07 (SE=0.03), and a T…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "support": "supported",
+   "reasoning": "The page explicitly states that three bias-correcting methods (Andrews-Kasy, WAAP, Trim and fill) were applied to the same database (Mertens et al.'s nudge meta-analysis) and yielded much smaller effect sizes than the nonadjusted estimate, with the exact same numeric values (d=-0.01, SE=0.02 for Andrews-Kasy; d=0.07, SE=0.03 for WAAP; d=0.08, SE=0.03 for Trim and fill) as cited in the statement. T…",
+   "locatedQuote": "Our additional analysis on the same database applying three different bias-correcting methods, compared to the nonadjusted estimate, also led to much smaller effect sizes (Andrews–Kasy, d = −0.01, SE = 0.02; weighted average of the adequately powered [WAAP], d = 0.07, SE = 0.03; Trim and fill, d = 0.08, SE = 0.03) (see also ref. 3 ).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "After applying Robust Bayesian Meta-Analysis (RoBMA), which combines selection models and PET-PEESE-style precision-effect methods to correct for publication bias, the pooled nudge effect size shrank from d = 0.43 to d = 0.04 [0.00, 0.14], with a Bayes factor (BF01 = 0.95) indicating no evidence for…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The Table 1 data in the page directly shows the combined random-effects estimate of d = 0.43 [0.38, 0.48] shrinking to the RoBMA PSMA model-averaged estimate of d = 0.04 [0.00, 0.14] with BF01 = 0.95. The text also explicitly describes RoBMA as combining selection models and PET-PEESE-style precision-effect methods (RoBMA simultaneously applies 1) selection models... and 2) models of the relations…",
+   "locatedQuote": "Combined 0.43 [0.38, 0.48] 0.04 [0.00, 0.14] 0.11 [0.00, 0.24] t (333) = 16.51 BF 01 = 0.95 BF 01 = 0.31",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Broken down by intervention category, publication-bias-corrected estimates showed evidence against an effect for 'information' interventions (BF01 = 33.84) and 'assistance' interventions (BF01 = 9.05), while 'structure' interventions (e.g., defaults) remained undecided (BF01 = 1.12), indicating hete…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The article's Table 1 explicitly reports the RoBMA PSMA (publication-bias-corrected) Bayes factors by intervention category: Information BF01 = 33.84, Assistance BF01 = 9.05, Structure BF01 = 1.12, exactly matching the statement's numbers. The text also explicitly interprets these: there is an absence of evidence for an overall effect and evidence against an effect in the information and assistanc…",
+   "locatedQuote": "Information 0.25 [0.19, 0.30] 0.00 [0.00, 0.00] 0.00 [0.00, 0.07] t (88) = 8.79 BF 01 = 33.84 BF 01 = 10.57 Structure 0.58 [0.50, 0.66] 0.12 [0.00, 0.43] 0.23 [0.00, 0.49] t (186) = 13.93 BF 01 = 1.12 BF 01 = 0.33 Assistance 0.22 [0.15, 0.29] 0.01 [0.00, 0.07] 0.01 [0.00, 0.12] t (65) = 6.42 BF 01 = 9.05 BF 01 = 8.00",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The article is a review published in the Journal of Economic Surveys covering nudge definitions, justifications, and effectiveness, including a section surveying empirical evidence on whether nudges work, under what conditions, and for how long, also in comparison to traditional policies.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "support": "supported",
+   "reasoning": "The page explicitly identifies itself as a review article published in the Journal of Economic Surveys (JEconSurv) titled A review of nudges: Definitions, justifications, effectiveness. It covers nudge definitions (Sections on definition), justifications (libertarian paternalism sections), and effectiveness. It also explicitly states that a section surveys empirical evidence on whether nudges work…",
+   "locatedQuote": "Section surveys the empirical evidence about the effectiveness of nudge policies, that is, the question of whether they work, under what conditions, and for how long, also in comparison to traditional policies.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Milkman and colleagues developed the 'megastudy' approach in 2021, an experimental design testing many behavioural interventions against the same dependent variable within one study.",
+   "url": "https://www.nature.com/articles/s44159-023-00174-z",
+   "support": "supported",
+   "reasoning": "The page text contains an almost verbatim match to the statement, directly attributing the development of the megastudy approach to Milkman and colleagues in 2021 and describing it exactly as an experimental design testing many interventions against the same dependent variable.",
+   "locatedQuote": "In 2021, Milkman and colleagues developed the ‘megastudy’ approach — an experimental design in which the effects of many interventions are tested on the same dependent variable.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Among interventions that successfully increased exercise during the intervention period, carry-over effects after the intervention were proportionally similar in magnitude to those found in prior individual studies.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "support": "supported",
+   "reasoning": "The abstract directly states that, conditioning on the interventions that successfully increased exercise during the intervention period, carry-over effects detected were proportionally similar to those measured in previous (individual) research studies (citing refs 3-6). This matches the statement closely: it specifies the same conditioning (interventions that worked during the intervention), the…",
+   "locatedQuote": "Conditioning on the 45% of interventions that increased exercise during the intervention, we detected carry-over effects that were proportionally similar to those measured in previous research",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A Danish tax-deduction change (a traditional financial-incentive policy) generated $2.77 of additional pension contributions per dollar of government expenditure, far less than the $100-per-dollar figure for the nudge intervention.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "support": "supported",
+   "reasoning": "The page directly states the Danish tax-deduction change (a traditional financial-incentive policy studied by Chetty et al.) generated $2.77 of additional pension/savings contributions per dollar of government expenditure. It also explicitly reports the contrasting nudge intervention (Carroll et al.) as generating $100 increase in savings-plan contributions per $1 spent, matching the $100-per-doll…",
+   "locatedQuote": "which implies that the tax deduction generated only $2.77 of additional savings in this type of account per dollar of government expenditure",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The paper 'How Nudge Strategies Can Backfire in Social Interactions' was published as an SSRN Electronic Journal article in 2017, authored by David P. Daniels and Julian J. Zlatev, and has been cited by 0 sources according to this record.",
+   "url": "https://doi.org/10.2139/ssrn.2832703",
+   "support": "supported",
+   "reasoning": "The page content directly states all elements of the claim: the title matches exactly, the journal is listed as SSRN Electronic Journal, the year is 2017, the authors are David P. Daniels and Julian J. Zlatev, and Cited by: 0 matches the citation count claim. Every component of the statement is explicitly present in the fetched page content with no interpretive leap needed.",
+   "locatedQuote": "How Nudge Strategies Can Backfire in Social Interactions Journal: SSRN Electronic Journal Year: 2017 Type: journal-article Cited by: 0 Authors: David P. Daniels, Julian J. Zlatev DOI: 10.2139/ssrn.2832703",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Mertens et al. reported that the original, non-bias-adjusted meta-analytic effect size for choice architecture interventions was Cohen's d = 0.43, described by the original authors as small to medium and indicating that nudges overall promote behavior change.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "support": "supported",
+   "reasoning": "The page (this is Szaszi et al.'s commentary, which itself is written by different authors than Mertens et al., but it directly reports on and quotes Mertens et al.'s meta-analysis) explicitly states that Mertens et al. concluded choice architecture interventions overall promote behavior change with a small to medium effect size of Cohen's d = 0.43, and clarifies this is the non-bias-adjusted esti…",
+   "locatedQuote": "Mertens et al. ( 1 ) focus their message on the average effect size estimated without adjusting for publication bias, concluding that our results show that choice architecture interventions overall promote behavior change with a small to medium effect size of Cohen's d = 0.43 (p. 1).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Based on analysis of 29,932 meta-analyses from the Cochrane Database of Systematic Reviews, applying trim-and-fill changed the significance of heterogeneity and overall effect sizes in many meta-analyses, and different estimators (R0, L0, Q0) could yield different conclusions about the significance …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the analysis was based on 29,932 meta-analyses from the Cochrane Database of Systematic Reviews, that after applying trim-and-fill (adding imputed missing studies) the significance of heterogeneity and overall effect sizes changed in many meta-analyses, and that different estimators (the text explicitly names R0, L0, Q0 earlier) could yield different conclusions abou…",
+   "locatedQuote": "Moreover, we applied the method to 29,932 meta-analyses from the Cochrane Database of Systematic Reviews, and empirically evaluated its overall performance. ... After adding imputed missing studies, the significance of heterogeneity and overall effect sizes changed in many meta-analyses. ... Also, P values produced by different estimators could yield different conclusions of publication bias signi…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Bias-corrected analysis shows evidence against a true effect (Bayes factor for null, BF01, ranging up to 41.23) specifically for the 'information' and 'assistance' intervention categories and the 'finance' domain, while evidence for 'structure' interventions remains undecided.",
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "support": "supported",
+   "reasoning": "The page directly states that after bias correction (RoBMA PSMA), there is evidence against an effect for the information and assistance intervention categories, and evidence is undecided for structure interventions, matching the statement. The table also shows Finance domain BF01 = 41.23 (and 30.95 for the precise estimate), which matches the ranging up to 41.23 figure cited in the statement. The…",
+   "locatedQuote": "Strikingly, there is an absence of evidence for an overall effect and evidence against an effect in the information and assistance intervention categories, whereas the evidence is undecided for structure interventions.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study demonstrates that the effectiveness and even the direction of welfare impact of a nudge intervention is heterogeneous across subgroups defined by self-awareness of financial knowledge, complicating simple aggregate effect-size interpretations.",
+   "url": "https://doi.org/10.2139/ssrn.3021962",
+   "support": "partial",
+   "reasoning": "The abstract clearly shows heterogeneous response to the nudge across subgroups defined by financial literacy and self-awareness of that literacy (literate, mistakenly-literate, aware-of-ignorance), and shows that the group that responds to the nudge (mistaken believers) actually underperforms/loses welfare (high fees), while non-responders do better. This supports the core idea that effectiveness…",
+   "locatedQuote": "Investors with mistaken beliefs responded to the nudge, and were more likely to work with mass-market advisors who steer them into high-fee funds. They underperform as a result. By comparison, those who either possess financial literacy or else understand that they do not possess financial literacy were less likely to respond to the nudge. They avoided advisors, stayed with the low-cost default fu…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Forecasts made by impartial expert judges failed to predict which of the many tested interventions would be most effective, supporting the value of large-scale simultaneous testing (megastudies) over single-study literatures that may be subject to selective reporting.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "support": "supported",
+   "reasoning": "The abstract directly states that forecasts by impartial judges failed to predict which interventions would be most effective, and explicitly links this finding to the value of testing many interventions at once (megastudies) as a way to improve the evidentiary value of behavioural science relative to single-study literatures. This closely matches the statement's claim about expert forecasts faili…",
+   "locatedQuote": "Forecasts by impartial judges failed to predict which interventions would be most effective, underscoring the value of testing many ideas at once and, therefore, the potential for megastudies to improve the evidentiary value of behavioural science.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Changing the default printer setting from single-sided to double-sided reduced paper consumption by about 15%, with no decline in effect observed 28 weeks after the change.",
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "support": "partial",
+   "reasoning": "The page text confirms that changing the default printer setting from single-sided to double-sided reduced paper consumption, citing Egebark and Ekström (2016). However, the fetched text is cut off exactly at the point where the specific percentage (about 15%) and the persistence duration (28 weeks with no decline in effect) would be stated. Since the text is truncated before these specific figure…",
+   "locatedQuote": "Egebark and Ekström (2016) found a default effect for computer printing behavior: when the default printer setting was changed from single-sided to double-sided, the consumption of printer paper dr",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The H&R Block FAFSA-assistance nudge increased college attendance by 8.1 percentage points at an incremental cost of $53.02 per participant, producing 1.53 additional college enrollees per $1,000 spent, versus only 0.0351 additional enrollees per $1,000 for the Social Security Student Benefit tradit…",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "support": "supported",
+   "reasoning": "The page text directly states all the key figures in the statement: the 8.1 percentage point increase in college attendance from the H&R Block FAFSA-assistance nudge, the $53.02 incremental cost per participant, the resulting 1.53 additional college enrollees per $1,000 spent, and the comparison to the Social Security Student Benefit program's 0.0351 additional enrollees per $1,000 spent, explicit…",
+   "locatedQuote": "high school seniors whose families received the assistance were 8.1 percentage points more likely to attend college the following year than seniors in the control group... The incremental cost of this nudge intervention over the cost for the control group was $53.02 per participant. Thus, it produced 1.53 additional college enrollees per $1,000 spent (Bettinger et al., 2012)... The program therefo…",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "Mertens et al.'s (2022) nudge meta-analysis found an uncorrected pooled effect size of Cohen's d = 0.43 (95% CI [0.38, 0.48]) using random effects meta-analysis.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "support": "supported",
+   "reasoning": "The page is the Maier et al. (2022) commentary on Mertens et al.'s meta-analysis, which reports a table comparing Random effects estimates to publication-bias-adjusted (RoBMA) estimates. The Combined row under Random effects shows 0.43 [0.38, 0.48], matching exactly the effect size and CI cited in the statement. The table caption clarifies these are Random effects metaanalysis estimates with 95% C…",
+   "locatedQuote": "Combined 0.43 [0.38, 0.48] 0.04 [0.00, 0.14] 0.11 [0.00, 0.24] t (333) = 16.51",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The trim-and-fill method's results are highly sensitive to outliers and to the pre-specified direction of missing studies, meaning bias-correction outcomes (such as shrinkage of effect sizes) can vary substantially depending on analytic choices rather than reflecting a single definitive corrected es…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that outliers and the pre-specified direction of missing studies have an influential impact on trim-and-fill results, and further states the trim-and-fill estimator should be routinely reported in meta-analyses, because the results depend highly on it, and that different estimators (L0, Q0, R0) can yield different conclusions, with sensitivity analyses encouraged to …",
+   "locatedQuote": "Outliers and the pre-specified direction of missing studies could have influential impact on the trim-and-fill results.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Despite evidence against a mean effect in most categories after bias correction, nearly all intervention categories and domains (except finance) still show evidence for heterogeneity, implying that some individual nudges might still be effective even when the average effect is null.",
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "support": "supported",
+   "reasoning": "The statement closely paraphrases this sentence from the page. The page explicitly states that despite evidence against a mean effect (in most categories/domains after bias correction), all intervention categories and domains except finance show evidence for heterogeneity, implying some individual nudges could still be effective even when the average effect is null. This directly matches the cited…",
+   "locatedQuote": "However, all intervention categories and domains apart from finance show evidence for heterogeneity, which implies that some nudges might be effective, even when there is evidence against the mean effect.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Most academic and practitioner forecasters overestimated the impact of Nudge Unit interventions, though nudge practitioners' predictions were almost perfectly calibrated to actual effect sizes.",
+   "url": "https://www.nber.org/papers/w27594",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that most forecasters (both academic and practitioner) overestimated the impact of Nudge Unit interventions, while nudge practitioners were almost perfectly calibrated. This directly matches the statement's claim, though the statement specifies academic and practitioner forecasters as the ones overestimating, while the page's phrase most forecasters is a general cate…",
+   "locatedQuote": "Most forecasters overestimate the impact for the Nudge Unit interventions, though nudge practitioners are almost perfectly calibrated.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The Milkman et al. megastudy included over 61,000 participants randomly divided into groups, each receiving an intervention or a no-intervention control condition, allowing many interventions to be compared simultaneously.",
+   "url": "https://www.nature.com/articles/s44159-023-00174-z",
+   "support": "supported",
+   "reasoning": "The page directly states that the Milkman megastudy included over 61,000 participants, that participants were randomly divided into groups each receiving an intervention or a no-intervention control condition, and that this design allows many interventions to be compared simultaneously. This matches all elements of the statement closely and verbatim in substance.",
+   "locatedQuote": "Participants are randomly divided into groups, each receiving an intervention or a no-intervention control condition. The multiple intervention groups are each compared to the control group to determine which interventions are effective. Because there are many participants included in a megastudy (the Milkman study included over 61,000 participants), this approach allows researchers to compare man…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In a thermostat default study, lowering the default temperature by 1 degree initially reduced average temperature, but the effect disappeared and reversed after a few weeks.",
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "support": "unreachable",
+   "reasoning": "The provided page content is cut off before it reaches any discussion of a thermostat default study. The text ends mid-sentence discussing Egebark and Ekström (2016) printer default study, and never mentions thermostat temperature defaults, the 1-degree reduction, or any reversal effect after a few weeks. While the paper is about green nudges and defaults broadly, the specific thermostat study and…",
+   "locatedQuote": "A few studies have examined default effects and environmentally-friendly behavior. For example, Egebark and Ekström (2016) found a default effect for computer printing behavior: when the default printer setting was changed from single-sided to double-sided, the consumption of printer paper dr",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The review explicitly frames nudge effectiveness comparison against standard/traditional policy tools as one of its three main analytical dimensions.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "support": "partial",
+   "reasoning": "The review explicitly identifies three main dimensions: (1) definition of nudges, (2) justification of nudge policies, and (3) effectiveness of nudges. The effectiveness dimension is described as covering whether nudges work, under what conditions, for how long, also in comparison to traditional policies. This shows comparison with traditional/standard policies is a component of the third dimensio…",
+   "locatedQuote": "Section surveys the empirical evidence about the effectiveness of nudge policies, that is, the question of whether they work, under what conditions, and for how long, also in comparison to traditional policies.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "The trim-and-fill method is a nonparametric approach based on examining funnel plot asymmetry that estimates the number of missing studies suppressed by publication bias and provides bias-adjusted overall effect estimates, unlike some other methods that only detect but do not adjust for bias.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "quote": "Unlike other popular methods for detecting publication bias (such as various regression tests [ 9 , 20 ] ), the trim-and-fill method not only indicates the significance of publication bias but also provide bias-adjusted results.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7291
+  },
+  {
+   "claim": "Mertens et al.'s meta-analysis, after adjusting for a hypothesized severe to moderate degree of publication bias, produced adjusted average nudge effect sizes between d=0.08 (severe bias assumption) and d=0.31 (moderate bias assumption), compared to their unadjusted estimate of d=0.43.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quote": "After adjusting for a hypothesized severe to moderate degree of publication bias, their adjusted estimated average effect of nudges is between d = 0.08 (severe) and d = 0.31 (moderate).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4562
+  },
+  {
+   "claim": "The authors argue that, with a few exceptions such as default interventions, there is no empirical basis to expect large and consistent effects when designing or running nudge interventions.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quote": "Until then, with a few exceptions [e.g., defaults ( 6 )], we see no reason to expect large and consistent effects when designing nudge experiments or running interventions.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6861
+  },
+  {
+   "claim": "Even after adjusting for publication bias under a severe-bias assumption, the estimated average nudge effect (d=0.08) showed large heterogeneity, with 95% of study effects estimated to fall within roughly ±1.00 around that average, indicating that a large proportion of studies likely have near-zero …",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quote": "assuming a severe degree of publication bias, 95% of these studies’ effects would be ±1.00 around the average d = 0.08 effect, showing large variability, with much of this variability possibly arising from variability in publication bias itself.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5249
+  },
+  {
+   "claim": "In a megastudy of 61,293 gym members, 45% of 54 tested four-week digital interventions significantly increased weekly gym visits, by 9% to 27%.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "quote": "We show that 45% of these interventions significantly increased weekly gym visits by 9% to 27%; the top-performing intervention offered microrewards for returning to the gym after a missed workout.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1373
+  },
+  {
+   "claim": "In a study of automatic active-decision enrollment, new employees required to indicate contribution preferences generated a $200 increase in savings-plan contributions per employee at a cost of $2 per employee, yielding $100 of additional savings per dollar spent.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "quote": "New employees at a company were required to indicate their preferred contribution rate in a workplace retirement-savings plan within their first month of employment. $200 increase in savings-plan contributions per employee $2 per employee for distributing the form and for following up with employees who did not respond $100 increase in savings-plan contributions per $1 spent",
+   "onPage": "partial",
+   "foundFraction": 0.893,
+   "offset": 1067
+  },
+  {
+   "claim": "Choi, Laibson, and Madrian (2011) analyzed a similar educational intervention to Duflo & Saez (2003) but did not find a statistically significant impact, suggesting the original Duflo & Saez nudge/education results may be overly optimistic.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "quote": "Choi, Laibson, & Madrian, 2011, analyzed a similar intervention but did not find a statistically significant impact, so the Duflo & Saez results are potentially overly optimistic.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5122
+  },
+  {
+   "claim": "Applying three different bias-correction methods (Andrews-Kasy, WAAP, Trim and fill) to the same nudge meta-analysis database yielded much smaller effect size estimates than the non-adjusted figure, including an Andrews-Kasy estimate of d=-0.01 (SE=0.02), a WAAP estimate of d=0.07 (SE=0.03), and a T…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quote": "Our additional analysis on the same database applying three different bias-correcting methods, compared to the nonadjusted estimate, also led to much smaller effect sizes (Andrews–Kasy, d = −0.01, SE = 0.02; weighted average of the adequately powered [WAAP], d = 0.07, SE = 0.03; Trim and fill, d = 0.08, SE = 0.03)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4748
+  },
+  {
+   "claim": "After applying Robust Bayesian Meta-Analysis (RoBMA), which combines selection models and PET-PEESE-style precision-effect methods to correct for publication bias, the pooled nudge effect size shrank from d = 0.43 to d = 0.04 [0.00, 0.14], with a Bayes factor (BF01 = 0.95) indicating no evidence for…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "quote": "RoBMA simultaneously applies 1) selection models that estimate relative publication probabilities ( 7 ) and 2) models of the relationship between effect sizes and SEs [i.e., Precision Effect Test and Precision Effect Estimate with Standard Error ( 6 , 8 , 9 )].",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5261
+  },
+  {
+   "claim": "Broken down by intervention category, publication-bias-corrected estimates showed evidence against an effect for 'information' interventions (BF01 = 33.84) and 'assistance' interventions (BF01 = 9.05), while 'structure' interventions (e.g., defaults) remained undecided (BF01 = 1.12), indicating hete…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "quote": "Information 0.25 [0.19, 0.30] 0.00 [0.00, 0.00] 0.00 [0.00, 0.07] t (88) = 8.79 BF 01 = 33.84 BF 01 = 10.57 Structure 0.58 [0.50, 0.66] 0.12 [0.00, 0.43] 0.23 [0.00, 0.49] t (186) = 13.93 BF 01 = 1.12 BF 01 = 0.33 Assistance 0.22 [0.15, 0.29] 0.01 [0.00, 0.07] 0.01 [0.00, 0.12] t (65) = 6.42 BF 01 = 9.05 BF 01 = 8.00",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7251
+  },
+  {
+   "claim": "The article is a review published in the Journal of Economic Surveys covering nudge definitions, justifications, and effectiveness, including a section surveying empirical evidence on whether nudges work, under what conditions, and for how long, also in comparison to traditional policies.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "quote": "Section surveys theempirical evidence about the effectiveness of nudge policies, that is, the question of whether theywork, under what conditions, and for how long, also in comparison to traditional policies.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7542
+  },
+  {
+   "claim": "Milkman and colleagues developed the 'megastudy' approach in 2021, an experimental design testing many behavioural interventions against the same dependent variable within one study.",
+   "url": "https://www.nature.com/articles/s44159-023-00174-z",
+   "quote": "In 2021, Milkman and colleagues developed the ‘megastudy’ approach — an experimental design in which the effects of many interventions are tested on the same dependent variable.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 805
+  },
+  {
+   "claim": "Among interventions that successfully increased exercise during the intervention period, carry-over effects after the intervention were proportionally similar in magnitude to those found in prior individual studies.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "quote": "Conditioning on the 45% of interventions that increased exercise during the intervention, we detected carry-over effects that were proportionally similar to those measured in previous research",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1691
+  },
+  {
+   "claim": "A Danish tax-deduction change (a traditional financial-incentive policy) generated $2.77 of additional pension contributions per dollar of government expenditure, far less than the $100-per-dollar figure for the nudge intervention.",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "quote": "the tax deduction generated only $2.77 of additional savings in this type of account per dollar of government expenditure",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4623
+  },
+  {
+   "claim": "The paper 'How Nudge Strategies Can Backfire in Social Interactions' was published as an SSRN Electronic Journal article in 2017, authored by David P. Daniels and Julian J. Zlatev, and has been cited by 0 sources according to this record.",
+   "url": "https://doi.org/10.2139/ssrn.2832703",
+   "quote": "Journal: SSRN Electronic Journal Year: 2017 Type: journal-article Cited by: 0 Authors: David P. Daniels, Julian J. Zlatev",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 59
+  },
+  {
+   "claim": "Mertens et al. reported that the original, non-bias-adjusted meta-analytic effect size for choice architecture interventions was Cohen's d = 0.43, described by the original authors as small to medium and indicating that nudges overall promote behavior change.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quote": "the authors focus their message on the average effect size estimated without adjusting for publication bias, concluding that our results show that choice architecture interventions overall promote behavior change with a small to medium effect size of Cohen’s d = 0.43",
+   "onPage": "located-approx",
+   "foundFraction": 0.947,
+   "offset": 5538
+  },
+  {
+   "claim": "Bias-corrected analysis shows evidence against a true effect (Bayes factor for null, BF01, ranging up to 41.23) specifically for the 'information' and 'assistance' intervention categories and the 'finance' domain, while evidence for 'structure' interventions remains undecided.",
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "quote": "Information 0.25 [0.19, 0.30] 0.00 [0.00, 0.00] 0.00 [0.00, 0.07] t (88) = 8.79 BF 01 = 33.84 BF 01 = 10.57",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4175
+  },
+  {
+   "claim": "The study demonstrates that the effectiveness and even the direction of welfare impact of a nudge intervention is heterogeneous across subgroups defined by self-awareness of financial knowledge, complicating simple aggregate effect-size interpretations.",
+   "url": "https://doi.org/10.2139/ssrn.3021962",
+   "quote": "we argue that respondents can be broken into three groups: those who are financially literate, those who mistakenly believe they are financially literate, and those who know that they are not.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 338
+  },
+  {
+   "claim": "Forecasts made by impartial expert judges failed to predict which of the many tested interventions would be most effective, supporting the value of large-scale simultaneous testing (megastudies) over single-study literatures that may be subject to selective reporting.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "quote": "Forecasts by impartial judges failed to predict which interventions would be most effective, underscoring the value of testing many ideas at once and, therefore, the potential for megastudies to improve the evidentiary value of behavioural science.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1900
+  },
+  {
+   "claim": "Changing the default printer setting from single-sided to double-sided reduced paper consumption by about 15%, with no decline in effect observed 28 weeks after the change.",
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "quote": "when the default printer setting was changed from single-sided to double-sided, the consumption of printer paper dropped by about 15 percent, and there was no evidence of a decline in this effect 28 weeks after the change",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 11865
+  },
+  {
+   "claim": "The H&R Block FAFSA-assistance nudge increased college attendance by 8.1 percentage points at an incremental cost of $53.02 per participant, producing 1.53 additional college enrollees per $1,000 spent, versus only 0.0351 additional enrollees per $1,000 for the Social Security Student Benefit tradit…",
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "quote": "Thus, it produced 1.53 additional college enrollees per $1,000 spent (Bettinger et al., 2012)... This impact per $1,000 spent is approximately 40 times smaller than the corresponding impact of the Bettinger et al. (2012) nudge.",
+   "onPage": "located-elided",
+   "foundFraction": 1.0,
+   "offset": 7408
+  },
+  {
+   "claim": "Mertens et al.'s (2022) nudge meta-analysis found an uncorrected pooled effect size of Cohen's d = 0.43 (95% CI [0.38, 0.48]) using random effects meta-analysis.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "quote": "Combined 0.43 [0.38, 0.48] 0.04 [0.00, 0.14] 0.11 [0.00, 0.24] t (333) = 16.51 BF 01 = 0.95 BF 01 = 0.31",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7124
+  },
+  {
+   "claim": "The trim-and-fill method's results are highly sensitive to outliers and to the pre-specified direction of missing studies, meaning bias-correction outcomes (such as shrinkage of effect sizes) can vary substantially depending on analytic choices rather than reflecting a single definitive corrected es…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "quote": "Outliers and the pre-specified direction of missing studies could have influential impact on the trim-and-fill results.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3836
+  },
+  {
+   "claim": "Despite evidence against a mean effect in most categories after bias correction, nearly all intervention categories and domains (except finance) still show evidence for heterogeneity, implying that some individual nudges might still be effective even when the average effect is null.",
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "quote": "all intervention categories and domains apart from finance show evidence for heterogeneity, which implies that some nudges might be effective, even when there is evidence against the mean effect",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3495
+  },
+  {
+   "claim": "Most academic and practitioner forecasters overestimated the impact of Nudge Unit interventions, though nudge practitioners' predictions were almost perfectly calibrated to actual effect sizes.",
+   "url": "https://www.nber.org/papers/w27594",
+   "quote": "Finally, we compare these results to the predictions of academics and practitioners. Most forecasters overestimate the impact for the Nudge Unit interventions, though nudge practitioners are almost perfectly calibrated.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1824
+  },
+  {
+   "claim": "The Milkman et al. megastudy included over 61,000 participants randomly divided into groups, each receiving an intervention or a no-intervention control condition, allowing many interventions to be compared simultaneously.",
+   "url": "https://www.nature.com/articles/s44159-023-00174-z",
+   "quote": "Because there are many participants included in a megastudy (the Milkman study included over 61,000 participants), this approach allows researchers to compare many interventions at the same time.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1221
+  },
+  {
+   "claim": "In a thermostat default study, lowering the default temperature by 1 degree initially reduced average temperature, but the effect disappeared and reversed after a few weeks.",
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "quote": "In Brown et al. (2013), the default temperature on thermostats was changed from the standard 20 °C setting to a lower default setting. They found that a 1-degree decrease resulted in a lower average temperature initially, but the effect disappeared and actually moved in the opposite direction after a few weeks.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 12474
+  },
+  {
+   "claim": "The review explicitly frames nudge effectiveness comparison against standard/traditional policy tools as one of its three main analytical dimensions.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "quote": "the effectiveness of nudges, both over time and in compari-son with standard policies.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": null
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 25,
+   "floor": 5,
+   "thin": false,
+   "verdict": "25 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "Only 8% of the tested interventions produced behavior change that remained significant and measurable after the four-week intervention period ended, indicating rapid decay of effects post-withdrawal.",
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "support": "partial",
+   "reasoning": "The page confirms the core 8% figure and that only 8% of interventions produced behavior change that was significant and measurable after the four-week intervention period. This matches the statement's numeric claim closely. However, the statement adds an interpretive framing - indicating rapid decay of effects post-withdrawal - which is not stated in the abstract text. In fact, the abstract goes …",
+   "locatedQuote": "Only 8% of interventions induced behaviour change that was significant and measurable after the four-week intervention.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study demonstrates that the effectiveness and even the direction of welfare impact of a nudge intervention is heterogeneous across subgroups defined by self-awareness of financial knowledge, complicating simple aggregate effect-size interpretations.",
+   "url": "https://doi.org/10.2139/ssrn.3021962",
+   "support": "partial",
+   "reasoning": "The abstract clearly shows heterogeneous response to the nudge across subgroups defined by financial literacy and self-awareness of that literacy (literate, mistakenly-literate, aware-of-ignorance), and shows that the group that responds to the nudge (mistaken believers) actually underperforms/loses welfare (high fees), while non-responders do better. This supports the core idea that effectiveness…",
+   "locatedQuote": "Investors with mistaken beliefs responded to the nudge, and were more likely to work with mass-market advisors who steer them into high-fee funds. They underperform as a result. By comparison, those who either possess financial literacy or else understand that they do not possess financial literacy were less likely to respond to the nudge. They avoided advisors, stayed with the low-cost default fu…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Changing the default printer setting from single-sided to double-sided reduced paper consumption by about 15%, with no decline in effect observed 28 weeks after the change.",
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "support": "partial",
+   "reasoning": "The page text confirms that changing the default printer setting from single-sided to double-sided reduced paper consumption, citing Egebark and Ekström (2016). However, the fetched text is cut off exactly at the point where the specific percentage (about 15%) and the persistence duration (28 weeks with no decline in effect) would be stated. Since the text is truncated before these specific figure…",
+   "locatedQuote": "Egebark and Ekström (2016) found a default effect for computer printing behavior: when the default printer setting was changed from single-sided to double-sided, the consumption of printer paper dr",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The review explicitly frames nudge effectiveness comparison against standard/traditional policy tools as one of its three main analytical dimensions.",
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "support": "partial",
+   "reasoning": "The review explicitly identifies three main dimensions: (1) definition of nudges, (2) justification of nudge policies, and (3) effectiveness of nudges. The effectiveness dimension is described as covering whether nudges work, under what conditions, for how long, also in comparison to traditional policies. This shows comparison with traditional/standard policies is a component of the third dimensio…",
+   "locatedQuote": "Section surveys the empirical evidence about the effectiveness of nudge policies, that is, the question of whether they work, under what conditions, and for how long, also in comparison to traditional policies.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 6,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "minor-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "This synthesis is substantially limited by the fact that 62% of extracted claims were never independently verified.",
+   "and a large megastudy found 45% of tested interventions produced real short-term effects.",
+   "with a wider d=0.08-0.31 sensitivity range depending on assumed bias severity"
+  ],
+  "untraceableStatements": [
+   "Claim that 'nudge practitioners' predictions were almost perfectly calibrated to actual effect sizes' supports that practitioner expectations are 'already aligned with the more modest bias-corrected picture' - this is an inferential leap not stated in claim [24], which only says practitioners were calibrated to actual effect sizes, not specifically to the bias-corrected/RoBMA estimate discussed elsewhere in the report.",
+   "Claim that the d=0.08-0.31 range constitutes a 'sensitivity range depending on assumed bias severity' presented as part of the 'strongest available meta-analytic evidence' alongside RoBMA, blending two distinct re-analyses (Maier et al RoBMA vs. Mertens et al severe/moderate assumption) as if they are one coherent 'wider' range from the same analysis",
+   "Finding 11's characterization that forecaster failure is 'an indirect argument that publication bias has distorted the pre-correction literature' is an inference added by the report, not present in claims [18] or [11].",
+   "Finding 8's causal framing that active-choice retirement enrollment 'can strongly outperform traditional policy' generalizes from a single study comparison to a category-level claim not supported by the single data point",
+   "Finding 9 uses similar unsupported generalization language ('about 40 times more cost-effective') implying general default/assistance-nudge superiority beyond the single cited comparison",
+   "The item numbering/citation 'Bayes factor for null, BF01, ranging up to 41.23' specifically for the 'finance' domain in finding 5 conflates claim [16] (which lists finance domain BF01 up to 41.23) with claim [9]'s narrower category breakdown (information/assistance/structure only, no finance domain) - the summary presents these as one seamless breakdown without noting claim [9] and [16] are not fully consistent in scope."
+  ],
+  "coverageGaps": [
+   "DellaVigna & Linos 2022 (explicitly named in the checklist as a key megastudy/government nudge unit source) is never cited in the claim pool or findings at all - the megastudy evidence used instead is Milkman et al.'s gym study, leaving the named benchmark study for sub-question 3 uncovered.",
+   "No dissenting/skeptical expert perspective materially different from the Bayesian reanalysis authors is represented; the 'skeptic hunting the strongest counter-case' perspective seems to have produced almost no distinct claims (only [6] and the unused [14]), suggesting this searched perspective yielded little verified material despite being listed as a dedicated angle.",
+   "No original primary source for DellaVigna & Linos 2022 (explicitly named in the scoping checklist as a key large government nudge-unit megastudy) appears anywhere in the claim pool or findings - the checklist's flagship example was apparently never retrieved.",
+   "No primary/official documentation source (e.g., original Mertens et al. 2022 paper, Maier et al. 2022 RoBMA reanalysis paper, or DellaVigna & Linos 2022 directly) is quoted with methodological detail beyond effect sizes - the underlying study design, trial count, and pre-registration status of the 'evidence base' referenced in checklist item 7 were never retrieved.",
+   "Sub-question 5 (persistence/decay of nudge effects over time) is only thinly answered with two anecdotal examples (printer default, thermostat default) - claim [12] about 'carry-over effects proportionally similar to prior individual studies' is vague and not quantified, and no systematic study of nudge decay/persistence across many interventions was found or cited.",
+   "Sub-question 5 (persistence/decay over time) is only thinly answered with two anecdotal examples (printer default, thermostat default) from claims [19] and [26] - no systematic review or meta-analysis of nudge effect persistence was found or cited, despite the checklist explicitly asking about this as a driver of the cost-effectiveness case.",
+   "Sub-question 6 (cost-per-unit-of-behavior-change comparison to mandates, taxes, financial incentives) is answered with only two cherry-picked comparisons (retirement auto-enrollment vs Danish tax deduction; FAFSA nudge vs SSA subsidy) - no comparison to regulatory mandates was found, and no systematic/meta-analytic cost-effectiveness comparison across many nudge vs non-nudge interventions was located, despite this being a full checklist item and a searched perspective (Cost-effectiveness/policy comparator).",
+   "Sub-question 6 (systematic cost-per-behavior-change comparison against financial incentives/mandates/structural regulation) is answered only with two cherry-picked default-nudge success stories (retirement auto-enrollment, FAFSA) versus two traditional-policy comparators, with no broader survey of the cost-effectiveness literature comparing nudges to mandates or regulation in general - the review's own stated review [27] that frames this comparison as one of three main analytical dimensions was never actually drawn on for detail beyond isolated cost figures.",
+   "Sub-question 7 (is the current evidence base statistically sufficient for a confident directional verdict - number of pre-registered trials, heterogeneity levels) is not explicitly answered; heterogeneity is mentioned in categories but no discussion of how many pre-registered trials exist or overall evidence sufficiency/statistical power is given.",
+   "Sub-question 7 (is the evidence base statistically sufficient - number of pre-registered trials, heterogeneity, consistency of direction - for a confident policy verdict) is never directly addressed; no finding quantifies the number of pre-registered trials in the corrected literature or explicitly assesses evidentiary sufficiency versus thinness, despite being an explicit checklist item.",
+   "Sub-question 8 (strongest documented null/negative megastudy or replication results, and representativeness) is weakly covered - claim [6] (Choi/Laibson/Madrian null replication) and [14] (a backfire-themed paper that has 0 citations, suggesting it was never actually read/verified) are the only candidates, and the 0-citation paper [14] appears to be an unused or unreliable source, meaning this sub-question's strongest-case documentation is essentially missing from the findings.",
+   "Sub-question 8 (strongest documented null/negative megastudy or replication results, and their representativeness) is weakly covered: claim [6] (Choi/Laibson/Madrian non-replication of Duflo & Saez) and claim [26] (thermostat reversal) are the only concrete null/negative cases; claim [14] (Daniels & Zlatev 'How Nudge Strategies Can Backfire') is listed in the claim pool but never used in the findings or summary despite being directly relevant to this checklist item and to the 'Skeptic hunting counter-cases' perspective."
+  ],
+  "planFlaws": [
+   "No perspective was tasked with searching for a dissenting or minority statistical viewpoint on the RoBMA/Maier et al. reanalysis itself (e.g., critiques of the reanalysis methodology or defenses of the original Mertens et al. estimate) - all six perspectives implicitly treat the bias-correction reanalysis as the settled 'ground truth' rather than testing it, so the whole research design has a shared blind spot toward meta-scientific method disputes.",
+   "The 'Large-trial constructor' perspective, tasked with building the answer from pre-registered high-powered field trials outside the publish-or-perish system, did not surface the explicitly named DellaVigna & Linos 2022 government nudge-unit study, a major gap given it was named in the scoping checklist itself as the canonical example.",
+   "The 'Steelman defender' and 'Cost-effectiveness/policy comparator' perspectives both pulled cost-effectiveness evidence from pre-existing, uncorrected-for-publication-bias case studies (auto-enrollment, FAFSA, printer default) rather than bias-corrected or independently replicated cost-effectiveness figures - the scoping did not require that these specific dollar-value claims themselves be checked for publication-bias/selection risk, creating an inconsistency where the report rigorously bias-corrects pooled effect sizes but uncritically imports single flagship cost-effectiveness case studies as if they were unbiased.",
+   "The cost-effectiveness comparator perspective produced only isolated single-study cost figures rather than a systematic multi-study cost-per-behavior-change comparison, so the checklist item (6) asking for a general comparison across nudges vs. mandates/incentives/regulation was answered with cherry-picked wins for nudges without searching for cases where mandates/regulation outperformed nudges, risking a favorable-selection bias baked into the plan.",
+   "The persistence/decay sub-question (5) was scoped as its own checklist item but no perspective was specifically tasked with searching the durability/decay literature systematically; it was left to incidental pickup within other perspectives' searches (e.g., defaults), resulting in only two anecdotal, non-representative data points.",
+   "The scoping checklist and perspective set are heavily anchored on a single meta-analysis (Mertens et al. 2022 / Maier et al. 2022 reanalysis) for almost the entire quantitative backbone of the executive summary; no second independent meta-analysis of nudge effects was sought to cross-validate the bias-correction findings, creating single-source dependency risk despite the 'Primary meta-analyst' perspective's stated goal of avoiding single-study reliance.",
+   "The scoping's sub-question 4 and the 'Heterogeneity auditor' perspective presuppose that bias-corrected category breakdowns (information/assistance/structure/finance) are stable and comparable, but claim [22] flags that trim-and-fill (one of the very methods underlying these breakdowns) is highly sensitive to outliers and assumptions - the scoping never built in a check on whether the categorical BF01 breakdown itself is robust to the same instability critique applied to the aggregate effect size."
+  ],
+  "rationales": [
+   "The executive summary and findings are largely traceable to the claim pool and appropriately hedge conclusions (e.g., 'undecided rather than refuted'), which is good practice. However, one sentence in the summary ('This synthesis is substantially limited by the fact that 62% of extracted claims were never independently verified') is a bare methodological caveat asserting a specific statistic with no traceable source in the claim pool - it appears to be process metadata injected into the summary …",
+   "The summary and findings are mostly well-traceable to the claim pool, and the core statistical narrative (d=0.43 uncorrected shrinking to near-zero-to-small under multiple bias-correction methods, heterogeneity by category) is faithfully represented with appropriate hedging language. However, several checklist items committed to at scoping time (systematic persistence/decay evidence, systematic cost-effectiveness-vs-alternatives comparison, evidence sufficiency for a confident verdict, and stron…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "Only 8% of the tested interventions produced behavior change that remained significant and measurable after the four-week intervention period ended, indicating rapid decay of effects post-withdrawal.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://www.nature.com/articles/s41586-021-04128-4",
+   "why": "The claim adds an interpretive causal framing indicating rapid decay of effects post-withdrawal that is not present in the quote. The quote merely states a static fact (8% of interventions had significant/measurable effects after the four-week intervention period), but does not characterize this as decay, does not establish that effects were present initially and then diminished, and does not attribute the drop to withdrawal of the intervention. The quote says after the four-week intervention (i…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The claim adds an interpretive causal framing indicating rapid decay of effects post-withdrawal that is not present in the quote. The quote merely states a static fact (8% of interventions had significant/measurable effects after the four-week intervention period), but does not characterize this as decay, does not establish that effects were present initially and then diminished, and does not attribute the drop to withdrawal of the intervention. The quote says after the four-week intervention (i…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "None of the five search results actually engage with the claim's specific empirical statistic (8% of interventions retaining significant effects after a four-week nudge intervention). The results returned are off-topic: a mental illness stigma-reduction intervention paper, a Lebanon political-withdrawal book chapter, an EEG/meditation study, an undergraduate exercise-priming study, and a sprint force-velocity figure. None of these are credible counter-sources that confirm, contradict, or context…",
+     "counterSource": "No credible counter-source found in provided results; refutation based on inability to verify claim's generalizability and lack of corroborating context for the cited 8% statistic."
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The source is a primary Nature research article (s41586-021-04128-4), which is appropriately weighty in general, but the claim as stated omits critical provenance context that undermines its use here: (1) No publish date is given/verifiable in the citation, and this is a fast-moving meta-science/behavioral-economics literature (post-2021 replication crisis debates, e.g. Mertens et al. 2022 meta-analysis, DellaVigna & Linos 2022, Maier et al. 2022) where a single ~2021 study's 8% figure on decay …",
+     "counterSource": "Mertens, Herberz, Hahnel & Brosch (2022) PNAS meta-analysis of nudge effectiveness; DellaVigna & Linos (2022) Econometrica on nudge unit RCTs, both post-dating and contextualizing single-study decay findings from the cited 2021 Nature paper"
+    }
+   ],
+   "contradictedBy": [
+    "No credible counter-source found in provided results; refutation based on inability to verify claim's generalizability and lack of corroborating context for the cited 8% statistic.",
+    "Mertens, Herberz, Hahnel & Brosch (2022) PNAS meta-analysis of nudge effectiveness; DellaVigna & Linos (2022) Econometrica on nudge unit RCTs, both post-dating and contextualizing single-study decay findings from the cited 2021 Nature paper"
+   ]
+  },
+  {
+   "claim": "Based on analysis of 29,932 meta-analyses from the Cochrane Database of Systematic Reviews, applying trim-and-fill changed the significance of heterogeneity and overall effect sizes in many meta-analyses, and different estimators (R0, L0, Q0) could yield different conclusions about the significance of publication bias.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "why": "The claim states three specific things: (1) analysis of 29,932 meta-analyses from Cochrane, (2) trim-and-fill changed significance of heterogeneity and overall effect sizes in many meta-analyses, and (3) different estimators (R0, L0, Q0) could yield different conclusions about publication bias significance. The supporting quote only supports point (2) - that after adding imputed missing studies, significance of heterogeneity and overall effect sizes changed in many meta-analyses. The quote says …",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The claim states three specific things: (1) analysis of 29,932 meta-analyses from Cochrane, (2) trim-and-fill changed significance of heterogeneity and overall effect sizes in many meta-analyses, and (3) different estimators (R0, L0, Q0) could yield different conclusions about publication bias significance. The supporting quote only supports point (2) - that after adding imputed missing studies, significance of heterogeneity and overall effect sizes changed in many meta-analyses. The quote says …",
+     "counterSource": "Same source page (PMC6571372) - the quote itself does not mention 29,932 meta-analyses count or R0/L0/Q0 estimator comparisons, only the trim-and-fill significance change finding."
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim is about a methodological study of publication-bias-correction methods (trim-and-fill) applied broadly across Cochrane meta-analyses in general medicine - it is NOT about nudge interventions at all. The research question asks whether, after correcting for publication bias, evidence supports nudge interventions as effective policy. The cited source (PMC6571372, likely Lin & Chu-type trim-and-fill methodology paper analyzing 29,932 Cochrane meta-analyses) makes a generic methodological p…",
+     "counterSource": "https://doi.org/10.1097/md.0000000000015987 (trim-and-fill guidelines paper) - documents that trim-and-fill's conclusions are highly dependent on estimator choice and dataset characteristics, undermining its use as a general tool to draw firm bias-co…"
+    }
+   ],
+   "contradictedBy": [
+    "Same source page (PMC6571372) - the quote itself does not mention 29,932 meta-analyses count or R0/L0/Q0 estimator comparisons, only the trim-and-fill significance change finding.",
+    "https://doi.org/10.1097/md.0000000000015987 (trim-and-fill guidelines paper) - documents that trim-and-fill's conclusions are highly dependent on estimator choice and dataset characteristics, undermining its use as a general tool to draw firm bias-co…"
+   ]
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200300119",
+   "quality": "primary",
+   "perspective": "Primary meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://sites.stat.columbia.edu/gelman/research/unpublished/PNAS_letter_Nudge-meta-analysis.pdf",
+   "quality": "unreliable",
+   "perspective": "Primary meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3",
+   "via": "pdf-unreadable"
+  },
+  {
+   "url": "https://www.pnas.org/doi/10.1073/pnas.2200732119",
+   "quality": "unreliable",
+   "perspective": "Primary meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6571372/",
+   "quality": "primary",
+   "perspective": "Primary meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://arxiv.org/html/2410.06309v1",
+   "quality": "primary",
+   "perspective": "Primary meta-analyst",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nber.org/system/files/working_papers/w27594/w27594.pdf",
+   "quality": "primary",
+   "perspective": "Large-trial constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/abs/10.3982/ECTA18709",
+   "quality": "unreliable",
+   "perspective": "Large-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://www.nber.org/papers/w27594",
+   "quality": "primary",
+   "perspective": "Large-trial constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://econpapers.repec.org/RePEc:wly:emetrp:v:90:y:2022:i:1:p:81-116",
+   "quality": "secondary",
+   "perspective": "Large-trial constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.researchgate.net/publication/358024203_RCTs_to_Scale_Comprehensive_Evidence_From_Two_Nudge_Units",
+   "quality": "unreliable",
+   "perspective": "Large-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T4",
+   "via": "failed"
+  },
+  {
+   "url": "https://behavioralscientist.org/making-sense-of-the-do-nudges-work-debate/",
+   "quality": "secondary",
+   "perspective": "Steelman defender",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351519/",
+   "quality": "primary",
+   "perspective": "Steelman defender",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9351501/",
+   "quality": "primary",
+   "perspective": "Steelman defender",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://sites.stat.columbia.edu/gelman/research/published/PNAS_letter_Nudge-meta-analysis.pdf",
+   "quality": "unreliable",
+   "perspective": "Steelman defender",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3",
+   "via": "pdf-unreadable"
+  },
+  {
+   "url": "https://www.nature.com/articles/s41586-021-04128-4",
+   "quality": "primary",
+   "perspective": "Skeptic hunting the strongest counter-case",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nature.com/articles/s44159-023-00174-z",
+   "quality": "secondary",
+   "perspective": "Skeptic hunting the strongest counter-case",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://journals.sagepub.com/doi/pdf/10.1177/0956797617702501",
+   "quality": "primary",
+   "perspective": "Cost-effectiveness comparison",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/joes.12453",
+   "quality": "secondary",
+   "perspective": "Cost-effectiveness comparison",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://curis.ku.dk/ws/files/291301143/Carlsson_et_al._2021_preprint.pdf",
+   "quality": "secondary",
+   "perspective": "Cost-effectiveness comparison",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://www.aeaweb.org/articles/pdf/doi/10.1257/pol.20180279",
+   "quality": "primary",
+   "perspective": "Cost-effectiveness comparison",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T3",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://www.aeaweb.org/articles/pdf/doi/10.1257/jep.10.4.113",
+   "quality": "primary",
+   "perspective": "Cost-effectiveness comparison",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T3",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.3386/w25061",
+   "quality": "primary",
+   "perspective": "Persistence of nudge effects",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.2139/ssrn.3021962",
+   "quality": "primary",
+   "perspective": "Persistence of nudge effects",
+   "wave": "w2",
+   "claims": 3,
+   "tier": "T?",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.2139/ssrn.2832703",
+   "quality": "unreliable",
+   "perspective": "Critics' strongest null/negative cases",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.31219/osf.io/brzwt",
+   "quality": "primary",
+   "perspective": "Critics' strongest null/negative cases",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.31234/osf.io/buw8f",
+   "quality": "unreliable",
+   "perspective": "Critics' strongest null/negative cases",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T?",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 79,
+  "urlDupes": 2,
+  "budgetDropped": 15,
+  "claimsDroppedBeforeVerify": 49,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 41,
+    "ok": 5,
+    "fail": 36,
+    "results": 40
+   },
+   "ddg-lite": {
+    "attempts": 36,
+    "ok": 0,
+    "fail": 36,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 36,
+    "ok": 0,
+    "fail": 36,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 36,
+    "ok": 24,
+    "fail": 12,
+    "results": 7
+   },
+   "crossref": {
+    "attempts": 35,
+    "ok": 30,
+    "fail": 5,
+    "results": 162
+   },
+   "europepmc": {
+    "attempts": 5,
+    "ok": 4,
+    "fail": 1,
+    "results": 12
+   },
+   "openalex": {
+    "attempts": 3,
+    "ok": 3,
+    "fail": 0,
+    "results": 17
+   },
+   "pubmed": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 1,
+    "ok": 0,
+    "fail": 1,
+    "results": 0
+   },
+   "hn": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "results": 0
+   }
+  },
+  "sourceTiers": {
+   "T2": 8,
+   "T3": 9,
+   "T1": 4,
+   "T4": 1,
+   "T?": 4
+  },
+  "killsByLens": {
+   "support": 2,
+   "counter": 2,
+   "provenance": 1
+  },
+  "fetchVia": {
+   "wayback": 5,
+   "pdf-unreadable": 2,
+   "http": 9,
+   "pdf": 2,
+   "failed": 1,
+   "crossref-fallback": 3,
+   "crossref-api": 4
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 1,
+   "hits": 88,
+   "rate": 0.091
+  },
+  "agentCalls": 163,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 500372,
+  "outputTokens": 105353,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 74,
+   "located-elided": 3,
+   "located-approx": 1,
+   "partial": 1,
+   "onPageRate": 0.987
+  },
+  "pageFetchCache": {
+   "hits": 30,
+   "misses": 26,
+   "charsServedFromCache": 301359,
+   "hitRate": 0.536
+  },
+  "wallSeconds": 507.5,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 28,
+  "killed": 2,
+  "unverifiedCount": 0,
+  "afterSynthesis": 15
+ }
+}
