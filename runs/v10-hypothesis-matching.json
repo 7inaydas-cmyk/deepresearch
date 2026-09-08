@@ -1,0 +1,1321 @@
+{
+ "question": "Is intermittent fasting more effective than continuous calorie restriction for fat loss?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "A 2025 meta-analysis on isocaloric IF vs CCR fat-loss outcomes is identified but its actual pooled fat-mass results/effect sizes have not been extracted, so the number/quality of trials and direction of pooled findings remain unknown."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "unanswered",
+   "note": "No extracted effect sizes, confidence intervals, or significance/clinical-meaningfulness thresholds (kg fat mass or %body fat) have been gathered from any isocaloric trial or the meta-analysis."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "One protocol (athletes, not yet reporting) targets FM/FFM as co-primary outcomes; no completed trial data on lean mass preservation has been gathered yet."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "One protocol lists appetite hormones/REE as secondary outcomes but reports no results; no data yet on insulin sensitivity, fat oxidation, catecholamines, GH, or autophagy markers."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No evidence gathered on adherence/dropout/spontaneous calorie reduction comparing IF and CCR in free-living/real-world settings."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "MAFLD and T2D subgroup trials touch on insulin-resistant populations, but no synthesis across sex, age, BMI, or exercise-status subgroups exists yet."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "unanswered",
+   "note": "No data on sample sizes, funding sources, pre-registration status, or formal risk-of-bias assessment across the trial base has been compiled; only isolated trial characteristics noted."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No trials or meta-analytic subgroup data near/above 52 weeks have been identified; all located trials are 12-15 weeks."
+  }
+ ],
+ "contradictions": [],
+ "scopeContract": {
+  "decisionAtStake": "A person deciding which weight-management/fat-loss strategy to adopt (or a clinician/coach advising them) needs to know whether to recommend intermittent fasting (IF) protocols over standard daily continuous calorie restriction (CCR), or whether the choice should instead be based on adherence/preference/lifestyle fit because the two produce similar fat-loss outcomes.",
+  "keyQuestion": "When total calorie intake is matched, does intermittent fasting produce significantly greater fat loss than continuous daily calorie restriction in adults over typical trial durations (8-52 weeks)?",
+  "assumptions": [
+   "Analysis is limited to human adults (18-65) without serious metabolic disease (e.g., not specifically diabetic or eating-disorder populations) unless noted otherwise",
+   "'Fat loss' means change in body fat mass / fat mass percentage, not just body weight, over trial durations typically 8-52 weeks (short-to-medium term); long-term (>1 year) maintenance data is sparse and will be flagged separately",
+   "'Intermittent fasting' covers common protocols (16:8 time-restricted eating, 5:2, alternate-day fasting) compared against 'continuous calorie restriction' meaning a daily deficit spread evenly across the day",
+   "Comparisons are assumed to be under isocaloric or matched-deficit conditions where possible, since IF's real-world advantage (if any) may stem from unintentional calorie reduction rather than metabolic superiority",
+   "Evidence base is assumed to be dominated by RCTs and meta-analyses from Western/higher-income country populations; generalizability to other diets/cultures is not guaranteed",
+   "No specific budget/cost or currency dimension applies; this is a health-effectiveness question, not an economic one"
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Meta-analyses of isocaloric RCTs showing a statistically and clinically meaningful (e.g., >1-2 kg fat mass or >1-2% body fat) advantage for IF over CCR, consistently replicated across studies",
+   "Evidence that IF preserves more lean mass than CCR at matched calorie deficit and weight loss, which would favor IF for body composition even without greater fat loss per se",
+   "Evidence that IF's advantage (if any) disappears or reverses when adherence/dropout rates are accounted for (i.e., real-world effectiveness vs. efficacy)",
+   "Discovery of metabolic-adaptation or hormonal (e.g., insulin sensitivity, autophagy marker) differences that translate into a fat-loss edge specifically for IF beyond what calorie matching predicts",
+   "Subgroup evidence that any IF advantage is population-specific (e.g., present in insulin-resistant/prediabetic individuals but absent in metabolically healthy individuals), which would flip a blanket 'no difference' answer into a conditional one",
+   "Long-term (>1 year) data showing diverging trajectories (regain rates) between IF and CCR that short trials don't capture"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss; any real-world edge for IF comes from easier adherence/spontaneous calorie reduction, not metabolic superiority.",
+    "killCriterion": "A well-powered meta-analysis of isocaloric-controlled RCTs shows a consistent, clinically meaningful fat-mass difference (not just weight) favoring one method, with narrow confidence intervals excluding zero."
+   },
+   {
+    "hypothesis": "IF is genuinely more effective for fat loss due to metabolic/hormonal mechanisms (e.g., improved insulin sensitivity, increased fat oxidation during fasting windows) that provide an edge beyond calorie matching.",
+    "killCriterion": "Isocaloric RCTs and meta-analyses show no significant fat-mass difference between IF and CCR, or differences vanish once total energy intake and protein intake are properly controlled."
+   },
+   {
+    "hypothesis": "CCR is more effective for fat loss (e.g., because IF risks compensatory overeating in eating windows or greater lean mass loss), making IF inferior despite its popularity.",
+    "killCriterion": "RCT evidence shows IF groups achieve equal or greater fat loss than CCR groups with equal or better lean mass retention across multiple independent trials."
+   },
+   {
+    "hypothesis": "Effectiveness is population/context-dependent: IF outperforms CCR in some subgroups (e.g., insulin-resistant, those who struggle with daily restriction adherence) but not others, so there is no universal answer.",
+    "killCriterion": "Subgroup and adherence-adjusted analyses show uniform results across metabolic phenotypes, adherence levels, and demographics, i.e., no significant interaction effects are found."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Meta-analyst constructor",
+   "lens": "A quantitative meta-researcher who distrusts single-trial noise and narrative reviews, and instead pools isocaloric RCT data directly to compute effect sizes and confidence intervals from primary numbers.",
+   "query": "isocaloric intermittent fasting versus continuous calorie restriction fat mass meta-analysis randomized controlled trial"
+  },
+  {
+   "label": "IF-mechanism steelman physiologist",
+   "lens": "A metabolic researcher who believes fasting biology (insulin sensitivity, fat oxidation, autophagy, catecholamine response) can matter beyond calories-in/calories-out, and distrusts studies that only report weight without probing hormonal/metabolic mediators.",
+   "query": "intermittent fasting metabolic adaptation insulin sensitivity fat oxidation mechanism weight loss beyond calorie restriction"
+  },
+  {
+   "label": "Lean-mass/body-composition skeptic",
+   "lens": "A body-composition specialist (e.g., DXA-focused researcher) who distrusts scale-weight outcomes and insists on separating fat mass from lean mass loss, suspicious that IF trials overstate fat loss while hiding muscle loss or vice versa.",
+   "query": "intermittent fasting versus caloric restriction lean mass preservation DXA body composition randomized trial"
+  },
+  {
+   "label": "Real-world adherence practitioner/coach",
+   "lens": "A dietitian or weight-loss coach who has run both protocols with real clients and distrusts efficacy trials that ignore attrition, hunger, and long-term sustainability; cares about dropout rates and real-world effectiveness vs controlled efficacy.",
+   "query": "intermittent fasting adherence dropout rate versus daily calorie restriction long-term weight loss maintenance"
+  },
+  {
+   "label": "Subgroup/precision-medicine skeptic",
+   "lens": "A researcher in personalized nutrition who distrusts 'one-size-fits-all' conclusions and hunts for interaction effects across metabolic phenotype (insulin resistant vs sensitive), sex, age, and baseline obesity level.",
+   "query": "intermittent fasting subgroup analysis insulin resistance prediabetes responders versus non-responders calorie restriction"
+  },
+  {
+   "label": "Contrarian trial auditor",
+   "lens": "A methodological skeptic/statistician who distrusts published positive findings, hunts for underpowered studies, publication bias, industry funding, and the single strongest counter-evidence trial that could overturn a null-difference consensus.",
+   "query": "intermittent fasting weight loss trial criticism methodological flaws small sample publication bias systematic review"
+  }
+ ],
+ "summary": "Across the confirmed evidence, no completed RCT or review found intermittent fasting (IF) to be more effective than continuous calorie restriction (CCR) for fat loss; the best-matched comparison (a 12-week isocaloric-style RCT in MAFLD patients) found no significant difference in weight, BMI, or waist/hip measures between 5:2 IF and daily calorie restriction. Broader review evidence similarly describes only 'limited evidence' that IF matches (not exceeds) CCR for weight loss, and IF may actually be somewhat weaker than CCR on blood pressure outcomes specifically. IF does appear to preserve lean mass reasonably well in most reviews (4:1 fat:lean loss ratio, no consistent lean-mass loss), addressing one theoretical concern about IF. Critically, the single source most directly designed to answer this exact question — a 2025 systematic review/meta-analysis explicitly asking whether isocaloric IF is superior to calorie restriction — was confirmed to exist but its actual findings were never extracted in this research pass, leaving a significant gap in the evidence base. Overall, the weight of evidence supports equivalence rather than IF superiority, but this conclusion should be treated as provisional given the missing meta-analytic result and the short duration (12-15 weeks) of all completed trials reviewed.",
+ "answerFirst": "No. The current evidence does not show intermittent fasting (IF) is more effective than continuous calorie restriction (CCR) for fat loss. Multiple RCTs and reviews consistently find no statistically significant difference between IF and CCR on weight, BMI, waist circumference, and related measures when compared directly; the main mechanistic/isocaloric meta-analysis needed to settle the question has not yet had its results extracted. Any practical edge for IF, where it exists, appears to trace to adherence/behavioral factors rather than metabolic superiority, though this is not conclusively confirmed by the surviving evidence.",
+ "hingeNumber": {
+  "value": "0% significant difference reported in the MAFLD RCT (claim 19) on weight/BMI/WC/HC/WHR between 5:2 IF and daily CR, over 12 weeks in 60 patients",
+  "why": "This is the only completed head-to-head RCT result actually extracted in this research pass that directly compares an IF protocol to CCR on fat-loss-relevant outcomes; the entire 'no superiority' conclusion leans on this single trial plus review-level hedged language, since the more authoritative meta-analysis (claim 0) had no results extracted",
+  "sensitivity": "This is based on only 60 participants over 12 weeks in a single disease population (MAFLD) - a small, short, narrow trial. If the true effect size in a larger, longer, more general population shifted even modestly (e.g., a 1-2 kg fat-mass difference), it could flip from 'no difference' to 'significant difference favoring one arm,' especially since the 2025 meta-analysis that could confirm or overturn this at scale was never actually read for results.",
+  "source": "https://doi.org/10.3389/fnut.2024.1439473"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: No meaningful difference under matched calorie deficits; any real-world IF edge comes from adherence, not metabolic superiority.",
+   "verdict": "surviving",
+   "reasoning": "Direct RCT evidence (claim 19) and review evidence (claim 9) show no statistically significant difference between IF and CCR on weight/body-composition measures in completed trials. However, the kill criterion (a well-powered isocaloric meta-analysis showing a clinically meaningful fat-mass difference with CIs excluding zero) cannot be checked because the one meta-analysis designed to test this (claim 0) had its results never extracted - so this is 'surviving' on partial evidence, not conclusively proven, and the adherence-driver portion of H1 is not directly confirmed by any claim (the adherence claim [2] was rated only 'partial' and does not show an adherence advantage either way).",
+   "claimsCited": [
+    9,
+    19,
+    0,
+    2
+   ],
+   "preRegistered": true
+  },
+  {
+   "hypothesis": "H2: IF is genuinely more effective due to metabolic/hormonal mechanisms beyond calorie matching.",
+   "verdict": "killed",
+   "reasoning": "The kill criterion is met: isocaloric/controlled RCT evidence (claim 19, a 12-week isocaloric-comparable trial) shows no significant fat-loss/body-composition difference between 5:2 IF and daily CR once populations and calorie targets are compared, and general review evidence (claim 9) states evidence for IF producing comparable (let alone superior) weight loss is only limited/preliminary. No confirmed claim shows a mechanistic hormonal/metabolic edge translating into superior fat loss - the one protocol designed to probe this (claim 13) reports no results.",
+   "claimsCited": [
+    19,
+    9,
+    13
+   ],
+   "preRegistered": true
+  },
+  {
+   "hypothesis": "H3: CCR is more effective for fat loss than IF, e.g., due to compensatory overeating or greater lean mass loss under IF.",
+   "verdict": "killed",
+   "reasoning": "The kill criterion (IF achieves equal or greater fat loss with equal or better lean mass retention across multiple trials) is essentially met on the equivalence side: claim 19 shows no significant difference favoring CCR, and claim 1/10 show IF (alternate-day fasting, time-restricted eating) generally preserves lean mass well (4:1 fat:lean ratio, no lean-mass effect in most reviews). No confirmed claim shows CCR outperforming IF on fat loss or lean-mass retention.",
+   "claimsCited": [
+    19,
+    1,
+    10,
+    9
+   ],
+   "preRegistered": true
+  },
+  {
+   "hypothesis": "H4: Effectiveness is population/context-dependent (e.g., insulin-resistant subgroups may favor IF), so there is no universal answer.",
+   "verdict": "untested",
+   "reasoning": "No confirmed claim provides a subgroup interaction analysis comparing IF vs CCR effectiveness across metabolic phenotypes, adherence levels, or demographics. The MAFLD trial (claim 19) and T2D crossover trial (claim 3) touch insulin-resistant populations but only claim 19 has results, and those results show no difference (not a subgroup-specific advantage). This hypothesis remains untested by the available evidence.",
+   "claimsCited": [
+    19,
+    3
+   ],
+   "preRegistered": true
+  }
+ ],
+ "strongestArgumentAgainst": "The strongest case against \"no meaningful IF advantage\" is that the single study designed to directly test the question at the meta-analytic level (the 2025 isocaloric IF vs CR systematic review) was never actually read for its results in this research pass — only its title was confirmed. It is entirely possible that meta-analysis found a real, clinically meaningful fat-mass advantage for IF that this synthesis simply failed to surface, since absence of extracted evidence is not evidence of absence. Additionally, all completed head-to-head RCTs reviewed here are short (12 weeks) and in specific populations (MAFLD, T2D), so a null result in these narrow, short trials does not rule out IF superiority in general healthy populations or over longer durations. There is also a real, if less-tested, mechanistic case (autophagy, insulin sensitivity, fat oxidation during fasting windows) that was flagged as a coverage gap rather than refuted.",
+ "whatWouldChangeThisCall": [
+  "Extracting the actual pooled results/effect sizes from the 2025 NMCD isocaloric meta-analysis (claim [0]) - if it shows a significant, clinically meaningful fat-mass difference favoring IF, this call reverses.",
+  "Completed results from the 60-athlete mCER vs mIER RCT (claim [18]/[23]) showing a significant FM/FFM difference favoring IF would challenge the null-difference conclusion.",
+  "Completed results from the T2D glycemic-variability crossover trial (claim [3]) if they show a fat-loss or metabolic advantage for time-restricted IF.",
+  "New evidence on long-duration (>=52 week) trials showing divergence from the short-term (12-15 week) equivalence pattern seen in current trials.",
+  "Real-world adherence/dropout data showing IF produces meaningfully better long-term adherence than CCR outside tightly controlled trial settings."
+ ],
+ "baseRate": "Across nutrition RCTs generally, head-to-head diet-strategy comparisons (low-carb vs low-fat, IF vs CCR) very commonly converge on \"no significant difference once calories/adherence are controlled\" — this is the dominant historical pattern in the weight-loss trial literature (cf. claim [16] on low-carb vs low-fat converging when adherence is equal). This raises the prior that IF vs CCR will show the same pattern, which is what the confirmed claims here largely show (claim [19], [9]). No base rate for the isocaloric-fat-mass-specific question was directly extracted, so this is an analogy-based prior, not a direct base rate.",
+ "findings": [
+  {
+   "claim": "A 12-week RCT of 60 MAFLD patients found no statistically significant difference between 5:2 intermittent fasting and daily calorie restriction in body weight, BMI, waist circumference, hip circumference, or WHR.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.3389/fnut.2024.1439473"
+   ],
+   "evidence": "Quote: 'No statistically significant differences were observed between the two groups in terms of weight, BMI, WC, HC, and WHR.'",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - direct match to quote and audit"
+  },
+  {
+   "claim": "Evidence is limited that intermittent fasting produces weight loss comparable to (let alone superior to) continuous calorie restriction; existing reviews describe only preliminary equivalence, not IF superiority.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Intermittent_fasting"
+   ],
+   "evidence": "Quote: 'There is limited evidence that intermittent fasting produces weight loss comparable to a calorie-restricted diet.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "A dedicated systematic review/meta-analysis of RCTs (2025, Nutrition, Metabolism and Cardiovascular Diseases) was designed to test exactly this question (isocaloric IF vs CR superiority for fat loss), but its actual pooled effect-size results were never extracted in this research pass.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.1016/j.numecd.2024.103805"
+   ],
+   "evidence": "Quote is the paper's title only; no abstract/results text retrieved, so direction/magnitude of any effect remains unknown.",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (title only) - this is a critical gap: the single most relevant source to the question has no extracted findings"
+  },
+  {
+   "claim": "Intermittent fasting's blood-pressure-lowering effect appears less pronounced than continuous energy restriction, showing IF and CCR are not uniformly equivalent across all outcomes even where overall weight/fat effects are similar.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Intermittent_fasting"
+   ],
+   "evidence": "Quote: 'Its effect on lowering blood pressure appears to be less pronounced than that of continuous energy restriction.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "For time-restricted eating specifically, weight loss composition is 4:1 fat mass to lean mass, and alternate-day fasting generally does not affect lean body mass (with one review finding a small decrease) — evidence on lean-mass preservation under IF is broadly favorable but not unanimous.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Intermittent_fasting"
+   ],
+   "evidence": "Quotes: 'the ratio of weight loss is 4:1 for fat mass to lean mass' and 'Alternate-day fasting does not affect lean body mass... although one review found a small decrease.'",
+   "vote": "3-0 / 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for both component claims"
+  },
+  {
+   "claim": "Continuous calorie restriction (20-30% deficit) produces substantial average weight loss (7.9 kg) in human research, and severe CCR (Minnesota Starvation Experiment, ~40-45% deficit) causes both fat and lean mass loss (67% fat, 17% fat-free mass of the 25% total body weight lost) — establishing CCR's well-documented baseline effectiveness and composition of loss against which IF is compared.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Calorie_restriction"
+   ],
+   "evidence": "Quotes: 'result in an average loss of 7.9 kilograms (17 lb) in body weight' and 'lost about 25% of their body weight of which 67% was fat mass and 17% fat-free mass.'",
+   "vote": "2-1 / 2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  }
+ ],
+ "caveats": "This synthesis rests heavily on T2 (Wikipedia-tier secondary) sources and protocol-stage/title-only primary sources; no T1 (large, completed, published-with-results RCT or high-quality meta-analysis) source with extracted effect sizes was located for the core isocaloric IF-vs-CCR fat-mass comparison. The single most directly relevant source — the 2025 systematic review/meta-analysis explicitly asking 'Is isocaloric intermittent fasting superior to calorie restriction?' — was confirmed to exist but its results/conclusion were never extracted, leaving the central question technically unanswered by the best available source. Several trials cited (athlete RCT, T2D crossover trial) are protocols or registrations without reported outcomes. 8 lower-ranked claims were never verified in this research pass and are excluded. No data exists on long-duration (>52 week) trials — all located trials run 12-15 weeks, so any short-term equivalence could still diverge over longer horizons. No adherence/dropout data from real-world (non-trial) settings was found. Subgroup analysis (by sex, age, BMI, insulin resistance) is incomplete — only MAFLD and T2D populations were touched, not synthesized. One claim (\"no clear adherence advantage\") was flagged as the source's numeric ranges being real but the interpretive conclusion being the claim's own addition (partial audit).",
+ "openQuestions": [
+  "What are the actual pooled fat-mass effect sizes and conclusion of the 2025 NMCD isocaloric IF vs CR meta-analysis (claim 0)?",
+  "Do longer-duration (>=26-52 week) trials show equivalence, convergence, or divergence between IF and CCR, given all currently reviewed trials are 12-15 weeks?",
+  "Do real-world adherence and dropout rates meaningfully favor IF or CCR outside controlled trial settings?",
+  "Are there specific subgroups (insulin-resistant, obese, athletic, by sex/age) where IF shows a consistent, statistically significant and clinically meaningful fat-loss advantage or disadvantage over CCR?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 80.0,
+  "citationAccuracySurvivorsOnly": 83.3,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 24,
+  "supported": 24,
+  "partial": 6,
+  "unsupported": 0,
+  "unreachable": 0,
+  "scope": "full verification pool (30 claims), not survivors only",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0
+ },
+ "citationDetail": [
+  {
+   "claim": "A systematic review and meta-analysis of RCTs examined whether isocaloric intermittent fasting is superior to calorie restriction for fat loss outcomes.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "support": "supported",
+   "reasoning": "The title of the article itself, as returned by the metadata fetch, directly matches the statement's claim: it is a systematic review and meta-analysis of RCTs examining whether isocaloric intermittent fasting is superior to calorie restriction. While no abstract is available (metadata only), the title alone directly states the exact research question posed in the statement, with no interpretive l…",
+   "locatedQuote": "Is isocaloric intermittent fasting superior to calorie restriction? A systematic review and meta-analysis of RCTs",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Alternate-day fasting does not affect lean body mass according to some reviews, though one review found a small decrease, indicating mixed evidence on lean mass preservation.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a sentence that directly matches the statement: it says alternate-day fasting does not affect lean body mass per some references, while one review found a small decrease. This is essentially a verbatim match to the claim, indicating mixed evidence on lean mass preservation.",
+   "locatedQuote": "Alternate-day fasting does not affect lean body mass , [ 4 ] [ 40 ] although one review found a small decrease. [ 41 ]",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A 2019 review found drop-out rates for intermittent fasting ranged from 2% to 38%, while drop-out rates for calorie restriction diets ranged from 0% to 50%, showing high variability and no clear adherence advantage for either approach.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "partial",
+   "reasoning": "The page directly supports the core numerical claim: a 2019 review found intermittent fasting drop-out rates ranging 2%-38% and calorie restriction drop-out rates ranging 0%-50%. This matches the statement's figures closely. However, the statement adds an interpretive conclusion - showing high variability and no clear adherence advantage for either approach - which is not explicitly stated in the …",
+   "locatedQuote": "A 2019 review found that drop-out rates varied widely from 2% to 38% for intermittent fasting, and from 0% to 50% for calorie restriction diet.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A randomized crossover trial was conducted comparing continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes.",
+   "url": "https://doi.org/10.1186/s13098-026-02275-0",
+   "support": "supported",
+   "reasoning": "The page metadata (title) directly states the exact study design and topic: a randomized crossover trial comparing continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes. This matches the statement verbatim in substance, even though the full abstract is not available (metadata only). The title alone entails the stateme…",
+   "locatedQuote": "Effects of continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes: a randomized crossover trial",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study was published in the journal Nutrition, Metabolism and Cardiovascular Diseases in 2025.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "support": "supported",
+   "reasoning": "The fetched metadata explicitly lists the journal as Nutrition, Metabolism and Cardiovascular Diseases and the year as 2025, directly matching the statement's claim about publication venue and year.",
+   "locatedQuote": "Journal: Nutrition, Metabolism and Cardiovascular Diseases Year: 2025",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Decreasing caloric intake by 20-30% while meeting nutrient requirements has been found in human research to result in an average loss of 7.9 kilograms (17 lb) in body weight.",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "support": "supported",
+   "reasoning": "The Wikipedia page text nearly verbatim matches the statement, stating that decreasing caloric intake by 20-30% while fulfilling nutrient requirements resulted in an average loss of 7.9 kilograms (17 lb) in body weight, citing human research (Lee et al. 2021, Science journal). This directly supports the claim as stated.",
+   "locatedQuote": "Decreasing caloric intake by 20-30%, while fulfilling nutrient requirements, has been found to remedy diseases of aging, including cancer, cardiovascular disease, dementia, and diabetes in humans, and result in an average loss of 7.9 kilograms (17 lb) in body weight",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "As of 2021, intermittent fasting and calorie restriction remain under preliminary research to assess effects on disease burden and lifespan, and the relative risks of long-term fasting or calorie restriction remain undetermined.",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "support": "supported",
+   "reasoning": "The statement is a close paraphrase of a sentence found verbatim (nearly word-for-word) in the Life extension section of the Wikipedia page on Calorie restriction. The wording matches closely: As of 2021, intermittent fasting and calorie restriction remain under preliminary research to assess the possible effects on disease burden and increased lifespan during aging, although the relative risks as…",
+   "locatedQuote": "As of 2021, intermittent fasting and calorie restriction remain under preliminary research to assess the possible effects on disease burden and increased lifespan during aging, although the relative risks associated with long-term fasting or calorie restriction remain undetermined.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "There exists a published Evidence-Based Practice journal article (2020) titled 'Is intermittent fasting more effective than daily calorie restriction for weight loss in otherwise healthy overweight adults?' evaluating IF versus daily calorie restriction for weight loss.",
+   "url": "https://doi.org/10.1097/ebp.0000000000001108",
+   "support": "supported",
+   "reasoning": "The fetched page metadata confirms the existence of a journal article titled exactly as stated, published in the journal Evidence-Based Practice in 2020, with the given DOI matching the cited URL. This directly matches the statement's claim about the existence, title, journal, and year of the article. While the abstract is not available, the statement only claims the article exists and evaluates I…",
+   "locatedQuote": "Is intermittent fasting more effective than daily calorie restriction for weight loss in otherwise healthy overweight adults? Journal: Evidence-Based Practice Year: 2020 Type: journal-article ... Authors: Meagan Smith, Rebecca Beard, Harrison Gray, Jonathan Hughes, Brittany Wininger DOI: 10.1097/ebp.0000000000001108",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "Prior evidence cited by the authors suggests some (not all) forms of intermittent energy restriction may reduce adaptive metabolic responses to energy restriction compared to continuous energy restriction in sedentary individuals with excess body fat, but this had not yet been established for athlet…",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "supported",
+   "reasoning": "The abstract directly states that prior evidence suggests some (not all) forms of IER may reduce adaptive responses to energy restriction compared to CER in sedentary individuals with excess body fat, and explicitly notes this has not yet been established for athletes - which matches the statement closely and is exactly the kind of framing statement an abstract can carry (it's part of the Introduc…",
+   "locatedQuote": "Evidence suggests that some—but not all—forms of intermittent energy restriction (IER) may be superior to the conventional method of continuous energy restriction (CER) for people with excess body fat that are sedentary, by reducing some of the adaptive responses to ER. However, it is yet to be established whether this dietary approach is effective for athletes.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Evidence is limited that intermittent fasting produces weight loss comparable to continuous calorie restriction, with only preliminary/limited studies supporting equivalence.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "supported",
+   "reasoning": "The Wikipedia article directly states There is limited evidence that intermittent fasting produces weight loss comparable to a calorie-restricted diet, which closely matches the statement's claim that evidence is limited regarding equivalence of intermittent fasting and continuous calorie restriction for weight loss. This is a near-verbatim match with no significant added scope or certainty beyond…",
+   "locatedQuote": "There is limited evidence that intermittent fasting produces weight loss comparable to a calorie-restricted diet.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "For time-restricted eating, the ratio of weight loss attributable to fat mass versus lean mass is 4:1.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "supported",
+   "reasoning": "The Wikipedia article explicitly states this exact claim verbatim, matching the statement's content directly with no interpretive leap needed.",
+   "locatedQuote": "For time restricted eating the ratio of weight loss is 4:1 for fat mass to lean mass, respectively.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "For overweight or obese individuals, calorie restriction may improve health through weight loss, although a gradual weight regain of 1-2 kg per year may occur, indicating adherence/maintenance challenges with continuous calorie restriction.",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "support": "supported",
+   "reasoning": "The statement is nearly a verbatim match to the page text, which explicitly states that calorie restriction may improve health through weight loss for overweight/obese individuals, with gradual weight regain of 1-2 kg per year. The only addition in the statement is the interpretive clause indicating adherence/maintenance challenges with continuous calorie restriction, which is a reasonable inferen…",
+   "locatedQuote": "For overweight or obese individuals, calorie restriction may improve health through weight loss, although a gradual weight regain of 1–2 kg (2.2–4.4 lb) per year may occur.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study population consisted of individuals with type 2 diabetes, representing a subgroup relevant to insulin-resistant populations rather than a general or healthy weight-loss population.",
+   "url": "https://doi.org/10.1186/s13098-026-02275-0",
+   "support": "partial",
+   "reasoning": "The fetched page content is only Crossref metadata (title, journal, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only). The title does confirm the study population consists of individuals with type 2 diabetes, which supports the core claim that this is a diabetes-specific subgroup rather than a general/healthy weight-loss population. However, t…",
+   "locatedQuote": "Effects of continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes: a randomized crossover trial",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The meta-analysis has been cited 13 times as of the data retrieval, indicating some but limited uptake in the literature.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 13 (Cited by: 13), which supports the numerical claim in the statement. However, the page does not provide any interpretive commentary about what this number means in terms of uptake in the literature - that characterization (some but limited uptake) is an interpretive addition by the report author, not something stated on the page itself. The page is simply…",
+   "locatedQuote": "Cited by: 13",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The Endocrine Society stated that when calorie intake is held constant, body-fat accumulation is not appreciably affected by even very pronounced changes in dietary fat vs carbohydrate ratio, with only a transient ~100 kcal/day weight-loss advantage that diminishes over time and becomes insignifican…",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a nearly verbatim match to the statement, explicitly attributing the claim to the Endocrine Society: that with calorie intake held constant, body-fat accumulation is not appreciably affected by pronounced changes in fat vs carbohydrate ratio, with only a transient ~100 kcal/day weight-loss advantage that diminishes over time and becomes insignificant. This directly supp…",
+   "locatedQuote": "The Endocrine Society stated that when calorie intake is held constant ... body-fat accumulation does not appear to be affected by even very pronounced changes in the amount of fat vs. carbohydrate in the diet. People on such a diet have very slightly more weight loss initially, equivalent to approximately 100kcal/day, but that advantage diminishes over time and is ultimately insignificant.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A 2022 Cochrane review examining periods of two years found no benefit for adhering to a low-carbohydrate diet compared to balanced diets.",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "support": "supported",
+   "reasoning": "The page text contains a nearly verbatim match to the statement: it explicitly cites a 2022 Cochrane review that looked at periods of two years and found no benefit for adhering to a low-carbohydrate diet compared to balanced diets.",
+   "locatedQuote": "A Cochrane review from 2022 looked into longer periods of two years and found no benefit for adhering to a low-carbohydrate diet in comparison to balanced diets.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "This Wikipedia page on obesity does not discuss intermittent fasting versus continuous calorie restriction, fat-mass outcomes, or related trial evidence.",
+   "url": "https://en.wikipedia.org/wiki/Obesity",
+   "support": "supported",
+   "reasoning": "The fetched Wikipedia Obesity page content provided is a general overview covering definitions, classification, causes, health effects, mortality risk, and general treatment approaches (diet, exercise, medication, surgery). Nowhere in the provided text is there any mention of intermittent fasting, continuous calorie restriction, fat-mass outcomes, or specific clinical trial evidence comparing thes…",
+   "locatedQuote": "Changes to diet as well as exercising are the main treatments recommended by health professionals. [ 2 ] Diet quality can be improved by reducing the consumption of energy-dense foods, such as those high in fat or sugars, and by increasing the intake of dietary fiber.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Secondary outcomes of the trial include circulating concentrations of appetite-regulating hormones, resting energy expenditure, and subjective drive to eat, intended to probe mechanistic hormonal/metabolic pathways underlying any fat-loss differences.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "partial",
+   "reasoning": "The abstract explicitly lists circulating concentrations of appetite-regulating hormones, resting energy expenditure, and subjective drive to eat as secondary outcomes, directly supporting that portion of the statement. However, the statement adds an interpretive claim that these outcomes are intended to probe mechanistic hormonal/metabolic pathways underlying any fat-loss differences - this speci…",
+   "locatedQuote": "Secondary outcomes will be changes in FM and FFM at 15 weeks after intervention commencement, as well as muscle performance, physical activity, sleep quality, changes in resting energy expenditure, subjective drive to eat, circulating concentrations of appetite-regulating hormones, mood states and diet acceptability.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The trial prescribed calorie targets that differed by diet arm and sex (5:2 IF: 1400-1600 kcal/d females, 1600-1800 kcal/d males on non-fasting days, 600/800 kcal on fasting days; daily calorie restriction: 1200-1500 kcal/d females, 1500-1800 kcal/d males), indicating the design was not strictly iso…",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "support": "partial",
+   "reasoning": "The page confirms all the numeric calorie targets cited in the statement: 5:2 IF diet non-fasting days 1400-1600 kcal/d females, 1600-1800 kcal/d males, fasting days 600/800 kcal; and daily calorie restriction 1200-1500 kcal/d females, 1500-1800 kcal/d males. These figures match exactly. However, the statement's concluding interpretive claim — indicating the design was not strictly isocaloric matc…",
+   "locatedQuote": "This dietary regimen entails customary eating habits for five consecutive days per week, maintaining an energy intake range of 1,400–1,600 kcal/d for females and 1,600–1,800 kcal/d for males (8). On the remaining 2 days, a regimen of light fasting is adopted, restricting daily energy intake to 600 kcal/day for females and 800 kcal/day for males... male participants were advised to adhere to a dail…",
+   "locatedQuoteOnPage": "located-approx"
+  },
+  {
+   "claim": "In the Minnesota Starvation Experiment, a 40% (roughly 45% per another figure) reduction in energy intake over six months caused participants to lose about 25% of body weight, of which 67% was fat mass and 17% was fat-free mass, demonstrating that severe continuous calorie restriction reduces both f…",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "support": "supported",
+   "reasoning": "The page directly states the 40% reduction in energy intake over 6 months, and separately (in the Risks of malnutrition section) cites a 45% figure (restricted their calorie intake by 45%), matching the roughly 45% per another figure parenthetical. The page also states the 25% body weight loss with 67% fat mass and 17% fat-free mass breakdown verbatim, matching the statement precisely. The general…",
+   "locatedQuote": "The Minnesota Starvation Experiment examined the physical and psychological effects of extreme calorie restriction on 32 young and lean 24-year-old men during a 40% reduction in energy intake for 6 months... The men lost about 25% of their body weight of which 67% was fat mass and 17% fat-free mass. [20]",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "This Wikipedia article about low-carbohydrate diets does not address intermittent fasting versus continuous calorie restriction; it instead compares low-carbohydrate to low-fat/balanced diets and finds weight loss is mainly determined by calorie restriction and adherence, not macronutrient ratio.",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "support": "supported",
+   "reasoning": "The article's entire content compares low-carbohydrate diets to low-fat/balanced/Mediterranean diets throughout (e.g., A study comparing groups taking low-fat, low-carbohydrate and Mediterranean diets, A 2018 review said higher-quality meta-analyses reported little or no difference in weight loss between the two diets, and repeated statements that weight loss is mainly determined by calorie restri…",
+   "locatedQuote": "There is no good evidence that low-carbohydrate dieting in general confers any particular health benefits apart from weight loss, where low-carbohydrate diets achieve outcomes similar to other diets, as weight loss is mainly determined by calorie restriction and adherence.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Intermittent fasting's effect on lowering blood pressure appears less pronounced than continuous energy restriction, indicating differences exist in some outcomes even if overall weight/fat effects are similar.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "supported",
+   "reasoning": "The Wikipedia page directly states this exact claim twice (in the lead and in the Research section), immediately after noting that intermittent fasting may improve several health outcomes in overweight or obese adults including reducing fat mass, waist circumference, etc. This directly supports the statement that IF's blood pressure-lowering effect is less pronounced than continuous energy restric…",
+   "locatedQuote": "Its effect on lowering blood pressure appears to be less pronounced than that of continuous energy restriction.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "This is a study protocol (not yet reporting results) for a 60-participant RCT in athletes comparing 12 weeks of moderate continuous energy restriction (mCER) vs moderate intermittent energy restriction (mIER, 4x3-week ER blocks interspersed with 3x1-week energy balance blocks), with co-primary outco…",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "supported",
+   "reasoning": "The abstract explicitly describes: a protocol paper (title says protocol for a randomised controlled trial), 60 athletes, RCT design, moderate continuous ER (mCER) vs moderate intermittent ER (mIER) with the 4x3-week ER blocks interspersed with 3x1-week energy balance blocks structure, co-primary outcomes of FM and FFM change, and registration number ACTRN12618000638235p. All elements of the state…",
+   "locatedQuote": "Sixty healthy athletes aged ≥18 years will be recruited from local sporting facilities and randomised to an intervention of either moderate CER (mCER) or moderate IER (mIER)... The mIER intervention will entail 12 weeks of moderate ER, administered as 4×3 week blocks of moderate ER, interspersed with 3×1 week blocks of EB. The co-primary outcomes are changes in FM and FFM after 12 weeks of moderat…",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "A 12-week RCT of 60 MAFLD patients found no statistically significant difference between 5:2 intermittent fasting and daily calorie restriction in body weight, BMI, waist circumference, hip circumference, or WHR.",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "support": "supported",
+   "reasoning": "The page directly states that in this 12-week RCT of 60 MAFLD patients comparing 5:2 intermittent fasting to daily calorie restriction, there were no statistically significant differences between the two groups in weight, BMI, waist circumference, hip circumference, and WHR—matching the statement's claims exactly.",
+   "locatedQuote": "No statistically significant differences were observed between the two groups in terms of weight, BMI (body mass index), WC (waist circumference), HC (hip circumference), and WHR (waist to hip ratio).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The trial is designed to run for a total of 15 weeks (12 weeks of restriction plus 3 weeks of energy balance), placing it within the lower end of the 8-52 week duration window relevant to assessing IF vs CCR efficacy, and it targets athletes rather than sedentary individuals with excess body fat.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "partial",
+   "reasoning": "The abstract confirms the trial design: 12 weeks of moderate energy restriction plus 3 weeks of energy balance, totaling 15 weeks, and that it targets athletes (not sedentary individuals with excess body fat, who are explicitly contrasted as the population where prior evidence exists). This supports the core factual claims about duration (15 weeks = 12+3) and population (athletes vs sedentary indi…",
+   "locatedQuote": "Both interventions will consist of 12 weeks of moderate ER, plus 3 weeks in energy balance (EB)... Secondary outcomes will be changes in FM and FFM at 15 weeks after intervention commencement... Sixty healthy athletes aged ≥18 years will be recruited from local sporting facilities... Evidence suggests that some—but not all—forms of intermittent energy restriction (IER) may be superior to the conve…",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "The page states that treatments for obesity include diet, exercise, medications, and surgery, without specifying intermittent fasting as a distinct evidence-based protocol.",
+   "url": "https://en.wikipedia.org/wiki/Obesity",
+   "support": "supported",
+   "reasoning": "The infobox explicitly lists Diet, exercise, medications, surgery as the treatment for obesity. Searching the entire page content provided, there is no mention of intermittent fasting anywhere - it does not appear as a distinct treatment or protocol. The body text also elaborates on diet, exercise, medications, and surgery/gastric procedures as the treatment approaches, consistent with the infobox…",
+   "locatedQuote": "Treatment Diet, exercise, medications, surgery [ 5 ] [ 6 ]",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In this trial, the 5:2 IF diet significantly reduced the proportion of patients with moderate-or-greater hepatic steatosis compared to daily calorie restriction (29.6% vs 59.3%, p=0.028), an effect described as independent of weight regulation.",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "support": "supported",
+   "reasoning": "The page directly reports the same numeric result (29.6% vs 59.3%, p=0.028) for the proportion of patients with hepatic steatosis ≥ moderate, comparing the 5:2 IF diet to daily calorie restriction. It also explicitly states in the conclusion that the 5:2 IF diet's improvement in steatosis scores was independent of weight regulation, since no significant differences in weight/BMI were observed betw…",
+   "locatedQuote": "In comparison to daily calorie restriction eating, the 5:2 IF diet significantly decreased the proportion of hepatic steatosis ≥moderate (29.6% vs. 59.3%, p = 0.028)... 5:2 IF diet demonstrates better improvement in fibrosis and steatosis scores independently from weight regulation.",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "eLife peer-review assessment concerns a randomized controlled trial testing a personalized circadian eating schedule (time-restricted/timed eating) that led to weight loss without explicit calorie restriction.",
+   "url": "https://doi.org/10.7554/elife.96837.1.sa3",
+   "support": "supported",
+   "reasoning": "The fetched page content is the title of an eLife peer-review assessment record. The title itself directly states the core claim: it is an eLife peer-review assessment (Type: peer-review) concerning a study titled Time to Eat - A Personalized Circadian Eating Schedule Leads to Weight Loss Without Calorie Restriction: A Randomized Controlled Trial. This title explicitly indicates the study is a ran…",
+   "locatedQuote": "Time to Eat - A Personalized Circadian Eating Schedule Leads to Weight Loss Without Calorie Restriction: A Randomized Controlled Trial",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The trial's design explicitly measures both fat mass (FM) and fat-free mass (FFM) as co-primary outcomes after 12 weeks of moderate energy restriction, directly addressing whether IF preserves lean mass differently than CER.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the trial's co-primary outcomes are changes in fat mass (FM) and fat-free mass (FFM) after 12 weeks of moderate energy restriction, and the trial compares moderate IER vs moderate CER interventions. This directly matches the statement's claim about the trial design measuring FM and FFM as co-primary outcomes after 12 weeks of moderate energy restriction, and the…",
+   "locatedQuote": "The co-primary outcomes are changes in FM and FFM after 12 weeks of moderate ER.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A comparison of low-fat, low-carbohydrate, and Mediterranean diets found that at six months the low-carbohydrate group had the highest adherence, but by two years that group had the highest incidence of lapses and dropouts.",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "support": "supported",
+   "reasoning": "The Wikipedia page contains a sentence that directly matches the statement's claim: it describes a study comparing low-fat, low-carbohydrate, and Mediterranean diets, noting that at six months the low-carbohydrate group had the highest adherence, and by two years that group had the highest incidence of lapses and dropouts. This is a near-verbatim match to the statement, with no added scope or spec…",
+   "locatedQuote": "A study comparing groups taking low-fat, low-carbohydrate and Mediterranean diets found at six months the low-carbohydrate diet still had most people adhering to it, but thereafter the situation reversed: at two years the low-carbohydrate group had the highest incidence of lapses and dropouts.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "A systematic review and meta-analysis of RCTs examined whether isocaloric intermittent fasting is superior to calorie restriction for fat loss outcomes.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "quote": "Is isocaloric intermittent fasting superior to calorie restriction? A systematic review and meta-analysis of RCTs",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "Alternate-day fasting does not affect lean body mass according to some reviews, though one review found a small decrease, indicating mixed evidence on lean mass preservation.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quote": "Alternate-day fasting does not affect lean body mass , [ 4 ] [ 40 ] although one review found a small decrease. [ 41 ]",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6257
+  },
+  {
+   "claim": "A 2019 review found drop-out rates for intermittent fasting ranged from 2% to 38%, while drop-out rates for calorie restriction diets ranged from 0% to 50%, showing high variability and no clear adherence advantage for either approach.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quote": "A 2019 review found that drop-out rates varied widely from 2% to 38% for intermittent fasting, and from 0% to 50% for calorie restriction diet .",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 9228
+  },
+  {
+   "claim": "A randomized crossover trial was conducted comparing continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes.",
+   "url": "https://doi.org/10.1186/s13098-026-02275-0",
+   "quote": "Effects of continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes: a randomized crossover trial",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "The study was published in the journal Nutrition, Metabolism and Cardiovascular Diseases in 2025.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "quote": "Journal: Nutrition, Metabolism and Cardiovascular Diseases Year: 2025",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 116
+  },
+  {
+   "claim": "Decreasing caloric intake by 20-30% while meeting nutrient requirements has been found in human research to result in an average loss of 7.9 kilograms (17 lb) in body weight.",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "quote": "Decreasing caloric intake by 20-30%, while fulfilling nutrient requirements, has been found to remedy diseases of aging, including cancer, cardiovascular disease, dementia, and diabetes in humans, and result in an average loss of 7.9 kilograms (17 lb) in body weight, but because of the long lifespan of humans, evidence that calorie restriction could prevent age-related disease in humans remains under preliminary research.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2666
+  },
+  {
+   "claim": "As of 2021, intermittent fasting and calorie restriction remain under preliminary research to assess effects on disease burden and lifespan, and the relative risks of long-term fasting or calorie restriction remain undetermined.",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "quote": "As of 2021, intermittent fasting and calorie restriction remain under preliminary research to assess the possible effects on disease burden and increased lifespan during aging, although the relative risks associated with long-term fasting or calorie restriction remain undetermined.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3435
+  },
+  {
+   "claim": "There exists a published Evidence-Based Practice journal article (2020) titled 'Is intermittent fasting more effective than daily calorie restriction for weight loss in otherwise healthy overweight adults?' evaluating IF versus daily calorie restriction for weight loss.",
+   "url": "https://doi.org/10.1097/ebp.0000000000001108",
+   "quote": "Is intermittent fasting more effective than daily calorie restriction for weight loss in otherwise healthy overweight adults? Journal: Evidence-Based Practice Year: 2020",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "Prior evidence cited by the authors suggests some (not all) forms of intermittent energy restriction may reduce adaptive metabolic responses to energy restriction compared to continuous energy restriction in sedentary individuals with excess body fat, but this had not yet been established for athlet…",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quote": "Evidence suggests that some—but not all—forms of intermittent energy restriction (IER) may be superior to the conventional method of continuous energy restriction (CER) for people with excess body fat that are sedentary, by reducing some of the adaptive responses to ER.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 594
+  },
+  {
+   "claim": "Evidence is limited that intermittent fasting produces weight loss comparable to continuous calorie restriction, with only preliminary/limited studies supporting equivalence.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quote": "There is limited evidence that intermittent fasting produces weight loss comparable to a calorie-restricted diet .",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5782
+  },
+  {
+   "claim": "For time-restricted eating, the ratio of weight loss attributable to fat mass versus lean mass is 4:1.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quote": "For time restricted eating the ratio of weight loss is 4:1 for fat mass to lean mass, respectively.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6144
+  },
+  {
+   "claim": "The Endocrine Society stated that when calorie intake is held constant, body-fat accumulation is not appreciably affected by even very pronounced changes in dietary fat vs carbohydrate ratio, with only a transient ~100 kcal/day weight-loss advantage that diminishes over time and becomes insignifican…",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "quote": "The Endocrine Society stated that when calorie intake is held constant ... body-fat accumulation does not appear to be affected by even very pronounced changes in the amount of fat vs. carbohydrate in the diet. People on such a diet have very slightly more weight loss initially, equivalent to approximately 100kcal/day, but that advantage diminishes over time and is ultimately insignificant.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7794
+  },
+  {
+   "claim": "This Wikipedia page on obesity does not discuss intermittent fasting versus continuous calorie restriction, fat-mass outcomes, or related trial evidence.",
+   "url": "https://en.wikipedia.org/wiki/Obesity",
+   "quote": "Changes to diet as well as exercising are the main treatments recommended by health professionals.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5597
+  },
+  {
+   "claim": "Secondary outcomes of the trial include circulating concentrations of appetite-regulating hormones, resting energy expenditure, and subjective drive to eat, intended to probe mechanistic hormonal/metabolic pathways underlying any fat-loss differences.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quote": "Secondary outcomes will be changes in FM and FFM at 15 weeks after intervention commencement, as well as muscle performance, physical activity, sleep quality, changes in resting energy expenditure, subjective drive to eat, circulating concentrations of appetite-regulating hormones, mood states and diet acceptability.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1679
+  },
+  {
+   "claim": "The trial prescribed calorie targets that differed by diet arm and sex (5:2 IF: 1400-1600 kcal/d females, 1600-1800 kcal/d males on non-fasting days, 600/800 kcal on fasting days; daily calorie restriction: 1200-1500 kcal/d females, 1500-1800 kcal/d males), indicating the design was not strictly iso…",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "quote": "maintaining an energy intake range of 1,400–1,600 kcal/d for females and 1,600–1,800 kcal/d for males",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 10341
+  },
+  {
+   "claim": "In the Minnesota Starvation Experiment, a 40% (roughly 45% per another figure) reduction in energy intake over six months caused participants to lose about 25% of body weight, of which 67% was fat mass and 17% was fat-free mass, demonstrating that severe continuous calorie restriction reduces both f…",
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "quote": "The men lost about 25% of their body weight of which 67% was fat mass and 17% fat-free mass.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4552
+  },
+  {
+   "claim": "This Wikipedia article about low-carbohydrate diets does not address intermittent fasting versus continuous calorie restriction; it instead compares low-carbohydrate to low-fat/balanced diets and finds weight loss is mainly determined by calorie restriction and adherence, not macronutrient ratio.",
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "quote": "It has been repeatedly found that in the long-term, all diets with the same calorific value perform the same for weight loss, except for the one differentiating factor of how well people can faithfully follow the dietary programme.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6991
+  },
+  {
+   "claim": "Intermittent fasting's effect on lowering blood pressure appears less pronounced than continuous energy restriction, indicating differences exist in some outcomes even if overall weight/fat effects are similar.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quote": "Its effect on lowering blood pressure appears to be less pronounced than that of continuous energy restriction .",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 856
+  },
+  {
+   "claim": "This is a study protocol (not yet reporting results) for a 60-participant RCT in athletes comparing 12 weeks of moderate continuous energy restriction (mCER) vs moderate intermittent energy restriction (mIER, 4x3-week ER blocks interspersed with 3x1-week energy balance blocks), with co-primary outco…",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quote": "A single-blind, parallel group, randomised controlled trial with a 1:1 allocation ratio is proposed. Sixty healthy athletes aged ≥18 years will be recruited from local sporting facilities and randomised to an intervention of either moderate CER (mCER) or moderate IER (mIER).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 980
+  },
+  {
+   "claim": "A 12-week RCT of 60 MAFLD patients found no statistically significant difference between 5:2 intermittent fasting and daily calorie restriction in body weight, BMI, waist circumference, hip circumference, or WHR.",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "quote": "No statistically significant differences were observed between the two groups in terms of weight, BMI (body mass index), WC (waist circumference), HC (hip circumference), and WHR (waist to hip ratio).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2965
+  },
+  {
+   "claim": "The trial is designed to run for a total of 15 weeks (12 weeks of restriction plus 3 weeks of energy balance), placing it within the lower end of the 8-52 week duration window relevant to assessing IF vs CCR efficacy, and it targets athletes rather than sedentary individuals with excess body fat.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quote": "Both interventions will consist of 12 weeks of moderate ER, plus 3 weeks in energy balance (EB).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1256
+  },
+  {
+   "claim": "The page states that treatments for obesity include diet, exercise, medications, and surgery, without specifying intermittent fasting as a distinct evidence-based protocol.",
+   "url": "https://en.wikipedia.org/wiki/Obesity",
+   "quote": "Treatment Diet, exercise, medications, surgery",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2514
+  },
+  {
+   "claim": "eLife peer-review assessment concerns a randomized controlled trial testing a personalized circadian eating schedule (time-restricted/timed eating) that led to weight loss without explicit calorie restriction.",
+   "url": "https://doi.org/10.7554/elife.96837.1.sa3",
+   "quote": "Time to Eat - A Personalized Circadian Eating Schedule Leads to Weight Loss Without Calorie Restriction: A Randomized Controlled Trial",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 20
+  },
+  {
+   "claim": "The trial's design explicitly measures both fat mass (FM) and fat-free mass (FFM) as co-primary outcomes after 12 weeks of moderate energy restriction, directly addressing whether IF preserves lean mass differently than CER.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quote": "The co-primary outcomes are changes in FM and FFM after 12 weeks of moderate ER.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1598
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 26,
+   "floor": 5,
+   "thin": false,
+   "verdict": "26 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "A 2019 review found drop-out rates for intermittent fasting ranged from 2% to 38%, while drop-out rates for calorie restriction diets ranged from 0% to 50%, showing high variability and no clear adherence advantage for either approach.",
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "support": "partial",
+   "reasoning": "The page directly supports the core numerical claim: a 2019 review found intermittent fasting drop-out rates ranging 2%-38% and calorie restriction drop-out rates ranging 0%-50%. This matches the statement's figures closely. However, the statement adds an interpretive conclusion - showing high variability and no clear adherence advantage for either approach - which is not explicitly stated in the …",
+   "locatedQuote": "A 2019 review found that drop-out rates varied widely from 2% to 38% for intermittent fasting, and from 0% to 50% for calorie restriction diet.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study population consisted of individuals with type 2 diabetes, representing a subgroup relevant to insulin-resistant populations rather than a general or healthy weight-loss population.",
+   "url": "https://doi.org/10.1186/s13098-026-02275-0",
+   "support": "partial",
+   "reasoning": "The fetched page content is only Crossref metadata (title, journal, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only). The title does confirm the study population consists of individuals with type 2 diabetes, which supports the core claim that this is a diabetes-specific subgroup rather than a general/healthy weight-loss population. However, t…",
+   "locatedQuote": "Effects of continuous calorie restriction versus time-restricted intermittent fasting on glycemic variability in individuals with type 2 diabetes: a randomized crossover trial",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The meta-analysis has been cited 13 times as of the data retrieval, indicating some but limited uptake in the literature.",
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "support": "partial",
+   "reasoning": "The page confirms the citation count of 13 (Cited by: 13), which supports the numerical claim in the statement. However, the page does not provide any interpretive commentary about what this number means in terms of uptake in the literature - that characterization (some but limited uptake) is an interpretive addition by the report author, not something stated on the page itself. The page is simply…",
+   "locatedQuote": "Cited by: 13",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "Secondary outcomes of the trial include circulating concentrations of appetite-regulating hormones, resting energy expenditure, and subjective drive to eat, intended to probe mechanistic hormonal/metabolic pathways underlying any fat-loss differences.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "partial",
+   "reasoning": "The abstract explicitly lists circulating concentrations of appetite-regulating hormones, resting energy expenditure, and subjective drive to eat as secondary outcomes, directly supporting that portion of the statement. However, the statement adds an interpretive claim that these outcomes are intended to probe mechanistic hormonal/metabolic pathways underlying any fat-loss differences - this speci…",
+   "locatedQuote": "Secondary outcomes will be changes in FM and FFM at 15 weeks after intervention commencement, as well as muscle performance, physical activity, sleep quality, changes in resting energy expenditure, subjective drive to eat, circulating concentrations of appetite-regulating hormones, mood states and diet acceptability.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The trial prescribed calorie targets that differed by diet arm and sex (5:2 IF: 1400-1600 kcal/d females, 1600-1800 kcal/d males on non-fasting days, 600/800 kcal on fasting days; daily calorie restriction: 1200-1500 kcal/d females, 1500-1800 kcal/d males), indicating the design was not strictly iso…",
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "support": "partial",
+   "reasoning": "The page confirms all the numeric calorie targets cited in the statement: 5:2 IF diet non-fasting days 1400-1600 kcal/d females, 1600-1800 kcal/d males, fasting days 600/800 kcal; and daily calorie restriction 1200-1500 kcal/d females, 1500-1800 kcal/d males. These figures match exactly. However, the statement's concluding interpretive claim — indicating the design was not strictly isocaloric matc…",
+   "locatedQuote": "This dietary regimen entails customary eating habits for five consecutive days per week, maintaining an energy intake range of 1,400–1,600 kcal/d for females and 1,600–1,800 kcal/d for males (8). On the remaining 2 days, a regimen of light fasting is adopted, restricting daily energy intake to 600 kcal/day for females and 800 kcal/day for males... male participants were advised to adhere to a dail…",
+   "locatedQuoteOnPage": "located-approx"
+  },
+  {
+   "claim": "The trial is designed to run for a total of 15 weeks (12 weeks of restriction plus 3 weeks of energy balance), placing it within the lower end of the 8-52 week duration window relevant to assessing IF vs CCR efficacy, and it targets athletes rather than sedentary individuals with excess body fat.",
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "support": "partial",
+   "reasoning": "The abstract confirms the trial design: 12 weeks of moderate energy restriction plus 3 weeks of energy balance, totaling 15 weeks, and that it targets athletes (not sedentary individuals with excess body fat, who are explicitly contrasted as the population where prior evidence exists). This supports the core factual claims about duration (15 weeks = 12+3) and population (athletes vs sedentary indi…",
+   "locatedQuote": "Both interventions will consist of 12 weeks of moderate ER, plus 3 weeks in energy balance (EB)... Secondary outcomes will be changes in FM and FFM at 15 weeks after intervention commencement... Sixty healthy athletes aged ≥18 years will be recruited from local sporting facilities... Evidence suggests that some—but not all—forms of intermittent energy restriction (IER) may be superior to the conve…",
+   "locatedQuoteOnPage": "located-elided"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 9,
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "Broader review evidence similarly describes only 'limited evidence' that IF matches (not exceeds) CCR for weight loss, and IF may actually be somewhat weaker than CCR on blood pressure outcomes specifically",
+   "Broader review evidence similarly describes only 'limited evidence' that IF matches (not exceeds) CCR for weight loss, and IF may actually be somewhat weaker than CCR on blood pressure outcomes specifically.",
+   "IF does appear to preserve lean mass reasonably well in most reviews (4:1 fat:lean loss ratio, no consistent lean-mass loss), addressing one theoretical concern about IF",
+   "IF does appear to preserve lean mass reasonably well in most reviews (4:1 fat:lean loss ratio, no consistent lean-mass loss), addressing one theoretical concern about IF.",
+   "Overall, the weight of evidence supports equivalence rather than IF superiority, but this conclusion should be treated as provisional given the missing meta-analytic result and the short duration (12-15 weeks) of all completed trials reviewed.",
+   "the best-matched comparison (a 12-week isocaloric-style RCT in MAFLD patients) found no significant difference in weight, BMI, or waist/hip measures between 5:2 IF and daily calorie restriction",
+   "the best-matched comparison (a 12-week isocaloric-style RCT in MAFLD patients) found no significant difference in weight, BMI, or waist/hip measures between 5:2 IF and daily calorie restriction."
+  ],
+  "untraceableStatements": [
+   "Claim [19]/MAFLD trial is characterized as 'the best-matched comparison' and 'isocaloric-style' in the summary, but claim [14] indicates a different 5:2 IF trial was explicitly NOT isocaloric (differing calorie targets by arm/sex); no claim confirms the MAFLD trial [19] was isocaloric",
+   "Claim that IF preserving lean mass 'addresses one theoretical concern about IF' - this interpretive framing is not in the claim pool",
+   "Finding 2's parenthetical 'let alone superior to' is an inference not stated in claim [9]",
+   "Overall verdict that 'weight of evidence supports equivalence rather than IF superiority' is a synthesis conclusion not directly stated by any single claim, though loosely supported by [0],[9],[19]",
+   "The characterization of the 12-week MAFLD RCT as 'isocaloric-style' is an inserted qualifier not supported by any claim - no claim states this trial matched calories between arms, and in fact claim [14] (from a different trial) shows IF and CCR arms are commonly NOT isocaloric, undermining the assumption.",
+   "The claim that 'Broader review evidence similarly describes only limited evidence that IF matches (not exceeds) CCR for weight loss' is stated as if it is the consensus of multiple broad reviews, but only one review claim [9] supports this, and it doesn't establish 'broader' consensus.",
+   "The summary states 'IF does appear to preserve lean mass reasonably well in most reviews' but claim [1] describes mixed evidence (one review found a small decrease) and claim [10] is specific only to time-restricted eating, not IF generally - the generalization to 'most reviews' and 'IF' broadly is not supported.",
+   "The summary's overall concluding sentence 'Overall, the weight of evidence supports equivalence rather than IF superiority' is an inferential synthesis that overstates certainty given only one small 12-week single-condition (MAFLD) trial and one vague review are the primary support.",
+   "The word 'similarly' linking review evidence of 'limited evidence' to the MAFLD trial's null result implies converging independent lines of evidence, but this is an inferential bridge not stated in claims"
+  ],
+  "coverageGaps": [
+   "No primary source with actual DXA-confirmed fat-mass (not just weight/BMI) comparison between isocaloric IF and CCR was located or cited in the findings, despite this being the crux of checklist items 1-3.",
+   "No primary trial data (actual numbers, p-values, CIs) were extracted from any RCT; all claims are secondary paraphrases/descriptions of study existence or design, not extracted results - this is a systemic evidentiary gap across nearly all 8 sub-questions.",
+   "Sub-question 1 (pooled/meta-analyzed fat-mass outcomes from isocaloric RCTs) was never actually answered: claim [0] only confirms a 2025 meta-analysis exists asking the question, but its results were never extracted - this is explicitly admitted in finding 3 yet the executive summary still draws an overall equivalence conclusion despite this central gap.",
+   "Sub-question 1 (pooled/meta-analyzed fat-mass outcomes from isocaloric RCTs) was never actually answered: claim [0] only confirms the 2025 systematic review exists and its research question, but its actual pooled effect sizes/findings were never extracted (acknowledged in finding 3), leaving the central question of the checklist unaddressed.",
+   "Sub-question 2 (statistical significance AND clinical meaningfulness of fat-mass differences under matched calories/protein) was not answered - no claim reports effect sizes in kg or % body fat with CIs from a properly calorie-matched trial; the MAFLD trial [19] measured weight/BMI/circumference, not DXA fat mass, and was not confirmed isocaloric.",
+   "Sub-question 2 (statistical significance vs clinical meaningfulness of fat-mass differences, in kg or % body fat) was never answered - no claim in the pool reports actual effect sizes, confidence intervals, or kg/percent fat-mass differences from any properly calorie-and-protein-matched trial.",
+   "Sub-question 3 (lean mass preservation, IF vs CCR head-to-head) is only partially covered by indirect/generic claims [1],[10] about IF alone; no claim directly compares FFM loss between IF and CCR arms in the same trial (the athlete protocol trial [18],[20],[23] that was designed to measure exactly this had no results reported, only protocol/design).",
+   "Sub-question 4 (hormonal/metabolic mechanisms - insulin sensitivity, fat oxidation, catecholamines, autophagy) is essentially uncovered: the only related claim [13] describes a trial's planned secondary outcomes (appetite hormones, REE) but reports no actual mechanistic findings or data.",
+   "Sub-question 4 (hormonal/metabolic mechanisms - insulin sensitivity, fat oxidation, catecholamines, autophagy) was essentially unanswered: only claim [13] notes a trial protocol intends to measure appetite hormones and REE as secondary outcomes, but no actual mechanistic results are reported anywhere in the pool.",
+   "Sub-question 5 (adherence/dropout differential effectiveness in real-world settings) is only partially covered by claim [2], which explicitly states dropout ranges overlap heavily and show 'no clear adherence advantage' - yet this nuance is dropped from the executive summary and findings, which do not address real-world spontaneous calorie reduction or divergence from controlled-trial efficacy at all.",
+   "Sub-question 5 (real-world adherence/dropout rates) is only partially covered by claim [2], which shows highly overlapping dropout ranges for both diets with 'no clear adherence advantage' - findings do not fully surface this null result as a distinct answered sub-question, and no real-world/pragmatic (non-RCT) effectiveness data source was ever searched.",
+   "Sub-question 6 (subgroup effects - insulin-resistant, sex, age, BMI, exercise status) is completely unaddressed - no claim in the pool discusses subgroup or interaction effects for IF vs CCR.",
+   "Sub-question 6 (subgroup effects by insulin resistance, sex, age, BMI, exercise status) was not covered at all - no claim in the pool addresses subgroup interactions; the athlete-specific protocol [18]/[20] is the only subgroup-adjacent source and it has no results yet.",
+   "Sub-question 7 (quality/size/funding/risk-of-bias/pre-registration of the trial base) is barely touched - only the athlete trial protocol [18] mentions a registration number; no claim discusses industry funding, risk-of-bias assessment, or sample-size adequacy of the broader trial base, and the contrarian auditor perspective's mandate (publication bias, industry funding, strongest counter-evidence) produced no claims in the pool at all.",
+   "Sub-question 7 (risk of bias, funding source, pre-registration, sample size across the trial base) was not systematically assessed - only one trial's registration [18]/[20] is noted; no discussion of industry funding or risk-of-bias appraisal across the broader trial base appears in the claim pool or findings.",
+   "Sub-question 8 (long-duration >=52-week trials vs short trials) was not covered - the claim pool contains only trials of 12-15 weeks duration; no source addresses whether effects persist, attenuate, or reverse over longer durations, yet the summary asserts short duration as a caveat without any long-duration comparator data to actually test this.",
+   "Sub-question 8 (near/above 52-week trial duration pattern) is completely unaddressed - every trial referenced in the claim pool is 12-15 weeks, and no claim provides any data or commentary on long-duration (~1 year) trials, despite this being an explicit part of the checklist."
+  ],
+  "planFlaws": [
+   "The IF-mechanism steelman physiologist perspective produced no claims with actual mechanistic data (only claim [13], a protocol listing secondary outcomes not yet measured), suggesting this perspective's research was superficial or searches surfaced only protocol papers rather than completed mechanistic studies - the scoping did not verify that each perspective yielded substantive findings before synthesis.",
+   "The mechanism physiologist perspective also yielded no actual mechanistic outcome data (only a protocol's intent to measure hormones, claim [13]), so an entire checklist sub-question (4) was scoped for but not delivered, without the report explicitly acknowledging this as unanswered mechanism data rather than just calling it a lean-mass caveat.",
+   "The perspective set nominally included a 'Contrarian trial auditor' tasked with hunting for underpowered studies, publication bias, industry funding, and the strongest counter-evidence trial, but the claim pool contains zero claims addressing funding source, publication bias, or risk-of-bias - indicating this perspective's searches were not executed or not captured, a blind spot the scoping did not catch downstream.",
+   "The plan's premise that a 12-15 week trial window is adequate to answer the effectiveness question was accepted rather than tested against checklist item 8 (52-week trials) - the scoping checklist itself flagged the need for near/above-52-week trials, but no search in this pool retrieved any trial approaching that duration, and the final summary treats the short-duration trials as sufficient for a provisional verdict rather than explicitly stating the long-duration question remains completely open.",
+   "The report conflates 'isocaloric' framing throughout (per checklist item 1's isocaloric requirement) with the MAFLD trial [19], but the only claim that explicitly addresses caloric matching in an IF-vs-CCR arm ([14], for a different 5:2/DCR trial) shows arms were NOT isocaloric - the scoping process did not verify or flag whether any of the actually-analyzed trials met the isocaloric premise central to the whole research question, undermining the validity of the equivalence conclusion drawn.",
+   "The scoping and perspective set (constructor, mechanism physiologist, body-comp skeptic, adherence practitioner, subgroup skeptic, contrarian auditor) never included a perspective tasked with actually retrieving and reading the full text/results of the single most relevant source identified (the 2025 systematic review/meta-analysis, claim [0]) - despite it being the paper that most directly answers the entire research question, none of the six perspectives' search passes extracted its findings, which is a process failure rather than an absence-of-evidence issue.",
+   "The scoping treated 'no significant difference' findings from small, short (12-15 week), non-isocaloric trials as sufficient basis for an equivalence verdict, but did not build in a check for statistical power (sample sizes as low as n=60) or duration adequacy against its own stated 8-52 week window, allowing underpowered/short trials to anchor the conclusion contrary to sub-question 8's own explicit concern.",
+   "The scoping's sub-question 1 presupposes that isocaloric IF-vs-CCR RCTs exist 'in sufficient number/quality' and that a pooled meta-analysis is retrievable, but when the one directly relevant 2025 meta-analysis [0] could not be fully extracted, the process did not loop back to find an alternative extraction (e.g., abstract results, secondary reporting, or the paper's PubMed abstract) - the plan lacked a fallback/retry step for a load-bearing source, allowing the final report to proceed to a confident-sounding verdict despite the central citation being incomplete.",
+   "The subgroup/precision-medicine perspective produced zero claims in the final pool - none of the 24 claims address subgroup interactions (insulin resistance, sex, age, BMI, exercise status), suggesting that perspective's searches either failed or were not incorporated, but this gap is not flagged anywhere in the report.",
+   "The subgroup/precision-medicine skeptic perspective yielded zero claims in the pool, meaning an entire committed line of inquiry (sub-question 6) was dropped without any documented reason or follow-up, and this omission was not flagged in the executive summary's caveats."
+  ],
+  "rationales": [
+   "The report reaches a confident-sounding 'equivalence, not superiority' verdict, but the process failed to deliver on the two most central checklist items: (1) it explicitly admits the one source purpose-built to answer the question (the 2025 meta-analysis, claim [0]) was never actually read for its results, and (2) no claim in the pool confirms any analyzed trial was genuinely isocaloric with DXA-measured fat mass, undermining the 'best-matched comparison' framing applied to the MAFLD trial. Thr…",
+   ""
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "For overweight or obese individuals, calorie restriction may improve health through weight loss, although a gradual weight regain of 1-2 kg per year may occur, indicating adherence/maintenance challenges with continuous calorie restriction.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "why": "The claim adds an interpretive leap not present in the quote: it states the weight regain is indicating adherence/maintenance challenges with continuous calorie restriction. The quoted text only reports the empirical observation that a gradual weight regain of 1–2 kg (2.2–4.4 lb) per year may occur after weight loss from calorie restriction — it does not attribute this regain to adherence or maintenance difficulty, nor does it frame it as evidence of a comparative weakness of continuous CR speci…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The claim adds an interpretive leap not present in the quote: it states the weight regain is indicating adherence/maintenance challenges with continuous calorie restriction. The quoted text only reports the empirical observation that a gradual weight regain of 1–2 kg (2.2–4.4 lb) per year may occur after weight loss from calorie restriction — it does not attribute this regain to adherence or maintenance difficulty, nor does it frame it as evidence of a comparative weakness of continuous CR speci…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The source is Wikipedia (a tertiary, crowd-edited encyclopedia) with an unstated publish/last-revision date, cited here as a secondary source for a specific clinical claim about weight regain rates (1-2 kg/year) under continuous calorie restriction. Wikipedia articles are not stable, citable primary literature - they are aggregations that change over time, and without a visible date or access-date stamp, there is no way to verify whether this figure reflects current meta-analytic consensus or an…"
+    }
+   ],
+   "contradictedBy": []
+  },
+  {
+   "claim": "The study population consisted of individuals with type 2 diabetes, representing a subgroup relevant to insulin-resistant populations rather than a general or healthy weight-loss population.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1186/s13098-026-02275-0",
+   "why": "The supporting quote is only the fragment individuals with type 2 diabetes — it does not itself state that this population is being framed as a subgroup relevant to insulin-resistant populations rather than a general or healthy weight-loss population. That framing/interpretive contrast is an addition not licensed by the bare quote fragment provided. The quote confirms the study involved T2D patients, but the claim's broader characterization (subgroup relevance, contrast with general or healthy w…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The supporting quote is only the fragment individuals with type 2 diabetes — it does not itself state that this population is being framed as a subgroup relevant to insulin-resistant populations rather than a general or healthy weight-loss population. That framing/interpretive contrast is an addition not licensed by the bare quote fragment provided. The quote confirms the study involved T2D patients, but the claim's broader characterization (subgroup relevance, contrast with general or healthy w…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The publish date (2026) is in the future relative to the current date, which is a provenance red flag—this DOI (10.1186/s13098-026-02275-0) has a year field of 2026 embedded in it, suggesting either a placeholder/pre-registration DOI, an article-in-press with a forward-dated identifier, or an erroneous/unverifiable timestamp. A source that cannot be confirmed as actually published and indexed (rather than a future-dated or provisional DOI) cannot reliably carry the weight of characterizing an en…"
+    }
+   ],
+   "contradictedBy": []
+  },
+  {
+   "claim": "The meta-analysis has been cited 13 times as of the data retrieval, indicating some but limited uptake in the literature.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "why": "The quote Cited by: 13 only states a raw citation count. The claim adds an interpretive characterization - indicating some but limited uptake in the literature - which is an editorializing judgment not present in or licensed by the quote itself. The quote gives a number; it does not characterize that number as limited uptake. This is an unsupported inferential leap beyond what the quoted text states.",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote Cited by: 13 only states a raw citation count. The claim adds an interpretive characterization - indicating some but limited uptake in the literature - which is an editorializing judgment not present in or licensed by the quote itself. The quote gives a number; it does not characterize that number as limited uptake. This is an unsupported inferential leap beyond what the quoted text states."
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim is a citation-count snapshot (Cited by: 13) from a 2025-published secondary source (meta-analysis in Nutrition, Metabolism and Cardiovascular Diseases). Citation counts are inherently time-stamped, database-dependent metrics (Scopus/WoS/Google Scholar all diverge) and the source does not specify which database, retrieval date, or methodology was used to obtain 13 - this is a self-reported/uncheckable metric presented without independent corroboration. In a fast-moving field like IF vs …",
+     "counterSource": "No independent citation-tracking source (e.g., Scopus, Web of Science, or Google Scholar with explicit retrieval date) is cited to corroborate the 13 citations figure or contextualize it against typical citation velocity for recent nutrition meta-ana…"
+    }
+   ],
+   "contradictedBy": [
+    "No independent citation-tracking source (e.g., Scopus, Web of Science, or Google Scholar with explicit retrieval date) is cited to corroborate the 13 citations figure or contextualize it against typical citation velocity for recent nutrition meta-ana…"
+   ]
+  },
+  {
+   "claim": "A 2022 Cochrane review examining periods of two years found no benefit for adhering to a low-carbohydrate diet compared to balanced diets.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "why": "The claim is about low-carbohydrate vs. balanced diets (Cochrane CD013334.pub2, 2022), which is off-topic for the research question of intermittent fasting vs. continuous calorie restriction. More importantly, the claim mischaracterizes the actual Cochrane review findings: the review (Naude et al. 2022, DOI 10.1002/14651858.cd013334.pub2) and its companion Cochrane Clinical Answers (DOI 10.1002/cca.3968 and 10.1002/cca.3970) report that low-carbohydrate diets showed no clinically significant dif…",
+   "refutedBy": [
+    {
+     "lens": "counter",
+     "evidence": "The claim is about low-carbohydrate vs. balanced diets (Cochrane CD013334.pub2, 2022), which is off-topic for the research question of intermittent fasting vs. continuous calorie restriction. More importantly, the claim mischaracterizes the actual Cochrane review findings: the review (Naude et al. 2022, DOI 10.1002/14651858.cd013334.pub2) and its companion Cochrane Clinical Answers (DOI 10.1002/cca.3968 and 10.1002/cca.3970) report that low-carbohydrate diets showed no clinically significant dif…",
+     "counterSource": "https://doi.org/10.1002/14651858.cd013334.pub2 (Cochrane Database of Systematic Reviews 2022 - Naude et al., low-carbohydrate vs balanced-carbohydrate diets review, which found short-term but not necessarily long-term differences, and is unrelated to…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim is topically irrelevant to the research question (IF vs. continuous calorie restriction for fat loss) — it instead discusses low-carbohydrate vs. balanced diets, so no source, however reputable, can carry this weight for the stated question. On provenance specifically: the citation is a tertiary encyclopedia article (Wikipedia) paraphrasing an unnamed 2022 Cochrane review with no direct link, DOI, or author identified in the quote, making it impossible to verify the primary Cochrane so…",
+     "counterSource": "Cochrane Library primary review (e.g., Cochrane Database of Systematic Reviews, low-carbohydrate diet review) — not directly cited or linked in the claim's source"
+    }
+   ],
+   "contradictedBy": [
+    "https://doi.org/10.1002/14651858.cd013334.pub2 (Cochrane Database of Systematic Reviews 2022 - Naude et al., low-carbohydrate vs balanced-carbohydrate diets review, which found short-term but not necessarily long-term differences, and is unrelated to…",
+    "Cochrane Library primary review (e.g., Cochrane Database of Systematic Reviews, low-carbohydrate diet review) — not directly cited or linked in the claim's source"
+   ]
+  },
+  {
+   "claim": "In this trial, the 5:2 IF diet significantly reduced the proportion of patients with moderate-or-greater hepatic steatosis compared to daily calorie restriction (29.6% vs 59.3%, p=0.028), an effect described as independent of weight regulation.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.3389/fnut.2024.1439473",
+   "why": "The claim adds the phrase an effect described as independent of weight regulation, but the supporting quote makes no mention of weight regulation, independence from weight loss, or any such qualifier at all — it only reports the two percentage comparisons for hepatic steatosis and fibrosis. This is an unsupported addition/generalization not licensed by the quoted text; the quote does not state or imply that the steatosis reduction was independent of weight change.",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The claim adds the phrase an effect described as independent of weight regulation, but the supporting quote makes no mention of weight regulation, independence from weight loss, or any such qualifier at all — it only reports the two percentage comparisons for hepatic steatosis and fibrosis. This is an unsupported addition/generalization not licensed by the quoted text; the quote does not state or imply that the steatosis reduction was independent of weight change."
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim asserts the effect was independent of weight regulation, but this qualifier does not appear anywhere in the supporting quote provided, nor is it a phrase directly tied to the cited statistic in the excerpt. This is an unsupported addition/overreach beyond what the quoted primary-source text actually states. Additionally, a single primary RCT/trial (Frontiers in Nutrition, 2024) reporting a p=0.05-adjacent secondary outcome (hepatic fibrosis F≥2 result at exactly p=0.05, borderline sign…"
+    }
+   ],
+   "contradictedBy": []
+  },
+  {
+   "claim": "A comparison of low-fat, low-carbohydrate, and Mediterranean diets found that at six months the low-carbohydrate group had the highest adherence, but by two years that group had the highest incidence of lapses and dropouts.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "why": "The claim under review is actually irrelevant to the research question at hand (intermittent fasting vs. continuous calorie restriction for fat loss) - it discusses low-carbohydrate vs. low-fat vs. Mediterranean diet adherence/dropout patterns, which is a completely different dietary comparison (macronutrient composition, not meal timing/frequency). This is a scope/relevance mismatch: even though the quote is accurately reproduced from the Wikipedia low-carbohydrate diet page, it provides no evi…",
+   "refutedBy": [
+    {
+     "lens": "counter",
+     "evidence": "The claim under review is actually irrelevant to the research question at hand (intermittent fasting vs. continuous calorie restriction for fat loss) - it discusses low-carbohydrate vs. low-fat vs. Mediterranean diet adherence/dropout patterns, which is a completely different dietary comparison (macronutrient composition, not meal timing/frequency). This is a scope/relevance mismatch: even though the quote is accurately reproduced from the Wikipedia low-carbohydrate diet page, it provides no evi…",
+     "counterSource": "N/A - claim is off-topic relative to the research question (intermittent fasting vs. continuous calorie restriction); no low-carb/low-fat comparison source addresses IF, making the claim non-probative regardless of its internal accuracy"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "This claim is not even about intermittent fasting vs continuous calorie restriction—it concerns low-fat vs low-carb vs Mediterranean diet adherence, sourced from a Wikipedia article on low-carbohydrate diets. Beyond that topical mismatch, the provenance is weak for the weight this claim would need to carry in an IF-vs-CR debate: Wikipedia is a tertiary, crowd-edited encyclopedia entry (not the primary trial itself), no publish/access date is given, and the underlying study it summarizes (likely …"
+    }
+   ],
+   "contradictedBy": [
+    "N/A - claim is off-topic relative to the research question (intermittent fasting vs. continuous calorie restriction); no low-carb/low-fat comparison source addresses IF, making the claim non-probative regardless of its internal accuracy"
+   ]
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://doi.org/10.1016/j.numecd.2024.103805",
+   "quality": "secondary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1136/bmjsem-2018-000423",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.3389/fnut.2024.1439473",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.eprac.2026.01.173",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1186/s13098-026-02275-0",
+   "quality": "primary",
+   "perspective": "Meta-analyst constructor",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1111/jhn.70137/v1/review2",
+   "quality": "unreliable",
+   "perspective": "IF-mechanism steelman physiologist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.1111/jhn.70137/v2/review1",
+   "quality": "unreliable",
+   "perspective": "IF-mechanism steelman physiologist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1097/ebp.0000000000001108",
+   "quality": "secondary",
+   "perspective": "IF-mechanism steelman physiologist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Timeline_of_aging_research",
+   "quality": "unreliable",
+   "perspective": "IF-mechanism steelman physiologist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1016/b978-0-12-824005-2.00009-9",
+   "quality": "unreliable",
+   "perspective": "IF-mechanism steelman physiologist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13341414",
+   "quality": "unreliable",
+   "perspective": "Lean-mass/body-composition skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12736288",
+   "quality": "unreliable",
+   "perspective": "Lean-mass/body-composition skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13237850",
+   "quality": "unreliable",
+   "perspective": "Lean-mass/body-composition skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13236458",
+   "quality": "unreliable",
+   "perspective": "Real-world adherence practitioner/coach",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12736170",
+   "quality": "unreliable",
+   "perspective": "Real-world adherence practitioner/coach",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC13395427",
+   "quality": "unreliable",
+   "perspective": "Real-world adherence practitioner/coach",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC8092432",
+   "quality": "unreliable",
+   "perspective": "Extract meta-analysis pooled fat-mass results",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC12672340",
+   "quality": "unreliable",
+   "perspective": "Extract meta-analysis pooled fat-mass results",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+   "quality": "secondary",
+   "perspective": "Long-duration IF vs CCR trials",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Obesity",
+   "quality": "secondary",
+   "perspective": "Long-duration IF vs CCR trials",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Calorie_restriction",
+   "quality": "secondary",
+   "perspective": "Long-duration IF vs CCR trials",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Weight_management",
+   "quality": "unreliable",
+   "perspective": "Long-duration IF vs CCR trials",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Low-carbohydrate_diet",
+   "quality": "secondary",
+   "perspective": "Long-duration IF vs CCR trials",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.7554/elife.96837.1.sa0",
+   "quality": "secondary",
+   "perspective": "Adherence and dropout comparison IF vs CCR",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.7554/elife.96837.2.sa2",
+   "quality": "secondary",
+   "perspective": "Adherence and dropout comparison IF vs CCR",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.7554/elife.96837.1.sa3",
+   "quality": "secondary",
+   "perspective": "Adherence and dropout comparison IF vs CCR",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T?",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 38,
+  "urlDupes": 5,
+  "budgetDropped": 13,
+  "claimsDroppedBeforeVerify": 8,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 41,
+    "ok": 0,
+    "fail": 41,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 41,
+    "ok": 41,
+    "fail": 0,
+    "results": 34
+   },
+   "crossref": {
+    "attempts": 38,
+    "ok": 33,
+    "fail": 5,
+    "results": 180
+   },
+   "europepmc": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "results": 40
+   }
+  },
+  "sourceTiers": {
+   "T2": 18,
+   "T?": 8
+  },
+  "killsByLens": {
+   "support": 4,
+   "provenance": 6,
+   "counter": 2
+  },
+  "fetchVia": {
+   "crossref-api": 7,
+   "crossref-fallback": 2,
+   "http": 16,
+   "failed": 1
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 1,
+   "hits": 88,
+   "rate": 0.091
+  },
+  "agentCalls": 164,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 424499,
+  "outputTokens": 88533,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 36,
+   "unverifiable": 1,
+   "not-found": 1,
+   "onPageRate": 0.947
+  },
+  "pageFetchCache": {
+   "hits": 30,
+   "misses": 26,
+   "charsServedFromCache": 229070,
+   "hitRate": 0.536
+  },
+  "wallSeconds": 717.8,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 24,
+  "killed": 6,
+  "unverifiedCount": 0,
+  "afterSynthesis": 6
+ }
+}

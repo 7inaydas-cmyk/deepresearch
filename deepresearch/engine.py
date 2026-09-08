@@ -999,9 +999,16 @@ def read_provenance(url, text):
 #          true pairs (same hypothesis, reworded) : 0.95 - 1.00
 #          cross pairs (different hypotheses)     : max 0.22
 #
-#      The threshold sits in the middle of that 0.73 gap, roughly three times the highest
-#      cross pair observed and well clear of the lowest true pair. Prefix matching was
-#      the wrong tool: word overlap does not care where the rewording happened.
+#      The threshold sits in the middle of that 0.73 gap. Prefix matching was the wrong
+#      tool: word overlap does not care where the rewording happened.
+#
+#      HELD UP, WITH LESS HEADROOM THAN THE CALIBRATION SUGGESTED. A third run on an
+#      unrelated question, fitted to nothing, matched all four correctly - but two of
+#      them scored 0.82, against a calibration whose lowest true pair was 0.95. So the
+#      true-pair distribution is wider than the first eight pairs implied. 0.82 still
+#      clears 0.6 comfortably and the highest cross pair seen anywhere is 0.22, so the
+#      threshold stands; but the honest margin is ~0.22 below, not ~0.35. If a true pair
+#      is ever seen under 0.7, lower the threshold rather than accepting the false stamp.
 _HYP_LABEL = re.compile(r"^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*", re.I)
 _HYP_STOP = frozenset(
     "the a an of to in is are and or that this it its as be for with by on at from than "

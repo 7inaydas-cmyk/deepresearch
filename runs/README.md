@@ -281,6 +281,35 @@ this run is only compatible with it.
 `supported` verdicts, including PNAS and SAGE — publishers that block a direct fetch.
 Without it those would have been abstracts or nothing.
 
+## Hypothesis matching, and two false stamps on the way (2026-09-08)
+
+`v10-hypothesis-matching.json`. Stamping each `hypothesisVerdict` with whether its
+hypothesis was pre-registered took three attempts, and the first two each put a FALSE
+statement in a report - the exact defect the stamp exists to prevent. Both were green in
+CI while a live run showed the report lying, which is why this one was calibrated on real
+pairs instead of reasoned about.
+
+| attempt | method | live result |
+|---|---|---|
+| 1 | truncate BOTH sides to 80 chars, test containment | **4 of 4** pre-registered hypotheses stamped post-hoc |
+| 2 | strip the `H1:` label, 60-character probe | **2 of 4** stamped post-hoc |
+| 3 | content-word overlap, threshold 0.6 | correct on all pairs across three runs |
+
+Attempt 1 cannot work: synthesis relabels each hypothesis `H1: `, and a four-character
+prefix shifts the alignment so containment never holds. Attempt 2 fails because the model
+rewords mid-sentence - `"The debate is largely a definitional/measurement artifact"` is
+56 characters of exact agreement before diverging, so a 60-character probe missed it.
+
+Calibration, over 8 true pairs and 24 cross pairs from two runs:
+
+    true pairs (same hypothesis, reworded) : 0.95 - 1.00
+    cross pairs (different hypotheses)     : max 0.22
+
+**And the third run widened that.** Fitted to nothing, it matched all four correctly - but
+two scored **0.82**, against a calibration whose lowest true pair was 0.95. The threshold
+stands, since 0.82 clears 0.6 and the highest cross pair anywhere is 0.22, but the honest
+margin is ~0.22 rather than the ~0.35 the first eight pairs implied.
+
 ## The files
 
 | Prefix | What it is |
