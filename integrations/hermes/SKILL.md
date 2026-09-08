@@ -190,6 +190,14 @@ Report these six things. Do not bury them.
    container is up but not serving JSON — run `verify.sh`, do not assume the web is
    empty.
 
+0b. **`honestLimits.evidenceBase`** - how many CITABLE sources the report actually rests
+   on, with a `thin` flag when that is under five. Read it before the findings. A thin
+   report reads exactly like a thick one until you check, and a run this thin has been
+   recorded at 25% citation accuracy. The run is deliberately NOT aborted when thin,
+   because a thin run is usually a retrieval failure worth seeing rather than a silent
+   world - so it is your job to say "this rests on N sources", not the tool's job to
+   hide it.
+
 1. **`citationAudit.citationAccuracy`** - of every verified claim, the percentage whose
    cited page, re-fetched blind, actually supports it. **The single most important number.**
    Under ~70% means treat the report as provisional and say so. Also report
@@ -272,6 +280,18 @@ Claude Code command on the host to refresh it.
   verify that premise rather than test it. Check `processCritique.planFlaws`.
 - **It cannot make sources exist.** On a thin topic it returns a mostly-empty report and
   says so. That is the right answer, not a malfunction.
+- **`stats.cacheReadTokens` is 0 by design - do not report it as a finding.** The engine
+  uses no prompt caching. Measured 2026-09-08: the system block is 47 tokens and a whole
+  verify prompt 332-373, both far under Anthropic's ~1024-token minimum cacheable prefix,
+  so marking them caches nothing and adds a 25% write surcharge. The citation audit's page
+  block is the only one over the floor, and caching it requires moving the page above the
+  statement - a reorder measured to change 6 of 30 audit verdicts against a judge that
+  disagreed with itself on 0 of 30. See `docs/adr/0003-no-prompt-caching.md` in the repo.
+- **`stats.usageUnrecorded` should be empty.** A key there means the API reports a token
+  field the build does not name, so `inputTokens`/`outputTokens` are incomplete by that
+  much. That IS worth reporting.
+- **`stats.pageFetchCache`** - page re-reads served from memory rather than the network.
+  Expect 0 hits at `quick` depth, which runs no citation audit and so re-reads nothing.
 - **Search failover is driven here, not by the tool's `auto` mode.** `auto` only cascades
   `ddg` -> `ddg-lite`; when both are challenged it gives up while `mojeek`, `wikipedia`,
   `crossref`, `hn` and `openalex` are still healthy. This skill walks the full chain and
