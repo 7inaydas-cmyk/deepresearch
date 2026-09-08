@@ -108,10 +108,24 @@ than verbatim page text" while never being shown the page.
 The real extractor was run over real pages and every quote scored against the exact text
 the extractor saw.
 
-| run's sources | quotes | on page in full | partial | not found | unverifiable |
-|---|---|---|---|---|---|
-| nudge (HTML-heavy) | 28 | **82–93%** | 14% | 4% | 0–4% |
-| minwage (PDF-heavy) | 25–29 | **58–68%** | 21–28% | 0–17% | 7–10% |
+| measured on | quotes | on page |
+|---|---|---|
+| published claims, two live runs, after all matcher fixes | 46 | **97.8%** (45/46) |
+| the same 46, as first recorded | 46 | 87.0% |
+
+**The gap between those two rows was the checker, not the extractor.** Three separate
+bugs in the matcher each manufactured false accusations, and each was found by measuring
+rather than reasoning:
+
+1. Exact-match-or-nothing scoring: one differing character in a quote's tail collapsed
+   the score to 0.0, and a PMC quote that was on the page IN FULL read `not-found`.
+2. PDF line-break hyphenation: real quotes carried `con- clusive`, `standard- ized`,
+   `fol- lowing`, and the de-hyphenation rule only fired on a newline the reader had
+   already collapsed to a space.
+3. Normalisation asymmetry, the worst of the three: `webtext` DELETES every
+   double-quote lookalike before the page reaches the model, while `norm_quote` MAPPED
+   them. On any page carrying quotation marks - most research prose - a quote
+   faithfully reproducing what the model was shown scored `not-found` at fraction 0.0.
 
 Two things came out of it that were not the point of the exercise:
 
@@ -165,8 +179,9 @@ A question whose sources include a Cloudflare-blocked publisher.
 raw capture and graded T2. Without the fallback it would have been a third `failed`.
 Citation accuracy 73.3% pooled / 83.3% survivors-only; 165 calls, 442.9s.
 
-The on-page rate on this run first read **78.3%**, well below the 97% of
-`v5-4day-quotes.json`, and the gap was ours rather than the extractor's: four published
+The on-page rate on this run first read **78.3%** and re-scores at **95.7%** after the
+matcher fixes; `v5-4day-quotes.json` re-scores at 100%. The gap was ours rather than the
+extractor's: four published
 quotes carried PDF line-break hyphenation - `con- clusive`, `standard- ized`,
 `fol- lowing`. The de-hyphenation rule only fired on a newline, and the reader collapses
 the newline to a space before the matcher sees it. Fixed, and the same 23 quotes

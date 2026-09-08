@@ -1327,7 +1327,15 @@ def norm_quote(s):
     legitimately introduces: smart punctuation, ligatures, non-breaking spaces,
     hyphenation broken across a line, and arbitrary whitespace.
     """
-    s = unicodedata.normalize("NFKC", str(s or "")).translate(_PUNCT_MAP)
+    # Apply _STRIP, exactly as webtext() does before the page reaches the model. This
+    # is not cosmetic: _STRIP DELETES the whole double-quote lookalike family, so a page
+    # reading `he said "x"` reaches the model as `he said x`. Mapping those characters
+    # instead of deleting them put the two sides in different alphabets, and a quote
+    # that faithfully reproduced what the model was shown scored `not-found` at
+    # fraction 0.0 - on any page containing quotation marks, which is most research
+    # prose. Both sides must be normalised the same way or the check accuses the
+    # extractor of the engine's own transformation.
+    s = _STRIP.sub("", unicodedata.normalize("NFKC", str(s or "")).translate(_PUNCT_MAP))
     # PDF line-break hyphenation: "con-\nclusive" -> "conclusive". The newline form is
     # rarely what arrives, because the reader has already collapsed it to a space by the
     # time this sees it - measured 2026-09-08, real quotes carried "con- clusive",

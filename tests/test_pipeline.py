@@ -476,6 +476,26 @@ ok(dr.quote_span(_PAGE, "\u201cproductivity rose 13 percent over six months\u201
 ok(dr.quote_span(_PAGE, "productivity rose 13 percent ... attrition fell by half")["status"]
    == "located-elided",
    "an ellipsis is honest quoting of a long passage, not evasion")
+# THE invariant. The model is shown webtext(page), never the raw page: webtext DELETES
+# the whole double-quote lookalike family and every zero-width and control codepoint.
+# So a perfectly faithful quote of what the model saw must still be locatable in the raw
+# page - and it was not, because norm_quote MAPPED those characters where webtext
+# DELETES them. On any page carrying quotation marks, which is most research prose, a
+# faithful quote scored `not-found` at fraction 0.0. The check was accusing the
+# extractor of the engine's own transformation.
+for _label, _raw in [
+    ("curly quotes",   'The authors said \u201cproductivity rose sharply\u201d in the second year of trials'),
+    ("straight quotes",'The authors said "productivity rose sharply" in the second year of trials'),
+    ("soft hyphen",    'The authors said produc\u00adtivity rose sharply in the second year of trials'),
+    ("zero-width",     'The authors said produc\u200btivity rose sharply in the second year of trials'),
+    ("bom + bidi",     'The authors\ufeff said productivity rose\u200e sharply in the second year here'),
+]:
+    _seen = dr.webtext(_raw)          # exactly what reaches the model
+    _res = dr.quote_span(_raw, _seen)  # a perfectly faithful quote of it
+    ok(_res["status"] == "located" and _res["foundFraction"] == 1.0,
+       "%s: a faithful quote of what the model was SHOWN is located in the raw page "
+       "(got %s)" % (_label, _res["status"]))
+
 # PDF line-break hyphenation. The reader collapses the newline to a space before this
 # sees it, so the real shape is "con- clusive", not "con-\nclusive". Measured
 # 2026-09-08: four published quotes carrying "con- clusive", "standard- ized" and
