@@ -64,6 +64,7 @@ SHARED = {
     "amended gate (n + lens)":   ("MIN_LENS_KAPPA", "MIN_LENS_KAPPA"),
     "double-encoded recovery":   ("recovered a double-encoded array", "recovered a double-encoded array"),
     "tag-wrapped recovery":      ("_TAGGED_LIST = re.compile", "/^\\s*<([A-Za-z][\\w-]*)>/"),
+    "nested tags stripped":      ("_TAG = re.compile", "replace(/<\\/?[A-Za-z]"),
     "verbatim strike":           ("untraceableVerbatim", "untraceableVerbatim"),
     "strike matches the view":   ("def webtext_pattern(", "const webTextPattern = "),
     "process critic":            ("processCritique", "processCritique"),

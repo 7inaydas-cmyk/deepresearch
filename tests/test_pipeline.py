@@ -844,6 +844,18 @@ ok(dr.as_list("\n<hypothesis>\n<hypothesis>Output is sustained</hypothesis>"
    == ["Output is sustained", "It is not"],
    "any tag the string opens with is recovered, not just <item>, and a repeated "
    "opening tag does not produce an empty leading element")
+# The leaked markup NESTS. Watched live 2026-09-08: framing returned <item> wrapping
+# <hypothesis>, and trimming only the edge characters left `hypothesis>...</hypothesis`
+# welded to the text. The corrective retry then told the model to "keep the wording you
+# already wrote" while showing it mangled wording - and the very next attempt returned
+# the same broken shape, so the informed re-ask bought nothing.
+ok(dr.as_list("\n<item>\n<hypothesis>Strong Ericsson claim: practice is the primary "
+              "driver</hypothesis>\n</item>\n<item>\n<hypothesis>The effect is overstated "
+              "once controls are added</hypothesis>\n</item>", "t")
+   == ["Strong Ericsson claim: practice is the primary driver",
+       "The effect is overstated once controls are added"],
+   "a nested tag is stripped from the recovered text, so the retry is shown the wording "
+   "the model actually wrote rather than a fragment of markup")
 ok(dr.as_list("the result was < 5 percent overall", "t") == [],
    "a stray angle bracket in prose is still not a list - the match is anchored at the "
    "start, which is what markup leakage looks like and prose does not")

@@ -1616,6 +1616,9 @@ QUOTE_ON_PAGE = ("located", "located-elided", "located-approx")
 # a string must BEGIN with the tag, which is what markup leakage looks like and what
 # ordinary prose containing an angle bracket does not.
 _TAGGED_LIST = re.compile(r"\s*<([A-Za-z][\w-]*)>")
+# Deliberately narrow: a letter-led name and no spaces, so "< 5 percent" in prose
+# is left alone while <item>, </hypothesis> and <value> are removed.
+_TAG = re.compile(r"</?[A-Za-z][\w-]*\s*/?>")
 
 
 def as_list(v, label=""):
@@ -1664,11 +1667,15 @@ def as_list(v, label=""):
     # whole retry budget on a payload it was already holding.
     if isinstance(v, str) and _TAGGED_LIST.match(v):
         tag = _TAGGED_LIST.match(v).group(1)
-        parts = [p.split("</%s>" % tag)[0].strip() for p in v.split("<%s>" % tag)[1:]]
-        # A nested repeat of the same opening tag leaves an empty leading fragment;
-        # dropping empties handles '<hypothesis>\n<hypothesis>text' as well as the
-        # well-formed case.
-        parts = [p.strip("<>/ \n\t") for p in parts]
+        parts = [p.split("</%s>" % tag)[0] for p in v.split("<%s>" % tag)[1:]]
+        # Strip EVERY remaining tag, not just trim the edges. The leaked markup nests:
+        # watched live 2026-09-08, framing returned <item> wrapping <hypothesis>, and
+        # trimming edge characters left `hypothesis>Strong Ericsson claim...</hypothesis`
+        # glued to the text. The corrective retry then said "keep the wording you already
+        # wrote" while showing the model mangled wording - so it re-sent the same shape
+        # and the informed re-ask bought nothing on the following attempt.
+        parts = [_TAG.sub(" ", p) for p in parts]
+        parts = [re.sub(r"\s+", " ", p).strip() for p in parts]
         parts = [p for p in parts if p]
         if parts:
             log("  [%s] recovered a <%s>-wrapped array: the field arrived as ONE "

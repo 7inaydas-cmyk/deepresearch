@@ -350,8 +350,14 @@ const asList = (v, label) => {
   const tagged = typeof v === 'string' && /^\s*<([A-Za-z][\w-]*)>/.exec(v)
   if (tagged) {
     const t = tagged[1]
+    // Strip EVERY remaining tag, not just trim the edges. The leaked markup nests:
+    // watched live 2026-09-08 the Python twin saw <item> wrapping <hypothesis>, and
+    // trimming edge characters left `hypothesis>Strong claim...</hypothesis` glued to the
+    // text — so the corrective retry said "keep the wording you already wrote" while
+    // showing the model mangled wording. The pattern is narrow on purpose: a letter-led
+    // name and no spaces, so "< 5 percent" in prose survives.
     const parts = v.split('<' + t + '>').slice(1)
-      .map(p => p.split('</' + t + '>')[0].replace(/^[<>/\s]+|[<>/\s]+$/g, ''))
+      .map(p => p.split('</' + t + '>')[0].replace(/<\/?[A-Za-z][\w-]*\s*\/?>/g, ' ').replace(/\s+/g, ' ').trim())
       .filter(Boolean)
     if (parts.length) {
       log('[' + tag + '] recovered a <' + t + '>-wrapped array: the field arrived as ONE string holding ' + parts.length + ' tagged item(s), not as an array')
