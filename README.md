@@ -156,7 +156,7 @@ Beyond findings and citations, the report is a decision document:
 - **`stats.pageFetchCache`** — how many page re-reads were served from memory instead of the network. The audit re-reads a page once per claim cited to it; 18 of 30 audit fetches in each of two recorded runs were re-downloads.
 - **`stats.usageUnrecorded`** — empty is healthy. A key here means the API reports a token field this build does not name, so the token totals are incomplete by exactly that much and say so. It found three on its first run, two of which nobody had predicted: the API reports cache creation as a *nested* object broken down by TTL.
 - **`citationPartials`** — claims the blind re-fetch rated `partial`. These are **kept**, so read them before quoting a number or an attribution.
-- **`processCritique.struckFromSummary`** — what `DR_UNTRACEABLE=strike` actually removed. The match runs through the same transformation the critic read the summary through; a plain substring test missed on any summary containing a quotation mark, which is why the policy once reported `untraceable: 9, struck: 0`.
+- **`processCritique.struckFromSummary`** — what `DR_UNTRACEABLE=strike` actually removed. Verified live 2026-09-08 at `struck: 2`, the first non-zero in this mechanism's history. The match runs through the same transformation the critic read the summary through; a plain substring test missed on any summary containing a quotation mark, which is why the policy once reported `untraceable: 9, struck: 0`.
 - **`processCritique.untraceableCount`** — read this, not `verdict`. The verdict was measured not to move when three fabricated sentences were added.
 
 ### Flags for measuring the tool itself

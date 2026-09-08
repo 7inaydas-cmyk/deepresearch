@@ -193,6 +193,31 @@ a page reads `signicant` and a faithful quote scores short. Whitespace and hyphe
 are normalised away; characters dropped inside a word are not, and could not be without
 making the matcher too loose to mean anything.
 
+## The strike fires (`v6-strike-fires.json`, DR_UNTRACEABLE=strike)
+
+`policy: strike, untraceable: 9, struck: 0` was the recorded state of this mechanism on
+every run it had ever run, and "strike never fires" survived three external reviews as
+an open finding. The cause was not the critic and not the policy. The critic is shown
+`webtext(summary, 3000)` - quote lookalikes DELETED, whitespace collapsed - and the
+match was a plain substring test against the RAW summary, which fails on any summary
+carrying a quotation mark.
+
+    policy            : strike
+    untraceableCount  : 8
+    struckFromSummary : 2      <- first time above zero
+
+Same run, with the other review fixes in:
+
+| | value |
+|---|---|
+| quotes located on page | **97.1%** (32 located + 1 elided of 34) |
+| citation accuracy | **90.0%** pooled / **90.9%** survivors-only |
+| refuted rows naming a contradicting source | **7** — a field demanded on every counter-lens call and previously read by nothing |
+| agent calls / wall | 156 / 432.7s |
+
+One run on one question. The `struck: 2` is the load-bearing number here, not the
+accuracy: it is a mechanism moving off zero for the first time.
+
 ## The files
 
 | Prefix | What it is |
