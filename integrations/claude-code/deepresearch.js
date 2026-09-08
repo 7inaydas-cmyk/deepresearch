@@ -1042,7 +1042,26 @@ for (const c of killed) for (const v of c.verdicts) if (v.refuted) killTally[v.l
 log('Verify: ' + confirmed.length + ' confirmed, ' + killed.length + ' refuted, ' + unverified.length + ' unverified' +
     (Object.keys(killTally).length ? ' | kills by lens: ' + Object.entries(killTally).map(([k, n]) => k + '=' + n).join(' ') : ''))
 
-const toRefuted = c => ({ claim: webText(c.claim), vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes, killedBy: c.killedBy, source: webText(c.sourceUrl), why: webText((c.verdicts.find(v => v.refuted) || {}).evidence || '') })
+// `why` used to be the FIRST refuting verdict's evidence and nothing else, so a 2-1
+// kill silently discarded the second refuter's reason. The counter-evidence lens is
+// also told to "name the counter-source explicitly in counterSource" — a field the
+// model filled on every counter-lens call and that no code read. The single most
+// useful fact about a killed claim is not that it died but what killed it, so every
+// refuter and every named counter-source is published.
+const toRefuted = c => {
+  const refuters = c.verdicts.filter(v => v.refuted)
+  return {
+    claim: webText(c.claim),
+    vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes,
+    killedBy: c.killedBy, source: webText(c.sourceUrl),
+    why: webText((refuters[0] || {}).evidence || ''),
+    refutedBy: refuters.map(v => ({
+      lens: v.lens, evidence: webText(v.evidence || ''),
+      ...(v.counterSource ? { counterSource: webText(v.counterSource) } : {}),
+    })),
+    contradictedBy: refuters.filter(v => v.counterSource).map(v => webText(v.counterSource)),
+  }
+}
 const toUnverified = c => ({ claim: webText(c.claim), erroredVotes: c.erroredVotes, validVotes: c.verdicts.length, source: webText(c.sourceUrl) })
 
 if (confirmed.length === 0) {
@@ -1466,14 +1485,19 @@ return {
   // These limits travel WITH the report. A caveat that only exists in the README
   // is one the person reading a pasted JSON blob never sees.
   honestLimits: honestLimits(),
-  citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
+  // `locatedQuote` is the auditor's own verbatim pull from the page. It is demanded on
+  // every audit call and was read by nothing — a silent discard, the same one the Python
+  // build carried until 2026-09-08. This build cannot check it against the page (its
+  // subagents fetch for themselves, so the orchestrator never holds the text), but
+  // publishing it costs nothing and hands the reader evidence they can check by eye.
+  citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || '') })),
   // A `partial` verdict does not demote the claim — only `unsupported` does — so it
   // is easy to publish an overstatement with a footnote nobody reads. Measured
   // 2026-09-06: of five injected fabrications the auditor caught all five, but
   // called three of them `partial`, and those three were the inflated number, the
   // invented attribution and the widened scope. Surface them in code.
   citationPartials: factRows.filter(f => f.support === 'partial')
-    .map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning) })),
+    .map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || '') })),
   processCritique: { untraceableCount: untraceable.length,
                      readThisFirst: 'Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three — and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.',
                      verdict: critVerdict,

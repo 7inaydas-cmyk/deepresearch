@@ -149,6 +149,7 @@ Beyond findings and citations, the report is a decision document:
 - **`stats.sourceTiers`** — the tier census.
 - **`hypothesisVerdicts`** — every hypothesis from the framing contract, marked `killed`, `surviving` or `untested`, with back-references to the claims that decided it. The contract is adjudicated, not just written.
 - **`honestLimits`** — the caveats, shipped *inside* the payload, on **every** exit including the failure ones. A limitation that lives only in a README is one the person reading a pasted JSON blob never sees.
+- **`refuted[].refutedBy` and `refuted[].contradictedBy`** — every lens that killed a claim with its reasoning, and the sources the counter-evidence lens named as contradicting it. `why` used to carry the first refuter only, so a 2-1 kill discarded the second reason, and `counterSource` was demanded on every counter-lens call and read by nothing.
 - **`quoteAudit`** — every verified claim's quote, and whether the engine could find it on the page it is cited to. Decided in code against the exact text the extractor was shown, not asked of a model. `stats.quoteLocation` censuses it.
 - **`citationDetail[].locatedQuote`** — the blind auditor's own verbatim pull from the page, with whether that is on the page too.
 - **`honestLimits.evidenceBase`** — how many citable sources this report rests on, and a `thin` flag when that is under five. The one caveat you can gate on in code without parsing English.

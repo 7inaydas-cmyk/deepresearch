@@ -875,6 +875,32 @@ def p_gap(q, subqs, digest, n_follow, rnd, total):
         "Each needs a label, a real search query, and the reason it deserves a slot. If coverage is genuinely "
         "complete, return followUps: [] - do not invent busywork.")
 
+def to_ref(c):
+    """A killed claim, with EVERY reason it died and every source that contradicted it.
+
+    `why` used to be the first refuting verdict's evidence and nothing else. On a
+    2-1 kill that silently threw away the second refuter's reason, and the
+    counter-evidence lens is explicitly instructed to "name that source in
+    counterSource" - a field the model filled on every counter-lens call and that
+    no code read. So the one thing a reader most wants about a killed claim, the
+    source that contradicts it, was demanded and dropped.
+    """
+    refuters = [v for v in c["verdicts"] if v.get("refuted")]
+    return {"claim": webtext(c["claim"], 400), "killedBy": c["killedBy"],
+            "vote": "%d-%d" % (len(c["verdicts"]) - c["refutedVotes"], c["refutedVotes"]),
+            "source": webtext(c["sourceUrl"], 250),
+            "why": webtext(refuters[0]["evidence"], 500) if refuters else "",
+            "refutedBy": [{"lens": v.get("lens"),
+                           "evidence": webtext(v.get("evidence", ""), 500),
+                           **({"counterSource": webtext(v["counterSource"], 250)}
+                              if v.get("counterSource") else {})}
+                          for v in refuters],
+            # Surfaced separately because it is the single most useful fact about a
+            # killed claim: not that it died, but what killed it.
+            "contradictedBy": [webtext(v["counterSource"], 250) for v in refuters
+                               if v.get("counterSource")]}
+
+
 def citation_rows(fact_by):
     """The per-citation detail rows. ONE builder for all three report exits.
 
@@ -2047,11 +2073,6 @@ def deepresearch(question, depth="standard", contract=None):
             rescue = {"wipedSubQuestions": [s for _, s in wiped], "targeted": len(targets),
                       "sourcesAdded": len(r_src), "claimsReVerified": len(r_claims), "claimsSaved": saved}
 
-    to_ref = lambda c: {"claim": webtext(c["claim"], 400), "killedBy": c["killedBy"],
-                        "vote": "%d-%d" % (len(c["verdicts"]) - c["refutedVotes"], c["refutedVotes"]),
-                        "source": webtext(c["sourceUrl"], 250),
-                        "why": webtext(next((v["evidence"] for v in c["verdicts"] if v.get("refuted")), ""), 500)}
-
     if not confirmed:
         msg = ("INFRASTRUCTURE FAILURE, not a research finding: every verifier panel failed. Retry."
                if not killed else
@@ -2288,10 +2309,6 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         "Do not add facts that are not above. Do not soften a refutation.",
         S_REPORT, label="synthesize", max_tokens=8000)
 
-    to_ref = lambda c: {"claim": webtext(c["claim"], 400), "killedBy": c["killedBy"],
-                        "vote": "%d-%d" % (len(c["verdicts"]) - c["refutedVotes"], c["refutedVotes"]),
-                        "source": webtext(c["sourceUrl"], 250),
-                        "why": webtext(next((v["evidence"] for v in c["verdicts"] if v.get("refuted")), ""), 500)}
 
     if not report:
         # Carry the INSTRUMENTS through this path. They were dropped here, and the loss

@@ -9,7 +9,7 @@ description: >
   API key beyond the Claude subscription. Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.0.0
+version: 1.1.0
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]

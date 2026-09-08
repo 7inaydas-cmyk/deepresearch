@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from deepresearch import engine as dr          # noqa: E402
 from deepresearch import tiers                 # noqa: E402
 from deepresearch import search as searchmod   # noqa: E402
+import deepresearch as dr_pkg                  # noqa: E402
 
 # The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
 # anything wanting the REAL one has to hold a reference from before that happens.
@@ -329,6 +330,99 @@ ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
+print("\n-- no schema field is demanded of a model and then never read --")
+# The bug class this project keeps rediscovering. Three instances found on 2026-09-08
+# alone: `locatedQuote` (the auditor's own verbatim pull, ~30 calls a run, read by
+# nothing), `counterSource` (the source the counter lens names as contradicting a
+# claim), and the second refuter's evidence on a 2-1 kill. Every one cost output
+# tokens on every call and reached no reader.
+_SPREAD_THROUGH = {
+    # S_REPORT is merged wholesale into the report with `out.update(report)`, so its
+    # fields reach the reader without any individual read. That is intended.
+    "S_REPORT",
+}
+_EXEMPT = {
+    # field -> why it is legitimately unread
+    "strategy": "the planner's one-line framing; published inside the plan, never branched on",
+    "reason": "S_GAP followUps[].reason explains a follow-up query to the reader of the log",
+    "note": "S_GAP coverage[].note travels to the report inside `coverage`",
+    "subQuestionIndex": "positional key used to build coverage rows",
+    "rationale": "read via uniq()/list comprehension over critique rows",
+    "confidence": "read through best.get('confidence') on the sorted verdict list",
+}
+def _schema_props(sch, out=None):
+    out = out if out is not None else set()
+    if not isinstance(sch, dict):
+        return out
+    for k, v in (sch.get("properties") or {}).items():
+        out.add(k); _schema_props(v, out)
+    if "items" in sch:
+        _schema_props(sch["items"], out)
+    return out
+
+_engine_src = open(dr.__file__, encoding="utf-8").read()
+_unread = []
+for _name in sorted(n for n in dir(dr) if n.startswith("S_")):
+    if _name in _SPREAD_THROUGH:
+        continue
+    _sch = getattr(dr, _name)
+    if not isinstance(_sch, dict):
+        continue
+    for _f in sorted(_schema_props(_sch)):
+        if _f in _EXEMPT:
+            continue
+        # any read: subscript, .get(), or a string key handed to a helper like uniq()
+        if _re.search(r'\["%s"\]|\.get\("%s"|uniq\("%s"|"%s":\s*(?:webtext|\[)' % (_f, _f, _f, _f), _engine_src):
+            continue
+        _unread.append("%s.%s" % (_name, _f))
+ok(not _unread,
+   "every schema field is read back somewhere, or exempted with a reason. Unread: %s"
+   % (", ".join(_unread) or "none"))
+
+print("\n-- a killed claim says what killed it --")
+_killed = (r3.get("refuted") or [])
+ok(_killed and all("refutedBy" in k for k in _killed),
+   "every refuted row lists EVERY refuter, not just the first - a 2-1 kill used to "
+   "discard the second refuter's reason entirely")
+ok(all(isinstance(k.get("contradictedBy"), list) for k in _killed),
+   "and carries the counter-sources the counter-evidence lens named, which the schema "
+   "demanded on every call and no code read")
+# There were TWO to_ref definitions - one in the run function and a drifted lambda
+# inside _synthesize - so fixing one left the happy path on the old shape. Compare the
+# exits rather than trusting that a single definition stayed single.
+_ref_keys = {}
+for _n, _r in (("happy path", r), ("all killed", r3), ("synthesis failed", r11),
+               ("killed at quick depth", r12)):
+    _rows = _r.get("refuted") or []
+    if _rows:
+        _ref_keys[_n] = tuple(sorted(_rows[0].keys()))
+ok(len(set(_ref_keys.values())) == 1 and len(_ref_keys) >= 2,
+   "every exit builds refuted rows with the SAME keys (%d exits checked): %s"
+   % (len(_ref_keys), ", ".join(sorted(set(_ref_keys.values()))[0]) if _ref_keys else "none"))
+
+print("\n-- the version is declared in three files and they must agree --")
+# Three copies of one fact, with nothing checking them. The same shape as the tier
+# rules, which sat out of sync between the two runtimes while the marker test passed.
+# `pip show` reads pyproject, `deepresearch.__version__` reads the package, and the
+# Hermes skill loader reads its own frontmatter - so a bump that misses one leaves a
+# consumer reporting a version it is not running.
+_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+def _declared():
+    out = {}
+    out["pyproject.toml"] = _re.search(
+        r'(?m)^version\s*=\s*"([^"]+)"',
+        open(os.path.join(_root, "pyproject.toml"), encoding="utf-8").read()).group(1)
+    out["deepresearch/__init__.py"] = dr_pkg.__version__
+    out["integrations/hermes/SKILL.md"] = _re.search(
+        r"(?m)^version:\s*(\S+)",
+        open(os.path.join(_root, "integrations/hermes/SKILL.md"), encoding="utf-8").read()).group(1)
+    return out
+_vs = _declared()
+ok(len(set(_vs.values())) == 1,
+   "every declared version agrees: %s" % ", ".join("%s=%s" % kv for kv in sorted(_vs.items())))
+ok(_re.fullmatch(r"\d+\.\d+\.\d+", dr_pkg.__version__) is not None,
+   "and it is a real semantic version: %s" % dr_pkg.__version__)
+
 print("\n-- unreadable extraction is refused, not passed to a model --")
 ok(searchmod.is_prose("the quick brown fox jumps over the lazy dog and this is prose "
                       * 30)[0],
@@ -342,8 +436,21 @@ ok(searchmod.is_prose("Les resultats montrent que le salaire minimum affecte "
    "a non-English paper is NOT thrown away as binary: both signals must fail, and a "
    "French page has a high letter ratio with no English stopwords")
 _ok, _why, _sig = searchmod.is_prose(_garbage)
-ok("letterRatio" in _sig and "stopwordsPerKchar" in _sig and "%" in _why,
-   "and the refusal reports the numbers it refused on")
+ok("letterRatio" in _sig and "stopwordsPerKchar" in _sig and "pdfWords" in _sig,
+   "and the refusal reports every number it measured, whichever test it failed")
+# The length floor is the ORIGINAL guard. Dropping it when the ratio signals were added
+# was a regression: is_prose("a") returned True, because a one-character page is 100%
+# letters. A title-only extraction is perfectly good prose and still is not a page.
+ok(not searchmod.is_prose("a")[0] and not searchmod.is_prose("word " * 39)[0]
+   and searchmod.is_prose("words " * 40)[0],
+   "under %d words is refused however clean it reads - the ratio signals catch binary, "
+   "they cannot catch a PDF that extracted to its title" % searchmod.MIN_PDF_WORDS)
+# Garbage long enough to clear the word floor must still fail on the ratios, and say so.
+_wordy_garbage = "x$*- " * 200
+_ok2, _why2, _sig2 = searchmod.is_prose(_wordy_garbage)
+ok(not _ok2 and "%" in _why2 and "stopwords" in _why2,
+   "binary that clears the word floor is refused on the ratios, naming both: %s"
+   % _why2[:70])
 
 print("\n-- a blocked publisher falls back to the archive, labelled --")
 ok(searchmod.wayback_snapshot.__doc__ and "id_" in searchmod.wayback_snapshot.__doc__,

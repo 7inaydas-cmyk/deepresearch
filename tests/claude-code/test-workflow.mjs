@@ -289,6 +289,14 @@ import fs2 from 'node:fs'
   // itself about one source's tier once already.
   ok(/CITABLE\.has\(s\.tier \|\| 'T3'\)/.test(src) && /const c = \{\}[\s\S]{0,200}s\.tier/.test(src),
      'the citable count and the tier census read the same fetch-time tier, so one report cannot disagree with itself')
+  // The auditor is asked for locatedQuote on every call; for months nothing read it.
+  ok(/locatedQuote: webText\(f\.locatedQuote/.test(src),
+     'the auditor\'s own verbatim pull is published rather than demanded and discarded')
+  ok(/refutedBy: refuters\.map/.test(src) && /contradictedBy: refuters/.test(src),
+     'a killed claim lists every refuter and every named counter-source: `why` used to be '
+     + 'the first refuter only, and counterSource was demanded on every counter call and read by nothing')
+  ok((src.match(/const toRefuted =/g) || []).length === 1,
+     'exactly one toRefuted builder - the Python twin had TWO, and fixing one left the happy path on the old shape')
   ok(!/citableSources < MIN_CITABLE_SOURCES\) return/.test(src) && /NOT aborted for being thin/.test(src),
      'a thin run is labelled, never aborted: the thinnest run on record was thin because of a bug, and aborting would have hidden it')
 }

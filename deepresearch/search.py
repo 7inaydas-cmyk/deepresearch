@@ -167,7 +167,12 @@ def pdf_text(raw: bytes, cap: int = 200000) -> str:
         import io
         pages = PdfReader(io.BytesIO(raw)).pages
         txt = "\n".join((pg.extract_text() or "") for pg in pages)
-        if len([w for w in txt.split() if len(w) > 3]) > 40:
+        # Accept pypdf's result only if it is readable. It used to be accepted on word
+        # count alone, so a pypdf run that produced 40+ words of mojibake returned here
+        # and the stdlib parser below - which might have read the file correctly - never
+        # ran. The page was then refused by the prose gate in fetch(), losing a source
+        # that a second parser could have recovered.
+        if is_prose(txt)[0]:
             return re.sub(r"\n{3,}", "\n\n", txt)[:cap].strip()
     except Exception:
         pass
@@ -606,6 +611,8 @@ def doi_in_url(url: str):
     return m.group(1).rstrip(").,;").replace("/pdf", "")
 
 
+# The original guard, kept: 40 words of real text before this counts as a page.
+MIN_PDF_WORDS = 40
 _STOPWORDS = re.compile(
     r"\b(the|of|and|to|in|that|is|for|with|as|are|was|this|be|by|not|from|it)\b")
 
@@ -637,9 +644,21 @@ def is_prose(text):
     if not t.strip():
         return False, "extraction produced no text at all", {}
     low = t.lower()
+    words = len([w for w in low.split() if len(w) > 3 and any(c.isalpha() for c in w)])
     letter_ratio = sum(1 for c in low if c.isalpha() or c == " ") / len(t)
     stops_per_k = 1000.0 * len(_STOPWORDS.findall(low)) / len(t)
-    sig = {"letterRatio": round(letter_ratio, 3), "stopwordsPerKchar": round(stops_per_k, 2)}
+    sig = {"letterRatio": round(letter_ratio, 3), "stopwordsPerKchar": round(stops_per_k, 2),
+           "pdfWords": words}
+    # The length floor is the ORIGINAL guard and it still earns its place. The ratio
+    # signals catch binary; they cannot catch a PDF that extracted to a title and
+    # nothing else, because a title is perfectly good prose. Dropping this floor when
+    # the ratio signals were added was a regression: `is_prose("a")` returned True, so a
+    # 39-word extraction would have reached a model as a whole page - the same shape as
+    # the 388-character publisher stub a claim was once extracted from.
+    if words < MIN_PDF_WORDS:
+        return False, ("PDF text extraction yielded %d words, under the %d-word floor - "
+                       "too little to be the page, and a model given a fragment will "
+                       "treat it as the whole document" % (words, MIN_PDF_WORDS)), sig
     if stops_per_k < 2.0 and letter_ratio < 0.45:
         return False, ("extracted text is not prose: %.0f%% letters and %.1f English "
                        "stopwords per 1000 chars (readable text measures 77-96%% and "
