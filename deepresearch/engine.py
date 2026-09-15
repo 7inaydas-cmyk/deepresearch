@@ -2335,12 +2335,20 @@ def deepresearch(question, depth="standard", contract=None):
     supplied = dict(contract or {})
     t0 = time.time()
     scheme = preflight()
-    _t = _providers.transport()
-    log("Provider: %s | model: %s | credential: %s%s" % (
+    # select(), not transport(): this is a LOG line, and preflight has already proved
+    # the credential works - reaching for a live transport here made every stubbed
+    # pipeline test depend on the developer's real ~/.claude login (green locally,
+    # AuthError on CI 2026-09-15). Everything the line prints comes from the pure
+    # resolver; the endpoint-owner disclosure rides along when it applies.
+    _t = _providers.select()
+    log("Provider: %s | model: %s | credential: %s%s%s" % (
         _t["label"], MODEL, scheme,
         "" if scheme == "api-key" else
         " (a local login file; set %s to avoid a server-side revocation "
-        "taking a run down mid-flight)" % _t["key_env"]))
+        "taking a run down mid-flight)" % _t["key_env"],
+        ("; endpoint is %s's (%s override) - model default follows the endpoint"
+         % (_providers.spec(_t["endpoint_owner"])["label"], _t["base_url_env"])
+         ) if _t.get("endpoint_owner") else ""))
     log("Question: " + question[:110])
     log("Depth: %s (%d perspectives, %d deepening round(s), %d-lens verify, citation audit %s)"
         % (depth, T["perspectives"], T["deepen"], T["lenses"], "ON" if T["audit"] else "off"))

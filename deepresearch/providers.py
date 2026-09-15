@@ -85,6 +85,7 @@ def spec(name):
         "key_envs": list(p["keyEnvs"]),
         "key_help": p.get("keyHelp", ""),
         "default_model": p["defaultModel"],
+        "base_url_env": p.get("baseUrlEnv", ""),
         "system_prefix": p["systemPrefix"],
         "static_headers": dict(p.get("staticHeaders") or {}),
         "oauth": p.get("oauth"),

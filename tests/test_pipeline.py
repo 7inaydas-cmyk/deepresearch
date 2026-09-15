@@ -2199,10 +2199,16 @@ import json as _pj  # noqa: E402
 
 def _with_env(env, fn):
     """Run fn under a mutated environment, restoring exactly what was there."""
-    _saved = {k: _os.environ.get(k) for k in env}
-    _old_provider = _os.environ.get("DR_PROVIDER")
-    _old_model = _os.environ.get("DR_MODEL")
-    for k in ("DR_PROVIDER", "DR_MODEL"):
+    # Hermetic: clear EVERY selector input (DR_* and all provider keys), not just the
+    # ones this call passes - otherwise the block reads the developer's real
+    # ~/.claude login or shell key and passes locally while raising on CI. That is
+    # exactly the environment-dependent test this repo treats as no test at all
+    # (caught by CI 2026-09-15: the BASE_URL-override case called transport() with no
+    # key and silently borrowed the local Claude Code login to succeed).
+    _clear = ("DR_PROVIDER", "DR_MODEL", "ANTHROPIC_API_KEY", "ZAI_API_KEY",
+              "GLM_API_KEY", "ANTHROPIC_BASE_URL", "GLM_BASE_URL")
+    _saved = {k: _os.environ.get(k) for k in list(env) + list(_clear)}
+    for k in _clear:
         _os.environ.pop(k, None)
     for k, v in env.items():
         if v is None:
@@ -2218,14 +2224,6 @@ def _with_env(env, fn):
                 _os.environ.pop(k, None)
             else:
                 _os.environ[k] = v
-        if _old_provider is None:
-            _os.environ.pop("DR_PROVIDER", None)
-        else:
-            _os.environ["DR_PROVIDER"] = _old_provider
-        if _old_model is None:
-            _os.environ.pop("DR_MODEL", None)
-        else:
-            _os.environ["DR_MODEL"] = _old_model
         _P.reset()
 
 ok(_with_env({}, lambda: _P.select()["name"]) == "claude",
@@ -2277,8 +2275,8 @@ ok(_claude["url"] == "https://api.anthropic.com/v1/messages"
                               "x-api-key": "sk-ant"},
    "the unset-anthropic path is BYTE-IDENTICAL to the pre-seam constants: same URL, "
    "same three headers - the rewrite bought GLM without spending any Claude behaviour")
-ok(_with_env({"ANTHROPIC_BASE_URL": "https://relay.example"}, lambda: _P.transport()["url"])
-   == "https://relay.example/v1/messages",
+ok(_with_env({"ANTHROPIC_API_KEY": "k", "ANTHROPIC_BASE_URL": "https://relay.example"},
+             lambda: _P.transport()["url"]) == "https://relay.example/v1/messages",
    "ANTHROPIC_BASE_URL still overrides the claude endpoint (relays, proxies)")
 ok(dr.CC_SYSTEM_PREFIX == "You are Claude Code, Anthropic's official CLI for Claude.",
    "the Claude identity constant survives under its old name for anything grepping for it")
