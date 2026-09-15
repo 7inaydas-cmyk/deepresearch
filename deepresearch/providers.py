@@ -75,7 +75,7 @@ def names():
 
 def spec(name):
     p = _CONTRACT["providers"][name]
-    return {
+    s = {
         "name": name,
         "label": p["label"],
         "url": (os.environ.get(p["baseUrlEnv"], "").rstrip("/")
@@ -88,7 +88,39 @@ def spec(name):
         "system_prefix": p["systemPrefix"],
         "static_headers": dict(p.get("staticHeaders") or {}),
         "oauth": p.get("oauth"),
+        # Filled in by _mark_endpoint_owner below when the effective base URL belongs
+        # to a DIFFERENT contract provider than the one the credential selected.
+        "endpoint_owner": None,
     }
+    return _mark_endpoint_owner(s, p)
+
+
+def _mark_endpoint_owner(s, p):
+    """If the effective base URL belongs to another CONTRACT provider, say so.
+
+    Audited 2026-09-15 on the Telegram deployment: gateways commonly map a Z.ai plan
+    key into ANTHROPIC_API_KEY + ANTHROPIC_BASE_URL for subprocesses (the "env shim").
+    The engine then resolved to provider=claude, described itself as "Anthropic
+    (api-key)" while POSTing to api.z.ai, and defaulted the model to claude-sonnet-5 -
+    a name Z.ai happens to tolerate, which is luck, not a configuration. When the
+    override host matches a provider named in THIS contract, adopt that provider's
+    default model and label the endpoint honestly. An arbitrary relay host matches
+    nothing in the contract and leaves everything untouched - a generic proxy is not
+    evidence of anyone's semantics.
+    """
+    host = s["url"].split("/v1/messages")[0]
+    for other, op in _CONTRACT["providers"].items():
+        if other == s["name"]:
+            continue
+        base = (os.environ.get(op["baseUrlEnv"], "").rstrip("/")
+                if op.get("baseUrlEnv") and os.environ.get(op["baseUrlEnv"])
+                else op["baseUrl"].rstrip("/"))
+        if host == base:
+            s["endpoint_owner"] = other
+            if not os.environ.get("DR_MODEL", "").strip():
+                s["default_model"] = op["defaultModel"]
+            break
+    return s
 
 
 def select():
@@ -231,7 +263,17 @@ def reset():
 
 
 def describe():
-    """One line for --selftest and preflight: who we are calling and how."""
+    """One line for --selftest and preflight: who we are calling and how.
+
+    The endpoint-owner suffix exists because of the env-shim case: a gateway mapping
+    a Z.ai key into ANTHROPIC_* made this line read "Anthropic (api-key)" while every
+    call went to api.z.ai. The line is what an agent reads mid-failure; it must not
+    mis-describe the wire.
+    """
     t = transport()
     via = "via " + t["via"] if t.get("via") else ""
-    return "%s (%s%s)" % (t["label"], t["scheme"], ", " + via if via else "")
+    owner = ("; endpoint is %s's (%s override) - model default follows the endpoint"
+             % (_CONTRACT["providers"][t["endpoint_owner"]]["label"],
+                _CONTRACT["providers"][t["name"]]["baseUrlEnv"])
+             ) if t.get("endpoint_owner") else ""
+    return "%s (%s%s)%s" % (t["label"], t["scheme"], ", " + via if via else "", owner)

@@ -3310,7 +3310,12 @@ def selftest():
     for name, v in sorted(search_health().items()):
         print("      %-16s %s  results=%d" % (name, "ok" if v["ok"] else "FAIL", v["results"]))
     print("3. page fetch        ...", end=" ")
-    txt = web_fetch(hits[0]["url"]) if hits else ""
+    # Pinned, not hits[0]: the top search hit is sometimes a JS shell (audited
+    # 2026-09-15: searxng's first result for the probe query was claude.ai, which
+    # extracts to zero text and flaked the check while the fetcher was healthy).
+    # A stable text-bearing page makes this check prove FETCHING, not search luck;
+    # search itself is already proven by check 2.
+    txt = web_fetch("https://example.com")
     print("OK (%d chars)" % len(txt) if txt else "FAIL (empty)"); ok &= bool(txt)
     print("4. model round-trip  ...", end=" ")
     r = agent("Return the single word 'pong' in the field 'reply'.",

@@ -2312,6 +2312,32 @@ ok(_r2.returncode == 0 and "--provider" in _r2.stdout,
    "--help still works under a bad DR_PROVIDER: the import falls back provisionally "
    "and only main() refuses")
 
+# The env shim, audited live 2026-09-15 on the Telegram deployment: gateways map a Z.ai
+# plan key into ANTHROPIC_API_KEY + ANTHROPIC_BASE_URL. The seam used to describe that
+# as "Anthropic (api-key)" while POSTing to api.z.ai with model name claude-sonnet-5 -
+# a name Z.ai tolerates by luck. When the override host matches a CONTRACT provider,
+# the default model follows the endpoint and describe() says whose endpoint it is.
+_shim = _with_env({"ANTHROPIC_API_KEY": "k",
+                   "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic"},
+                  lambda: (_P.describe(), _P.select()["default_model"]))
+ok("Z.ai GLM" in _shim[0] and _shim[1] == "glm-5.3",
+   "the env shim is described truthfully: describe() names Z.ai as the endpoint and "
+   "the default model follows the endpoint (glm-5.3), not the credential that selected "
+   "claude - a model name that only worked by Z.ai's tolerance")
+_relay = _with_env({"ANTHROPIC_API_KEY": "k", "ANTHROPIC_BASE_URL": "https://relay.internal"},
+                   lambda: (_P.describe(), _P.select()["default_model"], _P.select()["endpoint_owner"]))
+ok(_relay[1] == "claude-sonnet-5" and _relay[2] is None,
+   "a generic relay host matches no contract provider, so nothing is adopted - a "
+   "proxy address is not evidence of anyone's model semantics")
+_forced = _with_env({"ANTHROPIC_API_KEY": "k",
+                     "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
+                     "DR_MODEL": "glm-5.3-air"},
+                    lambda: (_P.select()["default_model"], _P.select()["endpoint_owner"]))
+ok(_forced[0] == "claude-sonnet-5" and _forced[1] == "glm",
+   "an explicit DR_MODEL suppresses model adoption but NOT the disclosure: the default "
+   "stays claude-sonnet-5 (the caller chose a model; the seam does not second-guess), "
+   "while describe() still says whose endpoint the wire goes to")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 
