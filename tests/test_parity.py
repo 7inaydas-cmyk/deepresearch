@@ -34,6 +34,7 @@ SHARED = {
     "<UNKNOWN> sentinel retry":  ("_UNKNOWN_SENTINEL", "hasUnknownSentinel"),
     "empty-array schema retry":  ("_schema_shortfall", "schemaShortfall"),
     "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
+    "integer is not coerced":    ("is a boolean, not an integer", "Number.isInteger(v)) out[name] = v"),
     "wasted recovery re-asked":  ("if bare_items and not lst:", "if (bareItems.length && !lst.length)"),
     "verdict provenance stamp":  ("_v[\"preRegistered\"] = ", "preRegistered:"),
     "hypothesis relabel match":  ("def _same_hypothesis(", "const sameHyp = "),

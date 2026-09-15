@@ -442,9 +442,22 @@ def shape(schema, obj, label=""):
             else:
                 problems.append("%s=%r is not a boolean" % (name, str(v)[:40]))
         elif t == "integer":
-            try:
+            # ADR-0001: the seam RETRIES rather than coerces, and this leaf was the one
+            # place violating it. `int(v)` accepted True as 1, "5" as 5 and 3.7 as 3 - the
+            # last silently landing a coverage row in the wrong sub-question bucket. A
+            # bool is not an integer even though Python says isinstance(True, int).
+            #
+            # An integral float IS accepted: JSON has no int/float distinction, 3.0 and 3
+            # are the same value, and converting them loses nothing. That is not the
+            # repair the ADR forbids - "5" is a type change and 3.7 is data loss, and both
+            # now become problems the caller retries with a correction.
+            if isinstance(v, bool):
+                problems.append("%s=%r is a boolean, not an integer" % (name, v))
+            elif isinstance(v, int):
+                out[name] = v
+            elif isinstance(v, float) and v.is_integer():
                 out[name] = int(v)
-            except (TypeError, ValueError):
+            else:
                 problems.append("%s=%r is not an integer" % (name, str(v)[:40]))
         elif t == "object":
             shaped_sub, sub_problems = shape(spec, v, here)
@@ -2462,7 +2475,17 @@ def deepresearch(question, depth="standard", contract=None):
                 "status": "unverifiable", "offset": None, "foundFraction": None,
                 "why": "the auditor returned no locatedQuote"}
             return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f)
-        fact_rows = [f for f in pmap(audit, voted) if f]
+        _audit_out = pmap(audit, voted)
+        fact_rows = [f for f in _audit_out if f]
+        # A call that never returned is not a citation that failed its check - but it is
+        # also not nothing. Dropping it silently shrinks the denominator of the headline
+        # number exactly when the run is degraded, so citation accuracy quietly improves
+        # under rate-limiting. Count it and publish it.
+        audit_errors = len(_audit_out) - len(fact_rows)
+        if audit_errors:
+            log("CITATION AUDIT: %d of %d audit call(s) returned nothing after retries - "
+                "excluded from the accuracy denominator and reported as auditErrors, not "
+                "silently dropped" % (audit_errors, len(_audit_out)))
         nS = sum(1 for f in fact_rows if f["support"] == "supported")
         nP = sum(1 for f in fact_rows if f["support"] == "partial")
         nU = sum(1 for f in fact_rows if f["support"] == "unsupported")
@@ -2491,7 +2514,11 @@ def deepresearch(question, depth="standard", contract=None):
                                               "included, and is the one this project leads with."),
                         "effectiveCitations": nS, "supported": nS, "partial": nP,
                         "unsupported": nU, "unreachable": nX,
-                        "scope": "full verification pool (%d claims), not survivors only" % len(fact_rows),
+                        "auditErrors": audit_errors,
+                        "scope": ("%d of %d verified claims were audited; %d call(s) returned "
+                                  "nothing after retries and are NOT in the denominator. The "
+                                  "pool is every verified claim, not survivors only."
+                                  % (len(fact_rows), len(voted), audit_errors)),
                         "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. "
                                 "Unreachable excluded from the denominator."}
         log("Citation audit (full pool of %d): %d supported, %d partial, %d UNSUPPORTED, %d unreachable -> %s%% "

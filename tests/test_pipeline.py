@@ -739,6 +739,30 @@ ok('if c.get("erroredVotes") or d.get("erroredVotes"):' in _eng_src,
 ok('"excludedForLensErrors"' in _eng_src and '"scope"' in _eng_src,
    "and the count and scope are published, so the exclusion is visible rather than silent")
 
+# S4 — the integer leaf was the one place violating ADR-0001. int() accepted True as 1,
+# "5" as 5 and 3.7 as 3, and a fractional subQuestionIndex lands a coverage row in the
+# wrong bucket without a word.
+_isch = {"type": "object", "required": ["i"], "properties": {"i": {"type": "integer"}}}
+_int = lambda v: dr.shape(_isch, {"i": v}, "t")
+ok(_int(3)[0]["i"] == 3 and _int(3.0)[0]["i"] == 3 and not _int(3.0)[1],
+   "a real integer passes, and so does an integral float - JSON has no int/float "
+   "distinction and 3.0 IS 3, so accepting it loses nothing")
+for _bad, _why in ((True, "a boolean"), (False, "a boolean"), (3.7, "a fractional float"),
+                   ("5", "a string"), ("x", "not a number")):
+    ok(bool(_int(_bad)[1]),
+       "%r is a problem the seam retries, not a value it repairs (%s)" % (_bad, _why))
+ok("is a boolean, not an integer" in _int(True)[1][0],
+   "and a bool says so by name - isinstance(True, int) is True in Python, which is how "
+   "this slipped through")
+
+# S6 — a failed audit call was filtered out of fact_rows with no counter, so the headline
+# denominator shrank silently exactly when the run was rate-limited.
+_src = open(dr.__file__, encoding="utf-8").read()
+ok('"auditErrors": audit_errors' in _src and "audit_errors = len(_audit_out)" in _src,
+   "audit calls that returned nothing are counted and published, not dropped in silence")
+ok("are NOT in the denominator" in _src,
+   "and the scope string states the real denominator rather than implying the full pool")
+
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
 # rules, which sat out of sync between the two runtimes while the marker test passed.

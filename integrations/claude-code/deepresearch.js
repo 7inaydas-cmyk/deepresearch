@@ -248,8 +248,13 @@ const shape = (schema, obj, label) => {
       if (typeof v === 'boolean') out[name] = v
       else problems.push(name + '=' + String(v).slice(0, 40) + ' is not a boolean')
     } else if (t === 'integer') {
-      const n = parseInt(v, 10)
-      if (Number.isFinite(n)) out[name] = n
+      // ADR-0001: the seam RETRIES rather than coerces. parseInt accepted "5" as 5 and
+      // 3.7 as 3 — the latter silently landing a coverage row in the wrong sub-question
+      // bucket. An integral float IS accepted: JSON has no int/float distinction, so 3.0
+      // and 3 are the same value and converting them loses nothing. A string is a type
+      // change and a fractional float is data loss; both are now problems the caller
+      // retries with a correction.
+      if (typeof v === 'number' && Number.isInteger(v)) out[name] = v
       else problems.push(name + '=' + String(v).slice(0, 40) + ' is not an integer')
     } else if (t === 'object') {
       const r = shape(spec, v, here)
