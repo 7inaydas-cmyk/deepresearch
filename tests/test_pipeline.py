@@ -1980,6 +1980,19 @@ ok(_cr.DROPPED_START in _readme and _cr.DROPPED_END in _readme,
 ok(_cr.SAME_WITHIN == 5,
    "the headline tally has a STATED rule - within %d points counts as 'as well as' - "
    "because the previous count could not be derived from any rule" % _cr.SAME_WITHIN)
+# The CONCLUSION is derived too. It was fixed prose asserting "the ranking is not
+# selecting for verifiability", written when the samples ran one way; a later run came
+# back 33% against 100% of kept and the sentence still asserted the old reading over a
+# bare majority. A generated table with a hand-written conclusion is half generated, and
+# the hand-written half is the one that overstates.
+_block = _cr.dropped_markdown()
+ok("no consistent signal either way" in _block,
+   "at 5 of 9 the generated reading says there is no consistent signal, rather than "
+   "restating a conclusion the samples no longer support")
+ok("not selecting for verifiability" not in _block.split("**In")[1].split("Tracked as")[0]
+   or "no consistent signal" in _block,
+   "and the wording follows the count, so a future run that moves the tally moves the "
+   "sentence with it")
 
 print("\n-- the coverage line counts sub-questions, not buckets --")
 # A live run logged "Verify pool spans 9 distinct sub-question buckets (of 8)" - more

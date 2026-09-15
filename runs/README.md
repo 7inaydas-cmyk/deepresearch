@@ -651,6 +651,34 @@ CONTRIBUTING's *"if you widen a schema, split the call"* did forbid adding
 `hypothesisNumber`, with nothing citing an exemption — the rule now states its scope
 (responsibilities, not fields) and says the review was right that it read as a violation.
 
+## A quick run against 1.9.x — `v12-vitamin-d-respiratory.json`
+
+Run to confirm the audit fixes behave on live data rather than only in tests. General web
+was dead at the time (all four backends 0/3, selftest exit 3), so this is a scholarly-only
+run and the degraded gate said so before it started.
+
+What fired, in order: an `<item>`-wrapped array recovered into 18 items; a framing response
+missing two required fields caught and retried successfully; the bucket line reading
+**"spans 5 of 8 sub-questions; 1 claim(s) map to no sub-question"** — the fix for the
+count that used to exceed its own total.
+
+All four `hypothesisVerdicts` stamped `preRegistered: true` by `hypothesisNumber`, and the
+stamps are earned rather than permissive: each verdict's coverage against the hypothesis
+it names is **1.000**. `strongestArgumentAgainst` came back a real 1182-character argument —
+one that criticises the report's own reliance on a secondary source — so the new check
+neither fired nor destroyed anything, and `honestLimits` carries no `noSteelman`.
+
+**And the dropped-claim sample reversed.** 1 of 3 dropped claims survived (33%) against
+100% of kept — the panel killed nothing it was given and two of three it was not. That is
+the opposite of the previous two samples, and it takes the tally to 5 of 9.
+
+So the generated conclusion changed with it. The table had been carrying fixed prose —
+*"The ranking is not selecting for verifiability"* — written when the samples ran one way,
+and it kept asserting that over a bare majority. The sentence is now derived from the
+count: at 5 of 9 it reads **no consistent signal either way**. A generated table with a
+hand-written conclusion is only half generated, and the hand-written half is the one that
+overstates.
+
 ## The files
 
 | Prefix | What it is |

@@ -1,0 +1,603 @@
+{
+ "question": "Does vitamin D supplementation reduce the risk of acute respiratory infection in adults?",
+ "depth": "quick",
+ "coverage": null,
+ "contradictions": [
+  "The 2017 Martineau BMJ meta-analysis (claim 1) reports an overall protective effect, while the 2011 IOM report (claim 3) found existing evidence not consistently supportive of a causal role — this is a temporal/evidentiary contradiction (IOM predates the larger meta-analyses) but both are held simultaneously in the record and neither claim is retracted by the evidence gathered.",
+  "The 42%-flu-reduction trial (claim 4) suggests strong benefit, while the bolus-dosing study (claim 0) shows harm from a different dosing regimen — together these support the dosing-regimen-matters hypothesis (H3) rather than a simple universal yes/no, but they are not directly contradictory since they examine different regimens."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether a health-conscious adult (or a clinician advising them) should start or continue routine vitamin D supplementation specifically as a strategy to prevent respiratory infections (colds, flu, etc.), as opposed to relying on other preventive measures or only supplementing for bone/other health reasons.",
+  "keyQuestion": "Does vitamin D supplementation, compared to placebo, significantly reduce the incidence or risk of acute respiratory infection in generally healthy adults, based on randomized controlled trial evidence?",
+  "assumptions": [
+   "Scope limited to generally healthy adults (18+), not specifically immunocompromised or institutionalized populations unless subgroup data is notable",
+   "'Acute respiratory infection' includes both upper (common cold, influenza-like illness) and lower respiratory tract infections as defined by included trials",
+   "Evidence base is primarily randomized controlled trials and meta-analyses (e.g., Cochrane, BMJ, individual patient data meta-analyses), not observational studies alone, unless RCT evidence is scarce",
+   "'Reduce risk' is interpreted as a statistically significant reduction in incidence or odds of ARI, not merely severity or duration of symptoms",
+   "No specific geography assumed; global RCT evidence pooled, with note if effects differ by region/latitude or baseline vitamin D status",
+   "Time horizon is supplementation trials of weeks to a few years (not lifetime), reflecting typical study designs",
+   "Dose and regimen (daily vs bolus, dose size) are treated as key moderating variables since trial designs vary widely",
+   "Baseline vitamin D status (deficient vs sufficient) is assumed to be a critical effect modifier worth investigating"
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Whether the most rigorous, large-scale meta-analyses (e.g., IPD meta-analyses of 25+ RCTs) find a statistically significant overall effect vs. null result",
+   "Whether any observed benefit is confined to vitamin D-deficient subgroups (baseline <25 nmol/L) vs. present across all baseline levels",
+   "Whether daily/weekly dosing shows benefit while high-dose bolus (monthly/annual) regimens show no effect or harm, indicating dosing regimen matters",
+   "Whether newer large RCTs published after prior meta-analyses (e.g., VITAL trial and post-2020 studies) confirm or overturn earlier pooled findings",
+   "Whether effect sizes, even if statistically significant, are clinically meaningful (e.g., NNT very high vs. low) enough to justify a recommendation",
+   "Whether heterogeneity/publication bias substantially undermines confidence in pooled estimates"
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Vitamin D supplementation provides a modest but statistically significant protective effect against ARI overall, particularly benefiting those who are deficient at baseline.",
+    "killCriterion": "Large IPD meta-analyses (e.g., Martineau et al. updated) or major new RCTs show no significant overall effect AND no significant subgroup effect in deficient individuals."
+   },
+   {
+    "hypothesis": "Vitamin D supplementation has no meaningful protective effect on ARI risk in the general adult population, regardless of baseline status.",
+    "killCriterion": "A well-powered meta-analysis or landmark RCT (e.g., VITAL-Respiratory ancillary study) demonstrates a statistically significant reduction in ARI incidence across the general population, not confined to a narrow subgroup."
+   },
+   {
+    "hypothesis": "Benefit exists only under specific conditions (e.g., daily/weekly low-dose regimens in deficient individuals) and is absent or reversed with bolus high-dose regimens, making the overall population-level answer 'no' but with an important caveat.",
+    "killCriterion": "Evidence shows dosing regimen (daily vs bolus) has no differential effect on outcomes, or benefit appears regardless of baseline deficiency status."
+   },
+   {
+    "hypothesis": "The evidence is too heterogeneous, biased, or underpowered to draw a reliable conclusion either way, meaning the honest answer is 'unclear/inconclusive' rather than yes or no.",
+    "killCriterion": "Consistent, low-heterogeneity findings across multiple independent high-quality meta-analyses and large recent RCTs converge on the same directional conclusion (either clear benefit or clear null), reducing uncertainty enough to rule out this hypothesis."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "IPD Meta-Analyst",
+   "lens": "A biostatistician who distrusts single-trial results and aggregate (non-individual-patient-data) meta-analyses because they obscure subgroup effects and are vulnerable to trial-level confounding; wants to construct the answer directly from pooled individual participant data.",
+   "query": "individual participant data meta-analysis vitamin D supplementation acute respiratory infection Martineau BMJ"
+  },
+  {
+   "label": "Landmark Trial Steelman (VITAL & Large RCTs)",
+   "lens": "An investigator who takes the null/no-benefit hypothesis seriously but wants to build the strongest possible case FOR a protective effect by digging into the largest, best-powered, most recent single RCTs (e.g., VITAL respiratory ancillary analyses, VIDA, other post-2020 trials) rather than relying on older heterogeneous meta-analyses that could dilute a real effect.",
+   "query": "VITAL trial vitamin D3 respiratory infection incidence randomized controlled trial results"
+  },
+  {
+   "label": "Dosing-Regimen Skeptic",
+   "lens": "A pharmacologist/trial-design critic who distrusts pooled 'vitamin D' summary effects because they lump together fundamentally different regimens (daily/weekly low-dose vs monthly/annual bolus high-dose) and suspects this heterogeneity masks a true effect-modifying variable.",
+   "query": "vitamin D bolus high dose versus daily supplementation respiratory infection dosing regimen comparison meta-analysis"
+  },
+  {
+   "label": "Clinical Guideline & Regulatory Auditor",
+   "lens": "A clinician-guideline body (e.g., USPSTF, NICE, Cochrane, WHO) auditor who distrusts individual trial hype and asks what the authoritative evidence synthesizers and regulators have concluded after weighing bias, quality, and clinical significance (including NNT) before issuing or withholding a recommendation.",
+   "query": "Cochrane review NICE USPSTF vitamin D supplementation recommendation prevent respiratory infection adults guideline"
+  }
+ ],
+ "summary": "Based on the verified evidence, vitamin D supplementation appears to modestly reduce acute respiratory infection risk overall, according to a 2017 meta-analysis (Martineau et al., BMJ), with the clearest benefit in individuals who are severely vitamin D deficient and those using daily/weekly rather than bolus dosing regimens. A 2013 study reinforces the dosing-regimen caveat by showing that adding bolus-dose vitamin D to a daily low-dose regimen actually increased upper respiratory infection risk. This is complicated by the 2011 Institute of Medicine review, which found existing evidence not consistently supportive of a causal link, reflecting the field's evolution over time rather than a settled consensus. None of the verified claims provide the actual effect size, confidence interval, or adult-specific numeric outcome from the largest meta-analyses (2017 BMJ, 2019 IPD), so this qualified-yes conclusion rests on secondary-source paraphrase rather than primary quantitative data. Critically, half of the extracted claims were never checked by this panel, so the honest answer is a cautious, conditional \"likely yes for deficient/non-bolus populations, uncertain overall\" rather than a confident yes or no.",
+ "answerFirst": "The evidence base assembled here (10 of 20 extracted claims verified; 10 never checked) points toward a qualified \"yes, with conditions\": the 2017 Martineau et al. BMJ meta-analysis found vitamin D supplementation overall protected against acute respiratory tract infection, with benefit concentrated in the severely deficient and in those on daily/weekly (non-bolus) regimens — and a separate 2013 abstract found bolus dosing added to daily low-dose actually increased URI risk. However, the 2011 IOM review found existing evidence not consistently supportive of a causal role, and this synthesis rests on secondary (Wikipedia) summaries of primary trials rather than the primary RCT data itself, so confidence is moderate, not high. Because half the extracted claims were never verified by the panel and were ranked below these by source tier alone (not by relevance), a claim that could overturn this qualified-yes conclusion may simply be missing from this report.",
+ "hingeNumber": {
+  "value": "42% relative risk reduction (children, flu) and the qualitative 'most benefit in severely deficient / non-bolus' finding from the 2017 meta-analysis",
+  "why": "The entire qualified-yes conclusion hinges on whether the 2017 Martineau meta-analysis's 'protected against ARI overall' finding is a genuine, robust, statistically significant population-level effect or a modest/marginal one driven almost entirely by a deficient subgroup — no confidence interval or p-value was extracted from the evidence base, so this is effectively a directional claim without a verified magnitude.",
+  "sensitivity": "If the true overall effect is null or the subgroup benefit disappears with a 10-20% shift in effect estimate (plausible given meta-analytic heterogeneity in this literature), the answer flips from 'qualified yes' to 'no meaningful population-level effect, subgroup-only at best' — this is a fragile hinge because no primary numeric data was verified in this panel.",
+  "source": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections (secondary paraphrase of Martineau et al. 2017 BMJ)"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "Vitamin D supplementation provides a modest but statistically significant protective effect against ARI overall, particularly benefiting those who are deficient at baseline.",
+   "hypothesisNumber": 1,
+   "verdict": "surviving",
+   "reasoning": "Claim [1] directly supports this: the 2017 Martineau meta-analysis found overall protection with most benefit in the severely deficient. No confirmed claim shows a large IPD meta-analysis or landmark RCT demonstrating no significant overall effect AND no subgroup effect in deficient individuals (the kill criterion), so it survives, though confidence is only medium since the primary numeric data (effect size/CI) was never directly verified.",
+   "claimsCited": [
+    1
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "Vitamin D supplementation has no meaningful protective effect on ARI risk in the general adult population, regardless of baseline status.",
+   "hypothesisNumber": 2,
+   "verdict": "killed",
+   "reasoning": "Claim [1] reports a well-powered meta-analysis (Martineau et al. 2017) found vitamin D supplementation 'protected against acute respiratory tract infection overall' — this is evidence of a statistically framed overall protective effect (not confined to a narrow subgroup, since it explicitly says 'overall' before noting extra benefit in subgroups), which matches the kill criterion for H2.",
+   "claimsCited": [
+    1
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "Benefit exists only under specific conditions (e.g., daily/weekly low-dose regimens in deficient individuals) and is absent or reversed with bolus high-dose regimens, making the overall population-level answer 'no' but with an important caveat.",
+   "hypothesisNumber": 3,
+   "verdict": "surviving",
+   "reasoning": "Claims [0] and [1] together directly support this: claim [1] states non-bolus recipients and the severely deficient got the most benefit, and claim [0] shows bolus dosing added to daily low-dose regimen increased URI risk. The kill criterion (evidence that dosing regimen has no differential effect, or that benefit appears regardless of deficiency status) is not triggered by any confirmed claim — in fact the evidence points the opposite direction, reinforcing rather than killing H3.",
+   "claimsCited": [
+    0,
+    1
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "The evidence is too heterogeneous, biased, or underpowered to draw a reliable conclusion either way, meaning the honest answer is 'unclear/inconclusive' rather than yes or no.",
+   "hypothesisNumber": 4,
+   "verdict": "surviving",
+   "reasoning": "The kill criterion requires consistent, low-heterogeneity findings across multiple independent high-quality meta-analyses and large recent RCTs converging on the same conclusion. This synthesis has only one meta-analysis's paraphrased conclusion (claim 1, without extracted effect sizes/heterogeneity stats) plus a contradicting older IOM review (claim 3) and an unrelated 2013 conference abstract (claim 0) — this is not the kind of consistent, low-heterogeneity convergence the kill criterion demands, especially given 50% of claims were never verified. H4 therefore survives: genuine uncertainty remains given the thin, secondary-sourced, partially contradictory evidence base.",
+   "claimsCited": [
+    0,
+    1,
+    3
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  }
+ ],
+ "strongestArgumentAgainst": "The entire \"yes, with conditions\" conclusion rests on a secondary source (Wikipedia) paraphrasing a 2017 meta-analysis, without the actual pooled effect size, confidence interval, or heterogeneity statistics ever being quoted or verified in this panel. The 2011 IOM review — a primary institutional assessment — explicitly found the evidence NOT consistently supportive of a causal role, and nothing in this claim set shows that a subsequent, equally authoritative primary-source review superseded that judgment with quantitative rigor. Additionally, the one adult-relevant subgroup-benefit claim and the one dosing-regimen-harm claim come from different, unrelated studies (2017 Wikipedia summary vs. 2013 conference abstract), so the \"dosing matters\" narrative (H3) is stitched together from disparate sources rather than demonstrated within a single coherent trial or meta-analysis. Given that 50% of extracted claims were never checked, it is entirely possible a suppressed claim shows a large, well-powered recent RCT (e.g., VITAL-Respiratory) found null results in the general adult population, which would directly support H2 and overturn this report's qualified-yes framing.",
+ "whatWouldChangeThisCall": [
+  "Verification of the actual pooled effect size and confidence interval from the Martineau et al. 2017 BMJ meta-analysis or the 2019 IPD meta-analysis (claim 2), rather than relying on Wikipedia's paraphrase.",
+  "Review of any of the 10 unverified/lower-ranked claims, especially if any references a large recent adult-only RCT (e.g., VITAL-Respiratory ancillary results) showing null or positive findings in the general adult population.",
+  "Direct primary-source confirmation (not secondary/Wikipedia) of the IOM 2011 vs. 2017 meta-analysis reconciliation — i.e., whether the 2017 analysis explicitly addressed and overturned IOM's causal-role skepticism.",
+  "Any adult-specific (not pediatric) trial data replicating or contradicting the 42% flu-reduction effect seen in children.",
+  "Confirmation of whether dosing-regimen effects (daily/weekly vs. bolus) are consistent across multiple independent trials, not just the single 2013 Thorax abstract used here."
+ ],
+ "baseRate": "No explicit numeric base rate for \"an ARI-prevention supplement trial shows benefit\" is given in the evidence. As an outside-view anchor: nutrient-supplementation trials for infection prevention (e.g., vitamin C, zinc, multivitamins) very frequently show null or marginal overall effects with occasional subgroup benefit in deficient populations — the pattern reported here (null-to-modest overall effect, concentrated benefit in deficient subgroups) is consistent with that general base rate for micronutrient RCTs, which should temper enthusiasm for a strong \"yes\" answer.",
+ "findings": [
+  {
+   "claim": "A major 2017 meta-analysis (Martineau et al., BMJ) concluded vitamin D supplementation was safe and protected against acute respiratory tract infection overall, with the greatest benefit in those severely vitamin D deficient and in those not receiving bolus doses.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections"
+   ],
+   "evidence": "Quote: 'a more recent meta-analysis concluded Vitamin D supplementation was safe and it protected against acute respiratory tract infection overall. Patients who were very vitamin D deficient and those not receiving bolus doses experienced the most benefit.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — claim wording closely mirrors the quote verbatim with no added generalization or causal overreach beyond the source's own 'protected against' language."
+  },
+  {
+   "claim": "Bolus (intermittent high-dose) vitamin D regimens do not improve, and may worsen, ARI risk: a 2013 study found adding bolus-dose vitamin D to a daily low-dose regimen increased upper respiratory infection risk.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1136/thoraxjnl-2013-204457.130"
+   ],
+   "evidence": "Quote (title): 'Increased risk of upper respiratory infection with addition of intermittent bolus-dose vitamin D supplementation to a daily low-dose regimen.' Authored by AR Martineau et al., Thorax 2013.",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — claim restates the abstract title directly; only the interpretive framing ('consistent with bolus regimens not improving ARI risk vs daily/weekly') is an inference layered on top of a directly-quoted title, and is appropriately hedged."
+  },
+  {
+   "claim": "The 2011 Institute of Medicine report concluded existing data were not consistently supportive of a causal role for vitamin D in reducing infection risk, and stated dose-response RCT evidence was needed before recommendations could be made.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections"
+   ],
+   "evidence": "Quote: 'the existing studies did not provide strong or consistent evidence for a link between vitamin D deficiency and respiratory tract infections... data from randomised controlled trials would be needed, showing a dose response... before recommendations could be considered.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — claim is a close paraphrase, 'link' reworded to 'causal role' but consistent with how IOM frames such conclusions."
+  },
+  {
+   "claim": "A large individual participant data (IPD) meta-analysis (Martineau et al. 2019, Health Technology Assessment) exists, synthesizing RCT-level data specifically on vitamin D for ARI prevention — representing the most rigorous evidence base referenced, though its specific quantitative findings were not extracted/verified here.",
+   "confidence": "low",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections"
+   ],
+   "evidence": "Quote: bibliographic citation only — 'Martineau AR, Jolliffe DA, Greenberg L... Vitamin D supplementation to prevent acute respiratory infections: individual participant data meta-analysis. Health Technology Assessment. 23(2):1-44.'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for existence/bibliographic facts only — the claim explicitly does not assert any effect size or conclusion from this study, since none was quoted; downgraded to low confidence because it carries no substantive finding, only confirms the study exists."
+  },
+  {
+   "claim": "In a randomized trial, children who took daily vitamin D3 in winter were 42% less likely to contract seasonal flu than placebo — evidence of benefit, but in a pediatric (not adult) population and for influenza specifically, not ARI broadly.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections"
+   ],
+   "evidence": "Quote: 'Children who took vitamin D 3 supplements daily in winter were 42% less likely to get infected with seasonal flu than those who were given a placebo.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — near-verbatim match; note this finding is about children, not adults, so its relevance to the adult-focused question is limited and noted as a caveat."
+  },
+  {
+   "claim": "Vitamin D deficiency (defined by NIH as serum 25(OH)D < 30 nmol/L / 12 ng/mL) may increase risk of severe acute respiratory infections and COPD, per a cited review — this establishes the deficiency threshold underlying subgroup-benefit claims.",
+   "confidence": "medium",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Vitamin_D_deficiency"
+   ],
+   "evidence": "Quotes: 'Deficient < 12 ng/mL < 30 nmol/L' and 'Vitamin D deficiency may increase the risk of severe acute respiratory infections and COPD.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported — both quotes directly match claim content; hedge 'may increase' is preserved, not overstated to certainty."
+  },
+  {
+   "claim": "General/background facts: RCTs exist assessing vitamin D for respiratory tract infection prevention (per Wikipedia's respiratory tract infection article); the general Vitamin D Wikipedia article does not directly address ARI outcomes and instead flags that benefits of supplementation in already-sufficient individuals remain unproven; the Thorax 2013 study was authored by AR Martineau and colleagues, linking it to later major meta-analyses.",
+   "confidence": "low",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Respiratory_tract_infection",
+    "https://en.wikipedia.org/wiki/Vitamin_D",
+    "https://doi.org/10.1136/thoraxjnl-2013-204457.130"
+   ],
+   "evidence": "Quotes: 'High-quality clinical research in the form of randomized controlled trials assessed the effectiveness of Vitamin D'; 'the evidence for health benefits of vitamin D supplementation in individuals who already are vitamin D sufficient is as yet unproven'; author/journal/year metadata for the 2013 Thorax abstract.",
+   "vote": "2-1 / 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported for what is stated, but these are contextual/bibliographic facts with no direct bearing on the effect-size question — included for completeness, not as evidence for or against efficacy; low confidence reflects their tangential 'so what' value."
+  }
+ ],
+ "caveats": "Coverage limit: 10 of 20 extracted claims (50%) were never verified by the panel because the review budget stopped at 10; these were ranked by source tier, not relevance, so a lower-tier claim that could overturn or substantially qualify this conclusion may be missing entirely — this is disclosed in answerFirst per instructions. All load-bearing findings here rely on Wikipedia (T2, secondary) summarizing primary trials/meta-analyses rather than the primary sources themselves (the Martineau 2017 BMJ paper and 2019 HTA report were not directly quoted for their statistical results, e.g., no pooled odds ratio or confidence interval was extracted). The 42%-flu-reduction finding applies to children, not adults, despite the question being about adults — limiting its direct relevance. No claim in this set reports a specific effect size (e.g., odds ratio, NNT) for adults specifically. The evidence is time-sensitive: the field's understanding evolved substantially between 2011 (IOM, cautious) and 2017 (Martineau meta-analysis, more supportive), and newer trials/meta-analyses post-2019 were referenced only bibliographically (claim 2) without extracted findings, so this synthesis may already be stale relative to the most current literature. No T5 sources were included, so none required exclusion.",
+ "openQuestions": [
+  "What is the actual pooled odds ratio / relative risk and confidence interval reported by Martineau et al. 2017 (BMJ) and 2019 (IPD meta-analysis) for adults specifically, separate from children?",
+  "Do any of the 10 unverified claims contain a large adult-specific RCT (e.g., VITAL-Respiratory) that reports null or positive results for the general adult population, which would directly adjudicate H1 vs H2?",
+  "Is the apparent contradiction between the 2011 IOM report and the 2017 meta-analysis a genuine evolution of evidence, or does the 2017 analysis have methodological limitations (e.g., publication bias, subgroup fishing) that the IOM's caution anticipated?",
+  "How consistent is the bolus-vs-daily dosing effect across multiple trials beyond the single 2013 Thorax abstract — is this a replicated finding or an isolated result?"
+ ],
+ "citationAudit": null,
+ "citationDetail": [],
+ "quoteAudit": [
+  {
+   "claim": "A study titled 'Increased risk of upper respiratory infection with addition of intermittent bolus-dose vitamin D supplementation to a daily low-dose regimen' reports harm from adding bolus-dose vitamin D to daily low-dose supplementation, consistent with bolus regimens not improving (and potentially…",
+   "url": "https://doi.org/10.1136/thoraxjnl-2013-204457.130",
+   "quote": "S123 Increased risk of upper respiratory infection with addition of intermittent bolus-dose vitamin D supplementation to a daily low-dose regimen",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "A meta-analysis (Martineau et al. 2017 BMJ) concluded that vitamin D supplementation was safe and protected against acute respiratory tract infection overall, with the most benefit in patients who were very vitamin D deficient and in those not receiving bolus doses.",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections",
+   "quote": "a more recent meta-analysis concluded Vitamin D supplementation was safe and it protected against acute respiratory tract infection overall. Patients who were very vitamin D deficient and those not receiving bolus doses experienced the most benefit.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3436
+  },
+  {
+   "claim": "The Martineau et al. 2019 individual participant data meta-analysis (Health Technology Assessment) examined vitamin D supplementation to prevent acute respiratory infections using IPD from RCTs.",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections",
+   "quote": "Martineau AR, Jolliffe DA, Greenberg L, Aloia JF, Bergman P, Dubnov-Raz G, et al. (January 2019). Vitamin D supplementation to prevent acute respiratory infections: individual participant data meta-analysis. Health Technology Assessment. 23 (2): 1–44.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": null
+  },
+  {
+   "claim": "The Institute of Medicine's 2011 report concluded that existing data were not consistently supportive of a causal role for vitamin D in reducing the risk of infection, and stated that dose-response evidence from randomized controlled trials would be needed before recommendations could be considered.",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections",
+   "quote": "The conclusion of the report was that the existing studies did not provide strong or consistent evidence for a link between vitamin D deficiency and respiratory tract infections. The authors stated that data from randomised controlled trials would be needed, showing a dose response to vitamin D supplementation, before recommendations could be considered.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3060
+  },
+  {
+   "claim": "In a randomized trial, children who took vitamin D3 supplements daily in winter were 42% less likely to get infected with seasonal flu than those given placebo.",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections",
+   "quote": "Children who took vitamin D 3 supplements daily in winter were 42% less likely to get infected with seasonal flu than those who were given a placebo.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2330
+  },
+  {
+   "claim": "The general Wikipedia article on Vitamin D does not directly address vitamin D supplementation's effect on acute respiratory infection risk; it instead notes that health benefits of vitamin D supplementation in already-sufficient individuals remain unproven.",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D",
+   "quote": "However, the evidence for health benefits of vitamin D supplementation in individuals who already are vitamin D sufficient is as yet unproven.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3453
+  },
+  {
+   "claim": "This research was published in the journal Thorax in 2013 and authored by AR Martineau and colleagues, one of the researchers associated with subsequent major vitamin D-ARI meta-analyses.",
+   "url": "https://doi.org/10.1136/thoraxjnl-2013-204457.130",
+   "quote": "Journal: Thorax Year: 2013 Type: journal-article Cited by: 4 Authors: AR Martineau, Y Hanifa, RL Hooper, KD Witt, M Patel, A Syed, DA Jolliffe, PM Timms",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 148
+  },
+  {
+   "claim": "The NIH classifies serum 25(OH)D deficiency as less than 30 nmol/L (12 ng/mL)",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_deficiency",
+   "quote": "Deficient < 12 ng/mL < 30 nmol/L",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3285
+  },
+  {
+   "claim": "Vitamin D deficiency may increase the risk of severe acute respiratory infections and COPD according to a cited review",
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_deficiency",
+   "quote": "Vitamin D deficiency may increase the risk of severe acute respiratory infections and COPD .",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5615
+  },
+  {
+   "claim": "A Wikipedia article on respiratory tract infection notes that high-quality clinical research in the form of randomized controlled trials has assessed the effectiveness of Vitamin D for prevention of respiratory tract infections.",
+   "url": "https://en.wikipedia.org/wiki/Respiratory_tract_infection",
+   "quote": "High-quality clinical research in the form of randomized controlled trials assessed the effectiveness of Vitamin D,",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5851
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": {
+  "sampled": 3,
+  "survived": 1,
+  "survivalRate": 0.333,
+  "keptClaimSurvivalRate": 1.0,
+  "reading": "dropped claims survive at a materially different rate to kept ones"
+ },
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 9,
+   "floor": 5,
+   "thin": false,
+   "verdict": "9 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "processCritique": {
+  "untraceableCount": 4,
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A 2013 study reinforces the dosing-regimen caveat by showing that adding bolus-dose vitamin D to a daily low-dose regimen actually increased upper respiratory infection risk.",
+   "Critically, half of the extracted claims were never checked by this panel, so the honest answer is a cautious, conditional likely yes for deficient/non-bolus populations, uncertain overall rather than a confident yes or no.",
+   "This is complicated by the 2011 Institute of Medicine review, which found existing evidence not consistently supportive of a causal link, reflecting the field's evolution over time rather than a settled consensus."
+  ],
+  "untraceableStatements": [
+   "Finding 5 label 'medium' confidence for a claim that is explicitly noted as pediatric and influenza-specific being used as evidence in an adult ARI report",
+   "Summary claim that the 42% flu reduction study 'reinforces the dosing-regimen caveat' is a mischaracterization - claim 4 is about pediatric flu risk reduction, not a dosing-regimen caveat, and is misattributed as 'reinforcing' the bolus-dosing finding when it's an unrelated pediatric influenza trial",
+   "Summary states the IOM finding 'reflects the field's evolution over time rather than a settled consensus' - this interpretive framing is not supported by claim 3, which says nothing about field evolution or consensus status",
+   "The summary's overall framing as 'qualified-yes conclusion' and 'cautious, conditional likely yes for deficient/non-bolus populations' asserts a level of confidence and synthesis not directly licensed by any single claim, since no claim provides effect size, CI, or significance data for adults specifically"
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (pooled effect size/CI/significance from Martineau 2017 and 2019 IPD meta-analyses) was never answered - no numeric RR, OR, or CI was extracted from any claim, despite being the single most important quantitative anchor for the whole question.",
+   "Checklist item 2 (whether protective effect is concentrated in deficient vs. present across all baseline levels) is only partially covered via paraphrase of claim 1's mention of 'greatest benefit' in deficient individuals, but no quantitative subgroup data (e.g., effect size in deficient vs. sufficient) was retrieved to substantiate the concentration claim.",
+   "Checklist item 4 (post-2020 large RCTs, especially VITAL trial respiratory ancillary results) was never addressed at all - no claim in the pool references VITAL or any post-2020 trial, despite a dedicated 'Landmark Trial Steelman' perspective being assigned to search for exactly this.",
+   "Checklist item 5 (clinical meaningfulness: NNT, absolute risk reduction) is completely unaddressed - no claim contains any absolute risk or NNT figure.",
+   "Checklist item 6 (heterogeneity of included RCTs - population, dose, duration, outcome definition) was not investigated; no claim discusses trial heterogeneity explicitly.",
+   "Checklist item 7 (current guideline body recommendations - Cochrane, NICE, USPSTF, WHO) was not answered; despite a 'Clinical Guideline & Regulatory Auditor' perspective being tasked with this, only the outdated 2011 IOM report (claim 3) was retrieved, and no current Cochrane/NICE/USPSTF/WHO position was found.",
+   "Checklist item 8 (sources of bias - publication bias, industry funding, trial quality/blinding) was never investigated; no claim addresses bias sources in the literature.",
+   "No primary source (the actual Martineau 2017 BMJ paper or 2019 HTA report) was directly retrieved/quoted with numbers; only secondary paraphrases and a Wikipedia article were used, meaning the evidence base is thin and low-primacy for a question requiring quantitative synthesis.",
+   "The pediatric flu RCT (claim 4) was included as supporting evidence despite the question being specifically about adults, and no adult-specific individual RCT was found or cited anywhere in the claim pool."
+  ],
+  "planFlaws": [
+   "All four perspectives share a blind spot: none appear to have retrieved or verified primary trial data with actual numbers (RR/OR/CI/NNT), relying instead on secondary paraphrase and even Wikipedia meta-commentary (claims 5, 9) as stand-ins for primary evidence - this is a systemic sourcing weakness baked into the search plan.",
+   "The 'Clinical Guideline & Regulatory Auditor' perspective was tasked with finding current guideline positions (Cochrane, NICE, USPSTF, WHO) but only produced a 2011 IOM report predating all major meta-analyses (2017, 2019) - the perspective's search appears to have stopped at an outdated source without verifying whether it was superseded, and the report treats it as still relevant without noting its staleness explicitly enough.",
+   "The 'Landmark Trial Steelman' perspective was tasked with finding VITAL trial and post-2020 RCT results but the claim pool contains zero results from this search, suggesting either the search was not executed or results were dropped without any note in the report explaining the omission - this silent failure is a process flaw, not just a coverage gap.",
+   "The report itself admits 'half of the extracted claims were never checked by this panel' but the executive summary was still written with directional confidence language ('appears to modestly reduce risk') rather than being downgraded to 'insufficient evidence to determine direction/magnitude' - the plan did not include a gating step to prevent overconfident synthesis when checklist items are unmet.",
+   "The scoping checklist correctly identified 8 important sub-questions but the search execution failed to actually retrieve primary quantitative data for the most central item (item 1, pooled effect size), and the report proceeded to a definitive-sounding executive summary anyway rather than flagging this as a blocking gap requiring re-search."
+  ],
+  "rationales": [
+   "The executive summary asserts a directional (if hedged) conclusion - modestly reduce ARI risk, likely yes for deficient/non-bolus populations - but the claim pool never supplies the core quantitative evidence (pooled effect size, CI, significance, NNT/ARR) that checklist items 1 and 5 required, and entirely fails checklist items 4 (post-2020/VITAL trial confirmation), 6 (heterogeneity), 7 (current guideline consensus), and 8 (bias sources). Two of four assigned search perspectives (Landmark Tria…"
+  ]
+ },
+ "refuted": [],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Respiratory_tract_infection",
+   "quality": "secondary",
+   "perspective": "IPD Meta-Analyst",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_and_respiratory_tract_infections",
+   "quality": "secondary",
+   "perspective": "IPD Meta-Analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D_deficiency",
+   "quality": "secondary",
+   "perspective": "IPD Meta-Analyst",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Vitamin_D",
+   "quality": "secondary",
+   "perspective": "IPD Meta-Analyst",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Dietary_supplement",
+   "quality": "secondary",
+   "perspective": "IPD Meta-Analyst",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Immune_system",
+   "quality": "secondary",
+   "perspective": "Landmark Trial Steelman (VITAL & Large RCTs)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1136/thoraxjnl-2013-204457.130",
+   "quality": "primary",
+   "perspective": "Dosing-Regimen Skeptic",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1007/s40266-015-0259-8",
+   "quality": "primary",
+   "perspective": "Dosing-Regimen Skeptic",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.bone.2018.02.024",
+   "quality": "primary",
+   "perspective": "Dosing-Regimen Skeptic",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1211/pj.2019.20206383",
+   "quality": "secondary",
+   "perspective": "Dosing-Regimen Skeptic",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "quick",
+  "perspectives": 4,
+  "subQuestions": 8,
+  "sourcesFetched": 10,
+  "claimsExtracted": 20,
+  "urlDupes": 1,
+  "budgetDropped": 4,
+  "claimsDroppedBeforeVerify": 10,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 17,
+    "ok": 0,
+    "fail": 17,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 17,
+    "ok": 0,
+    "fail": 17,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 17,
+    "ok": 0,
+    "fail": 17,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 17,
+    "ok": 0,
+    "fail": 17,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 17,
+    "ok": 17,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 32
+   },
+   "crossref": {
+    "attempts": 14,
+    "ok": 13,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 74
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 5
+   }
+  },
+  "sourceTiers": {
+   "T2": 10
+  },
+  "killsByLens": {},
+  "fetchVia": {
+   "http": 6,
+   "crossref-api": 4
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 0,
+   "hits": 32,
+   "rate": 0.0
+  },
+  "agentCalls": 60,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 136505,
+  "outputTokens": 40584,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 20,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 0,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 0,
+   "misses": 10,
+   "charsServedFromCache": 0,
+   "hitRate": 0.0
+  },
+  "wallSeconds": 402.6,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 0,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

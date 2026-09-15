@@ -54,12 +54,28 @@ def dropped_markdown():
         if 100 * (sv - kp) >= -SAME_WITHIN:
             same += 1
         out.append("| %s | %s | %.0f%% | %.0f%% |" % (name, n, 100 * sv, 100 * kp))
+    # The CONCLUSION is derived, not typed. It was fixed prose asserting "the ranking is
+    # not selecting for verifiability", written when the samples ran one way; a later run
+    # came back 33% against 100% of kept and the sentence still asserted the old reading
+    # over a bare majority. A generated table with a hand-written conclusion is only half
+    # generated, and the hand-written half is the one that overstates.
+    frac = same / len(rows) if rows else 0
+    if frac >= 0.75:
+        reading = ("The ranking is not selecting for verifiability - that is the unfavourable "
+                   "answer and it is the one the data gives.")
+    elif frac <= 0.25:
+        reading = ("The ranking is selecting for verifiability: the claims the cap discarded "
+                   "really do verify worse.")
+    else:
+        reading = ("At %d of %d there is **no consistent signal either way** - some runs drop "
+                   "claims that verify as well as the kept ones, others drop claims that verify "
+                   "worse. That is weaker than this table once claimed, and it is what the "
+                   "samples support." % (same, len(rows)))
     out += ["",
             "**In %d of %d samples the discarded claims verified as well as or better than the "
-            "kept ones** (within %d points, or higher). The ranking is not selecting for "
-            "verifiability. That is the unfavourable answer, it is the one the data gives, and it "
-            "is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9)."
-            % (same, len(rows), SAME_WITHIN),
+            "kept ones** (within %d points, or higher). %s Tracked as "
+            "[#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9)."
+            % (same, len(rows), SAME_WITHIN, reading),
             "", DROPPED_END]
     return "\n".join(out)
 

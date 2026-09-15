@@ -310,13 +310,14 @@ The budget caps verification, so most extracted claims are never checked. `--sam
 | calibration-2026-09-06 | 6 | 100% | 83% |
 | nudge-searxng-2026-09-06 | 3 | 33% | 83% |
 | v11-creatine-cognition | 10 | 100% | 80% |
+| v12-vitamin-d-respiratory | 3 | 33% | 100% |
 | v2-mammography-forties | 10 | 90% | 87% |
 | v2-minimum-wage-employment | 10 | 80% | 63% |
 | v2-standing-desks | 10 | 80% | 90% |
 | v3-minwage-fixed | 10 | 90% | 67% |
 | v3-nudge-contract | 10 | 60% | 67% |
 
-**In 5 of 8 samples the discarded claims verified as well as or better than the kept ones** (within 5 points, or higher). The ranking is not selecting for verifiability. That is the unfavourable answer, it is the one the data gives, and it is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9).
+**In 5 of 9 samples the discarded claims verified as well as or better than the kept ones** (within 5 points, or higher). At 5 of 9 there is **no consistent signal either way** - some runs drop claims that verify as well as the kept ones, others drop claims that verify worse. That is weaker than this table once claimed, and it is what the samples support. Tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9).
 
 <!-- END GENERATED -->
 
