@@ -68,7 +68,7 @@ def render_depths(contract: dict) -> str:
     A literal rather than a loop so the generated file stays readable in review: a
     reviewer comparing the two runtimes reads numbers, not a mapping applied at runtime.
     """
-    lines = [D_START, "const TIERS = {"]
+    lines = [D_START, "const DEPTH_BUDGETS = {"]
     for name, cfg in contract["depths"].items():
         fields = ", ".join(
             "%s: %s" % (DEPTH_KEY_JS.get(k, k), json.dumps(cfg[k]))

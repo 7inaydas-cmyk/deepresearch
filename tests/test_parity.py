@@ -49,7 +49,7 @@ SHARED = {
     # mechanism existed - the seventh drift, certified by prose about the code.
     "hypothesisNumber over text": ('_v["preRegisteredBy"] = "hypothesisNumber"',
                                    "preRegisteredBy: 'hypothesisNumber'"),
-    "number checked vs text":    ("def _hyp_unrelated(", "const hypUnrelated = "),
+    "number checked vs text":    ("def _hyp_mismatch(", "const hypMismatch = "),
     "string leaf enforced":      ("isinstance(v, str)", "typeof v === 'string') out[name] = v"),
     "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),
     "calibration drops errors":  ("excludedForLensErrors", "excludedForLensErrors"),
@@ -99,6 +99,8 @@ SHARED = {
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),
     "steelman re-asked once":    ('label="steelman-retry"', "label: 'steelman-retry'"),
+    "no-steelman disclosure":    ("NOT PRODUCED. The synthesis step returned a cross-reference",
+                                  "NOT PRODUCED. The synthesis step returned a cross-reference"),
 }
 
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
@@ -309,6 +311,14 @@ def check_stripper():
         ("const u = 'https://example.org/p'\n", True, "", "https://example.org/p"),
         ("const t = `a // inside a template`\n", True, "", "// inside a template"),
         ("const r = /^\\s*<([A-Za-z][\\w-]*)>/\n", True, "", "<([A-Za-z]"),
+        # DELIBERATE, and pinned so it stays deliberate: a marker inside a STRING
+        # survives, because a shared prompt sentence IS the feature several rows prove
+        # themselves with. A review noted the consequence - a code-shaped marker sitting
+        # in prose inside a string would still certify - so the behaviour is recorded
+        # here rather than assumed, and check_marker_shape is the guard against pairing
+        # prose with code.
+        ("const p = 'set out[name] = v when the leaf is a string'\n", True, "", "out[name] = v"),
+        ("MSG = \"call quote_span(page, quote) first\"\n", False, "", "quote_span(page, quote)"),
     ]
     bad = []
     for text, js, gone, kept in cases:

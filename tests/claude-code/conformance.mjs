@@ -22,7 +22,7 @@ if (SPLIT < 0) {
 const noop = () => {}
 const M = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
   '"use strict"; ' + SRC.slice(0, SPLIT) +
-  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypUnrelated, normHyp, isNonanswer, evidenceBase }')(
+  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase }')(
   noop, noop, noop, noop, noop, { question: 'conformance', depth: 'standard' }, {})
 
 // The adapter: one entry per contract function. Return conventions differ between the
@@ -34,7 +34,7 @@ const ADAPTER = {
   host_ambiguous:  url => M.hostIsAmbiguous(url),
   as_list:         v => M.asList(v, 'conformance'),
   same_hypothesis: (a, b) => M.sameHyp(M.normHyp(a), M.normHyp(b)),
-  hyp_unrelated:   (a, b) => M.hypUnrelated(M.normHyp(a), M.normHyp(b)),
+  hyp_mismatch:    (a, b) => M.hypMismatch(M.normHyp(a), M.normHyp(b)),
   shape_problems:  (schema, obj) => M.shape(schema, obj, 'conformance').problems.length,
   is_nonanswer:    text => M.isNonanswer(text),
   // The one real shape difference between the builds: the Python engine's source rows
@@ -45,7 +45,11 @@ const ADAPTER = {
                      rows.map(r => ({ ...r, claims: Array.from({ length: r.claims || 0 }) }))).citableSources,
 }
 
-const DOC = JSON.parse(fs.readFileSync(here + '../../contract/conformance.json', 'utf8'))
+// DR_CONFORMANCE_FILE, as the Python runner honours it — without it the structural
+// rule cannot be tested by mutating the contract, which is how both missing checks
+// above went unnoticed.
+const CONTRACT_PATH = process.env.DR_CONFORMANCE_FILE || (here + '../../contract/conformance.json')
+const DOC = JSON.parse(fs.readFileSync(CONTRACT_PATH, 'utf8'))
 const { cases, instruments } = DOC
 const missing = Object.keys(cases).filter(f => !ADAPTER[f]).sort()
 if (missing.length) {
@@ -60,6 +64,19 @@ if (missing.length) {
 // the rule the parity markers failed for years.
 const want = c => ('out_by_runtime' in c ? c.out_by_runtime.js : c.out)
 const structural = []
+// The Python twin fails a function with cases that is not declared in `instruments`, and
+// one declared with no cases anywhere. This half had neither check and `continue`d past
+// both in silence — the drift-guard drifting, which is the failure it exists to catch,
+// found by an audit reading the two halves side by side. A shared row now pins them.
+const pyOnlyNames = new Set(Object.keys(DOC.python_cases || {}))
+for (const fn of Object.keys(cases).sort()) {
+  if (!instruments[fn]) structural.push(fn + ': has cases but is not declared in `instruments`')
+}
+for (const fn of Object.keys(instruments).sort()) {
+  if (!cases[fn] && !pyOnlyNames.has(fn)) {
+    structural.push(fn + ': declared in `instruments` but has no cases in either build')
+  }
+}
 for (const fn of Object.keys(instruments).sort()) {
   if (!cases[fn]) continue                       // python-only; reported below, not failed
   if (instruments[fn] !== 'gate') continue

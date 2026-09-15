@@ -394,11 +394,35 @@ same hypothesis: 1.000 and 0.941. No character measure survives a negation, beca
 negation is a small edit that inverts meaning. Across all 160 hypotheses in `runs/`, none
 is short enough to reach that path. It was deleted from both builds rather than ported.
 
-**And the filed reproduction did not reproduce.** The audit's examples for the character
-bag — *“the effect is zero”* against *“the effect is huge”*, and against *“cats chase
-mice”* — score 0.727 and 0.636, both under the 0.75 gate. The mechanism was broken; the
-evidence offered for it was not. Finding the real failure took running the attack rather
-than reading the report.
+**RETRACTED, 2026-09-15 — this paragraph was wrong, and the auditor was right.**
+It previously read: *“the filed reproduction did not reproduce … score 0.727 and 0.636,
+both under the 0.75 gate. The mechanism was broken; the evidence offered for it was not.”*
+
+Those two numbers come from calling the matcher with the **registered** hypothesis first.
+The call site passes the **verdict** first:
+
+```js
+REGISTERED.some(r => sameHyp(normHyp(v.hypothesis), r))   // c1254d6, line 1674
+```
+
+The character bag divides by the FIRST argument's character set, so the order decides the
+answer. Re-run against that exact historical code, with the verdict first as the engine
+does it:
+
+| registered | verdict | as the engine evaluates it | the order I published |
+|---|---|---|---|
+| the effect is zero | the effect is huge | **true** (0.80) | false (0.727) |
+| the effect is zero | cats chase mice | **true** (0.778) | false (0.636) |
+
+The audit's reproduction held. Mine tested the arguments backwards and then published
+that the auditor's evidence was bad — in a repository whose entire currency is verified
+claims, which makes it the worst available place to get this wrong. The deletion of the
+fallback was still correct (the `stable`/`unstable` 1.000 case condemns the mechanism from
+either direction), but the dismissal was not, and it is withdrawn.
+
+The claim also stands in the message of commit `d94a26e` and the `v1.5.0` tag. Those are
+pushed and immutable; this is the correction of record. **A reproduction that disagrees
+with yours is a reason to check the call site before publishing that it failed.**
 
 ## Conformance, 2026-09-15
 
@@ -566,6 +590,66 @@ Also ported: `is_nonanswer` with its one-call re-ask and `honestLimits.noSteelma
 `evidenceBase`, which took no arguments and so could not be asked anything — the single
 instrument deciding whether a report is labelled THIN had no callable form. Parity is 57
 shared features, up from 53.
+
+## The fourth audit, 2026-09-15 — and a retraction
+
+Five findings, all five confirmed. The first is the one that matters, because it is about
+the record rather than the code.
+
+**I published that an auditor's evidence was bad, and I was the one who was wrong.** The
+character-bag reproduction I dismissed as "did not reproduce" was evaluated with the
+arguments reversed. The call site is `sameHyp(normHyp(v.hypothesis), r)` — verdict first —
+and the bag divides by the first argument's character set, so order decides the answer.
+Run as the engine runs it, both of the auditor's examples return `true`. The retraction is
+above, in the round-3 section where the claim was made. The claim also stands in commit
+`d94a26e` and the `v1.5.0` tag, which are immutable. **A reproduction that disagrees with
+yours is a reason to check the call site before publishing that it failed.**
+
+**The round-2 superset walked back in through the number path.** `hypothesisNumber` was
+cross-checked at 0.40, which separates only a different *subject*. A verdict swapping the
+registered scope for a different one — *"...only among part-time workers"* against a
+registered *"...modestly in the first two years"* — scores **0.545** and was stamped
+`preRegistered: true, preRegisteredBy: "hypothesisNumber"`. Certainty, for a claim the run
+never registered. Re-measured on every pair on record:
+
+| | verdict-side coverage |
+|---|---|
+| subset (the case the number exists for) | 1.000 |
+| true rewordings | 1.000 / 1.000 / 0.950 / 0.727 |
+| **bar** | **0.65** |
+| scope substitution (the audit's) | 0.545 |
+| superset attack (round 2) | 0.455 |
+| unrelated | 0.250 / 0.091 |
+
+A first attempt put the bar at 0.75, which looked safer and caught the 0.727 rewording —
+one of the contract's own `good` references. The structural rule failed the build rather
+than letting the overcorrection ship. That is twice now that moving a bar toward the
+safe-looking side has cost a real pairing.
+
+`_hyp_unrelated` is renamed `_hyp_mismatch`: it now catches hypotheses that are plainly
+related, so "unrelated" had become the wrong word for what it decides.
+
+**`is_nonanswer` broke in both directions, and the destructive one was worse.** Pointer
+AND length ≤ 200 chars meant a 308-character padded pointer passed, while a 144-character
+genuine argument opening *"See above for the coverage gaps; the deeper risk is..."* was
+replaced with "NOT PRODUCED" — the check deleting real evidence. Length cannot separate
+them: a terse argument and a padded pointer are the same size. It now strips the pointer
+and counts what remains. The permissive direction stays open and is **pinned as a named
+limit** in the contract, deliberately untagged so it counts toward neither half of the
+structural rule.
+
+**The drift-guard had drifted.** Python's `check_structure` fails a function with cases
+that is not declared in `instruments`, and one declared with no cases; the JS twin
+`continue`d past both in silence. Both halves now check both, and the JS runner honours
+`DR_CONFORMANCE_FILE` — without it the rule could not be tested by mutating the contract,
+which is how both omissions went unnoticed.
+
+**Two names and a rule.** `TIERS` held depth budgets beside a real source-quality tier
+table — renamed `DEPTH_BUDGETS`. `instruments.verify()` silenced the engine by rebinding
+its `log` from outside; the engine now owns a declared `quiet_log()` seam. And
+CONTRIBUTING's *"if you widen a schema, split the call"* did forbid adding
+`hypothesisNumber`, with nothing citing an exemption — the rule now states its scope
+(responsibilities, not fields) and says the review was right that it read as a violation.
 
 ## The files
 

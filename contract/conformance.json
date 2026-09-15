@@ -39,14 +39,14 @@
     "as_list": "transform",
     "host_ambiguous": "gate",
     "same_hypothesis": "gate",
-    "hyp_unrelated": "gate",
     "shape_problems": "gate",
     "quote_span": "gate",
     "is_prose": "gate",
     "looks_challenged": "gate",
     "calibration_verdict": "gate",
     "evidence_base": "gate",
-    "is_nonanswer": "gate"
+    "is_nonanswer": "gate",
+    "hyp_mismatch": "gate"
   },
   "cases": {
     "webtext": [
@@ -254,26 +254,6 @@
         ],
         "out": false,
         "why": "an empty side never matches, so a missing hypothesis is never called pre-registered",
-        "ref": "bad"
-      }
-    ],
-    "hyp_unrelated": [
-      {
-        "in": [
-          "H1: Minimum wage rises modestly lower teen employment over the first two years",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": false,
-        "why": "a genuine rewording naming the right number is still believed: this overrules on SUBJECT, never on wording",
-        "ref": "good"
-      },
-      {
-        "in": [
-          "The minimum wage increase caused a decade-long employment decline across all age groups",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": true,
-        "why": "a verdict whose text adjudicates something never registered is caught whatever number it declares - hypothesisNumber was authoritative with nothing examined",
         "ref": "bad"
       }
     ],
@@ -537,6 +517,21 @@
         "out": true,
         "ref": "bad",
         "why": "and so is a refusal token"
+      },
+      {
+        "in": [
+          "See above for the coverage gaps; the deeper risk is that both trials shared an author team, so the pooled estimate may be one lab counted twice."
+        ],
+        "out": false,
+        "ref": "good",
+        "why": "a GENUINE argument that opens by citing another section. The first version paired the pointer with a length test and replaced this with 'NOT PRODUCED' - the check deleting real evidence, which is worse than letting a padded pointer through"
+      },
+      {
+        "in": [
+          "See strongestArgumentAgainst field above (duplicate not needed). This note is retained for completeness and does not itself contain the argument. This note is retained for completeness and does not itself contain the argument."
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged so it counts toward neither half of the structural rule. It pins the NAMED LIMIT: a pointer followed by enough filler passes, because no lexical rule separates filler from argument - the same limit already recorded for the hypothesis matcher. Expected False records what the code does, not what would be correct. If a future change catches it, this case fails and the limit is closed"
       }
     ],
     "evidence_base": [
@@ -564,6 +559,44 @@
         ],
         "out": 0,
         "why": "a fetched-but-silent source does NOT - the thinness gate counted paywalled shells that yielded nothing",
+        "ref": "bad"
+      }
+    ],
+    "hyp_mismatch": [
+      {
+        "in": [
+          "H1: Minimum wage rises modestly lower teen employment over the first two years",
+          "Minimum wage increases reduce teen employment modestly in the first two years"
+        ],
+        "out": false,
+        "why": "a genuine rewording naming the right number is still believed: this overrules on SUBJECT, never on wording",
+        "ref": "good"
+      },
+      {
+        "in": [
+          "Minimum wage increases reduce teen employment only among part-time workers",
+          "Minimum wage increases reduce teen employment modestly in the first two years"
+        ],
+        "out": true,
+        "ref": "bad",
+        "why": "the round-2 SUPERSET, back through the number path. A verdict that swaps the registered scope for a different one scores 0.545 and, at the first bar of 0.40, was stamped preRegistered: true with preRegisteredBy: hypothesisNumber - certainty, for a different claim about the same subject. The gate certified while this adjacent attack walked past it, which is the vacuity the structural rule exists to catch"
+      },
+      {
+        "in": [
+          "Minimum wage increases reduce teen employment",
+          "Minimum wage increases reduce teen employment modestly in the first two years"
+        ],
+        "out": false,
+        "ref": "good",
+        "why": "the SUBSET, which is the case hypothesisNumber exists for at all: a verdict that drops a qualifier has every one of its words inside the registered hypothesis, so it scores 1.000 and the number is believed. Raising the bar must never cost this"
+      },
+      {
+        "in": [
+          "The minimum wage increase caused a decade-long employment decline across all age groups",
+          "Minimum wage increases reduce teen employment modestly in the first two years"
+        ],
+        "out": true,
+        "why": "a verdict whose text adjudicates something never registered is caught whatever number it declares - hypothesisNumber was authoritative with nothing examined",
         "ref": "bad"
       }
     ]

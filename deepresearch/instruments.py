@@ -54,7 +54,7 @@ def _adapter():
         "host_ambiguous":      lambda url: _tiers.host_is_ambiguous(url),
         "as_list":             lambda v: dr.as_list(v, "conformance"),
         "same_hypothesis":     lambda a, b: dr._same_hypothesis(dr._hyp_key(a), dr._hyp_key(b)),
-        "hyp_unrelated":       lambda a, b: dr._hyp_unrelated(dr._hyp_key(a), dr._hyp_key(b)),
+        "hyp_mismatch":        lambda a, b: dr._hyp_mismatch(dr._hyp_key(a), dr._hyp_key(b)),
         "shape_problems":      lambda schema, obj: len(dr.shape(schema, obj, "conformance")[1]),
         "quote_span":          lambda page, quote: dr.quote_span(page, quote)["status"],
         "is_prose":            lambda text: _search.is_prose(text)[0],
@@ -126,14 +126,12 @@ def verify(path=None):
     adapter = _adapter()
     # Several references deliberately trigger a recovery path that LOGS - as_list
     # announcing a double-encoded array is the point of that case. Those lines belong in
-    # a real run, not on every invocation's preflight, so the engine's log is silenced
-    # for the duration and restored after. Nothing else here writes.
+    # a real run, not on every invocation's preflight. This used to rebind the engine's
+    # `log` from out here, which a review called Feature Envy and was right to; the engine
+    # now owns a declared quiet_log() seam and this just uses it.
     from . import engine as _dr
-    _real_log, _dr.log = _dr.log, lambda *_a, **_k: None
-    try:
+    with _dr.quiet_log():
         failures += _run_cases(doc, adapter)
-    finally:
-        _dr.log = _real_log
     return failures
 
 

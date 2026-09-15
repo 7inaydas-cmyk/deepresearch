@@ -34,7 +34,7 @@ export const meta = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 // ── BEGIN GENERATED FROM contract/depths.json — run tools/sync_tiers.py, do not hand-edit ──
-const TIERS = {
+const DEPTH_BUDGETS = {
   quick:       { perspectives: 4, wave1: 10, deepenRounds: 0, wavePerRound: 0, maxVerify: 10, lenses: 3, factAudit: false, critics: 1, rescue: false, calibrate: 0 },
   standard:    { perspectives: 6, wave1: 16, deepenRounds: 1, wavePerRound: 10, maxVerify: 30, lenses: 3, factAudit: true, critics: 2, rescue: true, calibrate: 0 },
   exhaustive:  { perspectives: 9, wave1: 24, deepenRounds: 2, wavePerRound: 14, maxVerify: 50, lenses: 3, factAudit: true, critics: 3, rescue: true, calibrate: 0 },
@@ -54,12 +54,12 @@ if (prefixed) {
   if (!DEPTH) DEPTH = prefixed[1].toLowerCase()
   QUESTION = prefixed[2].trim()
 }
-if (!TIERS[DEPTH]) DEPTH = 'standard'
+if (!DEPTH_BUDGETS[DEPTH]) DEPTH = 'standard'
 // Calibration is off by default because it doubles the verify cost for the claims it
 // re-runs. `args.calibrate: N` turns it on. The pre-registered gate needs N >= 30, and
 // the code says so rather than leaving a caller to discover it from a verdict of
 // "underpowered".
-const T = { ...TIERS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0),
+const T = { ...DEPTH_BUDGETS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0),
   sampleDropped: Math.max(0, parseInt(RAW.sampleDropped, 10) || 0) }
 
 // ── Contract intake. `args.contract` is an object holding any SUBSET of the five framing
@@ -852,10 +852,22 @@ const evidenceBase = rows => {
 //    Across those runs the four non-answers measure 41, 64, 65 and 74 characters and the
 //    sixteen genuine steelmen 906-2101 — an order of magnitude apart, nothing between.
 const POINTER = /^\s*\[?(?:n\/?a|none|tbd|todo|not applicable|no comment|see\b[^.]{0,80}?\b(?:above|below|field|section)|(?:as|same)\s+(?:stated|noted|described)\s+(?:above|below))/i
-const NONANSWER_MAX = 200
+// What is LEFT once the pointer is removed. The first version paired the pointer with a
+// length test (<= 200 chars) and broke in both directions, audited 2026-09-15: a
+// 308-character padded pointer PASSED, and a 144-character genuine argument opening
+// "See above for the coverage gaps; the deeper risk is..." was DESTROYED and replaced
+// with "NOT PRODUCED". The second is the one that matters — that is the check deleting
+// evidence. Length cannot separate them: a terse argument and a padded pointer are the
+// same size. Strip the pointer and count what remains. The permissive direction stays
+// open and is named: a pointer followed by enough filler passes, because no lexical rule
+// separates filler from argument.
+const NONANSWER_MIN_WORDS = 8
 const isNonanswer = text => {
   const t = String(text === null || text === undefined ? '' : text).trim()
-  return !t || (t.length <= NONANSWER_MAX && POINTER.test(t))
+  if (!t) return true
+  const m = POINTER.exec(t)
+  if (!m) return false
+  return (t.slice(m[0].length).match(/[A-Za-z]{3,}/g) || []).length < NONANSWER_MIN_WORDS
 }
 
 
@@ -888,9 +900,25 @@ const HYP_STOP = new Set(('the a an of to in is are and or that this it its as b
   'not but so if then also more most some other others their there was were has have').split(' '))
 const HYP_MATCH_THRESHOLD = 0.65
 const HYP_MIN_TOKENS = 4
-// How little overlap means the verdict is about something ELSE entirely — the only
-// thing a self-declared `hypothesisNumber` is checked against. See hypUnrelated.
-const HYP_UNRELATED_MAX = 0.40
+// Below this, the verdict does not actually state the hypothesis it names — the only
+// thing a self-declared `hypothesisNumber` is checked against. See hypMismatch.
+//
+// Was 0.40, which caught only a different SUBJECT and let the round-2 superset back in
+// through the number path. Audited 2026-09-15; re-measured on every pair on record:
+//
+//   SUBSET, the case the number exists for  1.000 <- must pass
+//   true rewordings (v10)      1.000 / 1.000 / 0.950
+//   true rewording (conformance good)   0.727
+//   ---------------------------------- 0.65 ----------------------------------
+//   scope substitution (the audit's)    0.545 <- must be caught
+//   superset attack (round 2)           0.455 <- must be caught
+//   unrelated                    0.250 / 0.091 <- must be caught
+//
+// A first attempt at 0.75 caught the 0.727 rewording, which is one of the contract's own
+// `good` references, so the structural rule failed the build rather than letting the
+// overcorrection ship. A verdict below the bar still reaches the text path and can still
+// stamp true — it loses the certainty label, not the stamp.
+const HYP_UNRELATED_MAX = 0.65
 const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
 const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
 const sameHyp = (a, b) => {
@@ -918,15 +946,15 @@ const sameHyp = (a, b) => {
   // comment itself and the subset attack stamped `preRegistered: true` here for free.
   return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
 }
-// Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
-// `hypothesisNumber` is authoritative and must stay that way — it is the one path neither
-// adding nor dropping content can fool — but authoritative with nothing checked meant a
-// verdict could adjudicate a hypothesis the run never registered and be stamped
-// pre-registered by typing a digit. So this deliberately does NOT re-litigate wording.
-// Measured on runs/v10: true rewordings 0.82-1.00, a post-hoc superset 0.42-0.45, an
-// unrelated hypothesis at most 0.36. The bar sits at 0.40, in the gap. Too short to score
-// returns false: an unmeasurable pairing is not evidence of a mismatch.
-const hypUnrelated = (verdictText, registeredText) => {
+// Does the verdict's TEXT fail to state the hypothesis its number names? What the number
+// genuinely buys is the SUBSET direction — a verdict that drops a qualifier still scores
+// 1.000 here, because every one of its words is in the registered hypothesis, as does
+// every true rewording on record. Adding scope is what lowers the score, and adding scope
+// is the attack. So the bar can sit high without costing the number anything it was for.
+// Too short to score returns false, which is a real hole: a terse verdict cannot be
+// checked this way, so its number is believed. `preRegisteredBy` says which path stamped
+// it, so a reader can see which verdicts rest on an unchecked number.
+const hypMismatch = (verdictText, registeredText) => {
   const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
   if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
   let shared = 0
@@ -1840,8 +1868,8 @@ const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(
   // The text matcher is the fallback for a model that ignores the field, and it is
   // marked as inferred so a reader can tell a certainty from a guess.
   if (Number.isInteger(n) && n >= 1 && n <= REGISTERED.length) {
-    if (hypUnrelated(t, REGISTERED[n - 1])) {
-      return inferredFromText(v, t, 'hypothesisNumber said H' + n + ', whose wording this verdict does not adjudicate')
+    if (hypMismatch(t, REGISTERED[n - 1])) {
+      return inferredFromText(v, t, 'hypothesisNumber said H' + n + ", but this verdict's wording does not state that hypothesis")
     }
     return { ...v, preRegistered: true, preRegisteredBy: 'hypothesisNumber' }
   }

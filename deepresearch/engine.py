@@ -28,7 +28,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, contextlib, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -51,6 +51,9 @@ CLAUDE_CODE_VERSION = os.environ.get("DR_CC_VERSION", "2.1.258")
 OAUTH_BETAS = "claude-code-20250219,oauth-2025-04-20"
 CC_SYSTEM_PREFIX = "You are Claude Code, Anthropic's official CLI for Claude."
 
+# NOT `TIERS`. That name said "tiers" while holding depth budgets, beside a real TIER
+# table for source quality - flagged by review 2026-09-15, and the kind of collision this
+# repo treats as the bug class rather than a cosmetic one.
 # Depth budgets live in contract/depths.json, not here, for the same reason the tier
 # RULES stopped living in two source files: two hand-maintained literals drift. Audited
 # 2026-09-15 - `quick` verified 10 claims here and 14 in the JS build, 30 agent calls
@@ -60,7 +63,7 @@ _DEPTHS_FILE = os.environ.get(
     "DR_DEPTHS_FILE", os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    "..", "contract", "depths.json"))
 with open(os.path.normpath(_DEPTHS_FILE), encoding="utf-8") as _df:
-    TIERS = json.load(_df)["depths"]
+    DEPTH_BUDGETS = json.load(_df)["depths"]
 # 2 of N lenses must refute to kill a claim, so every tier runs all 3: with only
 # 2 lenses a 1-1 split survives and no single lens can ever kill anything, which
 # makes the adversarial filter inert. Cut claim COUNT for a cheaper tier, never
@@ -87,9 +90,33 @@ KILLS_BY_LENS = {}
 UNTRACEABLE_POLICY = os.environ.get("DR_UNTRACEABLE", "flag")
 
 _print_lock = threading.Lock()
+_log_quiet = False
+
+
 def log(msg):
+    if _log_quiet:
+        return
     with _print_lock:
         print(msg, file=sys.stderr, flush=True)
+
+
+@contextlib.contextmanager
+def quiet_log():
+    """Silence log() for the duration. One caller: the instrument preflight.
+
+    Several conformance references deliberately trigger a recovery path that LOGS -
+    as_list announcing a double-encoded array is the point of that case - and those lines
+    belong in a real run, not on every invocation's preflight. instruments.verify() used
+    to achieve this by rebinding this module's `log` from outside, which a review called
+    Feature Envy and was right to: a module reaching into another to swap a function is a
+    seam nobody declared. This is the declared one.
+    """
+    global _log_quiet
+    was, _log_quiet = _log_quiet, True
+    try:
+        yield
+    finally:
+        _log_quiet = was
 
 # --- Sanitisation (ported from the Claude Code harness) ---------------------
 # Page text reaches subagent prompts. Strip control/format codepoints and the
@@ -1090,9 +1117,35 @@ _HYP_STOP = frozenset(
 # Mid-gap between the superset attacks (max 0.45) and true rewordings (min 0.82).
 HYP_MATCH_THRESHOLD = 0.65
 _HYP_MIN_TOKENS = 4
-# How little overlap means the verdict is about something ELSE entirely - the only thing
-# a self-declared `hypothesisNumber` is checked against. See _hyp_unrelated.
-_HYP_UNRELATED_MAX = 0.40
+# Below this, the verdict does not actually state the hypothesis it names - the only
+# thing a self-declared `hypothesisNumber` is checked against. See _hyp_mismatch.
+#
+# Was 0.40, which caught only hypotheses about a different SUBJECT and let the round-2
+# superset back in through the number path. Audited 2026-09-15: a verdict reading
+# "Minimum wage increases reduce teen employment only among part-time workers", declaring
+# hypothesisNumber 1 against a registered "...modestly in the first two years", scored
+# 0.545 and was stamped `preRegistered: true` with `preRegisteredBy: hypothesisNumber` -
+# certainty, for a different claim about the same subject. Re-measured on every pair on
+# record:
+#
+#   SUBSET, the case the number exists for  1.000 <- must pass
+#   true rewording (v10 H1 relabel)     1.000     <- must pass
+#   true rewording (v10 H4)             1.000     <- must pass
+#   true rewording (v10 H3)             0.950     <- must pass
+#   true rewording (conformance good)   0.727     <- must pass
+#   ---------------------------------- 0.65 ----------------------------------
+#   scope substitution (the audit's)    0.545     <- must be caught
+#   superset attack (round 2)           0.455     <- must be caught
+#   unrelated (the audit's)             0.250     <- must be caught
+#   unrelated (v10 cross pair)          0.091     <- must be caught
+#
+# 0.545 to 0.727 is the gap and the bar sits in it. A first attempt at 0.75 looked safer
+# and was wrong: it caught the 0.727 rewording, which is one of this file's own `good`
+# references, so the structural rule failed the build rather than letting an
+# overcorrection ship. That is the second time raising a bar on the flattering-looking
+# side of the data has cost a real pairing; the numbers above are every pair on record,
+# not a chosen subset.
+_HYP_UNRELATED_MAX = 0.65
 
 
 def _hyp_key(text):
@@ -1166,13 +1219,24 @@ _POINTER = re.compile(
     r"^\s*\[?(?:n/?a|none|tbd|todo|not applicable|no comment"
     r"|see\b[^.]{0,80}?\b(?:above|below|field|section)"
     r"|(?:as|same)\s+(?:stated|noted|described)\s+(?:above|below))", re.I)
-# A pointer AND a short field. Either alone is wrong: a real steelman can cite another
-# section mid-argument, and a short field can still be a blunt honest answer. Together
-# they are the measured shape. Across the 20 recorded runs carrying this field:
-#   non-answers      41, 64, 65, 74 characters
-#   genuine steelmen 906 - 2101 characters
-# a gap of an order of magnitude, with nothing in between. The bar sits in it.
-_NONANSWER_MAX = 200
+# What is LEFT once the pointer is removed. The first version paired the pointer with a
+# length test (<= 200 chars) and broke in both directions, audited 2026-09-15:
+#
+#   "See ... field above (duplicate not needed). <240 chars of filler>"  308 chars -> PASSED
+#   "See above for the coverage gaps; the deeper risk is that both       144 chars -> DESTROYED
+#    trials shared an author team, so the pooled estimate may be
+#    one lab counted twice."
+#
+# The second is the one that matters: replacing a real argument with "NOT PRODUCED" is
+# the check deleting evidence, which is worse than letting a padded pointer through.
+# Length cannot separate them - a terse argument and a padded pointer are the same size.
+# So strip the pointer and count what remains. Four content words of parenthetical
+# ("duplicate not needed") is not an argument; a clause is.
+#
+# The permissive direction stays open and is named rather than papered over: a pointer
+# followed by enough filler passes. No lexical rule separates filler from argument, the
+# same limit already recorded for the hypothesis matcher.
+_NONANSWER_MIN_WORDS = 8
 
 
 def is_nonanswer(text):
@@ -1190,35 +1254,43 @@ def is_nonanswer(text):
     exist anywhere else in the report - it is not misfiled, it is missing. That is a 24%
     silent-content rate on the one field whose whole job is to argue against the answer.
 
-    Deliberately narrow: a field is a non-answer only if it BOTH opens with a pointer or
-    refusal AND is short. Either test alone is wrong - a real steelman may cite another
-    section mid-argument, and a short field may be a blunt honest answer. Together they
-    are the measured shape. Across the 20 recorded runs carrying this field, non-answers
-    measure 41, 64, 65 and 74 characters and genuine steelmen 906-2101 - an order of
-    magnitude apart, with nothing in between.
+    A field is a non-answer if it opens with a pointer or a refusal and has nothing of
+    substance after it. The pointer alone is not enough - a real steelman may open by
+    citing another section and then argue - and length is not enough either, which is how
+    the first version managed to destroy a 144-character genuine argument while passing a
+    308-character padded pointer. See _NONANSWER_MIN_WORDS for both inputs.
     """
     t = str(text or "").strip()
-    return (not t) or (len(t) <= _NONANSWER_MAX and bool(_POINTER.match(t)))
+    if not t:
+        return True
+    m = _POINTER.match(t)
+    if not m:
+        return False
+    rest = t[m.end():]
+    return len(re.findall(r"[A-Za-z]{3,}", rest)) < _NONANSWER_MIN_WORDS
 
 
-def _hyp_unrelated(verdict_text, registered_text):
-    """Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
+def _hyp_mismatch(verdict_text, registered_text):
+    """Does the verdict's TEXT fail to state the hypothesis its number names?
 
-    `hypothesisNumber` is authoritative, and it must stay that way: it is the one path
-    that neither adding nor dropping content can fool. But it was authoritative with
-    nothing checked at all, so a verdict could adjudicate a hypothesis the run never
-    registered and be stamped `preRegistered: true` by typing a digit. The old text
-    matcher could be gamed by rewording; a bare number is cheaper to get wrong than that,
-    whether by a careless model or a flattering one.
+    `hypothesisNumber` was introduced because no lexical rule separates a compact
+    rewording from a qualifier being stripped. It was then made authoritative with
+    NOTHING checked, so a verdict could adjudicate a hypothesis the run never registered
+    and be stamped `preRegistered: true` by typing a digit. The first cross-check fixed
+    only half of that: at 0.40 it caught a different SUBJECT and let the round-2 superset
+    straight back in through the number path (see _HYP_UNRELATED_MAX for the measured
+    table and the audit that found it).
 
-    So this deliberately does NOT re-litigate wording. Measured on runs/v10: true
-    rewordings score 0.82-1.00, a post-hoc SUPERSET 0.42-0.45, an unrelated hypothesis at
-    most 0.36. The bar sits at 0.40, in the gap - below every real pairing and above
-    every unrelated one. A number that names the right hypothesis in different words is
-    believed; a number that names a hypothesis this verdict has nothing to do with is not.
+    What the number genuinely buys is the SUBSET direction - a verdict that drops a
+    qualifier still scores 1.000 here, because every one of its words is in the
+    registered hypothesis. So does every true rewording on record. Adding scope is what
+    lowers the score, and adding scope is exactly the attack. The bar can therefore sit
+    high without costing the number anything it was for.
 
-    Returns False when either side is too short to score: an unmeasurable pairing is not
-    evidence of a mismatch, and the conservative direction here is to trust the number.
+    Returns False when either side is too short to score. That is a real hole and it is
+    named rather than papered over: a terse verdict cannot be checked this way, so its
+    number is believed. `preRegisteredBy` says which path stamped it, so a reader can see
+    which verdicts rest on an unchecked number.
     """
     ta, tb = _hyp_tokens(verdict_text), _hyp_tokens(registered_text)
     if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
@@ -2204,7 +2276,7 @@ def preflight():
 def deepresearch(question, depth="standard", contract=None):
     """`contract`: supplied framing fields (any subset of FRAMING_FIELDS), already shaped
     by load_contract or an equivalent. Supplied fields win; the model drafts the rest."""
-    T = TIERS.get(depth) or TIERS["standard"]
+    T = DEPTH_BUDGETS.get(depth) or DEPTH_BUDGETS["standard"]
     supplied = dict(contract or {})
     t0 = time.time()
     scheme = preflight()
@@ -2983,20 +3055,21 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         _num = _v.get("hypothesisNumber")
         _t = _hyp_key(_v.get("hypothesis", ""))
         if isinstance(_num, int) and not isinstance(_num, bool) and 1 <= _num <= len(_registered):
-            # Checked against the hypothesis it NAMES, not believed. Audited 2026-09-15:
-            # a verdict adjudicating a hypothesis the run never registered returned
+            # Checked against the hypothesis it NAMES, not believed. A verdict
+            # adjudicating a hypothesis the run never registered returned
             # `hypothesisNumber: 1` and was stamped `preRegistered: true` with nothing
-            # examined - the old matcher could be gamed by rewording, and this replaced
-            # it with something gamed by typing a digit. The check is deliberately weak
-            # (see _hyp_unrelated): it overrules the number only when the text is about
-            # something else, so a genuine rewording that names the right number is
-            # still believed and still reads as a certainty.
-            if not _hyp_unrelated(_t, _registered[_num - 1]):
+            # examined - the old matcher could be gamed by rewording, and that replaced
+            # it with something gamed by typing a digit. The first cross-check then sat
+            # so low it caught only a different subject, and the round-2 superset walked
+            # back in through this path; see _HYP_UNRELATED_MAX for the measured table.
+            # A verdict that fails this still reaches the text path below and can still
+            # stamp true - it loses the certainty label, not the stamp.
+            if not _hyp_mismatch(_t, _registered[_num - 1]):
                 _v["preRegistered"] = True
                 _v["preRegisteredBy"] = "hypothesisNumber"
                 continue
-            _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, whose "
-                                     "wording this verdict does not adjudicate" % _num)
+            _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, but this "
+                                     "verdict's wording does not state that hypothesis" % _num)
             _v["preRegistered"] = bool(_t) and any(_same_hypothesis(_t, r) for r in _registered if r)
             continue
         if _num == 0:
@@ -3228,7 +3301,7 @@ def main():
     global MODEL, MAX_CONCURRENCY
     ap = argparse.ArgumentParser(description="Multi-agent research that attacks its own output: adversarial verification, blind citation audit, and a critic that catches the orchestrator inventing things.")
     ap.add_argument("--question", "-q")
-    ap.add_argument("--depth", "-d", default="standard", choices=list(TIERS))
+    ap.add_argument("--depth", "-d", default="standard", choices=list(DEPTH_BUDGETS))
     ap.add_argument("--out", "-o", help="write the full JSON report here")
     ap.add_argument("--model", "-m", default=MODEL)
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)

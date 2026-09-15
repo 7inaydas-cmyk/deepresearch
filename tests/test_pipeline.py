@@ -728,17 +728,30 @@ ok(not dr._same_hypothesis(dr._hyp_key("The effect is nil"), dr._hyp_key("The ef
 # hypothesis the run never registered was stamped pre-registered by typing a digit.
 _REG_MW = [dr._hyp_key("Minimum wage increases reduce teen employment modestly in the first two years"),
            dr._hyp_key("The apparent effect is largely a publication-selection artifact in the older literature")]
-ok(dr._hyp_unrelated(dr._hyp_key("The minimum wage increase caused a decade-long employment "
+ok(dr._hyp_mismatch(dr._hyp_key("The minimum wage increase caused a decade-long employment "
                                  "decline across all age groups"), _REG_MW[0]),
    "a verdict whose text adjudicates something never registered is caught, whatever "
    "number it types")
-ok(not dr._hyp_unrelated(dr._hyp_key("H1: Minimum wage rises modestly lower teen employment "
+ok(not dr._hyp_mismatch(dr._hyp_key("H1: Minimum wage rises modestly lower teen employment "
                                      "over the first two years"), _REG_MW[0]),
    "while a genuine rewording that names the right number is still believed - the check "
    "overrules the number on SUBJECT, never on wording")
-ok(dr._HYP_UNRELATED_MAX == 0.40 and dr._HYP_UNRELATED_MAX < dr.HYP_MATCH_THRESHOLD,
-   "and the bar sits in the measured gap, below every real pairing (0.42-1.00) and above "
-   "every unrelated one (max 0.36): %s" % dr._HYP_UNRELATED_MAX)
+# The bar was 0.40, which caught only a different SUBJECT and let the round-2 superset
+# back in through the number path: a verdict swapping the registered scope for a
+# different one scores 0.545 and was stamped preRegistered: true BY THE NUMBER.
+_MW = dr._hyp_key("Minimum wage increases reduce teen employment modestly in the first two years")
+ok(dr._hyp_mismatch(dr._hyp_key("Minimum wage increases reduce teen employment only among "
+                                "part-time workers"), _MW),
+   "a verdict that swaps the registered scope for a different one is caught (0.545) - at "
+   "the first bar of 0.40 it read as a certainty for a claim the run never registered")
+ok(not dr._hyp_mismatch(dr._hyp_key("Minimum wage increases reduce teen employment"), _MW),
+   "while the SUBSET still passes at 1.000 - dropping a qualifier keeps every word inside "
+   "the registered hypothesis, and that is the case hypothesisNumber exists for at all")
+ok(dr._HYP_UNRELATED_MAX == 0.65,
+   "the bar sits in the measured gap 0.545-0.727, not above it: a first attempt at 0.75 "
+   "caught a genuine rewording that is one of the contract's own good references, and the "
+   "structural rule failed the build rather than letting the overcorrection ship (bar=%s)"
+   % dr._HYP_UNRELATED_MAX)
 
 # F4 — the thinness gate counted fetched-and-citable URLs, so five paywalled shells that
 # produced nothing read as a healthy evidence base on the one field callers gate on.
@@ -1925,14 +1938,14 @@ print("\n-- depth budgets are contract data, not two literals --")
 # over: `quick` verified 10 claims here and 14 in the JS build - 30 agent calls against
 # 42 for the same requested depth, declared nowhere.
 _DEPTHS = _json2.load(open(os.path.join(_ROOT, "contract", "depths.json"), encoding="utf-8"))
-ok(dr.TIERS == _DEPTHS["depths"],
+ok(dr.DEPTH_BUDGETS == _DEPTHS["depths"],
    "the engine's depth table IS the contract file, not a copy of it - a copy is what "
    "drifted")
-ok(dr.TIERS["quick"]["max_verify"] == 10,
+ok(dr.DEPTH_BUDGETS["quick"]["max_verify"] == 10,
    "quick verifies 10 claims. Every recorded run and every calibration number in runs/ "
    "came from this engine at 10, so adopting the JS build's 14 would have silently "
    "changed what the historical quick numbers mean")
-for _d, _cfg in dr.TIERS.items():
+for _d, _cfg in dr.DEPTH_BUDGETS.items():
     ok(_cfg["lenses"] == 3,
        "%s runs all 3 lenses: 2 of N must refute to kill, so at 2 lenses a 1-1 split "
        "survives and no single lens can ever kill anything" % _d)
@@ -1999,10 +2012,22 @@ _real = ("Selection bias is the live risk here: see the coverage gaps above for 
 ok(not dr.is_nonanswer(_real),
    "while an argument that CITES another section mid-sentence is left alone - the rule "
    "needs a pointer AND a short field, because either alone would be wrong")
-_measured = [41, 64, 65, 74]
-ok(max(_measured) < dr._NONANSWER_MAX < 906,
-   "and the bar sits in the measured gap: non-answers run 41-74 characters in runs/, "
-   "genuine steelmen 906-2101, nothing in between (bar=%d)" % dr._NONANSWER_MAX)
+# The length test is gone. It broke in BOTH directions: a 308-character padded pointer
+# passed, and a 144-character genuine argument opening "See above for the coverage gaps"
+# was replaced with "NOT PRODUCED" - the check deleting real evidence.
+ok(not dr.is_nonanswer("See above for the coverage gaps; the deeper risk is that both "
+                       "trials shared an author team, so the pooled estimate may be one "
+                       "lab counted twice."),
+   "a genuine argument that OPENS by citing another section survives - a terse argument "
+   "and a padded pointer are the same length, so length could never separate them")
+ok(dr._NONANSWER_MIN_WORDS == 8,
+   "what is judged is what REMAINS once the pointer is stripped: four words of "
+   "parenthetical is not an argument, a clause is (floor=%d)" % dr._NONANSWER_MIN_WORDS)
+ok(not dr.is_nonanswer("See strongestArgumentAgainst field above (duplicate not needed). "
+                       + "This note is retained for completeness and does not itself "
+                         "contain the argument. " * 3),
+   "and the permissive direction is NAMED, not claimed closed: a pointer followed by "
+   "enough filler still passes, because no lexical rule separates filler from argument")
 
 _ptrrep = run({"pointer_steelman": True}, q="Does the re-ask recover the steelman?")
 ok(not dr.is_nonanswer(_ptrrep.get("strongestArgumentAgainst")),

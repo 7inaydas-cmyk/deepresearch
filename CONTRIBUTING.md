@@ -97,6 +97,16 @@ If you widen a schema, split the call rather than adding a field. One call carry
 responsibilities behind three levels of nesting failed 3 out of 3 live runs here, dropping
 the same field every time. Raising `max_tokens` fixed truncation and did nothing for shape.
 
+**Scope, added 2026-09-15 after a review cited this rule against `hypothesisNumber`.** The
+rule is about RESPONSIBILITIES, not fields: what failed those three runs was one call
+asked to do four unrelated jobs, and splitting it fixed the shape. A scalar added to an
+item the call already returns — `hypothesisNumber` on an existing `hypothesisVerdicts`
+entry — adds no responsibility, and splitting the synthesis call to fetch one integer
+would cost a call and a round trip to obey the letter of a rule written about something
+else. Adding a field is still the thing to justify in the diff; it is a judgement call
+against this rationale, not an automatic no. The review was right that the rule as
+written forbade it and that nothing cited an exemption.
+
 ## Things that will be rejected
 
 - A benchmark number with no denominator, no date, and no committed log.
