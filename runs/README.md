@@ -338,6 +338,34 @@ Stated plainly because the opposite reading was available and tempting: a raw re
 across all 46 reads 89.1%, which looks like the fix exposing an inflated headline. It is
 not — it is four dead links counted as failures.
 
+## The second audit, and the pattern that survived the first fix (2026-09-15)
+
+The response to the first audit was itself audited. Thirteen findings across the two, and
+the second one's charge was that the fixes had repeated the pattern the first one named:
+each was validated against the attack that motivated it and not against its mirror.
+
+| the fix | the mirror it missed |
+|---|---|
+| superset stamped pre-registered | the **subset** — stripping a qualifier makes the claim STRONGER |
+| challenge wordlist too narrow | it now fires on genuine **results about rate limiting** |
+| junk filter guards one backend | it now starves the **counter-evidence lens** |
+| probe scored vocabulary | it now misses a critic that **describes** rather than quotes |
+| fixes ported, parity green | four existed only in **Python**, certified present by the test |
+
+Two of those were regressions introduced by the first fix and were degrading live runs.
+
+**The matcher could not be fixed where it was being fixed.** Measured: genuine rewordings
+drop 8–12 content words (registered-side coverage 0.43) while a qualifier-stripping subset
+drops 2 (0.71), so the bands overlap and a bidirectional rule rejected all four real
+rewordings in `v10`. A hedge wordlist fails too — the second attack drops scope nouns. The
+schema now asks for `hypothesisNumber`, so there is nothing to match.
+
+**The parity test certified the drift it exists to catch.** Its markers prove a string
+exists, and the row the fixes added paired a Python mechanism with a JS prompt sentence.
+A marker-shape guard now rejects any row pairing a code token with a sentence — symmetric
+prose is fine, a shared prompt string IS the feature — and it found a fourteenth instance
+one row over on its first run.
+
 ## The files
 
 | Prefix | What it is |
