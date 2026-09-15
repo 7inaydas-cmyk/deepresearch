@@ -197,7 +197,7 @@ what survived), `contradictions` (never silently pick a side), and
 - **`answerFirst`** — the call, stated before any background. Lead with this.
 - **`hingeNumber`** — the single number the conclusion rests on, and what happens if it is wrong by 2×. If the hinge is weak, the answer is weak, whatever the confidence labels say.
 - **`baseRate`** — or an explicit statement that the evidence contains none. One case study is not a base rate.
-- **`strongestArgumentAgainst`** — required. If this is thin, distrust the report.
+- **`strongestArgumentAgainst`** — required, and checked in code rather than trusted: four of twenty recorded runs published a pointer at the field itself, with the argument nowhere else in the report. **`NOT PRODUCED`** means the re-ask failed too and the conclusion stands unopposed — supply the counter-case yourself, and expect `honestLimits.noSteelman` beside it. If it is merely thin, distrust the report.
 - **`findings[].factOrInference`** — `fact` / `inference` / `assumption`. Never report an `inference` as though it were a `fact`.
 - **`stats.sourceTiers`** — the tier census. **`T?` means a resolver** (doi.org): provenance unverified. An all-`T?` or all-`T3` run is weak evidence no matter how confident the prose sounds.
 

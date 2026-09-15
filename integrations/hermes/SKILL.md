@@ -9,7 +9,7 @@ description: >
   API key beyond the Claude subscription. Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.9.0
+version: 1.9.1
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]
@@ -280,7 +280,12 @@ Beyond the six numbered items above, surface:
   answer flips on a 10-20% move, say so: that is a coin flip wearing a suit.
 - **`baseRate`** - or its explicit absence.
 - **`strongestArgumentAgainst`** - mandatory, never omit, never soften. It is often the most
-  valuable paragraph in the report.
+  valuable paragraph in the report, and it is now checked in code rather than trusted: four
+  of twenty recorded runs published a pointer at the field itself ("See
+  strongestArgumentAgainst field above"), with the argument existing nowhere else. If you
+  read **`NOT PRODUCED`** here, the re-ask failed too and the conclusion stands unopposed -
+  supply the counter-case yourself before acting on it, and expect
+  `honestLimits.noSteelman` beside it.
 - **`whatWouldChangeThisCall`** - the named triggers for revisiting.
 - **`stats.sourceTiers`** - a run that is all T3/T4 is a weak-evidence run however confident
   the prose sounds. A finding resting only on T4 must be low confidence and labelled
