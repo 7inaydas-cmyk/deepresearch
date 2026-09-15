@@ -1017,7 +1017,10 @@ const evidenceBase = () => {
   // Reuse the tier computed at FETCH time (s.tier), the same value stats.sourceTiers
   // censuses. Recomputing it here from the URL alone gave a different answer for the
   // same source once already, so a report could disagree with itself about a tier.
-  const n = allSources.filter(s => CITABLE.has(s.tier || 'T3')).length
+  // Count sources that produced a CLAIM, not URLs fetched and graded citable. A fetch
+  // returning nothing still emits a source row, so five paywalled shells read as a
+  // healthy evidence base on the one field callers are told to gate on.
+  const n = allSources.filter(s => CITABLE.has(s.tier || 'T3') && (s.claims || []).length > 0).length
   const thin = n < MIN_CITABLE_SOURCES
   return { citableSources: n, floor: MIN_CITABLE_SOURCES, thin,
     verdict: thin
@@ -1256,10 +1259,18 @@ if (T.calibrate > 0 && voted.length) {
   const again = await runPanel(subset.map(c => ({ ...c, verdicts: undefined })))
   const byClaim = new Map(again.map(c => [c.claim, c]))
   const a = [], b = [], pairs = []
+  // Only claims where BOTH passes actually voted. A claim whose lens calls errored has
+  // survives=false by quorum, so feeding it in raw makes an HTTP 429 indistinguishable
+  // from a kill and a rate-limited second pass produces genuine-looking verdict flips —
+  // at the magnitude the gate's own MIN_N rationale says matters.
+  let excludedForLensErrors = 0
   for (const c of subset) {
     const d = byClaim.get(c.claim)
-    if (d) { a.push(!!c.survives); b.push(!!d.survives); pairs.push([c, d]) }
+    if (!d) continue
+    if (c.erroredVotes || d.erroredVotes) { excludedForLensErrors++; continue }
+    a.push(!!c.survives); b.push(!!d.survives); pairs.push([c, d])
   }
+  if (excludedForLensErrors) log('CALIBRATION: excluded ' + excludedForLensErrors + ' claim(s) where a lens call errored in one pass — an infrastructure failure is not a verdict flip')
   // Per-lens reliability. Without it the aggregate is the only number, and a 2-of-3 vote
   // can make three unstable lenses look like one stable panel. If ONE lens carries the
   // instability, replacing that lens is far cheaper than redesigning the panel — and
@@ -1329,6 +1340,10 @@ if (T.calibrate > 0 && voted.length) {
     for (const [name, v] of Object.entries(perLens || {})) perLensK[name] = v.cohenKappa
     const [gateVerdict, preRegisteredAction] = interpretGate(kappa, n, Object.keys(perLensK).length ? perLensK : null)
     calibration = {
+      excludedForLensErrors,
+      scope: a.length + ' of ' + subset.length + ' sampled claims; ' + excludedForLensErrors +
+             ' excluded because a lens call errored in one pass. Reliability is measured only ' +
+             'where both panels actually voted.',
       n, rawAgreement: r4(po),
       cohenKappa: kappa,
       scottPi: (peS >= 1 || degenerate) ? null : r4((po - peS) / (1 - peS)),
@@ -1369,7 +1384,13 @@ if (T.factAudit) {
   factRows = (await parallel(voted.map(c => () =>
     agentChecked(FACT_PROMPT(c), { label: 'cite:' + sourceLabelFor({ url: c.sourceUrl, title: '' }), phase: 'Audit', schema: FACT_SCHEMA })
       .then(f => (f ? { claim: c.claim, url: c.sourceUrl, survivedPanel: !!c.survives, ...f } : null))
-  ))).filter(Boolean)
+  )))
+  // A call that never returned is not a citation that failed its check, but it is not
+  // nothing either. Dropping it silently shrinks the denominator of the headline number
+  // exactly when the run is degraded, so citation accuracy improves under rate-limiting.
+  const auditErrors = factRows.filter(f => !f).length
+  factRows = factRows.filter(Boolean)
+  if (auditErrors) log('CITATION AUDIT: ' + auditErrors + ' audit call(s) returned nothing — excluded from the denominator and reported as auditErrors, not dropped in silence')
   const nSup = factRows.filter(f => f.support === 'supported').length
   const nPar = factRows.filter(f => f.support === 'partial').length
   const nUns = factRows.filter(f => f.support === 'unsupported').length
@@ -1384,6 +1405,9 @@ if (T.factAudit) {
   const sUns = survRows.filter(f => f.support === 'unsupported').length
   const sJudged = sSup + sPar + sUns
   factMetrics = {
+    auditErrors,
+    scope: factRows.length + ' of ' + voted.length + ' verified claims were audited; ' +
+           auditErrors + ' call(s) returned nothing and are NOT in the denominator.',
     citationAccuracy: judged ? Math.round((nSup / judged) * 1000) / 10 : null,
     citationAccuracySurvivorsOnly: sJudged ? Math.round((sSup / sJudged) * 1000) / 10 : null,
     survivorsOnlyNote: 'measured the way commercial deep-research tools report citation accuracy — only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.',
@@ -1617,14 +1641,26 @@ const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().r
 const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
 const sameHyp = (a, b) => {
   if (!a || !b) return false
-  if (a.includes(b) || b.includes(a)) return true
+  // NO substring shortcut, and NOT min() as the denominator. Both are satisfied by
+  // construction when a post-hoc hypothesis EXTENDS a registered one, so a superset was
+  // stamped pre-registered — the exact failure the stamp exists to prevent. The
+  // denominator is the verdict's own tokens: how much of what is being adjudicated was
+  // actually registered.
   const ta = hypTokens(a), tb = hypTokens(b)
-  // Too few content words to judge by overlap: a two-word hypothesis would match
-  // anything containing both.
-  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) {
+    // Too few content words to score. Fall back to character similarity, gated on both
+    // sides being short so it cannot re-open the superset hole on a long one.
+    if (Math.max(a.length, b.length) > 60) return false
+    let m = 0
+    for (const ch of new Set(a)) if (b.includes(ch)) m++
+    return m / Math.max(1, new Set(a).size) >= 0.75
+  }
   let shared = 0
   ta.forEach(w => { if (tb.has(w)) shared++ })
-  return shared / Math.min(ta.size, tb.size) >= HYP_MATCH_THRESHOLD
+  // Verdict-side only. Requiring both directions was tried in the Python twin and
+  // rejected on measurement: it rejects genuine compact rewordings. The subset direction
+  // is handled by hypothesisNumber, not by this text fallback.
+  return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
 }
 const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
 const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => ({

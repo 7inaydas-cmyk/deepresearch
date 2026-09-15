@@ -244,8 +244,12 @@ def _ddg(query: str, n: int, lite: bool) -> list[dict]:
     body = _get(base + "?q=" + urllib.parse.quote(query))
     # A challenge page parses to nothing but returns HTTP 200/202. Say so rather
     # than silently reporting an empty result set.
-    if _CHALLENGE.search(body):
-        raise RuntimeError("challenged")
+    # Deliberately NOT run here any more. Searching the whole body means a genuine
+    # results page for a query about blocking — "HTTP 429 Too Many Requests",
+    # "Why is my IP blocked by Cloudflare?" — matches the markers and is declared
+    # challenged, so both DDG backends return zero for exactly the developer and
+    # due-diligence questions this tool is for. The markers are only meaningful on a page
+    # that produced NO results, and that check now happens after parsing.
     out, seen = [], set()
     for m in re.finditer(r'<a[^>]+class="[^"]*result[^"]*a[^"]*"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', body, re.S):
         href, title = m.group(1), _clean(m.group(2))
@@ -270,13 +274,15 @@ def _ddg(query: str, n: int, lite: bool) -> list[dict]:
         # interstitial carrying one outbound link used to report `ok, results=1` - and
         # the selftest then printed "general web live via: ddg-html". A results page
         # carries several results; one link is a page about something else.
-        out = lite if len(lite) >= _LITE_MIN_RESULTS else []
-        if lite and not out:
+        # A single harvested anchor is weak evidence of a results page, but declaring it
+        # challenged throws away a real sparse result. Keep it; the markers below decide.
+        out = lite
+    if not out:
+        # Only now are the interstitial markers meaningful: this body produced no results,
+        # so any "unusual traffic" wording in it is the page talking about ITSELF rather
+        # than a search result about rate limiting.
+        if _CHALLENGE.search(body) or len(body) < _CHALLENGE_MAX_BODY:
             raise RuntimeError("challenged")
-    if not out and len(body) < _CHALLENGE_MAX_BODY:
-        # Nothing parsed out of a body too small to be a results page. That is a blocked
-        # or interstitial response, not an empty web, and the two need different fixes.
-        raise RuntimeError("challenged")
     return out
 
 
@@ -533,7 +539,7 @@ _IMPL = {
 
 
 def search(query: str, n: int = 8, backends: list[str] | None = None,
-           all_backends: bool = False) -> list[dict]:
+           all_backends: bool = False, junk_filter: bool = True) -> list[dict]:
     """Search across backends until `n` unique results are gathered.
 
     Walks the chain itself rather than trusting any one engine: when the general
@@ -555,7 +561,17 @@ def search(query: str, n: int = 8, backends: list[str] | None = None,
             # whatever they were served straight to the picker. Worse on this host:
             # SearXNG is the one backend that is off, so the filter protecting against a
             # poisoned engine was protecting nothing at all.
-            got = relevant(got, query)
+            # `junk_filter=False` for the counter-evidence hunt. That lens searches with
+            # the CLAIM as the query and is looking for a source that contradicts it, and
+            # a contradiction routinely shares no vocabulary with the claim: "New Jersey
+            # diner survey finds hours unchanged after the payroll rise" shares nothing
+            # with "raising the minimum wage reduces teen employment". Filtering on shared
+            # words dropped the whole result set, told the lens the search returned
+            # nothing, and recorded the backend as poisoned - starving the one lens whose
+            # job is finding contradictions, in the name of a filter built for a different
+            # failure.
+            if junk_filter:
+                got = relevant(got, query)
             _note(b, "ok", len(got))
             return got
         except Exception as e:

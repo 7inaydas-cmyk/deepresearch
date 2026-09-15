@@ -167,8 +167,8 @@ def tier_of(url, title="", text=""):
 
 
 # --- Search and fetch (delegated to the keyless `search` module) -------------
-def web_search(query, n=6, all_backends=False):
-    return _search.search(query, n=n, all_backends=all_backends)
+def web_search(query, n=6, all_backends=False, junk_filter=True):
+    return _search.search(query, n=n, all_backends=all_backends, junk_filter=junk_filter)
 
 
 def search_health():
@@ -441,6 +441,18 @@ def shape(schema, obj, label=""):
                 out[name] = v
             else:
                 problems.append("%s=%r is not a boolean" % (name, str(v)[:40]))
+        elif t == "string":
+            # The declared type was never checked. Audited 2026-09-15: a string leaf
+            # accepted 123, True, ["text"] and {"a": 1} - `required` only ever meant
+            # key-present. That hollowed out the locatedQuote fix, which was declared to
+            # "make the empty case visible" while a number passed the schema just as an
+            # empty string did, and it applies equally to quote, claim and evidence.
+            # Empty-string policy stays with the field: an auditor that legitimately found
+            # no quote must still be able to say so.
+            if isinstance(v, str):
+                out[name] = v
+            else:
+                problems.append("%s is a %s, not a string" % (name, type(v).__name__))
         elif t == "integer":
             # ADR-0001: the seam RETRIES rather than coerces, and this leaf was the one
             # place violating it. `int(v)` accepted True as 1, "5" as 5 and 3.7 as 3 - the
@@ -777,10 +789,20 @@ S_REPORT = {
             "properties": {"value": {"type": "string"}, "why": {"type": "string"},
                            "sensitivity": {"type": "string"}, "source": {"type": "string"}},
         },
+        # `hypothesisNumber` fixes a problem that could not be solved where it was being
+        # solved. The verdict restates the hypothesis as free text, so the pre-registration
+        # stamp had to MATCH that text back to the contract - and measured 2026-09-15, no
+        # lexical rule can: genuine rewordings drop 8-12 content words while a subset
+        # attack stripping a qualifier drops 2, so "the same hypothesis stated compactly"
+        # and "a stronger hypothesis with the scope removed" overlap on every measure
+        # tried. They differ semantically. Asking for the number the prompt already
+        # printed removes the question rather than tuning it.
         "hypothesisVerdicts": {"type": "array", "items": {
-            "type": "object", "required": ["hypothesis", "verdict", "reasoning"],
+            "type": "object",
+            "required": ["hypothesis", "verdict", "reasoning", "hypothesisNumber"],
             "properties": {
                 "hypothesis": {"type": "string"},
+                "hypothesisNumber": {"type": "integer"},
                 "verdict": {"enum": ["killed", "surviving", "untested"]},
                 "killCriterion": {"type": "string"},
                 "reasoning": {"type": "string"},
@@ -1107,6 +1129,17 @@ def _same_hypothesis(a, b):
         return False
     ta, tb = _hyp_tokens(a), _hyp_tokens(b)
     if min(len(ta), len(tb)) >= _HYP_MIN_TOKENS:
+        # Verdict-side only, and it CANNOT catch a subset. Requiring coverage both ways
+        # was tried and rejected on measurement: genuine rewordings drop 8-12 content
+        # words (registered-side coverage as low as 0.43) while a subset attack that
+        # strips a qualifier drops 2 (0.71), so the bands overlap and the bidirectional
+        # rule rejected all four real rewordings in runs/v10. No lexical rule separates
+        # "the same hypothesis stated compactly" from "a stronger hypothesis with the
+        # scope removed" - they differ semantically, not in vocabulary.
+        #
+        # That is why `hypothesisNumber` exists and takes precedence. This path runs only
+        # when the model returned no usable number, and its result is published as
+        # `preRegisteredBy: inferred from text` so a reader can tell it from a certainty.
         return len(ta & tb) / max(1, len(ta)) >= HYP_MATCH_THRESHOLD
     if max(len(a), len(b)) <= _HYP_SHORT_CHARS:
         return difflib.SequenceMatcher(None, a, b).ratio() >= _HYP_SHORT_SIMILARITY
@@ -1173,6 +1206,21 @@ def _quote_line(c):
     frac = qc.get("foundFraction")
     pct = ("%.0f%%" % (100 * frac)) if isinstance(frac, float) else "n/a"
     if st in QUOTE_ON_PAGE:
+        # Disclose the elision. "100% located" was true and incomplete: the fragments are
+        # real page text, and what sat BETWEEN them is exactly where a refutation lives.
+        # Audited 2026-09-15 - "The drug reduced mortality in the trial arm ... The authors
+        # recommend approval" is 100% located while dropping "the effect vanished entirely
+        # in the over-65 subgroup and the trial was unblinded". That is the oldest
+        # quote-mine there is, and the panel was told nothing about it. The engine already
+        # computed the skip; it just never passed it on.
+        skipped = qc.get("skippedChars")
+        if skipped:
+            return ("**Quote located on the page: YES** (%s of it, checked in code) - but it is "
+                    "STITCHED ACROSS AN ELLIPSIS, and %d characters of the page sit between the "
+                    "fragments, unquoted. Read what was skipped as if it were shown to you: a "
+                    "quote that jumps a limitation, a subgroup or a contradiction is quote-mining "
+                    "even when every word of it is real. Refute if the omission changes what the "
+                    "page supports.\n" % (pct, skipped))
         return ("**Quote located on the page: YES** (%s of it, checked in code, not by a model). "
                 "Treat the quote as genuine page text and judge only what the claim does with it.\n" % pct)
     if st == "unverifiable":
@@ -1693,6 +1741,7 @@ def quote_span(page, quote):
             skipped = (pos[-1][1] - pos[0][0]) - quoted
             if skipped <= max(_ELIDE_GAP_RATIO * quoted, _ELIDE_GAP_FLOOR):
                 return {"status": "located-elided", "offset": pos[0][0], "foundFraction": 1.0,
+                        "skippedChars": skipped, "fragments": len(frags),
                         "why": "quote spans %d fragments around an ellipsis; all located, in "
                                "source order, skipping %d characters" % (len(frags), skipped)}
             log("  [quote] ellipsis fragments are in order but %d characters apart for %d "
@@ -1977,7 +2026,11 @@ def run_panel(q, claims, lenses):
         c, key, title, task, i = job
         counter_block = ""
         if key == "counter":
-            hits = web_search(webtext(c["claim"], 220), n=5)
+            # junk_filter=False: this search looks for a source that CONTRADICTS the
+            # claim, and a contradiction routinely shares no vocabulary with it. The
+            # shared-word filter dropped the whole result set and told this lens the web
+            # was silent - starving the only lens whose job is finding counter-evidence.
+            hits = web_search(webtext(c["claim"], 220), n=5, junk_filter=False)
             if hits:
                 counter_block = ("## Search results for counter-evidence\n" + WEB_NOTE +
                                  "\n".join("- %s | %s | %s" % (webtext(h["title"], 110),
@@ -2632,7 +2685,11 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
           % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_PCT >= 50 else "") +
         (("## Hypotheses to adjudicate\n"
           "These were written BEFORE any evidence was gathered, each with the finding that "
-          "would eliminate it. Return a verdict for EVERY one in hypothesisVerdicts.\n"
+          "would eliminate it. Return a verdict for EVERY one in hypothesisVerdicts, and\n"
+          "put its number in `hypothesisNumber` (H1 -> 1). If you adjudicate a hypothesis\n"
+          "that is NOT in this list - one the evidence suggested after the fact - give it\n"
+          "hypothesisNumber 0 and say so in its reasoning. A hypothesis written after the\n"
+          "evidence is a summary of what was found, never a prediction that survived.\n"
           + "\n".join("  H%d: %s\n      killed by: %s"
                       % (i + 1, webtext(h.get("hypothesis", ""), 300),
                          webtext(h.get("killCriterion", ""), 300))
@@ -2771,6 +2828,20 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     _verdicts = [v for v in as_list(out.get("hypothesisVerdicts"), "hypothesisVerdicts")
                  if isinstance(v, dict)]
     for _v in _verdicts:
+        # The number is authoritative when the model supplies a usable one: it needs no
+        # matching and cannot be gamed by rewording in either direction. The text matcher
+        # below is the fallback for a model that ignores the field, and it is marked as
+        # inferred so a reader can tell a certainty from a guess.
+        _num = _v.get("hypothesisNumber")
+        if isinstance(_num, int) and not isinstance(_num, bool) and 1 <= _num <= len(_registered):
+            _v["preRegistered"] = True
+            _v["preRegisteredBy"] = "hypothesisNumber"
+            continue
+        if _num == 0:
+            _v["preRegistered"] = False
+            _v["preRegisteredBy"] = "hypothesisNumber (declared post-hoc by the synthesis step)"
+            continue
+        _v["preRegisteredBy"] = "inferred from text - the model returned no usable number"
         _t = _hyp_key(_v.get("hypothesis", ""))
         # Conservative on purpose: an unmatched verdict is marked post-hoc. A false
         # "pre-registered" is the failure this exists to prevent; a false "post-hoc" only

@@ -353,13 +353,15 @@ def run_critic_probes(rep):
     worst = lambda w: max([c.get("verdict", "sound") for k, c in got if k == w] or ["unknown"],
                           key=lambda v: order.index(v) if v in order else 0)
     flagged = sorted({s for k, c in got if k == "degraded"
-                      for s in (c.get("untraceableStatements") or [])})
+                      for s in ((c.get("untraceableStatements") or [])
+                                + (c.get("untraceableVerbatim") or []))})
     # The control arm. The clean summary has NOTHING planted in it, so anything the same
     # scorer credits here is a false positive, and a detection rate that does not clear it
     # is not evidence of detection. This arm was always run - its verdict was used - and
     # its flags were thrown away.
     clean_flagged = sorted({s for k, c in got if k == "clean"
-                            for s in (c.get("untraceableStatements") or [])})
+                            for s in ((c.get("untraceableStatements") or [])
+                                + (c.get("untraceableVerbatim") or []))})
     # Pass the clean arm's flags so the score carries its own false-positive floor.
     out = score_critic_probes(planted, flagged, worst("clean"), worst("degraded"),
                               clean_flagged=clean_flagged)
@@ -368,7 +370,8 @@ def run_critic_probes(rep):
     out["flaggedByDegradedArm"] = flagged[:12]
     out["flaggedByCleanArm"] = clean_flagged[:12]
     out["cleanArmFlagged"] = sorted({s for k, c in got if k == "clean"
-                                     for s in (c.get("untraceableStatements") or [])})[:12]
+                                     for s in ((c.get("untraceableStatements") or [])
+                                + (c.get("untraceableVerbatim") or []))})[:12]
     return out
 
 

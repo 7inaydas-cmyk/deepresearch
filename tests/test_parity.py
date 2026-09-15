@@ -37,6 +37,10 @@ SHARED = {
     "integer is not coerced":    ("is a boolean, not an integer", "Number.isInteger(v)) out[name] = v"),
     "wasted recovery re-asked":  ("if bare_items and not lst:", "if (bareItems.length && !lst.length)"),
     "verdict provenance stamp":  ("_v[\"preRegistered\"] = ", "preRegistered:"),
+    "hypothesisNumber over text": ("hypothesisNumber", "hypothesisNumber"),
+    "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),
+    "calibration drops errors":  ("excludedForLensErrors", "excludedForLensErrors"),
+    "audit errors counted":      ('"auditErrors": audit_errors', "auditErrors"),
     "hypothesis relabel match":  ("def _same_hypothesis(", "const sameHyp = "),
     "framing-contract intake":   ("def load_contract(", "const intakeContract = "),
     "per-field provenance":      ('contract["provenance"] = {', "CONTRACT.provenance = "),
@@ -50,7 +54,7 @@ SHARED = {
     "audit key (claim,url)":     ('fact_by.get((c["claim"]', "auditKey(c.claim"),
     "rescue pass":               ("RESCUE:", "RESCUE:"),
     "citation audit":            ("citationAccuracy", "citationAccuracy"),
-    "audit re-fetches the page": ("fresh=True", "never rule `supported` or `unsupported` on a page you did not read"),
+
     "unread page != unsupported": ("def read_provenance(", "returns only an ABSTRACT rather than the cited page"),
     "survivor-only citation acc": ("citationAccuracySurvivorsOnly", "citationAccuracySurvivorsOnly"),
     "kills attributed by lens":  ("killsByLens", "killsByLens"),
@@ -122,6 +126,13 @@ PYTHON_ONLY = {
     "full token accounting":
         "The Claude Code Workflow runtime owns the API call and reports no usage block to "
         "the script, so the JS build has no token numbers to record - complete or otherwise.",
+    "audit re-fetches the page, not the cache":
+        "web_fetch(..., fresh=True) is a Python mechanism. The JS build's audit subagent "
+        "calls the runtime's WebFetch itself, so the orchestrator has no cache to bypass "
+        "and no fetch to force. It is covered there by a prompt instruction instead - and "
+        "an instruction is NOT the same feature as a code path, which is why this is "
+        "recorded here rather than paired as a shared row. A parity row that accepts a "
+        "sentence as the twin of a mechanism certifies drift as sameness.",
     "injected-defect probes":
         "probes.py and its runner operate on a finished report, not on the engine, so "
         "`python3 -m deepresearch.probes --report <any report.json>` already scores a "

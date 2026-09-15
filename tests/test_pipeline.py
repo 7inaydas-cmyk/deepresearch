@@ -20,6 +20,7 @@ import deepresearch as dr_pkg                  # noqa: E402
 # The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
 # anything wanting the REAL one has to hold a reference from before that happens.
 _REAL_WEB_FETCH = dr.web_fetch
+_REAL_WEB_SEARCH = dr.web_search
 
 PASS = FAIL = 0
 
@@ -153,9 +154,9 @@ def install(cfg):
                     "findings": [{"claim": "F1", "confidence": "high", "sources": ["u"], "evidence": "e",
                                   "sourceTier": "T1", "factInferenceAssumption": "fact"}],
                     "hypothesisVerdicts": [
-                        {"hypothesis": "h1", "verdict": "killed", "killCriterion": "k1",
+                        {"hypothesis": "h1", "hypothesisNumber": 1, "verdict": "killed", "killCriterion": "k1",
                          "reasoning": "claim [0] triggers it", "claimsCited": [0]},
-                        {"hypothesis": "h2", "verdict": "untested", "killCriterion": "k2",
+                        {"hypothesis": "h2", "hypothesisNumber": 2, "verdict": "untested", "killCriterion": "k2",
                          "reasoning": "no confirmed claim bears on it"}],
                     "strongestArgumentAgainst": "the crux was never evidenced",
                     "whatWouldChangeThisCall": ["a real RCT"],
@@ -803,6 +804,65 @@ ok(searchmod._LITE_MIN_RESULTS >= 2,
    "the lite fallback needs more than one anchor: it harvests ANY external link, so an "
    "interstitial carrying a single sponsor link reported ok with one result, and the "
    "selftest then printed 'general web live'")
+
+print("\n-- the second audit: the adjacent input, again --")
+# Every fix below was validated against the attack that motivated it and NOT against its
+# mirror. These are the mirrors.
+
+# The subset. The superset fix made the denominator the verdict's own tokens, which
+# measures what a post-hoc hypothesis ADDS and is blind to what it DROPS. No lexical rule
+# separates the two: genuine rewordings drop 8-12 content words, a qualifier-stripping
+# subset drops 2. So the schema now asks for the NUMBER, and the text path is a marked
+# fallback rather than the answer.
+ok("hypothesisNumber" in dr.S_REPORT["properties"]["hypothesisVerdicts"]["items"]["required"],
+   "the verdict must name WHICH registered hypothesis it adjudicates, so there is nothing "
+   "to match and neither adding nor dropping content can fool it")
+ok("hypothesisNumber" in _engine_src and "preRegisteredBy" in _engine_src,
+   "and the stamp records whether it came from the number or was inferred from text - a "
+   "reader can tell a certainty from a guess")
+
+# The string leaf. `required` only ever meant key-present, so the locatedQuote fix was
+# hollow: a number passed the schema exactly as an empty string did.
+_ssch = {"type": "object", "required": ["s"], "properties": {"s": {"type": "string"}}}
+for _bad in (123, True, ["t"], {"a": 1}):
+    ok(bool(dr.shape(_ssch, {"s": _bad}, "t")[1]),
+       "a declared string rejects %r - the type was never checked, in either build" % (_bad,))
+ok(not dr.shape(_ssch, {"s": "real"}, "t")[1] and not dr.shape(_ssch, {"s": ""}, "t")[1],
+   "while a real string passes, and an empty one still does: an auditor that legitimately "
+   "found no quote must be able to say so")
+
+# In-passage quote mining. Every word real, the refutation between them dropped.
+_mine_page = ("The drug reduced mortality in the trial arm. However, the effect vanished "
+              "entirely in the over-65 subgroup and the trial was unblinded. The authors "
+              "recommend approval.")
+_mine = dr.quote_span(_mine_page,
+                      "The drug reduced mortality in the trial arm ... The authors recommend approval.")
+ok(_mine["status"] == "located-elided" and _mine.get("skippedChars", 0) > 50,
+   "a quote that jumps a limitation is still located - every word IS on the page - but "
+   "the skip is measured: %s characters" % _mine.get("skippedChars"))
+ok("STITCHED ACROSS AN ELLIPSIS" in dr._quote_line({"quoteCheck": _mine}),
+   "and the panel is TOLD what was skipped, instead of 'YES, 100% of it' with no mention "
+   "that a subgroup reversal sat between the fragments")
+
+# The challenge detector fired on result CONTENT, so a due-diligence query about rate
+# limiting returned zero from both DDG backends.
+for _t in ("HTTP 429 Too Many Requests - Stack Overflow",
+           "Why is my IP blocked by Cloudflare? - Server Fault"):
+    ok(bool(searchmod._CHALLENGE.search(_t)),
+       "the markers still match this text (%s)" % _t[:34])
+ok("_CHALLENGE.search(body) or len(body) < _CHALLENGE_MAX_BODY" in
+   open(searchmod.__file__, encoding="utf-8").read(),
+   "but they are only consulted when NOTHING parsed - on a page that produced results, a "
+   "title about rate limiting is a result, not the page talking about itself")
+
+# The junk filter starved the counter-evidence lens: a contradiction routinely shares no
+# vocabulary with the claim it contradicts.
+import inspect as _insp2   # noqa: E402
+ok("junk_filter" in _insp2.signature(_REAL_WEB_SEARCH).parameters
+   and "junk_filter=False" in _engine_src,
+   "the counter-evidence hunt opts out of the shared-word filter - 'New Jersey diner "
+   "survey finds hours unchanged' shares nothing with 'the minimum wage reduces teen "
+   "employment', and dropping it told the lens the web was silent")
 
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
@@ -1529,9 +1589,14 @@ ok("all_backends=True" in _sel_src and "for attempt in range(2)" in _sel_src,
    "measured live: selftest declared ddg-html dead off ONE probe, and the real run 20 "
    "minutes later pulled 40 results from it across 72 attempts - one rate-limit "
    "challenge is not the same as a dead backend")
-ok("def web_search(query, n=6, all_backends=False)" in _engine_txt,
-   "web_search exposes all_backends so a retry is not skipped by an earlier backend "
-   "already satisfying n")
+# Signature check, not source text: it broke the moment a parameter was added, which is
+# the wrong signal. What matters is that both knobs are reachable.
+import inspect as _insp   # noqa: E402
+ok(set(["all_backends", "junk_filter"]).issubset(
+       _insp.signature(_REAL_WEB_SEARCH).parameters),
+   "web_search exposes all_backends, so a retry is not skipped by an earlier backend "
+   "already satisfying n, AND junk_filter, so the counter-evidence lens can opt out of a "
+   "shared-word filter that would drop the contradiction it went looking for")
 
 print("\n-- every report exit carries the instruments, not just the happy path --")
 # Architecture review, 2026-09-07: I had reported this fixed. It was fixed on ONE of
