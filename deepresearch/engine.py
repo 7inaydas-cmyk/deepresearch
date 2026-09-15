@@ -2425,18 +2425,26 @@ def deepresearch(question, depth="standard", contract=None):
         # this contaminates the number by exactly the amount the gate cares about, and it
         # was never subtracted. `missingLensVerdicts` was computed for the per-lens tables
         # and never applied to the aggregate.
-        a, b, keep, dropped = [], [], [], 0
+        # NOT `dropped`. That name is already the URL-dedup list in this same 486-line
+        # scope, and `stats()` closes over it to publish `budgetDropped=len(dropped)`.
+        # Binding an INT to it here turned every calibrated run into a TypeError at the
+        # final step - after framing, two search waves, 30 verified claims, the dropped
+        # sample, the citation audit and the calibration itself had all succeeded. Found
+        # by running the thing end to end, because no test ever ran this path: every
+        # calibration test called deepresearch/calibration.py directly or asserted on a
+        # line of source text.
+        a, b, keep, lens_error_drops = [], [], [], 0
         for c in subset:
             d = by_claim.get(c["claim"])
             if d is None:
                 continue
             if c.get("erroredVotes") or d.get("erroredVotes"):
-                dropped += 1
+                lens_error_drops += 1
                 continue
             a.append(bool(c["survives"])); b.append(bool(d["survives"])); keep.append((c, d))
-        if dropped:
+        if lens_error_drops:
             log("CALIBRATION: excluded %d claim(s) where a lens call errored in one pass - "
-                "an infrastructure failure is not a verdict flip" % dropped)
+                "an infrastructure failure is not a verdict flip" % lens_error_drops)
         if a:
             la, ga = _lens_vectors([x for x, _ in keep], lenses)
             lb, gb = _lens_vectors([y for _, y in keep], lenses)
@@ -2445,12 +2453,12 @@ def deepresearch(question, depth="standard", contract=None):
             calibration["lensSplit"] = _cal.lens_disagreement_rate(
                 [[v.get("refuted") for v in c.get("verdicts", [])] for c in voted])
             calibration["missingLensVerdicts"] = ga + gb
-            calibration["excludedForLensErrors"] = dropped
+            calibration["excludedForLensErrors"] = lens_error_drops
             calibration["scope"] = (
                 "%d of %d sampled claims; %d excluded because a lens call errored in one "
                 "pass. Reliability is measured only where both panels actually voted - an "
                 "errored call is an infrastructure failure, not a changed mind."
-                % (len(a), len(subset), dropped))
+                % (len(a), len(subset), lens_error_drops))
             verdict, action = _cal.interpret(
                 calibration["cohenKappa"], n=calibration["n"],
                 per_lens={k: v.get("cohenKappa") for k, v in calibration["perLens"].items()})

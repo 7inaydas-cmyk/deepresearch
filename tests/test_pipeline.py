@@ -1936,6 +1936,35 @@ ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" 
    "the generator owns the one thing that genuinely differs between the runtimes: the "
    "key names. The numbers cannot differ because there is only one set")
 
+print("\n-- a CALIBRATED run reaches the end, not just the calibration --")
+# The path no test ever ran. Every calibration test until now called
+# deepresearch/calibration.py directly or asserted on a line of engine source, so the
+# calibration BLOCK INSIDE deepresearch() was never executed end to end. It bound an int
+# to `dropped` - a name already holding the URL-dedup list in that same 486-line scope,
+# which stats() closes over to publish `budgetDropped=len(dropped)`. Every calibrated run
+# therefore died with `TypeError: object of type 'int' has no len()` at the final step,
+# after framing, two search waves, 30 verified claims, the dropped sample, the citation
+# audit and the calibration itself had all succeeded. Found by running the tool for real.
+_prev_cal, _prev_drop = dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N
+try:
+    dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N = 6, 3
+    _calrep = run(depth="standard", q="Does a calibrated run survive to the report?")
+finally:
+    dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N = _prev_cal, _prev_drop
+
+ok(isinstance(_calrep, dict) and not _calrep.get("error"),
+   "a run with --calibrate AND --sample-dropped produces a report at all")
+ok(isinstance((_calrep.get("stats") or {}).get("budgetDropped"), int),
+   "stats.budgetDropped is an int - the calibration counter no longer shadows the "
+   "URL-dedup list that stats() closes over")
+ok(_calrep.get("calibration"),
+   "and the calibration block still publishes its result")
+ok(isinstance((_calrep.get("calibration") or {}).get("excludedForLensErrors"), int),
+   "excludedForLensErrors is the COUNT of claims an errored lens call removed, not the "
+   "list it was accidentally sharing a name with")
+ok(isinstance(_calrep.get("droppedSample"), dict) or _calrep.get("droppedSample") is None,
+   "and the dropped-claim sample survives to the report beside it")
+
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
    "kappa=1.0 on n=10 no longer returns 'calibrated' - that verdict was the whole complaint")
