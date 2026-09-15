@@ -400,6 +400,37 @@ mice”* — score 0.727 and 0.636, both under the 0.75 gate. The mechanism was 
 evidence offered for it was not. Finding the real failure took running the attack rather
 than reading the report.
 
+## Conformance, 2026-09-15
+
+Three more drifts, found by looking for the *shape* of the last seven rather than for
+another instance of any one of them. All three were invisible to every gate that was green.
+
+| What drifted | How it stayed hidden |
+|---|---|
+| `quick` verified **10** claims in Python, **14** in JS | both files contain the token, so every marker row passed |
+| `webText(x, 300)` **ignored the cap** in JS | the helper took one parameter; JavaScript discards extra arguments in silence |
+| the depth budgets had **no shared source** | the JS suite asserted `caps.quick === 14` — a test written against the copy |
+
+The middle one is the project's own defining bug class sitting in the helper that every
+prompt goes through: seven call sites passed a length, and the JS build shipped
+untruncated model text wherever the Python twin bounded it at 300 or 400 characters.
+
+**The instrument found a real difference on its first run, and it was not a bug.**
+`host_is_ambiguous("https://nature.com\@evil.xyz/x")` answers `true` in Python and
+`false` in JS — and both are correct. Python's two parsers disagree on that URL; the JS
+runtime's WHATWG parsing normalises the backslash, so both of its parsers agree on
+`nature.com` and its WebFetch would genuinely go there. The case was kept and now pins
+**both** answers with the reason, because a platform difference nobody has written down
+is the same hazard as a drift — it is just one nobody will notice until the platform
+moves. `out_by_runtime` is for exactly that, and it fails if either answer changes.
+
+**Why conformance and not more markers.** A marker proves a string exists, which catches a
+feature nobody ported and nothing else. It cannot see a feature ported *wrongly*, and one
+marker matched a comment describing a mechanism the build did not have. Every drift on
+record — nine now — was a pure function over plain data. `contract/conformance.json` asks
+both runtimes the same 35 questions and compares their answers. Markers stay for prompts
+and prose, which have no return value to compare.
+
 ## The files
 
 | Prefix | What it is |

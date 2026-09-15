@@ -18,6 +18,13 @@ verify behaviour — the two suites do that.
 Genuinely runtime-specific things belong in PYTHON_ONLY with a reason. That list
 is the honest part of this file: it records what the two builds do NOT share and
 why, so "not at parity" never quietly becomes the normal state.
+
+This file is HALF the job and cannot be more than that. A marker proves a feature
+was not forgotten; it can say nothing about whether it was ported correctly, and
+a marker once matched a COMMENT describing a mechanism the build did not have.
+The other half is contract/conformance.json, which asks both runtimes the same
+questions and compares their ANSWERS. Markers for prompts and prose, conformance
+for anything with a return value.
 """
 import os
 import sys

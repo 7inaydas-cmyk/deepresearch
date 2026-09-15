@@ -10,12 +10,33 @@ will dare delete in two years.
 ## Running the tests
 
 ```bash
-python3 tests/test_pipeline.py     # 49 tests, no API key, no network, a few seconds
+python3 tests/test_pipeline.py        # the engine: no API key, no network, a few seconds
+python3 tests/test_conformance.py     # the python build answers contract/conformance.json
+node tests/claude-code/conformance.mjs   # the JS build answers the SAME file
+cd tests/claude-code && node test-workflow.mjs   # the JS build end to end, model stubbed
+python3 tests/test_parity.py          # neither build is missing a feature the other has
 ```
 
 The suite stubs the model and the network, so you can change the pipeline and see the
 consequences without spending a token. If your change needs a live call to be tested, it is
 probably in the wrong place — push the judgement into a pure function and test that.
+
+## Changing pure decision logic
+
+A matcher, a schema leaf, a tier lookup, a normaliser — anything that is a function from
+plain data to plain data — is where every drift in this repo has happened, nine of them,
+each one silent. Add the case to `contract/conformance.json` in the same change. Both
+runtimes answer that file, so a fix that lands in one build and not the other fails CI
+instead of shipping under a green parity line.
+
+`tests/test_parity.py` is the other half and does a different job: it proves a marker
+string exists in each build. That catches a feature nobody ported; it cannot catch one
+ported wrongly, and it once passed a row whose JS marker was a *comment describing the
+mechanism*. Markers for prompts and prose, conformance for answers.
+
+If the two builds must genuinely differ because the platform differs — URL parsing is the
+real instance — use `out_by_runtime` and say in `why` what makes the difference correct.
+It pins both answers, so either one moving still fails. It is not a way to excuse drift.
 
 ## Adding a search backend
 
@@ -33,11 +54,14 @@ Two requirements:
    nothing downstream. OpenAlex's `landing_page_url` is usually just the DOI again; its
    `pdf_url` is often a real publisher page. Reach for the one that can actually be read.
 
-## Adding or changing a source tier
+## Adding or changing a source tier, or a depth budget
 
-Edit `contract/tiers.json` — **not** the Python and not the JavaScript. Both runtimes read
-that file precisely so a domain cannot be graded T1 in one and T3 in the other. CI checks
-that every rule compiles and every tier is rankable.
+Edit `contract/tiers.json` or `contract/depths.json` — **not** the Python and not the
+JavaScript. Then run `python3 tools/sync_tiers.py` and commit what it regenerates. Both runtimes read
+those files precisely so a domain cannot be graded T1 in one runtime and T3 in the other,
+and so `quick` cannot mean 10 claims in one and 14 in the other. Both have happened. CI
+checks that every rule compiles, every tier is rankable, and the generated JS blocks match
+their source byte-for-byte.
 
 Before promoting a host to T1, ask whether it is a *publisher* or a *resolver*. `doi.org`
 resolves to anything, including a predatory journal; grading the resolver top-tier makes

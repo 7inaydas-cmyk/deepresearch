@@ -120,7 +120,17 @@ const WEB_STRIP = LABEL_STRIP
 // Collapse tab/newline/CR first so page text can't break out of a single-line
 // framing slot or forge a "###"/"**"/">" structure line, then strip every
 // Cc/Cf codepoint (invisibles, bidi, the U+E00xx tags block).
-const webText = s => String(s).replace(/[\t\n\r]+/g, ' ').replace(WEB_STRIP, '')
+// `cap` is NOT decoration. This took one argument for months while seven call sites
+// passed a length — webText(h.hypothesis || '', 300) — which JavaScript discarded in
+// silence, so the JS build shipped untruncated model text into prompts everywhere the
+// Python twin bounded it at 300 or 400 characters. A supplied value dropped with no log
+// line is the failure this project is named after, and it was in the helper every prompt
+// goes through. null/undefined give '' here, as they do in Python, not the string 'null'.
+const webText = (s, cap) => {
+  const t = (s === null || s === undefined ? '' : String(s))
+    .replace(/[\t\n\r]+/g, ' ').replace(WEB_STRIP, '')
+  return (cap && t.length > cap) ? t.slice(0, cap) + '…' : t
+}
 // A regex finding `frag` in the RAW text a webText() view of it was copied from.
 // The critic is shown webText(summary), which has already had WEB_STRIP applied —
 // every double-quote lookalike and every zero-width codepoint DELETED — and its
@@ -795,6 +805,82 @@ async function sweep(angles, fetchBudget, tag, subQuestions) {
 }
 
 // ═══ Phase 1: Scope ═════════════════════════════════════════════════════════
+// ── The hypothesis matcher. Pure, and hoisted here with the rest of the pure
+//    decision logic: it used to sit 900 lines down, inside the run, which put it
+//    out of reach of any check that calls it directly. Every drift this repo has
+//    recorded was in logic of exactly this shape - a pure function over plain data -
+//    so it now lives above the pipeline where contract/conformance.json can reach it.
+// `hypothesisVerdicts` arrives from the synthesis model inside ...report and was never
+// gated. When framing produced no hypotheses the model invents them AFTER seeing the
+// evidence and adjudicates those — precisely what this tool sells against — while the
+// caveat beside it asserted the field was empty. Stamp every verdict with whether the
+// hypothesis it judges was registered before the search, the way scopeContract.provenance
+// already stamps the framing fields. Conservative on purpose: an unmatched verdict is
+// marked post-hoc, because a false "pre-registered" is the failure this exists to prevent.
+// Measured on a live Python run 2026-09-08: framing registered 4 hypotheses, synthesis
+// adjudicated the same 4, and a first version marked ALL FOUR post-hoc — because the
+// synthesis step prefixes each with "H1: ", and because that version truncated BOTH
+// sides before testing containment. Truncating both then asking "is one inside the
+// other" is simply wrong: a four-character prefix shifts the alignment and containment
+// can never hold. Compare a probe from one side against the WHOLE of the other.
+// Three attempts, each earlier failure putting a FALSE statement in a report — which is
+// the defect this stamp exists to prevent. Calibrated on real pairs, not reasoned about:
+// over 8 true pairs and 24 cross pairs from two live runs, true pairs scored 0.95–1.00
+// content-word overlap and cross pairs peaked at 0.22. The threshold sits mid-gap.
+// Prefix matching was the wrong tool — the model rewords mid-sentence, and word overlap
+// does not care where the rewording happened.
+const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
+const HYP_STOP = new Set(('the a an of to in is are and or that this it its as be for with by on at from than ' +
+  'not but so if then also more most some other others their there was were has have').split(' '))
+const HYP_MATCH_THRESHOLD = 0.65
+const HYP_MIN_TOKENS = 4
+// How little overlap means the verdict is about something ELSE entirely — the only
+// thing a self-declared `hypothesisNumber` is checked against. See hypUnrelated.
+const HYP_UNRELATED_MAX = 0.40
+const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
+const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
+const sameHyp = (a, b) => {
+  if (!a || !b) return false
+  // NO substring shortcut, and NOT min() as the denominator. Both are satisfied by
+  // construction when a post-hoc hypothesis EXTENDS a registered one, so a superset was
+  // stamped pre-registered — the exact failure the stamp exists to prevent. The
+  // denominator is the verdict's own tokens: how much of what is being adjudicated was
+  // actually registered.
+  const ta = hypTokens(a), tb = hypTokens(b)
+  // Too few content words to score, and NO character measure rescues it. Audited
+  // 2026-09-15: a negation is a tiny edit that inverts the meaning, so "output is stable"
+  // against "output is unstable" scored 1.000 on this character bag — two OPPOSITE
+  // hypotheses certified as the same one, the exact false `preRegistered` the stamp
+  // exists to prevent. The Python twin's SequenceMatcher scored the same pair 0.941, so
+  // porting it would have bought parity on an unsound mechanism; both builds drop it.
+  // Measured across all 160 hypotheses in runs/: not one is short enough to reach here.
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
+  let shared = 0
+  ta.forEach(w => { if (tb.has(w)) shared++ })
+  // Verdict-side only. Requiring both directions was tried in the Python twin and
+  // rejected on measurement: it rejects genuine compact rewordings. The subset direction
+  // is handled by hypothesisNumber below — which for a while this comment claimed while
+  // the field appeared nowhere else in this file, so the parity row for it passed on the
+  // comment itself and the subset attack stamped `preRegistered: true` here for free.
+  return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
+}
+// Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
+// `hypothesisNumber` is authoritative and must stay that way — it is the one path neither
+// adding nor dropping content can fool — but authoritative with nothing checked meant a
+// verdict could adjudicate a hypothesis the run never registered and be stamped
+// pre-registered by typing a digit. So this deliberately does NOT re-litigate wording.
+// Measured on runs/v10: true rewordings 0.82-1.00, a post-hoc superset 0.42-0.45, an
+// unrelated hypothesis at most 0.36. The bar sits at 0.40, in the gap. Too short to score
+// returns false: an unmeasurable pairing is not evidence of a mismatch.
+const hypUnrelated = (verdictText, registeredText) => {
+  const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
+  let shared = 0
+  ta.forEach(w => { if (tb.has(w)) shared++ })
+  return shared / Math.max(1, ta.size) < HYP_UNRELATED_MAX
+}
+
+
 phase('Scope')
 log('Question: ' + QUESTION.slice(0, 90) + (QUESTION.length > 90 ? '…' : ''))
 log('Depth: ' + DEPTH + ' (' + T.perspectives + ' perspectives, ' + T.deepenRounds + ' deepening round(s), ' +
@@ -1639,75 +1725,6 @@ if (UNTRACEABLE_POLICY === 'strike' && untraceable.length) {
 }
 log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untraceable statements, ' + gaps.length + ' coverage gaps, ' + planFlaws.length + ' plan flaws')
 
-// `hypothesisVerdicts` arrives from the synthesis model inside ...report and was never
-// gated. When framing produced no hypotheses the model invents them AFTER seeing the
-// evidence and adjudicates those — precisely what this tool sells against — while the
-// caveat beside it asserted the field was empty. Stamp every verdict with whether the
-// hypothesis it judges was registered before the search, the way scopeContract.provenance
-// already stamps the framing fields. Conservative on purpose: an unmatched verdict is
-// marked post-hoc, because a false "pre-registered" is the failure this exists to prevent.
-// Measured on a live Python run 2026-09-08: framing registered 4 hypotheses, synthesis
-// adjudicated the same 4, and a first version marked ALL FOUR post-hoc — because the
-// synthesis step prefixes each with "H1: ", and because that version truncated BOTH
-// sides before testing containment. Truncating both then asking "is one inside the
-// other" is simply wrong: a four-character prefix shifts the alignment and containment
-// can never hold. Compare a probe from one side against the WHOLE of the other.
-// Three attempts, each earlier failure putting a FALSE statement in a report — which is
-// the defect this stamp exists to prevent. Calibrated on real pairs, not reasoned about:
-// over 8 true pairs and 24 cross pairs from two live runs, true pairs scored 0.95–1.00
-// content-word overlap and cross pairs peaked at 0.22. The threshold sits mid-gap.
-// Prefix matching was the wrong tool — the model rewords mid-sentence, and word overlap
-// does not care where the rewording happened.
-const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
-const HYP_STOP = new Set(('the a an of to in is are and or that this it its as be for with by on at from than ' +
-  'not but so if then also more most some other others their there was were has have').split(' '))
-const HYP_MATCH_THRESHOLD = 0.65
-const HYP_MIN_TOKENS = 4
-// How little overlap means the verdict is about something ELSE entirely — the only
-// thing a self-declared `hypothesisNumber` is checked against. See hypUnrelated.
-const HYP_UNRELATED_MAX = 0.40
-const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
-const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
-const sameHyp = (a, b) => {
-  if (!a || !b) return false
-  // NO substring shortcut, and NOT min() as the denominator. Both are satisfied by
-  // construction when a post-hoc hypothesis EXTENDS a registered one, so a superset was
-  // stamped pre-registered — the exact failure the stamp exists to prevent. The
-  // denominator is the verdict's own tokens: how much of what is being adjudicated was
-  // actually registered.
-  const ta = hypTokens(a), tb = hypTokens(b)
-  // Too few content words to score, and NO character measure rescues it. Audited
-  // 2026-09-15: a negation is a tiny edit that inverts the meaning, so "output is stable"
-  // against "output is unstable" scored 1.000 on this character bag — two OPPOSITE
-  // hypotheses certified as the same one, the exact false `preRegistered` the stamp
-  // exists to prevent. The Python twin's SequenceMatcher scored the same pair 0.941, so
-  // porting it would have bought parity on an unsound mechanism; both builds drop it.
-  // Measured across all 160 hypotheses in runs/: not one is short enough to reach here.
-  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
-  let shared = 0
-  ta.forEach(w => { if (tb.has(w)) shared++ })
-  // Verdict-side only. Requiring both directions was tried in the Python twin and
-  // rejected on measurement: it rejects genuine compact rewordings. The subset direction
-  // is handled by hypothesisNumber below — which for a while this comment claimed while
-  // the field appeared nowhere else in this file, so the parity row for it passed on the
-  // comment itself and the subset attack stamped `preRegistered: true` here for free.
-  return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
-}
-// Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
-// `hypothesisNumber` is authoritative and must stay that way — it is the one path neither
-// adding nor dropping content can fool — but authoritative with nothing checked meant a
-// verdict could adjudicate a hypothesis the run never registered and be stamped
-// pre-registered by typing a digit. So this deliberately does NOT re-litigate wording.
-// Measured on runs/v10: true rewordings 0.82-1.00, a post-hoc superset 0.42-0.45, an
-// unrelated hypothesis at most 0.36. The bar sits at 0.40, in the gap. Too short to score
-// returns false: an unmeasurable pairing is not evidence of a mismatch.
-const hypUnrelated = (verdictText, registeredText) => {
-  const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
-  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
-  let shared = 0
-  ta.forEach(w => { if (tb.has(w)) shared++ })
-  return shared / Math.max(1, ta.size) < HYP_UNRELATED_MAX
-}
 const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
 const inferredFromText = (v, t, why) => ({
   ...v,

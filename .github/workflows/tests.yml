@@ -25,6 +25,8 @@ jobs:
         run: python -c "import sys; print(sys.version)"
       - name: Offline pipeline tests
         run: python tests/test_pipeline.py
+      - name: Conformance — the python engine answers contract/conformance.json
+        run: python tests/test_conformance.py
       - name: Import cleanly with no network
         run: python -c "import deepresearch; print(deepresearch.__version__)"
 
@@ -41,6 +43,9 @@ jobs:
           node-version: "20"
       - run: node --check integrations/claude-code/deepresearch.js
       - run: cd tests/claude-code && node test-workflow.mjs
+      # The same questions, asked of the other build. A case only means something when
+      # both runners answer it, so these two steps are one check split across two jobs.
+      - run: node tests/claude-code/conformance.mjs
 
   parity:
     # The two runtimes share contract/tiers.json and nothing else, so parity is a
