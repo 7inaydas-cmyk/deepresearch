@@ -34,7 +34,7 @@ SHARED = {
     "<UNKNOWN> sentinel retry":  ("_UNKNOWN_SENTINEL", "hasUnknownSentinel"),
     "empty-array schema retry":  ("_schema_shortfall", "schemaShortfall"),
     "shaped response at seam":   ("def shape(schema, obj", "const shape = (schema, obj"),
-    "integer is not coerced":    ("is a boolean, not an integer", "Number.isInteger(v)) out[name] = v"),
+    "integer is not coerced":    ("isinstance(v, float) and v.is_integer()", "Number.isInteger(v)) out[name] = v"),
     "wasted recovery re-asked":  ("if bare_items and not lst:", "if (bareItems.length && !lst.length)"),
     "verdict provenance stamp":  ("_v[\"preRegistered\"] = ", "preRegistered:"),
     "hypothesisNumber over text": ("hypothesisNumber", "hypothesisNumber"),
@@ -55,7 +55,7 @@ SHARED = {
     "rescue pass":               ("RESCUE:", "RESCUE:"),
     "citation audit":            ("citationAccuracy", "citationAccuracy"),
 
-    "unread page != unsupported": ("def read_provenance(", "returns only an ABSTRACT rather than the cited page"),
+
     "survivor-only citation acc": ("citationAccuracySurvivorsOnly", "citationAccuracySurvivorsOnly"),
     "kills attributed by lens":  ("killsByLens", "killsByLens"),
     "answer-first synthesis":    ("answerFirst", "answerFirst"),
@@ -127,6 +127,13 @@ PYTHON_ONLY = {
     "full token accounting":
         "The Claude Code Workflow runtime owns the API call and reports no usage block to "
         "the script, so the JS build has no token numbers to record - complete or otherwise.",
+    "unread page decided in code":
+        "read_provenance() answers `unreachable` in Python WITHOUT a model call, because "
+        "the engine can see that the fetch failed. The JS orchestrator never sees the "
+        "fetch - its audit subagent makes it - so the same guarantee is carried there by a "
+        "prompt instruction. An instruction and a code path are not the same feature, and "
+        "pairing them as a shared row is how four fixes were certified present in a build "
+        "that did not have them.",
     "audit re-fetches the page, not the cache":
         "web_fetch(..., fresh=True) is a Python mechanism. The JS build's audit subagent "
         "calls the runtime's WebFetch itself, so the orchestrator has no cache to bypass "
@@ -147,6 +154,27 @@ def read(paths):
         with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
             out += f.read()
     return out
+
+
+def check_marker_shape():
+    """A shared row must not pair a CODE token with a PROMPT SENTENCE.
+
+    This is the mechanism behind the sixth drift. Markers prove a string exists, so a row
+    whose Python marker is `fresh=True` and whose JS marker is a sentence from a prompt
+    reads as "both builds have this feature" when one has a mechanism and the other has an
+    instruction. Four fixes were reported at "parity, 0 drift" while existing only in
+    Python.
+
+    Symmetric prose is fine and common: a shared prompt string IS the feature, and both
+    sides being a sentence says so honestly. It is the ASYMMETRY that lies.
+    """
+    def prose(mk):
+        return len(mk.split()) >= 4 and not any(c in mk for c in "(){}[]=<>;.:_\"'")
+    bad = [(f, pm, jm) for f, (pm, jm) in sorted(SHARED.items()) if prose(pm) != prose(jm)]
+    for f, pm, jm in bad:
+        print("  MIXED  %-28s python=%r js=%r"
+              % (f, pm[:34], jm[:34]))
+    return not bad
 
 
 def check_tier_data():
@@ -182,12 +210,17 @@ def main():
     for k, why in sorted(PYTHON_ONLY.items()):
         print("    - %-24s %s" % (k, why.split(". ")[0].rstrip(".") + "."))
 
+    shape_ok = check_marker_shape()
+    print("  %s  %-28s %s"
+          % ("ok " if shape_ok else "GAP", "marker shape",
+             "no row pairs a code token with a prompt sentence" if shape_ok
+             else "a row certifies an INSTRUCTION as the twin of a MECHANISM"))
     tiers_ok = check_tier_data()
     print("  %s  %-28s python=contract/tiers.json  js=%s"
           % ("ok " if tiers_ok else "GAP", "tier DATA (not just tierOf)",
              "generated, matches" if tiers_ok else "STALE - run tools/sync_tiers.py"))
 
-    if missing_js or missing_py or not tiers_ok:
+    if missing_js or missing_py or not tiers_ok or not shape_ok:
         print("\n  DRIFT DETECTED — a feature exists in one runtime and not the other.")
         for f, m in missing_js:
             print("    JS build is missing %r (marker %r)" % (f, m))
