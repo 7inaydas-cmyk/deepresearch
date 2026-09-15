@@ -47,8 +47,9 @@ SHARED = {
     # The marker is the STAMP, not the field name. `hypothesisNumber` as a bare token
     # passed this row while the JS build's only occurrence of it was a comment saying the
     # mechanism existed - the seventh drift, certified by prose about the code.
-    "hypothesisNumber over text": ('_v["preRegisteredBy"] = "hypothesisNumber"',
-                                   "preRegisteredBy: 'hypothesisNumber'"),
+    "hypothesisNumber over text": ('"hypothesisNumber (subject, scope and polarity checked',
+                                   "'hypothesisNumber (subject, scope and polarity checked"),
+    "polarity is categorical":   ("def _negated(", "const isNegated = "),
     "number checked vs text":    ("def _hyp_mismatch(", "const hypMismatch = "),
     "string leaf enforced":      ("isinstance(v, str)", "typeof v === 'string') out[name] = v"),
     "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),

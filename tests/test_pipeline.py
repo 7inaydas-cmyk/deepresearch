@@ -334,7 +334,7 @@ ok(any("citation-audit" in x.get("killedBy", "") for x in r["refuted"]),
 ok(r["processCritique"]["verdict"] == "material-gaps", "critique takes the WORST verdict across critics")
 ok("sourceTiers" in r["stats"], "tier census reported: %s" % r["stats"]["sourceTiers"])
 
-print("\n-- depth tiers --")
+print("\n-- depth budgets --")
 q = run(depth="quick")
 ok(q["stats"]["lensesPerClaim"] == 3,
    "quick keeps 3 lenses: with 2, a 1-1 split survives and the filter goes inert")
@@ -747,11 +747,11 @@ ok(dr._hyp_mismatch(dr._hyp_key("Minimum wage increases reduce teen employment o
 ok(not dr._hyp_mismatch(dr._hyp_key("Minimum wage increases reduce teen employment"), _MW),
    "while the SUBSET still passes at 1.000 - dropping a qualifier keeps every word inside "
    "the registered hypothesis, and that is the case hypothesisNumber exists for at all")
-ok(dr._HYP_UNRELATED_MAX == 0.65,
+ok(dr._HYP_MISMATCH_MAX == 0.65,
    "the bar sits in the measured gap 0.545-0.727, not above it: a first attempt at 0.75 "
    "caught a genuine rewording that is one of the contract's own good references, and the "
    "structural rule failed the build rather than letting the overcorrection ship (bar=%s)"
-   % dr._HYP_UNRELATED_MAX)
+   % dr._HYP_MISMATCH_MAX)
 
 # F4 — the thinness gate counted fetched-and-citable URLs, so five paywalled shells that
 # produced nothing read as a healthy evidence base on the one field callers gate on.
@@ -1418,8 +1418,28 @@ ok("citationPartials" in _engine_txt,
 ok("untraceableCount" in _engine_txt and "readThisFirst" in _engine_txt,
    "the critique leads with the count and the list, because the VERDICT was measured not to move "
    "when three fabricated sentences were added")
-ok(callable(P.run_audit_probes) and callable(P.run_critic_probes) and callable(P.main),
-   "the probes have a runner, so #10 and #11 can be re-measured against any finished report")
+# CALLED, not merely `callable`. Renaming engine.TIERS to DEPTH_BUDGETS left
+# probes.py reading the old name at two sites, so run_critic_probes raised
+# AttributeError at HEAD - this repo's only ground-truth instrument, dead, under a green
+# suite and seven green CI jobs, because the assertion here was `callable(...)`. A name
+# that exists is not a function that runs, which is the same lesson as a marker that
+# exists not being a feature that works.
+_probe_rep = {"depth": "quick", "question": "Does X cause Y?",
+              "summary": "A summary sentence.",
+              "findings": [{"claim": "f1", "confidence": "high", "sources": ["https://a.org/1"]}],
+              "sources": [{"url": "https://a.org/1", "tier": "T2", "claims": 1}],
+              "citationDetail": [{"claim": "f1", "url": "https://a.org/1", "support": "supported"}],
+              "scopeContract": {"keyQuestion": "k", "provenance": {"keyQuestion": "supplied"}},
+              "coverage": [{"subQuestion": "s1", "status": "partial"}]}
+for _probe in (P.run_audit_probes, P.run_critic_probes, P.run_framing_probes):
+    try:
+        _res = _probe(_probe_rep)
+        _ran = isinstance(_res, dict)
+    except Exception as _e:                      # noqa: BLE001 - a probe that raises IS the failure
+        _ran, _res = False, "%s: %s" % (type(_e).__name__, _e)
+    ok(_ran, "%s RUNS against a finished report, not just imports: %s"
+             % (_probe.__name__, "ok" if _ran else _res))
+ok(callable(P.main), "and the runner is there, so #10 and #11 can be re-measured")
 _pc = dr.p_critic(0, 2, "Q?", ["s1"], [{"label": "L", "lens": "x"}],
                   [{"claim": "c1"}], "A summary.", [{"confidence": "high", "claim": "f1"}])
 ok("Process Critic 1/2" in _pc and "Traceability" in _pc and "A summary." in _pc,
@@ -1985,14 +2005,19 @@ ok(_cr.SAME_WITHIN == 5,
 # back 33% against 100% of kept and the sentence still asserted the old reading over a
 # bare majority. A generated table with a hand-written conclusion is half generated, and
 # the hand-written half is the one that overstates.
-_block = _cr.dropped_markdown()
-ok("no consistent signal either way" in _block,
-   "at 5 of 9 the generated reading says there is no consistent signal, rather than "
-   "restating a conclusion the samples no longer support")
-ok("not selecting for verifiability" not in _block.split("**In")[1].split("Tracked as")[0]
-   or "no consistent signal" in _block,
-   "and the wording follows the count, so a future run that moves the tally moves the "
-   "sentence with it")
+# Driven with COUNTS, not by matching a phrase in whatever runs/ holds today. The
+# previous version passed whenever the signal phrase appeared anywhere in the block, and
+# archiving a tenth sample would have flipped its subject without touching a line of code.
+for _same, _tot, _want in ((9, 9, "not selecting"), (8, 9, "not selecting"),
+                           (5, 9, "no consistent signal"), (4, 9, "no consistent signal"),
+                           (2, 9, "is selecting for verifiability"),
+                           (0, 9, "is selecting for verifiability")):
+    ok(_want in _cr.reading_for(_same, _tot),
+       "%d of %d reads as %r, so the sentence follows the tally rather than restating a "
+       "conclusion the samples no longer support" % (_same, _tot, _want))
+ok(_cr.reading_for(0, 0) and _cr.CLEAR_MINORITY < _cr.CLEAR_MAJORITY,
+   "the bands are named constants, not inline numbers beside a test-pinned one, and an "
+   "empty table does not divide by zero")
 
 print("\n-- the coverage line counts sub-questions, not buckets --")
 # A live run logged "Verify pool spans 9 distinct sub-question buckets (of 8)" - more

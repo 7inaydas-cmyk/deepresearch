@@ -679,6 +679,51 @@ count: at 5 of 9 it reads **no consistent signal either way**. A generated table
 hand-written conclusion is only half generated, and the hand-written half is the one that
 overstates.
 
+## The fifth audit, 2026-09-15 — a crash under green CI, and negation for the third time
+
+**The rename killed the probes.** Renaming `engine.TIERS` to `DEPTH_BUDGETS` left
+`probes.py` reading the old name at two sites, so `run_critic_probes` and
+`run_framing_probes` raised `AttributeError` at HEAD — **this repo's only ground-truth
+instrument, dead**, under 463 passing tests and seven green CI jobs. The assertion
+guarding it was `callable(P.run_critic_probes)`. A name that exists is not a function that
+runs, which is the same lesson as a marker that exists not being a feature that works, and
+the rename's own commit called this collision class "the bug class rather than a cosmetic
+one". The tests call all three probes against a real report now; reverting the rename
+turns two of them red.
+
+**Negation, for the third time.** Registered *"…reduce teen employment"* against a
+post-hoc *"…do **not** reduce teen employment"* scores content-token overlap of **1.000** —
+`not` is a stopword, `do` is two characters — so the opposite hypothesis was stamped
+`preRegistered: true` with the certainty label. The count so far:
+
+| measure | "stable" vs "unstable" / "reduce" vs "do not reduce" |
+|---|---|
+| JS character bag *(deleted)* | 1.000 |
+| Python `SequenceMatcher` *(deleted)* | 0.941 |
+| the token measure that replaced both | **1.000** |
+
+The lesson had been written down twice and applied to neither replacement. Polarity is
+**categorical** — a flip is a different answer wearing the same words — so it is now
+checked before any coverage, in both builds, and the three negation phrasings are
+conformance references.
+
+**And the label stopped claiming more than the check delivers.** An intensity change
+(*"eliminate"* for *"reduce"*) passes at 0.833 and a reversed causal direction at 0.714;
+the audit reported only the reorder was caught, and in fact **none of the three was**.
+No lexical rule catches intensity or direction — three rounds have established that — so
+the answer was not a fourth threshold. `preRegisteredBy` now reads `hypothesisNumber
+(subject, scope and polarity checked - not that the claim is identical)`, and both
+uncatchable cases are pinned in the contract as untagged named limits.
+
+Also: the JS twin still carried the *length-gap* rationale — *"an order of magnitude
+apart, nothing between"* — directly above the new comment saying length cannot separate
+them, a disproved reason left beside its own refutation; the constant kept the abandoned
+`UNRELATED` name after the function became `_hyp_mismatch`; the table's band thresholds
+were bare numbers beside a test-pinned constant; and the test for the derived conclusion
+passed on a phrase appearing anywhere, reading live `runs/`, so archiving a tenth sample
+would have flipped its subject with no code change. It drives the derivation with counts
+now.
+
 ## The files
 
 | Prefix | What it is |

@@ -846,11 +846,6 @@ const evidenceBase = rows => {
 //    none of them does the argument exist anywhere else in the report: it is missing,
 //    not misfiled, on the one field whose whole job is to argue against the answer.
 //    This build runs the same synthesis rule and can fail the same way.
-//
-//    A pointer AND a short field. Either test alone is wrong: a real steelman may cite
-//    another section mid-argument, and a short field may be a blunt honest answer.
-//    Across those runs the four non-answers measure 41, 64, 65 and 74 characters and the
-//    sixteen genuine steelmen 906-2101 — an order of magnitude apart, nothing between.
 const POINTER = /^\s*\[?(?:n\/?a|none|tbd|todo|not applicable|no comment|see\b[^.]{0,80}?\b(?:above|below|field|section)|(?:as|same)\s+(?:stated|noted|described)\s+(?:above|below))/i
 // What is LEFT once the pointer is removed. The first version paired the pointer with a
 // length test (<= 200 chars) and broke in both directions, audited 2026-09-15: a
@@ -918,7 +913,7 @@ const HYP_MIN_TOKENS = 4
 // `good` references, so the structural rule failed the build rather than letting the
 // overcorrection ship. A verdict below the bar still reaches the text path and can still
 // stamp true — it loses the certainty label, not the stamp.
-const HYP_UNRELATED_MAX = 0.65
+const HYP_MISMATCH_MAX = 0.65
 const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
 const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
 const sameHyp = (a, b) => {
@@ -954,12 +949,25 @@ const sameHyp = (a, b) => {
 // Too short to score returns false, which is a real hole: a terse verdict cannot be
 // checked this way, so its number is believed. `preRegisteredBy` says which path stamped
 // it, so a reader can see which verdicts rest on an unchecked number.
+// Polarity is CATEGORICAL, so no threshold can see it. Registered "…reduce teen
+// employment" against a post-hoc "…do NOT reduce teen employment" scores content-token
+// overlap of 1.000 — "not" is a stopword and "do" is two characters — so the opposite
+// hypothesis was stamped with the certainty label. Third time a similarity measure here
+// has been blind to a negation: this build's character bag scored "output is stable"
+// against "output is unstable" at 1.000, the Python SequenceMatcher 0.941, and now the
+// token measure that replaced both scores a flat negation at 1.000. A flip is a different
+// answer wearing the same words; it needs its own check, not a better number.
+const NEGATORS = new Set(("not no never cannot nor neither none without fails fail lacks " +
+  "lack absent doesn't don't didn't won't isn't aren't wasn't weren't can't").split(' '))
+const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).some(w => NEGATORS.has(w))
 const hypMismatch = (verdictText, registeredText) => {
+  // Polarity first: overlap is blind to it, and a flat negation scores 1.000.
+  if (isNegated(verdictText) !== isNegated(registeredText)) return true
   const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
   if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
   let shared = 0
   ta.forEach(w => { if (tb.has(w)) shared++ })
-  return shared / Math.max(1, ta.size) < HYP_UNRELATED_MAX
+  return shared / Math.max(1, ta.size) < HYP_MISMATCH_MAX
 }
 
 
@@ -1871,7 +1879,12 @@ const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(
     if (hypMismatch(t, REGISTERED[n - 1])) {
       return inferredFromText(v, t, 'hypothesisNumber said H' + n + ", but this verdict's wording does not state that hypothesis")
     }
-    return { ...v, preRegistered: true, preRegisteredBy: 'hypothesisNumber' }
+    // NOT the bare word — the label read as unqualified certainty for what is a subject,
+    // scope and polarity check. An intensity change ("eliminate" for "reduce", 0.833) and
+    // a reversed causal direction (0.714) both pass it, and no lexical rule catches
+    // either. Stop the label claiming more than the check delivers.
+    return { ...v, preRegistered: true,
+             preRegisteredBy: 'hypothesisNumber (subject, scope and polarity checked - not that the claim is identical)' }
   }
   if (n === 0) {
     return { ...v, preRegistered: false, preRegisteredBy: 'hypothesisNumber (declared post-hoc by the synthesis step)' }

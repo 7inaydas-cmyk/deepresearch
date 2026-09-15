@@ -26,9 +26,35 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 # Within this many points counts as "as well as". Stated so the headline tally is
 # reproducible: the previous prose count could not be derived from any rule.
 SAME_WITHIN = 5
+# What fraction of samples has to agree before the table states a direction at all. Named
+# rather than inline for the same reason SAME_WITHIN is: a review noted these sat as bare
+# numbers beside a constant that is pinned by a test, which is how a threshold gets
+# adjusted quietly. Between them the table says there is no consistent signal.
+CLEAR_MAJORITY, CLEAR_MINORITY = 0.75, 0.25
 
 DROPPED_START = "<!-- BEGIN GENERATED: tools/compare_regimes.py --dropped-md -->"
 DROPPED_END = "<!-- END GENERATED -->"
+
+
+def reading_for(same, total):
+    """The conclusion sentence, as a pure function of the tally.
+
+    Pulled out of dropped_markdown() so a test can drive it with counts instead of
+    matching a phrase in output built from whatever happens to be in runs/ today. The
+    previous test passed whenever the signal phrase appeared anywhere, and archiving a
+    tenth sample would have flipped its subject without touching a line of code.
+    """
+    frac = (same / total) if total else 0
+    if frac >= CLEAR_MAJORITY:
+        return ("The ranking is not selecting for verifiability - that is the unfavourable "
+                "answer and it is the one the data gives.")
+    if frac <= CLEAR_MINORITY:
+        return ("The ranking is selecting for verifiability: the claims the cap discarded "
+                "really do verify worse.")
+    return ("At %d of %d there is **no consistent signal either way** - some runs drop claims "
+            "that verify as well as the kept ones, others drop claims that verify worse. That "
+            "is weaker than this table once claimed, and it is what the samples support."
+            % (same, total))
 
 
 def dropped_markdown():
@@ -59,18 +85,7 @@ def dropped_markdown():
     # came back 33% against 100% of kept and the sentence still asserted the old reading
     # over a bare majority. A generated table with a hand-written conclusion is only half
     # generated, and the hand-written half is the one that overstates.
-    frac = same / len(rows) if rows else 0
-    if frac >= 0.75:
-        reading = ("The ranking is not selecting for verifiability - that is the unfavourable "
-                   "answer and it is the one the data gives.")
-    elif frac <= 0.25:
-        reading = ("The ranking is selecting for verifiability: the claims the cap discarded "
-                   "really do verify worse.")
-    else:
-        reading = ("At %d of %d there is **no consistent signal either way** - some runs drop "
-                   "claims that verify as well as the kept ones, others drop claims that verify "
-                   "worse. That is weaker than this table once claimed, and it is what the "
-                   "samples support." % (same, len(rows)))
+    reading = reading_for(same, len(rows))
     out += ["",
             "**In %d of %d samples the discarded claims verified as well as or better than the "
             "kept ones** (within %d points, or higher). %s Tracked as "

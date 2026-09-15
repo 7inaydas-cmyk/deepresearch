@@ -316,7 +316,7 @@ def run_critic_probes(rep):
     """
     from . import engine as E
     depth = rep.get("depth") or "standard"
-    n_critics = (E.TIERS.get(depth) or E.TIERS["standard"])["critics"]
+    n_critics = (E.DEPTH_BUDGETS.get(depth) or E.DEPTH_BUDGETS["standard"])["critics"]
     q = rep.get("question") or ""
     # Python reports key coverage by `subQuestionIndex` (an int); JS reports by
     # `subQuestion` (the text). Reading only the JS key against a Python report gave the
@@ -447,7 +447,7 @@ def run_framing_probes(rep):
         return {"reason": "this report had no supplied framing fields, so there is nothing to respect"}
     tokens = _distinctive_tokens(contract)
     depth = rep.get("depth") or "standard"
-    n_critics = (E.TIERS.get(depth) or E.TIERS["standard"])["critics"]
+    n_critics = (E.DEPTH_BUDGETS.get(depth) or E.DEPTH_BUDGETS["standard"])["critics"]
     q = rep.get("question") or ""
     subqs = []
     for c in (rep.get("coverage") or []):

@@ -598,6 +598,32 @@
         "out": true,
         "why": "a verdict whose text adjudicates something never registered is caught whatever number it declares - hypothesisNumber was authoritative with nothing examined",
         "ref": "bad"
+      },
+      {
+        "in": [
+          "Minimum wage increases do not reduce teen employment",
+          "Minimum wage increases reduce teen employment"
+        ],
+        "out": true,
+        "ref": "bad",
+        "why": "a flat NEGATION - the opposite hypothesis. Content-token overlap is 1.000 because 'not' is a stopword and 'do' is two characters, so every threshold passes it and the opposite claim was stamped preRegistered: true with the certainty label. Third time a similarity measure here has been blind to a negation: the character bag scored 'output is stable' against 'output is unstable' at 1.000, SequenceMatcher 0.941, and the token measure that replaced both scores this at 1.000. Polarity is categorical and is checked before any coverage"
+      },
+      {
+        "in": [
+          "Minimum wage increases have no effect on teen employment",
+          "Minimum wage increases reduce teen employment"
+        ],
+        "out": true,
+        "ref": "bad",
+        "why": "and a negation phrased as an absence, not a 'not'"
+      },
+      {
+        "in": [
+          "Minimum wage increases eliminate teen employment",
+          "Minimum wage increases reduce teen employment"
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged. It pins a NAMED LIMIT: an intensity change scores 0.833 and passes, as does a reversed causal direction at 0.714. No lexical rule catches either, which is why preRegisteredBy now says 'subject, scope and polarity checked - not that the claim is identical' rather than reading as certainty. Expected False records what the code does, not what would be correct"
       }
     ]
   },

@@ -242,6 +242,10 @@ That last row matters more than it looks. A resolver is not a publisher. Grading
 | superset attack | 0.455 |
 | unrelated | 0.250 / 0.091 |
 
+  **Polarity is checked before any of that, because it is categorical and overlap is blind to it.** A registered *"…reduce teen employment"* against a post-hoc *"…do **not** reduce teen employment"* scores **1.000** — `not` is a stopword and `do` is two characters — so every threshold passes the opposite hypothesis. That is the third time a similarity measure here has been blind to a negation: the character bag scored *"output is stable"* against *"output is unstable"* at 1.000, `SequenceMatcher` at 0.941, and the token measure that replaced both scores a flat negation at 1.000. A flip is a different answer wearing the same words, so it gets its own check rather than a better number.
+
+  **What the check still does not catch**, and the label now says so rather than reading as certainty: an intensity change (*"eliminate"* for *"reduce"*, 0.833) and a reversed causal direction (0.714) both pass. No lexical rule catches either — three rounds have established that — so `preRegisteredBy` reads `hypothesisNumber (subject, scope and polarity checked - not that the claim is identical)`.
+
   What the number genuinely buys is the *subset* direction: a verdict that drops a qualifier keeps every word inside the registered hypothesis, so it scores 1.000. Adding scope is what lowers the score, and adding scope is the attack — so the bar can sit high without costing the number anything it was for. A verdict below it still stamps `preRegistered: true` via the text path; it loses the certainty label, not the stamp. A first attempt at 0.75 caught a genuine 0.727 rewording and the conformance rule failed the build rather than shipping the overcorrection.
 
   **A terse verdict cannot be checked this way at all** — too few content words to score — so its number is believed. That hole is named rather than papered over, and `preRegisteredBy` is how you see which verdicts rest on an unchecked number.

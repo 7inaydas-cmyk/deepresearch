@@ -222,7 +222,7 @@ import fs2 from 'node:fs'
   // line of source text, which is the same instrument that certified `hypothesisNumber`
   // as present in this build when its only occurrence was a comment claiming so.
   ok(out.hypothesisVerdicts.every(h => h.preRegistered === true &&
-                                       h.preRegisteredBy === 'hypothesisNumber'),
+                                       /^hypothesisNumber \(/.test(h.preRegisteredBy)),
      'every verdict is stamped pre-registered BY the number it declared, so a reader can tell a certainty from a guess')
 }
 {
@@ -285,7 +285,7 @@ import fs2 from 'node:fs'
      'a verdict whose text was never registered is NOT stamped pre-registered just because it typed a digit')
   ok(bogus && /^inferred from text/.test(bogus.preRegisteredBy) && /H1/.test(bogus.preRegisteredBy),
      'and the stamp says the number was overruled and which one it claimed: ' + (bogus && bogus.preRegisteredBy))
-  ok(real && real.preRegistered === true && real.preRegisteredBy === 'hypothesisNumber',
+  ok(real && real.preRegistered === true && /^hypothesisNumber \(/.test(real.preRegisteredBy),
      'while a verdict that really does adjudicate its numbered hypothesis is still believed, relabelled or not')
 }
 {

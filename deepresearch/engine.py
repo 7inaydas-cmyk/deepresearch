@@ -1145,7 +1145,7 @@ _HYP_MIN_TOKENS = 4
 # overcorrection ship. That is the second time raising a bar on the flattering-looking
 # side of the data has cost a real pairing; the numbers above are every pair on record,
 # not a chosen subset.
-_HYP_UNRELATED_MAX = 0.65
+_HYP_MISMATCH_MAX = 0.65
 
 
 def _hyp_key(text):
@@ -1270,6 +1270,26 @@ def is_nonanswer(text):
     return len(re.findall(r"[A-Za-z]{3,}", rest)) < _NONANSWER_MIN_WORDS
 
 
+# Polarity is CATEGORICAL, so no threshold can see it. Audited 2026-09-15: registered
+# "Minimum wage increases reduce teen employment" against a post-hoc "...do NOT reduce
+# teen employment" scores content-token overlap of 1.000 - "not" is a stopword and "do"
+# is two characters - so the opposite hypothesis was stamped `preRegistered: true` with
+# the certainty label. That is the third time in this repo a similarity measure has been
+# blind to a negation: the JS character bag scored "output is stable" against "output is
+# unstable" at 1.000, the Python SequenceMatcher at 0.941, and now the token measure that
+# replaced both scores a flat negation at 1.000. A flip is not a small distance; it is a
+# different answer wearing the same words, and it needs its own check rather than a
+# better number.
+_NEGATORS = frozenset(
+    "not no never cannot nor neither none without fails fail lacks lack absent "
+    "doesn't don't didn't won't isn't aren't wasn't weren't can't".split())
+
+
+def _negated(text):
+    """Does this hypothesis assert the negative? A whole-word test, deliberately crude."""
+    return bool(_NEGATORS & set(re.findall(r"[a-z']+", str(text or "").lower())))
+
+
 def _hyp_mismatch(verdict_text, registered_text):
     """Does the verdict's TEXT fail to state the hypothesis its number names?
 
@@ -1278,7 +1298,7 @@ def _hyp_mismatch(verdict_text, registered_text):
     NOTHING checked, so a verdict could adjudicate a hypothesis the run never registered
     and be stamped `preRegistered: true` by typing a digit. The first cross-check fixed
     only half of that: at 0.40 it caught a different SUBJECT and let the round-2 superset
-    straight back in through the number path (see _HYP_UNRELATED_MAX for the measured
+    straight back in through the number path (see _HYP_MISMATCH_MAX for the measured
     table and the audit that found it).
 
     What the number genuinely buys is the SUBSET direction - a verdict that drops a
@@ -1292,10 +1312,14 @@ def _hyp_mismatch(verdict_text, registered_text):
     number is believed. `preRegisteredBy` says which path stamped it, so a reader can see
     which verdicts rest on an unchecked number.
     """
+    # Polarity first, because it is categorical and overlap is blind to it: a flat
+    # negation scores 1.000. Disagreeing on polarity is a mismatch at any coverage.
+    if _negated(verdict_text) != _negated(registered_text):
+        return True
     ta, tb = _hyp_tokens(verdict_text), _hyp_tokens(registered_text)
     if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
         return False
-    return len(ta & tb) / max(1, len(ta)) < _HYP_UNRELATED_MAX
+    return len(ta & tb) / max(1, len(ta)) < _HYP_MISMATCH_MAX
 
 
 def to_ref(c):
@@ -3061,12 +3085,20 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             # examined - the old matcher could be gamed by rewording, and that replaced
             # it with something gamed by typing a digit. The first cross-check then sat
             # so low it caught only a different subject, and the round-2 superset walked
-            # back in through this path; see _HYP_UNRELATED_MAX for the measured table.
+            # back in through this path; see _HYP_MISMATCH_MAX for the measured table.
             # A verdict that fails this still reaches the text path below and can still
             # stamp true - it loses the certainty label, not the stamp.
             if not _hyp_mismatch(_t, _registered[_num - 1]):
                 _v["preRegistered"] = True
-                _v["preRegisteredBy"] = "hypothesisNumber"
+                # NOT the bare word. A review pointed out the label read as unqualified
+                # certainty for what is a subject, scope and polarity check: an intensity
+                # change ("eliminate" for "reduce", 0.833) and a reversed causal
+                # direction (0.714) both pass it, and no lexical rule catches either.
+                # Three rounds have now established that; the answer is to stop the label
+                # claiming more than the check delivers, not to invent a fourth threshold.
+                _v["preRegisteredBy"] = (
+                    "hypothesisNumber (subject, scope and polarity checked - not that the "
+                    "claim is identical)")
                 continue
             _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, but this "
                                      "verdict's wording does not state that hypothesis" % _num)
