@@ -791,6 +791,47 @@ table had drifted from five samples to eight with a headline no rule produced. I
 undocumented, which is why it read as dead weight. CONTRIBUTING now carries the three-line
 workflow.
 
+## The seventh audit, 2026-09-15 — the mirror of my own fix, and my costs were backwards
+
+The one-directional negation check shipped in v1.10.1 left the opposite door open, and the
+audit walked through it.
+
+**The minimal delete.** A verdict that removes the registered negation and keeps every
+content word has an **identical token set** — `not` is a stopword, `do` is two characters —
+so overlap is **1.000**. `"do not reduce"` registered, `"reduce"` adjudicated. Nothing was
+*added*, so my one-directional check never fired, and a registered hypothesis could be
+adjudicated as its exact opposite and stamped a prediction that survived. From a
+registered **null** it is the flattering flip, which is the shape the whole stamp exists
+to make impossible.
+
+**My justification was measured on the wrong pairing.** I wrote that the reverse direction
+needed no check because "a verdict asserting a difference covers 0.176–0.238". That was a
+*different* registered hypothesis scored against the null. The faithful rewording of the
+null itself covers **0.933**, and a minimal delete covers **1.000**.
+
+**And the costs were backwards.** Measured, not argued:
+
+| | what it costs |
+|---|---|
+| the "false accusation" I was protecting against | the **label** — the verdict still stamped `preRegistered: true` via the text path at 0.933 |
+| the direction I left open | the **stamp** — the opposite hypothesis certified as pre-registered |
+
+Across every archived run only **8** verdict/registered pairs carry a number, and **none**
+differ in negation. So neither shape is observed and this is a choice between two
+unobserved failures — under a rule this repo already wrote down: a false *pre-registered*
+is the failure to prevent, a false *post-hoc* only understates. Symmetric follows.
+
+**Fixing only the number path would have closed nothing.** The text path was blind by the
+same 1.000 and stamped it true there instead. The check now runs in both.
+
+**The suggested fix does not survive its own measurement.** The audit proposed firing when
+negation sets differ *and* overlap is above the bar, expecting the v10 case to pass at
+0.18–0.24. At its real 0.933 that rule re-breaks the exact case v1.10.1 fixed — the same
+wrong-pairing error, one round later, from the other side of the table.
+
+The conformance case that encoded the old policy was **reversed rather than deleted**, and
+carries the reasoning for the reversal.
+
 ## The files
 
 | Prefix | What it is |

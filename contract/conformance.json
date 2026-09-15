@@ -630,9 +630,9 @@
           "H1: Under matched calorie deficits, IF and CCR produce statistically similar fat loss; the difference is adherence rather than metabolic superiority",
           "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
         ],
-        "out": false,
-        "ref": "good",
-        "why": "a faithful positive rewording of a REGISTERED NULL HYPOTHESIS, taken verbatim from runs/v10. The first negation check fired on any polarity disagreement and relabelled this 'does not state that hypothesis' - and two of that run's four registered hypotheses carry a negator, so the misfire hit half a real set. 'No effect' is how a null hypothesis is normally written, which made it the common case rather than a corner. The check is one-directional now: only a verdict ADDING a negation counts"
+        "out": true,
+        "ref": "bad",
+        "why": "REVERSED 2026-09-15, deliberately, and this case records the reversal rather than hiding it. It previously expected False: a faithful positive rewording of a registered NULL hypothesis must not be marked post-hoc. That policy was set to stop a 'false accusation' - and the accusation cost only the LABEL, because the verdict still stamped preRegistered: true via the text path at coverage 0.933. Meanwhile the direction it left open cost the STAMP: deleting a registered negation while keeping every content word gives an IDENTICAL token set (`not` is a stopword, `do` is two characters), overlap 1.000, so a registered null could be adjudicated as its exact opposite and stamped a surviving prediction. Across every archived run only 8 verdict/registered pairs carry a number and NONE differ in negation, so this is a choice between two unobserved failures - and the policy written above _same_hypothesis says a false 'pre-registered' is the one to prevent while a false 'post-hoc' only understates. A positive restatement of a null is therefore marked post-hoc, which is a real cost, taken knowingly, in the understating direction"
       },
       {
         "in": [
@@ -665,6 +665,24 @@
         ],
         "out": false,
         "why": "NOT a reference, deliberately untagged. The terse hole and an antonym flip at once: one content token after stopwords, so the _HYP_MIN_TOKENS guard returns before any coverage is scored. Two known limits stacked, pinned so a change to either shows up here"
+      },
+      {
+        "in": [
+          "Minimum wage increases reduce teen employment",
+          "Minimum wage increases do not reduce teen employment"
+        ],
+        "out": true,
+        "ref": "bad",
+        "why": "THE MINIMAL-DELETE MIRROR. The verdict deletes the registered negation and keeps every content word, so the token sets are identical and overlap is 1.000 - `not` is a stopword and `do` is two characters. The one-directional check of v1.10.1 did not fire (nothing was ADDED) and the text path was blind by the same 1.000, so a registered hypothesis could be adjudicated as its exact opposite and stamped a prediction that survived"
+      },
+      {
+        "in": [
+          "The intervention has an effect on employment",
+          "The intervention has no effect on employment"
+        ],
+        "out": true,
+        "ref": "bad",
+        "why": "and the same flip from a registered NULL, which is the flattering direction: 'no effect' registered, 'an effect' claimed. This is the shape the whole pre-registration stamp exists to make impossible"
       }
     ]
   },

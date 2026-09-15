@@ -49,7 +49,7 @@ SHARED = {
     # mechanism existed - the seventh drift, certified by prose about the code.
     "hypothesisNumber over text": ('"hypothesisNumber (subject, scope and added negation checked',
                                    "'hypothesisNumber (subject, scope and added negation checked"),
-    "added negation, one way":   ("def _adds_negation(", "const addsNegation = "),
+    "negation differs, both ways": ("def _negation_differs(", "const negationDiffers = "),
     "number checked vs text":    ("def _hyp_mismatch(", "const hypMismatch = "),
     "string leaf enforced":      ("isinstance(v, str)", "typeof v === 'string') out[name] = v"),
     "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),

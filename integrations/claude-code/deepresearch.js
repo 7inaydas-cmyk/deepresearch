@@ -941,6 +941,9 @@ const sameHyp = (a, b) => {
   // is handled by hypothesisNumber below — which for a while this comment claimed while
   // the field appeared nowhere else in this file, so the parity row for it passed on the
   // comment itself and the subset attack stamped `preRegistered: true` here for free.
+  // The text path was blind to this too, so fixing only the number path closed nothing:
+  // a verdict deleting the registered negation stamped true HERE instead, at 1.000.
+  if (negationDiffers(a, b)) return false
   return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
 }
 // Does the verdict's TEXT fail to state the hypothesis its number names? What the number
@@ -960,29 +963,22 @@ const sameHyp = (a, b) => {
 // token measure that replaced both scores a flat negation at 1.000. A flip is a different
 // answer wearing the same words; it needs its own check, not a better number.
 const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).some(w => NEGATORS.has(w))
-// Does the VERDICT introduce a negation its registered hypothesis does not carry?
-// One-directional, and the direction is the whole point. The first version fired on any
-// disagreement, which falsely accused the commonest shape in a real hypothesis set:
-// audited against runs/v10, TWO of its four registered hypotheses carry a negator — H1
-// being the null hypothesis, "No meaningful difference: … adherence, not metabolic
-// superiority" — so a faithful positive rewording of H1 was relabelled "does not state
-// that hypothesis". "No effect" is how a null hypothesis is normally written.
-// The reverse direction needs no check, measured on that run: a verdict asserting a
-// difference covers 0.176-0.238 against the registered null and the coverage bar catches
-// it. The attack direction does — a verdict negating a positive claim covers 1.000.
-// This is NOT a polarity check and the label no longer claims it is. An ANTONYM flip
-// carries no negator word, so "raise" against "reduce" covers 0.833 and passes. Nor does
-// it help when the flip sits INSIDE a negation both sides share — "not unlikely to
-// reduce" against "not likely to reduce" has a negator each side, so nothing is added,
-// and the inversion lives in "unlikely" against "likely" at 0.857. That pair is worth
-// naming because this function looks like it should catch it; it does not, and nothing
-// lexical here does. All pinned in contract/conformance.json as untagged limits.
-const addsNegation = (verdictText, registeredText) => isNegated(verdictText) && !isNegated(registeredText)
+// Do these two hypotheses disagree about whether they assert the negative? SYMMETRIC,
+// which reverses v1.10.1. That release made it fire one way — only a verdict ADDING a
+// negation — to stop a faithful positive rewording of a registered null being marked
+// post-hoc. Audited 2026-09-15, that had the costs backwards: the "false accusation" it
+// protected against cost only the LABEL (the verdict still stamped true via the text path
+// at 0.933), while the direction it left open cost the STAMP. A verdict deleting the
+// registered negation and keeping every content word — "do not reduce" registered,
+// "reduce" adjudicated — has an IDENTICAL token set, because `not` is a stopword and `do`
+// is two characters. Overlap 1.000. A registered NULL could be adjudicated as its exact
+// opposite and stamped a prediction that survived. The repo's policy is that a false
+// "pre-registered" is the failure to prevent and a false "post-hoc" only understates.
+const negationDiffers = (a, b) => isNegated(a) !== isNegated(b)
 const hypMismatch = (verdictText, registeredText) => {
-  // An ADDED negation first: overlap is blind to it, and a flat negation scores 1.000.
-  // One-directional — see addsNegation for why the symmetric version falsely accused
-  // half of a real registered hypothesis set.
-  if (addsNegation(verdictText, registeredText)) return true
+  // Negation first: overlap is blind to it in BOTH directions — adding one scores 1.000
+  // and deleting one scores 1.000 too, since `not` is a stopword.
+  if (negationDiffers(verdictText, registeredText)) return true
   const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
   if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
   let shared = 0
@@ -1897,7 +1893,10 @@ const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(
   // marked as inferred so a reader can tell a certainty from a guess.
   if (Number.isInteger(n) && n >= 1 && n <= REGISTERED.length) {
     if (hypMismatch(t, REGISTERED[n - 1])) {
-      return inferredFromText(v, t, 'hypothesisNumber said H' + n + ", but this verdict's wording does not state that hypothesis")
+      return inferredFromText(v, t, 'hypothesisNumber said H' + n + ', but ' +
+        (negationDiffers(t, REGISTERED[n - 1])
+          ? 'they differ in negation - one asserts the negative and the other does not'
+          : "this verdict's wording does not state that hypothesis"))
     }
     // NOT the bare word — the label read as unqualified certainty for what is a subject,
     // scope and polarity check. An intensity change ("eliminate" for "reduce", 0.833) and

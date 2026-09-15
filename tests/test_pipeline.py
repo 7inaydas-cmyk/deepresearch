@@ -1982,27 +1982,40 @@ ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" 
    "the generator owns the one thing that genuinely differs between the runtimes: the "
    "key names. The numbers cannot differ because there is only one set")
 
-print("\n-- an ADDED negation is caught; a registered null is not accused --")
-# The first version fired on any polarity disagreement, which falsely accused the
-# commonest shape in a real hypothesis set: two of runs/v10's four registered hypotheses
-# carry a negator, H1 being the null hypothesis, so a faithful positive rewording of it
-# was relabelled "does not state that hypothesis".
+print("\n-- a negation difference is caught in BOTH directions and BOTH paths --")
+# v1.10.1 made this one-directional to stop a "false accusation": a faithful positive
+# rewording of a registered null being marked post-hoc. That had the costs backwards. The
+# accusation cost only the LABEL - the verdict still stamped true via the text path at
+# 0.933 - while the open direction cost the STAMP, because deleting a registered negation
+# keeps every content word and scores 1.000 (`not` is a stopword, `do` is two characters).
 _V10_NULL = ("No meaningful difference: under matched calorie deficits, IF and CCR produce "
              "statistically similar fat loss, and the difference is adherence, not "
              "metabolic superiority")
 _V10_RW = ("H1: Under matched calorie deficits, IF and CCR produce statistically similar fat "
            "loss; the difference is adherence rather than metabolic superiority")
-ok(not dr._hyp_mismatch(dr._hyp_key(_V10_RW), dr._hyp_key(_V10_NULL)),
-   "a faithful positive rewording of a registered NULL hypothesis is not accused - 'No "
-   "effect' is how a null hypothesis is normally written, so this was the common case")
 _MWR = "Minimum wage increases reduce teen employment"
-for _neg in ("Minimum wage increases do not reduce teen employment",
-             "Minimum wage increases have no effect on teen employment"):
+_MWN = "Minimum wage increases do not reduce teen employment"
+ok(dr._hyp_mismatch(dr._hyp_key(_MWR), dr._hyp_key(_MWN)),
+   "THE MIRROR: a verdict that DELETES the registered negation is caught - identical token "
+   "sets, overlap 1.000, so a registered hypothesis could be adjudicated as its exact "
+   "opposite and stamped a prediction that survived")
+ok(dr._hyp_mismatch(dr._hyp_key("The intervention has an effect on employment"),
+                    dr._hyp_key("The intervention has no effect on employment")),
+   "and the same flip from a registered NULL, which is the flattering direction")
+for _neg in (_MWN, "Minimum wage increases have no effect on teen employment"):
     ok(dr._hyp_mismatch(dr._hyp_key(_neg), dr._hyp_key(_MWR)),
-       "while a verdict that ADDS a negation is caught at any coverage: %r" % _neg[24:52])
-ok(dr._adds_negation("does not reduce employment", "reduces employment")
-   and not dr._adds_negation("reduces employment", "no meaningful difference"),
-   "the check is one-directional by construction, not by threshold")
+       "while a verdict that ADDS a negation is still caught: %r" % _neg[24:52])
+ok(not dr._same_hypothesis(dr._hyp_key(_MWR), dr._hyp_key(_MWN)),
+   "the TEXT path checks it too - fixing only the number path closed nothing, because "
+   "this stamped true there instead by the same 1.000 overlap")
+ok(dr._negation_differs("does not reduce employment", "reduces employment")
+   and dr._negation_differs("reduces employment", "no meaningful difference"),
+   "the check is symmetric by construction, not by threshold")
+ok(dr._hyp_mismatch(dr._hyp_key(_V10_RW), dr._hyp_key(_V10_NULL)),
+   "and the KNOWN COST is taken knowingly: a positive restatement of a registered null is "
+   "marked post-hoc. Only 8 verdict/registered pairs on record carry a number and none "
+   "differ in negation, so this chooses between two unobserved failures - and the policy "
+   "is that a false 'pre-registered' is the one to prevent, a false 'post-hoc' understates")
 ok(not dr._hyp_mismatch(dr._hyp_key("Minimum wage increases raise teen employment"),
                         dr._hyp_key(_MWR)),
    "and the NAMED LIMIT is pinned rather than claimed closed: an antonym flip carries no "
@@ -2019,8 +2032,9 @@ ok(not dr._hyp_mismatch(
        dr._hyp_key("Minimum wage increases are not likely to reduce teen employment")),
    "a flip INSIDE a shared negation passes at 0.857 - pinned as a named limit, because "
    "the added-negation check looks like it should see this one and does not")
-ok(not dr._adds_negation("not unlikely to reduce", "not likely to reduce"),
-   "and it is right not to fire: neither side ADDS a negation, they both carry one")
+ok(not dr._negation_differs("not unlikely to reduce", "not likely to reduce"),
+   "and it is right not to fire: both sides carry a negator, so they do not DIFFER - the "
+   "inversion lives in 'unlikely' against 'likely', which is an antonym, not a negation")
 
 print("\n-- the README's #9 table is generated, not typed --")
 # It claimed a tool regenerated it so it "cannot drift again". That was true of the

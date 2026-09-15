@@ -1212,6 +1212,11 @@ def _same_hypothesis(a, b):
         # That is why `hypothesisNumber` exists and takes precedence. This path runs only
         # when the model returned no usable number, and its result is published as
         # `preRegisteredBy: inferred from text` so a reader can tell it from a certainty.
+        if _negation_differs(a, b):
+            # The text path was blind to this too, so fixing only the number path closed
+            # nothing: a verdict deleting the registered negation stamped `preRegistered:
+            # true` here instead, by the same 1.000 overlap.
+            return False
         return len(ta & tb) / max(1, len(ta)) >= HYP_MATCH_THRESHOLD
     # Too few content words to score, and NO character measure rescues it. Audited
     # 2026-09-15: a negation is a tiny edit that inverts the meaning, so "output is
@@ -1297,33 +1302,38 @@ def _negated(text):
     return bool(_NEGATORS & set(re.findall(r"[a-z']+", str(text or "").lower())))
 
 
-def _adds_negation(verdict_text, registered_text):
-    """Does the VERDICT introduce a negation its registered hypothesis does not carry?
+def _negation_differs(a, b):
+    """Do these two hypotheses disagree about whether they assert the negative?
 
-    One-directional, and the direction is the whole point. The first version fired on any
-    disagreement, which falsely accused the commonest shape in a real hypothesis set:
-    audited against runs/v10, TWO of its four registered hypotheses carry a negator - H1
-    being the null hypothesis, "No meaningful difference: ... adherence, not metabolic
-    superiority" - so a faithful positive rewording of H1 was relabelled "does not state
-    that hypothesis". "No effect" is how a null hypothesis is normally written, which made
-    that misfire the common case rather than a corner.
+    SYMMETRIC, and that is a reversal of the previous release. v1.10.1 made this fire one
+    way - only a verdict ADDING a negation - to stop a faithful positive rewording of a
+    registered null hypothesis being marked post-hoc. Audited 2026-09-15, that reasoning
+    had the costs backwards:
 
-    The reverse direction needs no check, measured on that same run: a verdict asserting a
-    difference, scored against the registered null, covers 0.176-0.238, and the coverage
-    bar already catches it. The attack direction does need one - a verdict negating a
-    positive registered claim covers 1.000 ("do not reduce") and 0.833 ("have no effect"),
-    which no threshold can see.
+      * the "false accusation" it was protecting against cost only the LABEL. The verdict
+        still stamped `preRegistered: true`, via the text path, at coverage 0.933. It lost
+        the certainty wording, not the stamp.
 
-    What this is NOT is a polarity check, and the label no longer claims it is. An ANTONYM
-    flip carries no negator word at all: "raise teen employment" against a registered
-    "reduce teen employment" covers 0.833 and passes. Nor does it help when the flip sits
-    INSIDE a negation both sides share - "not unlikely to reduce" against "not likely to
-    reduce" has a negator on each side, so nothing is added, and the inversion lives in
-    "unlikely" against "likely" at coverage 0.857. That pair is the one worth naming,
-    because this function looks like it should catch it. It does not, and nothing lexical
-    here does. All of them are pinned in contract/conformance.json as untagged limits.
+      * the direction it left open cost the STAMP. A verdict that deletes the registered
+        negation and keeps every content word - "do not reduce" registered, "reduce"
+        adjudicated - has an IDENTICAL token set, because `not` is a stopword and `do` is
+        two characters. Overlap 1.000. A registered NULL hypothesis could be adjudicated
+        as its exact opposite and stamped a prediction that survived, which is the single
+        most flattering flip available and the precise failure this stamp exists to stop.
+
+    Across every archived run only 8 verdict/registered pairs carry a number and NONE
+    differ in negation, so neither shape is observed: this is a decision about which
+    unobserved failure to accept. The repo's policy, written above _same_hypothesis, is
+    that a false "pre-registered" is the failure to prevent and a false "post-hoc" only
+    understates. Symmetric follows from that, and the suggested alternative - fire only
+    above the coverage bar - was measured and re-breaks the v10 case at 0.933.
+
+    A positive restatement of a null with no negator ("produce statistically similar fat
+    loss" for "No meaningful difference") is therefore marked post-hoc. That is a real
+    cost, it is the understating direction, and `preRegisteredBy` names it as a polarity
+    difference so a reader can see which one it was.
     """
-    return _negated(verdict_text) and not _negated(registered_text)
+    return _negated(a) != _negated(b)
 
 
 def _hyp_mismatch(verdict_text, registered_text):
@@ -1348,10 +1358,10 @@ def _hyp_mismatch(verdict_text, registered_text):
     number is believed. `preRegisteredBy` says which path stamped it, so a reader can see
     which verdicts rest on an unchecked number.
     """
-    # An ADDED negation first, because it is categorical and overlap is blind to it: a
-    # flat negation scores 1.000. One-directional - see _adds_negation for why the
-    # symmetric version falsely accused half of a real registered hypothesis set.
-    if _adds_negation(verdict_text, registered_text):
+    # Negation first, because it is categorical and overlap is blind to it in BOTH
+    # directions: adding one scores 1.000 and deleting one scores 1.000 too, since `not`
+    # is a stopword. See _negation_differs for why this is symmetric again.
+    if _negation_differs(verdict_text, registered_text):
         return True
     ta, tb = _hyp_tokens(verdict_text), _hyp_tokens(registered_text)
     if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
@@ -3137,8 +3147,11 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                     "hypothesisNumber (subject, scope and added negation checked - NOT "
                     "polarity, and not that the claim is identical)")
                 continue
-            _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, but this "
-                                     "verdict's wording does not state that hypothesis" % _num)
+            _why = ("differ in negation - one asserts the negative and the other does not"
+                    if _negation_differs(_t, _registered[_num - 1])
+                    else "this verdict's wording does not state that hypothesis")
+            _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, but %s"
+                                     % (_num, _why))
             _v["preRegistered"] = bool(_t) and any(_same_hypothesis(_t, r) for r in _registered if r)
             continue
         if _num == 0:
