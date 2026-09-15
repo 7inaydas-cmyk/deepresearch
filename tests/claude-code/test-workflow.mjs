@@ -207,6 +207,39 @@ import fs2 from 'node:fs'
      'honestLimits travel with the JS report as well (#12)')
   ok(out.processCritique.policy === 'flag' && Array.isArray(out.processCritique.struckFromSummary),
      'strike/flag policy is present and defaults to flag (#4)')
+  // Stamped, and stamped with HOW it was decided. This used to be asserted by matching a
+  // line of source text, which is the same instrument that certified `hypothesisNumber`
+  // as present in this build when its only occurrence was a comment claiming so.
+  ok(out.hypothesisVerdicts.every(h => h.preRegistered === true &&
+                                       h.preRegisteredBy === 'hypothesisNumber'),
+     'every verdict is stamped pre-registered BY the number it declared, so a reader can tell a certainty from a guess')
+}
+{
+  // The attack, run on THIS build rather than only on the Python one: a verdict
+  // adjudicating a hypothesis the run never registered, declaring H1 anyway.
+  const { out } = await run('T17b a declared hypothesisNumber is checked, not believed',
+    { question: 'Q', depth: 'standard' }, { misnumbered_verdict: true })
+  const bogus = out.hypothesisVerdicts.find(h => /decade-long/.test(h.hypothesis))
+  const real = out.hypothesisVerdicts.find(h => /publication-selection/.test(h.hypothesis))
+  ok(bogus && bogus.preRegistered === false,
+     'a verdict whose text was never registered is NOT stamped pre-registered just because it typed a digit')
+  ok(bogus && /^inferred from text/.test(bogus.preRegisteredBy) && /H1/.test(bogus.preRegisteredBy),
+     'and the stamp says the number was overruled and which one it claimed: ' + (bogus && bogus.preRegisteredBy))
+  ok(real && real.preRegistered === true && real.preRegisteredBy === 'hypothesisNumber',
+     'while a verdict that really does adjudicate its numbered hypothesis is still believed, relabelled or not')
+}
+{
+  // The string leaf. `required` only ever meant key-present, so the locatedQuote fix was
+  // hollow in THIS build: a number passed the schema exactly as a real quote did, and the
+  // commit that closed it in Python reported "now enforced in both builds".
+  const { out, logs } = await run('T17c a declared string rejects a number at the seam',
+    { question: 'Q', depth: 'standard' }, { string_leaf_violation: true })
+  ok(logs.some(l => /locatedQuote is a number, not a string/.test(l)),
+     'a number where a string is declared is a schema violation, named in the log')
+  ok(logs.some(l => /locatedQuote is a number, not a string.*retrying/.test(l)),
+     'and the seam RETRIES it rather than coercing or dropping it (ADR-0001)')
+  ok(out.citationAudit.auditErrors > 0,
+     'the calls that never recovered are COUNTED, not filtered away into a smaller denominator (' + out.citationAudit.auditErrors + ')')
 }
 {
   const { out, logs } = await run('T18 an empty framing contract is retried, not accepted (#16)',
@@ -294,8 +327,6 @@ import fs2 from 'node:fs'
      'the auditor\'s own verbatim pull is published rather than demanded and discarded')
   // The synthesis model can invent hypotheses AFTER seeing the evidence and adjudicate
   // them; the caveat beside the field used to assert the field was empty.
-  ok(/preRegistered: !!normHyp/.test(src) && /POST_HOC/.test(src),
-     'every hypothesisVerdict is stamped with whether its hypothesis was registered before the search')
   ok(/NOTHING here was pre-registered/.test(src) && /postHocHypotheses/.test(src),
      'and the no-contract caveat describes what the field actually holds instead of asserting it is empty')
   // as_list recovering a payload that shape() then discards was the defect that killed

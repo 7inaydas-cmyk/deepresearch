@@ -694,9 +694,34 @@ for _reg, _post in (
 ):
     ok(not dr._same_hypothesis(dr._hyp_key(_post), dr._hyp_key(_reg)),
        "a post-hoc superset is NOT stamped pre-registered: %r" % _post[:56])
-ok(dr._same_hypothesis(dr._hyp_key("The effect is nil"), dr._hyp_key("The effect is zero")),
-   "and a terse hypothesis reworded is no longer falsely called post-hoc - too few content "
-   "words to score, so it falls back to character similarity")
+# The character fallback that used to rescue those terse pairs is GONE, in both builds.
+# It was calibrated on rewordings and never on the mirror: a negation is a tiny edit that
+# INVERTS the meaning, so it certified opposites as the same hypothesis.
+for _a, _b in (("output is stable", "output is unstable"),
+               ("the effect is real", "the effect is unreal"),
+               ("prices increased", "prices decreased")):
+    ok(not dr._same_hypothesis(dr._hyp_key(_a), dr._hyp_key(_b)),
+       "two OPPOSITE terse hypotheses are not called the same one: %r vs %r" % (_a, _b))
+ok(not dr._same_hypothesis(dr._hyp_key("The effect is nil"), dr._hyp_key("The effect is zero")),
+   "and the genuine terse rewording is marked post-hoc rather than guessed at - measured "
+   "across all 160 hypotheses in runs/, none is short enough to reach this path, so the "
+   "fallback protected nothing while risking a false pre-registration")
+
+# The number was authoritative with NOTHING checked, so a verdict adjudicating a
+# hypothesis the run never registered was stamped pre-registered by typing a digit.
+_REG_MW = [dr._hyp_key("Minimum wage increases reduce teen employment modestly in the first two years"),
+           dr._hyp_key("The apparent effect is largely a publication-selection artifact in the older literature")]
+ok(dr._hyp_unrelated(dr._hyp_key("The minimum wage increase caused a decade-long employment "
+                                 "decline across all age groups"), _REG_MW[0]),
+   "a verdict whose text adjudicates something never registered is caught, whatever "
+   "number it types")
+ok(not dr._hyp_unrelated(dr._hyp_key("H1: Minimum wage rises modestly lower teen employment "
+                                     "over the first two years"), _REG_MW[0]),
+   "while a genuine rewording that names the right number is still believed - the check "
+   "overrules the number on SUBJECT, never on wording")
+ok(dr._HYP_UNRELATED_MAX == 0.40 and dr._HYP_UNRELATED_MAX < dr.HYP_MATCH_THRESHOLD,
+   "and the bar sits in the measured gap, below every real pairing (0.42-1.00) and above "
+   "every unrelated one (max 0.36): %s" % dr._HYP_UNRELATED_MAX)
 
 # F4 — the thinness gate counted fetched-and-citable URLs, so five paywalled shells that
 # produced nothing read as a healthy evidence base on the one field callers gate on.
@@ -850,10 +875,45 @@ for _t in ("HTTP 429 Too Many Requests - Stack Overflow",
            "Why is my IP blocked by Cloudflare? - Server Fault"):
     ok(bool(searchmod._CHALLENGE.search(_t)),
        "the markers still match this text (%s)" % _t[:34])
-ok("_CHALLENGE.search(body) or len(body) < _CHALLENGE_MAX_BODY" in
-   open(searchmod.__file__, encoding="utf-8").read(),
-   "but they are only consulted when NOTHING parsed - on a page that produced results, a "
-   "title about rate limiting is a result, not the page talking about itself")
+# ...and this used to be asserted by looking for a line of SOURCE TEXT, which is how the
+# next bug hid: the markers were moved behind `if not out:` while `out = lite` still ran
+# unconditionally, so the source line was present and the markers were unreachable for
+# exactly the one-anchor interstitial they were added for. Drive the real function.
+def _ddg_body(body, query="cloudflare rate limiting"):
+    _real_get = searchmod._get
+    searchmod._get = lambda url, hdrs=None: body
+    try:
+        return searchmod._ddg(query, 6, lite=True), None
+    except RuntimeError as e:
+        return None, str(e)
+    finally:
+        searchmod._get = _real_get
+
+_INTERSTITIAL = ('<html><title>Just a moment...</title><body><h1>Verify you are human</h1>'
+                 '<p>Our systems have detected unusual traffic from your computer network.</p>'
+                 '<a href="https://www.cloudflare.com/help">Cloudflare Help Center</a></body></html>')
+_rows, _err = _ddg_body(_INTERSTITIAL)
+ok(_err == "challenged",
+   "a one-anchor interstitial is challenged, not reported as a live backend - it used to "
+   "return ok/results=1 and the selftest then printed 'general web live via: ddg-lite' on "
+   "a blocked host (got: %s)" % (_err or "ok, results=%d" % len(_rows or [])))
+
+_REAL_429 = ('<html><body>' + ('<p>padding about web servers. </p>' * 80) +
+             ''.join('<a href="https://example%d.org/p">HTTP 429 Too Many Requests explained</a>' % i
+                     for i in range(3)) + '</body></html>')
+_rows, _err = _ddg_body(_REAL_429, "HTTP 429 Too Many Requests")
+ok(_err is None and len(_rows) == 3,
+   "while a GENUINE results page about rate limiting still parses - the markers describe "
+   "the page, and on a page that produced results they are describing a result (got: %s)"
+   % (_err or "%d results" % len(_rows)))
+
+_SPARSE = ('<html><body>' + ('<p>a thin but real results page on widget pricing. </p>' * 80) +
+           '<a href="https://example.org/only">The one relevant page on widget pricing</a></body></html>')
+_rows, _err = _ddg_body(_SPARSE, "widget pricing")
+ok(_err is None and len(_rows) == 1,
+   "and a real SPARSE page keeps its single result: one anchor is weak evidence either "
+   "way, so the markers decide rather than a count alone (got: %s)"
+   % (_err or "%d results" % len(_rows)))
 
 # The junk filter starved the counter-evidence lens: a contradiction routinely shares no
 # vocabulary with the claim it contradicts.

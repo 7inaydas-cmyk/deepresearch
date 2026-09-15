@@ -239,6 +239,19 @@ def _clean(s: str) -> str:
 
 
 # ── Backends ────────────────────────────────────────────────────────────────
+def _looks_challenged(body: str) -> bool:
+    """Does this body read like an interstitial rather than a page of results?
+
+    Consulted ONLY where a page produced no results, or a single anchor too weak to
+    stand on its own. On a page that really did parse several results, "unusual traffic"
+    wording is a search result ABOUT rate limiting, not the page talking about itself:
+    searching the whole body unconditionally made a genuine results page for
+    "HTTP 429 Too Many Requests" raise `challenged`, and both DDG backends then returned
+    zero for exactly the dev questions this tool is pointed at.
+    """
+    return bool(_CHALLENGE.search(body)) or len(body) < _CHALLENGE_MAX_BODY
+
+
 def _ddg(query: str, n: int, lite: bool) -> list[dict]:
     base = "https://lite.duckduckgo.com/lite/" if lite else "https://html.duckduckgo.com/html/"
     body = _get(base + "?q=" + urllib.parse.quote(query))
@@ -274,14 +287,21 @@ def _ddg(query: str, n: int, lite: bool) -> list[dict]:
         # interstitial carrying one outbound link used to report `ok, results=1` - and
         # the selftest then printed "general web live via: ddg-html". A results page
         # carries several results; one link is a page about something else.
-        # A single harvested anchor is weak evidence of a results page, but declaring it
-        # challenged throws away a real sparse result. Keep it; the markers below decide.
-        out = lite
+        #
+        # A single anchor is weak evidence either way: declaring it challenged outright
+        # throws away a real sparse result, so the markers decide. `out = lite` was
+        # UNCONDITIONAL, which meant the markers never ran on a page that had parsed
+        # anything - so the comment promising they decide was false for exactly the
+        # one-anchor interstitial they were added for, and a Cloudflare help link on a
+        # blocked host still reported a live general-web backend. A weak harvest now
+        # stands only on a body that does not read like a challenge.
+        if len(lite) >= _LITE_MIN_RESULTS or (lite and not _looks_challenged(body)):
+            out = lite
     if not out:
-        # Only now are the interstitial markers meaningful: this body produced no results,
-        # so any "unusual traffic" wording in it is the page talking about ITSELF rather
-        # than a search result about rate limiting.
-        if _CHALLENGE.search(body) or len(body) < _CHALLENGE_MAX_BODY:
+        # Only now are the interstitial markers meaningful: this body produced no usable
+        # results, so any "unusual traffic" wording in it is the page talking about
+        # ITSELF rather than a search result about rate limiting.
+        if _looks_challenged(body):
             raise RuntimeError("challenged")
     return out
 

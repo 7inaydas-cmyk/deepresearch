@@ -244,6 +244,15 @@ const shape = (schema, obj, label) => {
     } else if (spec.enum) {
       if (spec.enum.includes(v)) out[name] = v
       else problems.push(name + '=' + String(v).slice(0, 40) + ' not in [' + spec.enum.join(',') + ']')
+    } else if (t === 'string') {
+      // The declared type was never checked. Audited 2026-09-15: a string leaf accepted
+      // 123, true, ['text'] and {a: 1} — `required` only ever meant key-present, so the
+      // locatedQuote fix was hollow here exactly as it had been in Python, and the commit
+      // that closed it in Python reported "now enforced in both builds" while this branch
+      // did not exist. Empty-string policy stays with the field: an auditor that
+      // legitimately found no quote must still be able to say so.
+      if (typeof v === 'string') out[name] = v
+      else problems.push(name + ' is a ' + (Array.isArray(v) ? 'array' : v === null ? 'null' : typeof v) + ', not a string')
     } else if (t === 'boolean') {
       if (typeof v === 'boolean') out[name] = v
       else problems.push(name + '=' + String(v).slice(0, 40) + ' is not a boolean')
@@ -570,9 +579,14 @@ const REPORT_SCHEMA = {
       } } },
     contradictions: { type: 'array', items: { type: 'string' } },
     hypothesisVerdicts: { type: 'array', items: {
-      type: 'object', required: ['hypothesis', 'verdict', 'reasoning'],
+      type: 'object', required: ['hypothesis', 'verdict', 'reasoning', 'hypothesisNumber'],
       properties: {
         hypothesis: { type: 'string' },
+        // Which REGISTERED hypothesis this verdict adjudicates. No text measure can
+        // separate "the same hypothesis stated compactly" from "a stronger hypothesis
+        // with the scope removed" — they differ in meaning, not in vocabulary — so the
+        // verdict is asked to name it and there is nothing left to match.
+        hypothesisNumber: { type: 'integer' },
         verdict: { enum: ['killed', 'surviving', 'untested'] },
         killCriterion: { type: 'string' },
         reasoning: { type: 'string' },
@@ -1491,7 +1505,11 @@ const report = await agentChecked(
   (HYP.length
     ? '## Hypotheses to adjudicate\n' +
       'These were written BEFORE any evidence was gathered, each with the finding that would ' +
-      'eliminate it. Return a verdict for EVERY one in hypothesisVerdicts.\n' +
+      'eliminate it. Return a verdict for EVERY one in hypothesisVerdicts, and put its\n' +
+      'number in `hypothesisNumber` (H1 -> 1). If you adjudicate a hypothesis that is NOT\n' +
+      'in this list - one the evidence suggested after the fact - give it hypothesisNumber 0\n' +
+      'and say so in its reasoning. A hypothesis written after the evidence is a summary of\n' +
+      'what was found, never a prediction that survived.\n' +
       HYP.map((h, i) => '  H' + (i + 1) + ': ' + webText(h.hypothesis || '', 300) +
                         '\n      killed by: ' + webText(h.killCriterion || '', 300)).join('\n') + '\n\n' +
       'Rules:\n' +
@@ -1641,8 +1659,11 @@ log('Process critique: ' + critVerdict + ' | ' + untraceable.length + ' untracea
 const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
 const HYP_STOP = new Set(('the a an of to in is are and or that this it its as be for with by on at from than ' +
   'not but so if then also more most some other others their there was were has have').split(' '))
-const HYP_MATCH_THRESHOLD = 0.6
+const HYP_MATCH_THRESHOLD = 0.65
 const HYP_MIN_TOKENS = 4
+// How little overlap means the verdict is about something ELSE entirely — the only
+// thing a self-declared `hypothesisNumber` is checked against. See hypUnrelated.
+const HYP_UNRELATED_MAX = 0.40
 const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
 const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
 const sameHyp = (a, b) => {
@@ -1653,26 +1674,62 @@ const sameHyp = (a, b) => {
   // denominator is the verdict's own tokens: how much of what is being adjudicated was
   // actually registered.
   const ta = hypTokens(a), tb = hypTokens(b)
-  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) {
-    // Too few content words to score. Fall back to character similarity, gated on both
-    // sides being short so it cannot re-open the superset hole on a long one.
-    if (Math.max(a.length, b.length) > 60) return false
-    let m = 0
-    for (const ch of new Set(a)) if (b.includes(ch)) m++
-    return m / Math.max(1, new Set(a).size) >= 0.75
-  }
+  // Too few content words to score, and NO character measure rescues it. Audited
+  // 2026-09-15: a negation is a tiny edit that inverts the meaning, so "output is stable"
+  // against "output is unstable" scored 1.000 on this character bag — two OPPOSITE
+  // hypotheses certified as the same one, the exact false `preRegistered` the stamp
+  // exists to prevent. The Python twin's SequenceMatcher scored the same pair 0.941, so
+  // porting it would have bought parity on an unsound mechanism; both builds drop it.
+  // Measured across all 160 hypotheses in runs/: not one is short enough to reach here.
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
   let shared = 0
   ta.forEach(w => { if (tb.has(w)) shared++ })
   // Verdict-side only. Requiring both directions was tried in the Python twin and
   // rejected on measurement: it rejects genuine compact rewordings. The subset direction
-  // is handled by hypothesisNumber, not by this text fallback.
+  // is handled by hypothesisNumber below — which for a while this comment claimed while
+  // the field appeared nowhere else in this file, so the parity row for it passed on the
+  // comment itself and the subset attack stamped `preRegistered: true` here for free.
   return shared / Math.max(1, ta.size) >= HYP_MATCH_THRESHOLD
 }
+// Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
+// `hypothesisNumber` is authoritative and must stay that way — it is the one path neither
+// adding nor dropping content can fool — but authoritative with nothing checked meant a
+// verdict could adjudicate a hypothesis the run never registered and be stamped
+// pre-registered by typing a digit. So this deliberately does NOT re-litigate wording.
+// Measured on runs/v10: true rewordings 0.82-1.00, a post-hoc superset 0.42-0.45, an
+// unrelated hypothesis at most 0.36. The bar sits at 0.40, in the gap. Too short to score
+// returns false: an unmeasurable pairing is not evidence of a mismatch.
+const hypUnrelated = (verdictText, registeredText) => {
+  const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
+  if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
+  let shared = 0
+  ta.forEach(w => { if (tb.has(w)) shared++ })
+  return shared / Math.max(1, ta.size) < HYP_UNRELATED_MAX
+}
 const REGISTERED = HYP.map(h => normHyp(h.hypothesis)).filter(Boolean)
-const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => ({
+const inferredFromText = (v, t, why) => ({
   ...v,
-  preRegistered: !!normHyp(v.hypothesis) && REGISTERED.some(r => sameHyp(normHyp(v.hypothesis), r)),
-}))
+  preRegistered: !!t && REGISTERED.some(r => sameHyp(t, r)),
+  preRegisteredBy: 'inferred from text - ' + why,
+})
+const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(v => {
+  const t = normHyp(v.hypothesis), n = v.hypothesisNumber
+  // The number is authoritative when the model supplies a usable one: it needs no
+  // matching and cannot be gamed by rewording in either direction. It IS checked against
+  // the hypothesis it names, because a digit is cheaper to get wrong than a rewording.
+  // The text matcher is the fallback for a model that ignores the field, and it is
+  // marked as inferred so a reader can tell a certainty from a guess.
+  if (Number.isInteger(n) && n >= 1 && n <= REGISTERED.length) {
+    if (hypUnrelated(t, REGISTERED[n - 1])) {
+      return inferredFromText(v, t, 'hypothesisNumber said H' + n + ', whose wording this verdict does not adjudicate')
+    }
+    return { ...v, preRegistered: true, preRegisteredBy: 'hypothesisNumber' }
+  }
+  if (n === 0) {
+    return { ...v, preRegistered: false, preRegisteredBy: 'hypothesisNumber (declared post-hoc by the synthesis step)' }
+  }
+  return inferredFromText(v, t, 'the model returned no usable number')
+})
 const POST_HOC = VERDICTS.filter(v => !v.preRegistered)
 
 return {

@@ -28,7 +28,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, difflib, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -1080,9 +1080,10 @@ _HYP_STOP = frozenset(
     "not but so if then also more most some other others their there was were has have".split())
 # Mid-gap between the superset attacks (max 0.45) and true rewordings (min 0.82).
 HYP_MATCH_THRESHOLD = 0.65
-# Short hypotheses have too few content words to score; compare characters instead.
-_HYP_SHORT_CHARS, _HYP_SHORT_SIMILARITY = 60, 0.75
 _HYP_MIN_TOKENS = 4
+# How little overlap means the verdict is about something ELSE entirely - the only thing
+# a self-declared `hypothesisNumber` is checked against. See _hyp_unrelated.
+_HYP_UNRELATED_MAX = 0.40
 
 
 def _hyp_key(text):
@@ -1141,9 +1142,40 @@ def _same_hypothesis(a, b):
         # when the model returned no usable number, and its result is published as
         # `preRegisteredBy: inferred from text` so a reader can tell it from a certainty.
         return len(ta & tb) / max(1, len(ta)) >= HYP_MATCH_THRESHOLD
-    if max(len(a), len(b)) <= _HYP_SHORT_CHARS:
-        return difflib.SequenceMatcher(None, a, b).ratio() >= _HYP_SHORT_SIMILARITY
+    # Too few content words to score, and NO character measure rescues it. Audited
+    # 2026-09-15: a negation is a tiny edit that inverts the meaning, so "output is
+    # stable" against "output is unstable" scores 1.000 on a character bag and 0.941 on
+    # SequenceMatcher - the fallback certified two OPPOSITE hypotheses as the same one,
+    # which is the exact false `preRegistered` this whole function exists to prevent.
+    # Measured across all 160 hypotheses in runs/: not one is short enough to reach here,
+    # so the fallback bought nothing and risked the failure it was guarding. Returning
+    # False marks the verdict post-hoc, and a false post-hoc only ever understates.
     return False
+
+
+def _hyp_unrelated(verdict_text, registered_text):
+    """Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
+
+    `hypothesisNumber` is authoritative, and it must stay that way: it is the one path
+    that neither adding nor dropping content can fool. But it was authoritative with
+    nothing checked at all, so a verdict could adjudicate a hypothesis the run never
+    registered and be stamped `preRegistered: true` by typing a digit. The old text
+    matcher could be gamed by rewording; a bare number is cheaper to get wrong than that,
+    whether by a careless model or a flattering one.
+
+    So this deliberately does NOT re-litigate wording. Measured on runs/v10: true
+    rewordings score 0.82-1.00, a post-hoc SUPERSET 0.42-0.45, an unrelated hypothesis at
+    most 0.36. The bar sits at 0.40, in the gap - below every real pairing and above
+    every unrelated one. A number that names the right hypothesis in different words is
+    believed; a number that names a hypothesis this verdict has nothing to do with is not.
+
+    Returns False when either side is too short to score: an unmeasurable pairing is not
+    evidence of a mismatch, and the conservative direction here is to trust the number.
+    """
+    ta, tb = _hyp_tokens(verdict_text), _hyp_tokens(registered_text)
+    if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
+        return False
+    return len(ta & tb) / max(1, len(ta)) < _HYP_UNRELATED_MAX
 
 
 def to_ref(c):
@@ -2845,16 +2877,29 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         # below is the fallback for a model that ignores the field, and it is marked as
         # inferred so a reader can tell a certainty from a guess.
         _num = _v.get("hypothesisNumber")
+        _t = _hyp_key(_v.get("hypothesis", ""))
         if isinstance(_num, int) and not isinstance(_num, bool) and 1 <= _num <= len(_registered):
-            _v["preRegistered"] = True
-            _v["preRegisteredBy"] = "hypothesisNumber"
+            # Checked against the hypothesis it NAMES, not believed. Audited 2026-09-15:
+            # a verdict adjudicating a hypothesis the run never registered returned
+            # `hypothesisNumber: 1` and was stamped `preRegistered: true` with nothing
+            # examined - the old matcher could be gamed by rewording, and this replaced
+            # it with something gamed by typing a digit. The check is deliberately weak
+            # (see _hyp_unrelated): it overrules the number only when the text is about
+            # something else, so a genuine rewording that names the right number is
+            # still believed and still reads as a certainty.
+            if not _hyp_unrelated(_t, _registered[_num - 1]):
+                _v["preRegistered"] = True
+                _v["preRegisteredBy"] = "hypothesisNumber"
+                continue
+            _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, whose "
+                                     "wording this verdict does not adjudicate" % _num)
+            _v["preRegistered"] = bool(_t) and any(_same_hypothesis(_t, r) for r in _registered if r)
             continue
         if _num == 0:
             _v["preRegistered"] = False
             _v["preRegisteredBy"] = "hypothesisNumber (declared post-hoc by the synthesis step)"
             continue
         _v["preRegisteredBy"] = "inferred from text - the model returned no usable number"
-        _t = _hyp_key(_v.get("hypothesis", ""))
         # Conservative on purpose: an unmatched verdict is marked post-hoc. A false
         # "pre-registered" is the failure this exists to prevent; a false "post-hoc" only
         # understates - but it still misleads, so the matching has to be right.

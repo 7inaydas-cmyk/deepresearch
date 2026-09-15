@@ -366,6 +366,40 @@ A marker-shape guard now rejects any row pairing a code token with a sentence �
 prose is fine, a shared prompt string IS the feature — and it found a fourteenth instance
 one row over on its first run.
 
+## The third audit, 2026-09-15
+
+The same pattern a third time, now including the fix that had just been written to name it.
+
+| The fix | The mirror it was not tried against |
+|---|---|
+| number replaces text matching | the number itself is **unchecked** — gamed by typing a digit |
+| short hypotheses fall back to characters | a **negation** is a tiny edit that inverts the meaning |
+| markers decide on a weak harvest | a single anchor **short-circuited** them, so they never ran |
+| marker-shape guard added | a marker can still match a **comment** describing the code |
+
+**The comment was the mechanism.** `hypothesisNumber` was listed as a shared feature and
+the row passed, because the string appeared in both files — in Python as the stamping
+logic, and in the JS build only inside a comment reading *“the subset direction is handled
+by hypothesisNumber”*. Prose about the code scored as the code, so the parity test
+certified a feature the JS build did not have, in the same commit that apologised for the
+sixth drift. Markers are now matched against comment-stripped source, which cost one row
+its pass and made the other 52 mean something. The stripper checks itself: eating a string
+would report a real shared feature as missing, and several rows legitimately prove
+themselves with a shared prompt sentence.
+
+**A non-result worth recording: porting the short fallback would have achieved parity on an
+unsound mechanism.** The audit filed it as a JS bug — a character bag where Python had
+`SequenceMatcher`. Both score *“output is stable”* against *“output is unstable”* as the
+same hypothesis: 1.000 and 0.941. No character measure survives a negation, because a
+negation is a small edit that inverts meaning. Across all 160 hypotheses in `runs/`, none
+is short enough to reach that path. It was deleted from both builds rather than ported.
+
+**And the filed reproduction did not reproduce.** The audit's examples for the character
+bag — *“the effect is zero”* against *“the effect is huge”*, and against *“cats chase
+mice”* — score 0.727 and 0.636, both under the 0.75 gate. The mechanism was broken; the
+evidence offered for it was not. Finding the real failure took running the attack rather
+than reading the report.
+
 ## The files
 
 | Prefix | What it is |

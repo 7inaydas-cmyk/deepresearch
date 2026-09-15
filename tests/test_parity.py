@@ -37,7 +37,13 @@ SHARED = {
     "integer is not coerced":    ("isinstance(v, float) and v.is_integer()", "Number.isInteger(v)) out[name] = v"),
     "wasted recovery re-asked":  ("if bare_items and not lst:", "if (bareItems.length && !lst.length)"),
     "verdict provenance stamp":  ("_v[\"preRegistered\"] = ", "preRegistered:"),
-    "hypothesisNumber over text": ("hypothesisNumber", "hypothesisNumber"),
+    # The marker is the STAMP, not the field name. `hypothesisNumber` as a bare token
+    # passed this row while the JS build's only occurrence of it was a comment saying the
+    # mechanism existed - the seventh drift, certified by prose about the code.
+    "hypothesisNumber over text": ('_v["preRegisteredBy"] = "hypothesisNumber"',
+                                   "preRegisteredBy: 'hypothesisNumber'"),
+    "number checked vs text":    ("def _hyp_unrelated(", "const hypUnrelated = "),
+    "string leaf enforced":      ("isinstance(v, str)", "typeof v === 'string') out[name] = v"),
     "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),
     "calibration drops errors":  ("excludedForLensErrors", "excludedForLensErrors"),
     "audit errors counted":      ('"auditErrors": audit_errors', "auditErrors"),
@@ -148,12 +154,105 @@ PYTHON_ONLY = {
 }
 
 
-def read(paths):
+def strip_comments(text, js):
+    """Remove comments, so a marker can only ever match real CODE.
+
+    This is the mechanism behind the SEVENTH drift. `hypothesisNumber` was listed as a
+    shared feature and the row passed, because the string appeared in both files - in
+    Python as the stamping logic, and in the JS build only inside a comment that said
+    "the subset direction is handled by hypothesisNumber". A comment describing a
+    mechanism scored as the mechanism, so the parity test certified a feature the JS
+    build did not have, in the same commit that apologised for the sixth drift.
+
+    Marker strings are crude by design and that is fine; matching them against prose
+    ABOUT the code is not. String literals are kept: a shared prompt sentence is a real
+    feature, and several rows legitimately prove themselves with one.
+    """
+    out, i, n = [], 0, len(text)
+    quote = None          # the string delimiter currently open, if any
+    triple = False
+    while i < n:
+        c = text[i]
+        if quote:
+            out.append(c)
+            if c == "\\" and i + 1 < n:
+                out.append(text[i + 1])
+                i += 2
+                continue
+            if triple and text.startswith(quote * 3, i):
+                out.append(text[i + 1:i + 3])
+                i += 3
+                quote, triple = None, False
+                continue
+            if not triple and c == quote:
+                quote = None
+            i += 1
+            continue
+        if c in "\"'" or (js and c == "`"):
+            if not js and text.startswith(c * 3, i):
+                out.append(c * 3)
+                quote, triple = c, True
+                i += 3
+                continue
+            out.append(c)
+            quote = c
+            i += 1
+            continue
+        if js and c == "/" and i + 1 < n:
+            nxt = text[i + 1]
+            if nxt == "/":
+                while i < n and text[i] != "\n":
+                    i += 1
+                continue
+            if nxt == "*":
+                end = text.find("*/", i + 2)
+                i = n if end < 0 else end + 2
+                continue
+            # A regex literal, not division: keep it whole, because two parity markers
+            # ARE regex literals and a half-scanned one would silently vanish from the
+            # file and be reported as a missing feature.
+            prev = next((ch for ch in reversed(out) if not ch.isspace()), "")
+            if prev in "(,=:[!&|?{};+*%~^" or prev == "":
+                j, esc, cls = i + 1, False, False
+                while j < n:
+                    ch = text[j]
+                    if esc:
+                        esc = False
+                    elif ch == "\\":
+                        esc = True
+                    elif ch == "[":
+                        cls = True
+                    elif ch == "]":
+                        cls = False
+                    elif ch == "/" and not cls:
+                        j += 1
+                        break
+                    elif ch == "\n":
+                        break
+                    j += 1
+                out.append(text[i:j])
+                i = j
+                continue
+        if not js and c == "#":
+            while i < n and text[i] != "\n":
+                i += 1
+            continue
+        out.append(c)
+        i += 1
+    return "".join(out)
+
+
+def read_raw(paths):
     out = ""
     for rel in paths:
         with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
             out += f.read()
     return out
+
+
+def read(paths, js=False):
+    """The files with their comments removed - what a MARKER is allowed to match."""
+    return strip_comments(read_raw(paths), js)
 
 
 def check_marker_shape():
@@ -177,6 +276,37 @@ def check_marker_shape():
     return not bad
 
 
+def check_stripper():
+    """The stripper is new machinery guarding every other row, so it is checked itself.
+
+    Two ways it could fail silently and both are worse than the bug it fixes: leaving a
+    comment in would keep certifying prose as code, and eating a STRING would report a
+    real shared feature as missing - several rows legitimately prove themselves with a
+    shared prompt sentence.
+    """
+    cases = [
+        # (text, js, must be gone, must survive)
+        ("x = 1  # hypothesisNumber lives here\n", False, "hypothesisNumber", "x = 1"),
+        ("s = '# not a comment'\n", False, "", "# not a comment"),
+        ('s = """a # hash inside a docstring"""\n', False, "", "# hash inside"),
+        ("const a = 1 // hypothesisNumber lives here\n", True, "hypothesisNumber", "const a = 1"),
+        ("/* hypothesisNumber */ const b = 2\n", True, "hypothesisNumber", "const b = 2"),
+        ("const u = 'https://example.org/p'\n", True, "", "https://example.org/p"),
+        ("const t = `a // inside a template`\n", True, "", "// inside a template"),
+        ("const r = /^\\s*<([A-Za-z][\\w-]*)>/\n", True, "", "<([A-Za-z]"),
+    ]
+    bad = []
+    for text, js, gone, kept in cases:
+        got = strip_comments(text, js)
+        if gone and gone in got:
+            bad.append("kept a comment: %r" % text.strip()[:44])
+        if kept and kept not in got:
+            bad.append("ate real code: %r" % text.strip()[:44])
+    for b in bad:
+        print("  STRIPPER  " + b)
+    return not bad
+
+
 def check_tier_data():
     """Marker-string parity only proves `tierOf` exists in both files - it cannot see
     WHAT the rules say. Measured 2026-09-07: researchgate.net graded T4 in Python and T3
@@ -187,12 +317,13 @@ def check_tier_data():
     import sync_tiers
     contract = __import__("json").load(open(sync_tiers.TIERS_JSON, encoding="utf-8"))
     generated = sync_tiers.render(contract)
-    js = read(JS)
-    return generated in js
+    # Raw, NOT comment-stripped: this compares a generated block against the file
+    # byte-for-byte, and the generated block carries its own "do not edit" comment.
+    return generated in read_raw(JS)
 
 
 def main():
-    py, js = read(PY), read(JS)
+    py, js = read(PY), read(JS, js=True)
     missing_py, missing_js = [], []
     for feature, (pm, jm) in sorted(SHARED.items()):
         if pm not in py:
@@ -210,6 +341,11 @@ def main():
     for k, why in sorted(PYTHON_ONLY.items()):
         print("    - %-24s %s" % (k, why.split(". ")[0].rstrip(".") + "."))
 
+    strip_ok = check_stripper()
+    print("  %s  %-28s %s"
+          % ("ok " if strip_ok else "GAP", "markers match CODE only",
+             "comments stripped, strings and regex literals kept" if strip_ok
+             else "the comment stripper is eating code or keeping comments"))
     shape_ok = check_marker_shape()
     print("  %s  %-28s %s"
           % ("ok " if shape_ok else "GAP", "marker shape",
@@ -220,7 +356,7 @@ def main():
           % ("ok " if tiers_ok else "GAP", "tier DATA (not just tierOf)",
              "generated, matches" if tiers_ok else "STALE - run tools/sync_tiers.py"))
 
-    if missing_js or missing_py or not tiers_ok or not shape_ok:
+    if missing_js or missing_py or not tiers_ok or not shape_ok or not strip_ok:
         print("\n  DRIFT DETECTED — a feature exists in one runtime and not the other.")
         for f, m in missing_js:
             print("    JS build is missing %r (marker %r)" % (f, m))
@@ -229,6 +365,9 @@ def main():
         if not tiers_ok:
             print("    JS tier rules do not match contract/tiers.json - "
                   "run `python3 tools/sync_tiers.py` and commit the result.")
+        if not strip_ok:
+            print("    Marker matching is unsound: fix strip_comments before trusting "
+                  "any row above - a marker that can match a COMMENT proves nothing.")
         print("\n  Port it, or move it to PYTHON_ONLY with a reason. Do not delete the row.")
         return 1
     print("\n  ======== parity: %d shared features + tier data, 0 drift ========" % len(SHARED))

@@ -31,6 +31,15 @@ function makeAgent(cfg) {
         return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: [],
                  whatWouldChangeTheAnswer: [], hypotheses: [] }
       }
+      // Hypotheses with enough content words to actually score, so the number a verdict
+      // declares can be checked against the one it names.
+      if (cfg.misnumbered_verdict) {
+        return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
+                 whatWouldChangeTheAnswer: ['w1', 'w2'],
+                 hypotheses: [
+                   { hypothesis: 'Minimum wage increases reduce teen employment modestly in the first two years', killCriterion: 'k1' },
+                   { hypothesis: 'The apparent effect is largely a publication-selection artifact in the older literature', killCriterion: 'k2' }] }
+      }
       return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
                whatWouldChangeTheAnswer: ['w1', 'w2'],
                hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }] }
@@ -103,8 +112,12 @@ function makeAgent(cfg) {
     if (L.startsWith('cite:')) {
       const n = parseInt((prompt.match(/CLAIM-(\d+)/) || [0, '3'])[1], 10)
       const mode = n % 5
+      // A NUMBER where a string is declared. `required` only ever meant key-present, so
+      // this passed the schema exactly as a real quote did and landed in citationAccuracy
+      // — the locatedQuote fix was hollow here for as long as the leaf went unchecked.
+      const quote = cfg.string_leaf_violation ? 404 : 'located'
       return { support: mode === 0 ? 'unsupported' : mode === 1 ? 'partial' : mode === 2 ? 'unreachable' : 'supported',
-               reasoning: 'blind audit', locatedQuote: 'located' }
+               reasoning: 'blind audit', locatedQuote: quote }
     }
 
     if (L === 'synthesize') {
@@ -114,10 +127,17 @@ function makeAgent(cfg) {
                findings: [{ claim: 'Merged 1', confidence: 'high', sources: ['https://a.org/1'], evidence: 'ev',
                             vote: '3-0', citationCheck: 'supported', sourceTier: 'T1', factOrInference: 'fact' }],
                contradictions: ['synth contradiction'],
-               hypothesisVerdicts: [
-                 { hypothesis: 'h1', verdict: 'killed', killCriterion: 'k1',
+               // A verdict adjudicating a hypothesis the run NEVER registered, declaring
+               // H1 anyway. Stamping believed the number with nothing examined, so this
+               // came back `preRegistered: true` — gamed by typing a digit.
+               hypothesisVerdicts: cfg.misnumbered_verdict ? [
+                 { hypothesis: 'The minimum wage increase caused a decade-long employment decline across all age groups',
+                   hypothesisNumber: 1, verdict: 'surviving', killCriterion: 'k1', reasoning: 'r' },
+                 { hypothesis: 'H2: The apparent effect is largely a publication-selection artifact in the older literature',
+                   hypothesisNumber: 2, verdict: 'killed', killCriterion: 'k2', reasoning: 'r', claimsCited: [0] }] : [
+                 { hypothesis: 'h1', hypothesisNumber: 1, verdict: 'killed', killCriterion: 'k1',
                    reasoning: 'claim [0] triggers it', claimsCited: [0] },
-                 { hypothesis: 'h2', verdict: 'untested', killCriterion: 'k2',
+                 { hypothesis: 'h2', hypothesisNumber: 2, verdict: 'untested', killCriterion: 'k2',
                    reasoning: 'no confirmed claim bears on it' }],
                strongestArgumentAgainst: 'the crux was never evidenced',
                whatWouldChangeThisCall: ['a real RCT'],
