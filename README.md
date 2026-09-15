@@ -441,6 +441,7 @@ still works, but on a challenged IP it sees a scholarly-only slice of the web
 |---|---|
 | **CLI** | `python3 -m deepresearch --question "..."` |
 | **Claude Code** | `./install.sh claude-code` → `/deepresearch` |
+| **ZCode** | `./install.sh zcode` → `/deepresearch` — runs the pipeline **on the ZCode agent itself**, on the session's GLM subscription: no key, no subprocess; the prompts and deterministic checkers are imported from this repo so it cannot drift |
 | **Hermes** | `./install.sh hermes` → `/deepresearch` |
 
 `install.sh` symlinks rather than copies, deliberately: the two runtimes drifted five features apart when they were separate copies.
