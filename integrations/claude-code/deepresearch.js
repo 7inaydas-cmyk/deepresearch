@@ -527,10 +527,15 @@ const VERDICT_SCHEMA = {
   },
 }
 const FACT_SCHEMA = {
-  type: 'object', required: ['support', 'reasoning'],
+  type: 'object', required: ['support', 'reasoning', 'locatedQuote'],
   properties: {
     support: { enum: ['supported', 'partial', 'unsupported', 'unreachable'] },
     reasoning: { type: 'string' },
+    // Required, not optional. The orchestrator never sees the page — its subagent
+    // fetches — so a ruling made WITHOUT fetching was indistinguishable from one that
+    // read the page, and landed in citationAccuracy all the same. Demanding the
+    // located text does not prove a fetch happened, but it makes the empty case
+    // visible instead of silent.
     locatedQuote: { type: 'string' },
   },
 }
@@ -658,7 +663,14 @@ const LENSES = [
   { key: 'support', title: 'Quote-support auditor', task:
       'Ignore whether the claim is TRUE in the world. Judge ONLY whether the quoted text licenses the claim AS STATED.\n' +
       'Refute if: the claim generalizes beyond what the quote says · swaps a correlation for a cause · drops a hedge or scope condition the quote carries · ' +
-      'converts a self-report or projection into fact · states a number the quote does not state · or the quote is a paraphrase rather than verbatim page text.\n' +
+      'converts a self-report or projection into fact · or states a number the quote does not state.\n' +
+      // The "is the quote verbatim page text" clause was deleted here on 2026-09-15.
+      // This verifier is never shown the page, so it could not execute the check — it
+      // could only guess, and the lens's "be strict" energy was being spent on a
+      // criterion that cannot fire from evidence. The Python twin deleted the same
+      // sentence when it gained a code-side check; this build has no such check, and
+      // tests/test_parity.py records that gap honestly rather than papering over it.
+      'You are NOT shown the page, so do not rule on whether the quote is verbatim — judge only what the CLAIM does with the quote as given.\n' +
       'This is the single most common failure mode in cited reports — over 20% of citations with valid links do not support their claim. Be strict.' },
   { key: 'counter', title: 'Counter-evidence hunter', task:
       'Assume the claim is WRONG and go find the proof. Run at least two WebSearch queries designed to surface contradiction, not confirmation — ' +
@@ -697,7 +709,7 @@ const FACT_PROMPT = claim =>
   '## Task\n' +
   '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality.\n' +
   '1. WebFetch the URL.\n' +
-  '2. Search the page for text that supports the statement. Quote what you find VERBATIM in locatedQuote.\n' +
+  '2. Search the page for text that supports the statement. Quote what you find VERBATIM in locatedQuote. This is REQUIRED. If you could not fetch or read the page, answer `unreachable` and leave locatedQuote empty — never rule `supported` or `unsupported` on a page you did not read.\n' +
   '3. Rule:\n' +
   '   - **supported**   — the page states this, or states something that entails it with no interpretive leap.\n' +
   '   - **partial**     — the page is related and points this way, but the statement adds scope, certainty, or specificity the page does not carry.\n' +

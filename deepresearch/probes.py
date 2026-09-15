@@ -29,6 +29,9 @@ the checker reports on real runs is measuring agreement-with-itself.
 """
 from __future__ import annotations
 
+import difflib
+import re
+
 __all__ = ["make_audit_probes", "score_audit_probes",
            "make_critic_probes", "score_critic_probes",
            "run_audit_probes", "run_critic_probes", "run_framing_probes", "main"]
@@ -162,19 +165,36 @@ def make_critic_probes(summary, confirmed):
     return degraded, planted
 
 
-def score_critic_probes(planted, flagged, clean_verdict, degraded_verdict):
+def score_critic_probes(planted, flagged, clean_verdict, degraded_verdict, clean_flagged=None):
     """Did the critic name the planted sentences, and did its VERDICT move?
 
     The second half is the point of issue #10. A critic that names the defects but
     returns `material-gaps` on both the clean and the degraded summary has a
     verdict scale that carries no information, however good its prose is.
     """
-    joined = " ".join(flagged or []).lower()
-    hits = [p for p in planted if any(w in joined for w in _keywords(p["text"]))]
+    # A planted sentence counts as NAMED only if the critic reproduced a substantial run
+    # of it. Until 2026-09-15 this asked whether ANY of the sentence's first six long
+    # words appeared ANYWHERE in the flagged text - and those word lists are the ordinary
+    # vocabulary of critique: findings, confirmed, evidence, effect, studies, points.
+    # Audited: a critic naming ZERO planted sentences, flagging only a true generic issue
+    # ("the summary says the findings were confirmed, but claim [3] only reports a
+    # projection"), scored 1 of 3; a few more generic flags reached 3 of 3. The published
+    # detectionRate was measuring keyword co-occurrence, not identification.
+    hits = [p for p in planted if _names(p["text"], flagged)]
+    # The clean arm is the control this never had. Whatever the critic "detects" in a
+    # summary with nothing planted in it is the false-positive floor, and a detection rate
+    # that is not above that floor is not evidence of detection.
+    clean_hits = [p for p in planted if _names(p["text"], clean_flagged)] if clean_flagged else []
     return {
         "planted": len(planted),
         "named": len(hits),
         "detectionRate": round(len(hits) / len(planted), 3) if planted else None,
+        "falsePositiveFloor": (round(len(clean_hits) / len(planted), 3)
+                               if planted and clean_flagged is not None else None),
+        "floorNote": ("detectionRate is only evidence if it is above falsePositiveFloor - the "
+                      "same scorer run against the critic's output on a summary with NOTHING "
+                      "planted. A floor of None means the control arm was not run, so the "
+                      "rate is uncontrolled and should not be published as detection."),
         "missed": [p["kind"] for p in planted if p not in hits],
         "cleanVerdict": clean_verdict,
         "degradedVerdict": degraded_verdict,
@@ -183,6 +203,34 @@ def score_critic_probes(planted, flagged, clean_verdict, degraded_verdict):
                     "the verdict did NOT move when three fabricated sentences were added — it is "
                     "saturated, and cannot discriminate a good run from a bad one"),
     }
+
+
+# Tuned on the audited attack: a critic flagging only TRUE generic issues that happen
+# to share an opening clause with the planted text. At span 40 / ratio 0.60 it scored
+# 2 of 3 detections having named none. 60 / 0.80 scores 0 of 3 there and 3 of 3 when
+# the critic actually reproduces the sentences.
+_NAME_MIN_RATIO, _NAME_MIN_SPAN = 0.80, 60
+
+
+def _names(sentence, flagged):
+    """Did the critic actually reproduce this sentence, rather than share its vocabulary?
+
+    Two ways to qualify, both requiring real text rather than word co-occurrence: a long
+    verbatim span, or a high similarity against a single flagged item. Matching against
+    ONE item matters - the old test joined every flag into one blob, so keywords scattered
+    across unrelated objections combined into a false hit.
+    """
+    norm = lambda t: re.sub(r"\s+", " ", str(t or "")).strip().lower()
+    s, items = norm(sentence), [norm(f) for f in (flagged or []) if str(f or "").strip()]
+    if not s or not items:
+        return False
+    probe = s[:_NAME_MIN_SPAN]
+    for f in items:
+        if len(s) >= _NAME_MIN_SPAN and probe in f:
+            return True
+        if difflib.SequenceMatcher(None, s, f).ratio() >= _NAME_MIN_RATIO:
+            return True
+    return False
 
 
 def _keywords(sentence):
@@ -306,10 +354,19 @@ def run_critic_probes(rep):
                           key=lambda v: order.index(v) if v in order else 0)
     flagged = sorted({s for k, c in got if k == "degraded"
                       for s in (c.get("untraceableStatements") or [])})
-    out = score_critic_probes(planted, flagged, worst("clean"), worst("degraded"))
+    # The control arm. The clean summary has NOTHING planted in it, so anything the same
+    # scorer credits here is a false positive, and a detection rate that does not clear it
+    # is not evidence of detection. This arm was always run - its verdict was used - and
+    # its flags were thrown away.
+    clean_flagged = sorted({s for k, c in got if k == "clean"
+                            for s in (c.get("untraceableStatements") or [])})
+    # Pass the clean arm's flags so the score carries its own false-positive floor.
+    out = score_critic_probes(planted, flagged, worst("clean"), worst("degraded"),
+                              clean_flagged=clean_flagged)
     out["criticsPerArm"] = n_critics
     out["plantedText"] = [p["text"] for p in planted]
     out["flaggedByDegradedArm"] = flagged[:12]
+    out["flaggedByCleanArm"] = clean_flagged[:12]
     out["cleanArmFlagged"] = sorted({s for k, c in got if k == "clean"
                                      for s in (c.get("untraceableStatements") or [])})[:12]
     return out

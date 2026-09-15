@@ -56,7 +56,10 @@ def install(cfg):
             return [{"url": "https://primary-rescue.org/doc", "title": "primary", "snippet": "s"}]
         return [{"url": "https://src%d.org/p" % i, "title": "T%d" % i, "snippet": "s"} for i in range(n)]
 
-    def fake_fetch(u, cap=14000):
+    def fake_fetch(u, cap=14000, fresh=False):
+        # `fresh` must be accepted: the citation audit re-fetches rather than re-reading
+        # the cache, and a stub at this seam has to carry the real interface or the audit
+        # silently returns nothing — which is exactly how this surfaced.
         return "" if cfg.get("empty_pages") else "page body for " + u
 
     def fake_agent(prompt, schema, label="", model=None, max_tokens=0, retries=3):
@@ -361,9 +364,9 @@ for _name, _r in (("happy path", r), ("all claims killed", r3),
     ok(isinstance(_eb, dict) and isinstance(_eb.get("citableSources"), int)
        and isinstance(_eb.get("thin"), bool),
        "%s: evidenceBase carries a real source count and a thin flag" % _name)
-ok(dr._evidence_base([{"tier": "T2"}, {"tier": "T2"}])["thin"] is True
-   and dr._evidence_base([{"tier": "T2"}] * dr.MIN_CITABLE_SOURCES)["thin"] is False
-   and dr._evidence_base([{"tier": "T5"}] * 20)["citableSources"] == 0,
+ok(dr._evidence_base([{"tier": "T2", "claims": 1}] * 2)["thin"] is True
+   and dr._evidence_base([{"tier": "T2", "claims": 1}] * dr.MIN_CITABLE_SOURCES)["thin"] is False
+   and dr._evidence_base([{"tier": "T5", "claims": 3}] * 20)["citableSources"] == 0,
    "the floor is %d citable sources, and it is a label rather than an abort - the "
    "thinnest run on record was thin because of a PDF bug, and aborting it would have "
    "hidden the bug" % dr.MIN_CITABLE_SOURCES)
@@ -643,7 +646,7 @@ ok(not dr._same_hypothesis(dr._hyp_key(_V4), dr._hyp_key(_R3))
    and not dr._same_hypothesis(dr._hyp_key(_V3), dr._hyp_key(_R4)),
    "while two DIFFERENT hypotheses from that same run still do not match each other - "
    "measured separation was 0.95-1.00 for true pairs against 0.22 for cross pairs")
-ok(dr.HYP_MATCH_THRESHOLD == 0.6,
+ok(dr.HYP_MATCH_THRESHOLD == 0.65,
    "the threshold is the measured mid-gap, not a guess: %s" % dr.HYP_MATCH_THRESHOLD)
 ok(not dr._same_hypothesis(dr._hyp_key("H9: something nobody ever registered anywhere"),
                            dr._hyp_key(_REG)),
@@ -653,6 +656,88 @@ ok(not dr._same_hypothesis("", dr._hyp_key(_REG)) and not dr._same_hypothesis(dr
 ok("NOTHING here was pre-registered" in _engine_src,
    "the no-contract caveat now describes what the field actually holds, instead of "
    "asserting it is empty while it is not")
+
+print("\n-- the audited attacks, as regressions --")
+# Every check below was defeated by an input its own calibration never pointed at. These
+# are the auditor's inputs verbatim, not fixtures chosen by the author of the fix: an
+# instrument calibrated only on the failure it was built for keeps passing the adjacent one.
+
+# F1 — an ellipsis used to launder a quote stitched from two sections, in EITHER order,
+# to `located-elided` at foundFraction 1.0, while the same two sentences without the
+# ellipsis scored `partial`.
+_STITCH_PAGE = ("Results. Profits rose 3 percent in the trial arm. " + ("filler sentence. " * 40)
+                + "Discussion. The company will file for bankruptcy next quarter.")
+for _lbl, _q in (
+    ("forward", "Profits rose 3 percent in the trial arm. ... The company will file for bankruptcy next quarter."),
+    ("reversed", "The company will file for bankruptcy next quarter. ... Profits rose 3 percent in the trial arm."),
+):
+    _r = dr.quote_span(_STITCH_PAGE, _q)
+    ok(_r["status"] not in dr.QUOTE_ON_PAGE,
+       "a quote stitched across sections is NOT laundered by an ellipsis (%s): %s"
+       % (_lbl, _r["status"]))
+_honest = ("The trial found that profits rose 3 percent in the treated arm, a result the authors "
+           "attribute to scheduling effects rather than headcount, and the effect persisted at 12 months.")
+ok(dr.quote_span(_honest, "profits rose 3 percent in the treated arm ... the effect persisted at 12 months"
+                 )["status"] == "located-elided",
+   "while an honest elision inside one passage still passes - the bound is on how far the "
+   "fragments sit apart, not on the ellipsis itself")
+
+# F2 — a post-hoc SUPERSET of a registered hypothesis contains it as a substring and
+# carries all its content words, so min()-denominator overlap scored it 1.0 and stamped
+# it pre-registered. That is the exact failure the stamp exists to prevent.
+for _reg, _post in (
+    ("Minimum wage increases reduce employment",
+     "Minimum wage increases reduce employment, and the reduction persists for at least a decade after passage"),
+    ("Standing desks improve health outcomes",
+     "Standing desks improve health outcomes, productivity and mood across every industry and country studied"),
+):
+    ok(not dr._same_hypothesis(dr._hyp_key(_post), dr._hyp_key(_reg)),
+       "a post-hoc superset is NOT stamped pre-registered: %r" % _post[:56])
+ok(dr._same_hypothesis(dr._hyp_key("The effect is nil"), dr._hyp_key("The effect is zero")),
+   "and a terse hypothesis reworded is no longer falsely called post-hoc - too few content "
+   "words to score, so it falls back to character similarity")
+
+# F4 — the thinness gate counted fetched-and-citable URLs, so five paywalled shells that
+# produced nothing read as a healthy evidence base on the one field callers gate on.
+ok(dr._evidence_base([{"tier": "T2", "claims": 0}] * 5)["thin"] is True,
+   "five citable sources that yielded NO claims are thin, not an evidence base")
+ok(dr._evidence_base([{"tier": "T2", "claims": 1}] * 2 + [{"tier": "T2", "claims": 0}] * 3
+                     )["citableSources"] == 2,
+   "and only the sources that actually produced a claim are counted")
+
+# F3 — the probe credited a planted sentence when ANY of its first six long words
+# appeared anywhere in the flagged text, and those words are the ordinary vocabulary of
+# critique. A critic naming nothing scored 3 of 3.
+from deepresearch import probes as _P   # noqa: E402
+_PL = [{"kind": "k%d" % i, "text": t} for i, t in enumerate([
+    "The summary says the findings were confirmed across multiple studies.",
+    "Evidence points to a large effect across studies.",
+    "The effect across studies is consistent and confirmed."])]
+_GENERIC = ["The summary says the findings were confirmed, but claim [3] only reports a projection.",
+            "Evidence points one way while the conclusion points another.",
+            "The effect across studies is described without a base rate."]
+_r = _P.score_critic_probes(_PL, _GENERIC, "material-gaps", "material-gaps", clean_flagged=_GENERIC)
+ok(_r["detectionRate"] == 0.0,
+   "a critic that names NO planted sentence scores zero, even when its true generic "
+   "objections share the planted vocabulary: %s" % _r["detectionRate"])
+_r2 = _P.score_critic_probes(_PL, [p["text"] for p in _PL], "minor-gaps", "material-gaps",
+                            clean_flagged=_GENERIC)
+ok(_r2["detectionRate"] == 1.0,
+   "while a critic that actually reproduces them scores them all")
+ok(_r2["falsePositiveFloor"] == 0.0 and "above falsePositiveFloor" in _r2["floorNote"],
+   "and a clean arm is reported beside it - a detection rate with no control arm is not "
+   "evidence of detection")
+ok(_P.score_critic_probes(_PL, [], "a", "b")["falsePositiveFloor"] is None,
+   "an uncontrolled run says so rather than implying a floor of zero")
+
+# F7 — a lens call lost to a 429 made survives=False by quorum, so an infrastructure
+# failure entered the kappa vectors as a verdict flip.
+_eng_src = open(dr.__file__, encoding="utf-8").read()
+ok('if c.get("erroredVotes") or d.get("erroredVotes"):' in _eng_src,
+   "claims whose lens calls errored in either pass are excluded from the calibration "
+   "vectors - an HTTP 429 is not a changed mind")
+ok('"excludedForLensErrors"' in _eng_src and '"scope"' in _eng_src,
+   "and the count and scope are published, so the exclusion is visible rather than silent")
 
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
@@ -872,7 +957,7 @@ ok(dr.as_list(["already", "a", "list"], "t") == ["already", "a", "list"],
 ok("<item>" in open(dr.__file__, encoding="utf-8").read(),
    "the recovery lives at the seam, so every array field in every schema gets it")
 
-ok("25%" in dr._evidence_base([{"tier": "T2"}])["verdict"],
+ok("25%" in dr._evidence_base([{"tier": "T2", "claims": 1}])["verdict"],
    "a thin verdict says what a thin run has actually scored, not just that it is thin")
 
 print("\n-- issue #3: the five verified bugs --")

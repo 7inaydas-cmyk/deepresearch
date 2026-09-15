@@ -28,7 +28,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, difflib, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -201,23 +201,53 @@ _fetch_meta = {}
 # published as verbatim, 3% unverifiable because the publisher served a 388-char stub.
 _quote_tally, _quote_lock = {}, threading.Lock()
 _page_cache, _page_lock = {}, threading.Lock()
+# How the citation audit actually read each page. `fresh` is a real second network
+# read; `fellBackToCache` is one that failed and reused the extractor's text, which
+# is weaker evidence and must not pass as a re-fetch.
+_refetch_tally, _refetch_lock = {"fresh": 0, "fellBackToCache": 0}, threading.Lock()
 _page_tally = {"hits": 0, "misses": 0, "charsServedFromCache": 0}
 
 
-def web_fetch(url, cap=14000):
+def web_fetch(url, cap=14000, fresh=False):
     """Fetch, and REMEMBER how. `via` is the difference between a claim cited to a paper
     and one cited to an abstract stub, and the report could not tell them apart.
 
     Within one run the same URL is fetched once. See _page_cache above.
+
+    `fresh=True` goes to the network even on a cache hit. The citation audit uses it,
+    because an audit that re-reads the identical cached artifact is not a second read of
+    the page - it is the same read a second time. Audited 2026-09-15: served from cache,
+    the audit's text was byte-identical to the extractor's, so the whole fetch-seam error
+    class (a JS shell parsed as prose, a stale archive snapshot, a Crossref abstract
+    standing in for the paper) read back as perfect corroboration. Those are exactly the
+    errors a genuine re-fetch catches.
+
+    A fresh read that FAILS falls back to the cached text rather than declaring the page
+    unreachable: a transient 429 at audit time is not evidence about the claim, and
+    turning it into one would trade a blind spot for a false kill. `auditRefetch` records
+    which happened, so the fallback is never silent.
     """
     key = str(url)
-    with _page_lock:
-        hit = _page_cache.get(key)
-        if hit is not None and hit[0] >= cap:
-            _page_tally["hits"] += 1
-            _page_tally["charsServedFromCache"] += min(len(hit[1]), cap)
-            return hit[1][:cap]
+    if not fresh:
+        with _page_lock:
+            hit = _page_cache.get(key)
+            if hit is not None and hit[0] >= cap:
+                _page_tally["hits"] += 1
+                _page_tally["charsServedFromCache"] += min(len(hit[1]), cap)
+                return hit[1][:cap]
     text, meta = _search.fetch(url, cap=cap)
+    if fresh and not (text or "").strip():
+        with _page_lock:
+            hit = _page_cache.get(key)
+        if hit is not None:
+            with _refetch_lock:
+                _refetch_tally["fellBackToCache"] += 1
+            log("  [refetch:%s] fresh read returned nothing; falling back to the cached "
+                "page text rather than calling the claim unreachable" % (host_of(url) or "?"))
+            return hit[1][:cap]
+    if fresh:
+        with _refetch_lock:
+            _refetch_tally["fresh"] += 1
     with _doi_lock:
         _fetch_meta[key] = meta
         if meta.get("via") == "crossref-api":
@@ -1013,7 +1043,10 @@ _HYP_LABEL = re.compile(r"^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*", re.I)
 _HYP_STOP = frozenset(
     "the a an of to in is are and or that this it its as be for with by on at from than "
     "not but so if then also more most some other others their there was were has have".split())
-HYP_MATCH_THRESHOLD = 0.6
+# Mid-gap between the superset attacks (max 0.45) and true rewordings (min 0.82).
+HYP_MATCH_THRESHOLD = 0.65
+# Short hypotheses have too few content words to score; compare characters instead.
+_HYP_SHORT_CHARS, _HYP_SHORT_SIMILARITY = 60, 0.75
 _HYP_MIN_TOKENS = 4
 
 
@@ -1028,17 +1061,43 @@ def _hyp_tokens(text):
 
 
 def _same_hypothesis(a, b):
-    """Is this the same hypothesis, allowing for relabelling and rewording?"""
+    """Is the VERDICT (a) adjudicating the REGISTERED hypothesis (b)?
+
+    Deliberately asymmetric, and that is the whole fix. The previous version tested raw
+    substring containment and then overlap with `min(|A|,|B|)` as the denominator. Both
+    are satisfied by construction by a SUPERSET: a post-hoc hypothesis built by extending
+    a registered one contains it as a substring and contains all its content words, so it
+    scored 1.0 and was stamped `preRegistered`. Audited 2026-09-15 with
+
+        registered : "Minimum wage increases reduce employment"
+        adjudicated: "Minimum wage increases reduce employment, and the reduction
+                      persists for at least a decade after passage"
+
+    which is precisely the failure the stamp exists to prevent - a claim the run never
+    committed to, certified as a prediction that survived.
+
+    The denominator is now the VERDICT's own tokens: how much of what is being adjudicated
+    was actually registered. A superset adds content, so its coverage falls. Measured:
+
+        true rewordings (runs/v10)  : 0.82 - 1.00
+        superset attacks            : 0.42 - 0.45
+        unrelated hypotheses        : max 0.36
+
+    a 0.36 gap, against 0.05 for every symmetric measure tried. The threshold sits in it.
+
+    Short hypotheses carry too few content words for any overlap measure - "the effect is
+    zero" reworded to "the effect is nil" shares one - so those fall back to character
+    similarity. That fallback is gated on BOTH sides being short, because on a long
+    superset it would re-open the hole it exists to close.
+    """
     if not a or not b:
         return False
-    if a in b or b in a:
-        return True
     ta, tb = _hyp_tokens(a), _hyp_tokens(b)
-    # Too few content words to judge by overlap - a two-word hypothesis would match
-    # anything containing both. Fall back to the exact test above, which already failed.
-    if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
-        return False
-    return len(ta & tb) / min(len(ta), len(tb)) >= HYP_MATCH_THRESHOLD
+    if min(len(ta), len(tb)) >= _HYP_MIN_TOKENS:
+        return len(ta & tb) / max(1, len(ta)) >= HYP_MATCH_THRESHOLD
+    if max(len(a), len(b)) <= _HYP_SHORT_CHARS:
+        return difflib.SequenceMatcher(None, a, b).ratio() >= _HYP_SHORT_SIMILARITY
+    return False
 
 
 def to_ref(c):
@@ -1322,7 +1381,13 @@ def _evidence_base(rows):
     # Count CITABLE sources, not all of them. Calling the total "citableSources" would
     # have quietly counted T5 content farms toward the floor - a source the pipeline
     # refuses to cite would have been evidence that the report is not thin.
-    n = sum(1 for r in rows if (r.get("tier") or "T3") in CITABLE)
+    # Count sources that produced a CLAIM, not URLs that were fetched and graded citable.
+    # A fetch returning nothing still emits a source row, so five paywalled shells read as
+    # a healthy evidence base - audited 2026-09-15: five claim-less rows returned
+    # `citableSources: 5, thin: False`, on the one field the README tells callers they can
+    # gate on in code.
+    n = sum(1 for r in rows
+            if (r.get("tier") or "T3") in CITABLE and (r.get("claims") or 0) > 0)
     thin = n < MIN_CITABLE_SOURCES
     return {
         "citableSources": n,
@@ -1487,6 +1552,10 @@ _PUNCT_MAP = {ord(c): d for c, d in
                ("\ufb01", "fi"), ("\ufb02", "fl"), ("\u2026", "...")]}
 _ELLIPSIS = re.compile(r"\s*(?:\.\s*\.\s*\.|\[\s*\.\.\.\s*\])\s*")
 MIN_QUOTE_CHARS = 25
+# Elision bounds. An honest "..." skips a clause or a sentence; a stitched quote jumps
+# sections. Calibrated on the audited attack (7.7x) against honest elision (1.1x).
+_ELIDE_MIN_FRAG, _ELIDE_MAX_FRAGS = 12, 4
+_ELIDE_GAP_RATIO, _ELIDE_GAP_FLOOR = 2.0, 200
 
 
 def norm_quote(s):
@@ -1583,11 +1652,39 @@ def quote_span(page, quote):
         return {"status": "located", "offset": None, "foundFraction": 1.0,
                 "why": "located ignoring whitespace - our PDF reader renders some "
                        "ligatures as spaces, which splits words the page does not split"}
-    # An ellipsis is legitimate quoting, not evasion: check each side separately.
-    frags = [f for f in _ELLIPSIS.split(nq) if len(f) >= 12]
-    if len(frags) > 1 and all(f in np_ for f in frags):
-        return {"status": "located-elided", "offset": np_.find(frags[0]), "foundFraction": 1.0,
-                "why": "quote spans %d fragments around an ellipsis; all located" % len(frags)}
+    # An ellipsis is legitimate quoting, not evasion - but ONLY if the fragments sit in
+    # order and close together. Audited 2026-09-15: the old test asked merely whether each
+    # fragment appeared SOMEWHERE on the page, so inserting "..." between two sentences
+    # taken from different sections returned `located-elided` at foundFraction 1.0, in
+    # either order, and the panel was then told "Quote located on the page: YES (100% of
+    # it, checked in code)". The same two sentences without the ellipsis scored `partial`.
+    # The ellipsis was the entire difference between caught and certified.
+    #
+    # Measured on that attack and on an honest in-paragraph elision:
+    #     stitched across sections : 693 chars skipped for 90 quoted  (7.7x)
+    #     honest clause elision    :  82 chars skipped for 74 quoted  (1.1x)
+    # so the skipped text must not run away from the quoted text. The bound is generous
+    # to honest quoting and still 3.5x tighter than the attack needed.
+    frags = [f for f in _ELLIPSIS.split(nq) if len(f) >= _ELIDE_MIN_FRAG]
+    if 1 < len(frags) <= _ELIDE_MAX_FRAGS:
+        pos, at, ok = [], 0, True
+        for f in frags:
+            i = np_.find(f, at)          # scanning forward ENFORCES source order
+            if i < 0:
+                ok = False
+                break
+            pos.append((i, i + len(f)))
+            at = i + len(f)
+        if ok:
+            quoted = sum(len(f) for f in frags)
+            skipped = (pos[-1][1] - pos[0][0]) - quoted
+            if skipped <= max(_ELIDE_GAP_RATIO * quoted, _ELIDE_GAP_FLOOR):
+                return {"status": "located-elided", "offset": pos[0][0], "foundFraction": 1.0,
+                        "why": "quote spans %d fragments around an ellipsis; all located, in "
+                               "source order, skipping %d characters" % (len(frags), skipped)}
+            log("  [quote] ellipsis fragments are in order but %d characters apart for %d "
+                "quoted - too far to be one passage; scoring by coverage instead"
+                % (skipped, quoted))
     # Second pass ignoring spacing, for PDF extraction noise. Take the better of the
     # two: a quote is not less real because our own PDF reader dropped a ligature.
     frac = round(max(_coverage(np_, nq), _coverage(_despace(np_), _despace(nq))), 3)
@@ -2128,6 +2225,7 @@ def deepresearch(question, depth="standard", contract=None):
                                         sum(_quote_tally.get(k, 0) for k in QUOTE_ON_PAGE)
                                         / sum(_quote_tally.values()), 3)
                                     if sum(_quote_tally.values()) else None),
+                 auditRefetch=dict(_refetch_tally),
                  pageFetchCache=dict(_page_tally,
                                      hitRate=round(_page_tally["hits"] /
                                                    (_page_tally["hits"] + _page_tally["misses"]), 3)
@@ -2212,12 +2310,26 @@ def deepresearch(question, depth="standard", contract=None):
         log("CALIBRATION: re-running the panel on %d claims to measure reliability" % len(claims_again))
         voted2 = run_panel(question, claims_again, lenses)
         by_claim = {c["claim"]: c for c in voted2}
-        a, b, keep = [], [], []
+        # Only claims where BOTH passes actually reached a verdict. A claim whose lens
+        # calls errored has survives=False by quorum (see run_panel), and feeding that
+        # into the vectors makes an HTTP 429 indistinguishable from a kill: a pass-2 rate
+        # limit produces genuine-looking "verdict flips". The gate's own MIN_N rationale
+        # says one flipped claim at n=30 moves kappa by about the width of a band - so
+        # this contaminates the number by exactly the amount the gate cares about, and it
+        # was never subtracted. `missingLensVerdicts` was computed for the per-lens tables
+        # and never applied to the aggregate.
+        a, b, keep, dropped = [], [], [], 0
         for c in subset:
             d = by_claim.get(c["claim"])
             if d is None:
                 continue
+            if c.get("erroredVotes") or d.get("erroredVotes"):
+                dropped += 1
+                continue
             a.append(bool(c["survives"])); b.append(bool(d["survives"])); keep.append((c, d))
+        if dropped:
+            log("CALIBRATION: excluded %d claim(s) where a lens call errored in one pass - "
+                "an infrastructure failure is not a verdict flip" % dropped)
         if a:
             la, ga = _lens_vectors([x for x, _ in keep], lenses)
             lb, gb = _lens_vectors([y for _, y in keep], lenses)
@@ -2226,6 +2338,12 @@ def deepresearch(question, depth="standard", contract=None):
             calibration["lensSplit"] = _cal.lens_disagreement_rate(
                 [[v.get("refuted") for v in c.get("verdicts", [])] for c in voted])
             calibration["missingLensVerdicts"] = ga + gb
+            calibration["excludedForLensErrors"] = dropped
+            calibration["scope"] = (
+                "%d of %d sampled claims; %d excluded because a lens call errored in one "
+                "pass. Reliability is measured only where both panels actually voted - an "
+                "errored call is an infrastructure failure, not a changed mind."
+                % (len(a), len(subset), dropped))
             verdict, action = _cal.interpret(
                 calibration["cohenKappa"], n=calibration["n"],
                 per_lens={k: v.get("cohenKappa") for k, v in calibration["perLens"].items()})
@@ -2314,7 +2432,9 @@ def deepresearch(question, depth="standard", contract=None):
         # The repeated FETCH that grouping would also have saved is already gone:
         # web_fetch caches per URL, so a page cited by five claims is pulled once.
         def audit(c):
-            text = web_fetch(c["sourceUrl"], cap=12000)
+            # fresh=True: a genuine second read of the page. Served from cache this was
+            # not an independent check at all - it re-read the extractor's own artifact.
+            text = web_fetch(c["sourceUrl"], cap=12000, fresh=True)
             reachable, why, note = read_provenance(c["sourceUrl"], text)
             if not reachable:
                 # Answer in code. Measured 2026-09-08: asked about an empty page the

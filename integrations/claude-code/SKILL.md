@@ -109,10 +109,22 @@ unstable raters into a stable-looking verdict.
 
 ## Before you trust a thin result: check search coverage
 
-`stats.searchHealth` gives per-backend attempt and result counts. DuckDuckGo and Mojeek
-answer a challenged IP with a page that parses to **zero results while reporting `ok`**,
-so a run can quietly become scholarly-only and still read as complete. When every
-general-web backend shows 0, say so, and treat coverage gaps as a search artefact rather
+**This build cannot measure its own search coverage, and you should know that before you
+look for the number.** The searching is done by subagents through the runtime's own
+WebSearch, so the orchestrator never sees per-backend attempts or results — `stats` here
+carries no `searchHealth`, no `fetchVia`, no `pickStarvation`. Only the Python CLI
+(`python3 -m deepresearch`) emits those. Audited 2026-09-15: this section previously told
+you to read `stats.searchHealth`, a field this runtime has never produced, so the check
+could never fire and the degradation it exists to catch stayed invisible.
+
+What you CAN read here: `sources[]` and their tiers. If every source is a journal, a DOI
+or an encyclopedia and nothing came from the general web, the run is scholarly-only —
+say so, and treat coverage gaps as a search artefact rather than evidence of absence.
+
+For the Python CLI, `stats.searchHealth` gives per-backend attempt and result counts.
+DuckDuckGo and Mojeek answer a challenged IP with a page that parses to **zero results
+while reporting `ok`**, so a run can quietly become scholarly-only and still read as
+complete. When every general-web backend shows 0, say so, and treat coverage gaps as a search artefact rather
 than evidence that nothing exists.
 
 The fix is a local search index, verified working 2026-09-06 — on the same query it took
