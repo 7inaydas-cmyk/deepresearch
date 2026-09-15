@@ -282,10 +282,16 @@ const SHORTFALL_CORRECTION = '\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED — REA
   'SHORT this time so the whole response fits.\n' +
   'If the question seems too broad, too narrow or badly posed, that is NOT a reason to return ' +
   'nothing — state the difficulty as one of the assumptions and fill the fields anyway.'
+// A real counter. `agentCalls` used to be arithmetic over array lengths —
+// 1 + sources + claims*lenses + factRows + 1 + critiques — which is a plausible number
+// presented as a measurement. It cannot see a retry, a skipped agent or a failed call, so
+// it was always wrong and never by an amount anyone could notice.
+let AGENT_CALLS = 0
 const agentChecked = async (prompt, opts) => {
   const schema = (opts && opts.schema) || {}
   let correction = ''
   for (let attempt = 1; attempt <= 3; attempt++) {
+    AGENT_CALLS++
     const got = await agent(prompt + correction, opts)
     const label = (opts && opts.label) || 'agent'
     if (hasUnknownSentinel(got)) {
@@ -1728,6 +1734,6 @@ return {
     unverifiedCount: unverified.length,
     killsByLens: killTally,
     afterSynthesis: report.findings.length,
-    agentCalls: 1 + (allSources.length) + (voted.length * activeLenses.length) + factRows.length + 1 + critiques.length,
+    agentCalls: AGENT_CALLS,   // measured, including retries — see agentChecked
   }),
 }

@@ -864,6 +864,23 @@ ok("junk_filter" in _insp2.signature(_REAL_WEB_SEARCH).parameters
    "survey finds hours unchanged' shares nothing with 'the minimum wage reduces teen "
    "employment', and dropping it told the lens the web was silent")
 
+# S3/S5 — the two the audit listed as still open and unclaimed.
+ok("untraceableCountMeans" in _engine_src and "not distinct problems" in _engine_src,
+   "untraceableCount says what it counts: distinct flagged STRINGS, not distinct "
+   "problems. Deduplicating by meaning needs a semantic judgement, and this codebase has "
+   "now twice learned not to solve that with a similarity threshold")
+_norm_dupes = [{"untraceableStatements": ["The summary says X."]},
+               {"untraceableStatements": ["the summary says  x"]}]
+_saved = globals().get("crits")
+ok(len({_re.sub(r"\s+", " ", x).strip().lower().rstrip(".")
+        for c in _norm_dupes for x in c["untraceableStatements"]}) == 1,
+   "and the mechanical duplicates DO collapse - whitespace, case and a trailing period")
+_js_src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                            "integrations/claude-code/deepresearch.js"), encoding="utf-8").read()
+ok("agentCalls: AGENT_CALLS" in _js_src and "AGENT_CALLS++" in _js_src,
+   "the JS build COUNTS agent calls instead of computing a plausible number from array "
+   "lengths - the formula could not see a retry, a skip or a failure")
+
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
 # rules, which sat out of sync between the two runtimes while the marker test passed.
@@ -1441,6 +1458,7 @@ ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
 
 _eng = open(dr.__file__, encoding="utf-8").read()
 _engine_src = _eng
+_js = open(os.path.join(ROOT_DIR, 'integrations/claude-code/deepresearch.js'), encoding='utf-8').read() if 'ROOT_DIR' in dir() else open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'integrations/claude-code/deepresearch.js'), encoding='utf-8').read()
 
 # Exercise the real web_fetch against a stubbed _search.fetch, rather than asserting a
 # source substring. The substring version passed for months and then failed the moment a

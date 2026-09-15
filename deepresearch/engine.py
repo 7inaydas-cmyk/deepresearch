@@ -2790,7 +2790,19 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     crits = [c for c in pmap(critic, list(range(T["critics"]))) if c]
     order = ["sound", "minor-gaps", "material-gaps"]
     verdict = max((c.get("verdict", "sound") for c in crits), key=lambda v: order.index(v) if v in order else 0) if crits else "unknown"
-    uniq = lambda key: sorted({x for c in crits for x in (c.get(key) or [])})
+    # Normalise before deduping so "the summary says X." and "The summary says  X"
+    # collapse. This catches the mechanical duplicates; it cannot catch two critics
+    # phrasing one objection differently, and untraceableCountMeans says so rather than
+    # letting the number imply a precision it does not have.
+    def uniq(key):
+        seen, out_ = {}, []
+        for c in crits:
+            for x in (c.get(key) or []):
+                k = re.sub(r"\s+", " ", str(x)).strip().lower().rstrip(".")
+                if k and k not in seen:
+                    seen[k] = True
+                    out_.append(str(x).strip())
+        return sorted(out_)
     log("Process critique: %s | %d untraceable, %d coverage gaps, %d plan flaws"
         % (verdict, len(uniq("untraceableStatements")), len(uniq("coverageGaps")), len(uniq("planFlaws"))))
 
@@ -2920,6 +2932,15 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 "the critic's text does not appear verbatim in the summary. Reporting them "
                 "instead of deleting on a fuzzy match." % len(_untraceable))
     out["processCritique"] = {"untraceableCount": len(_untraceable),
+                              "untraceableCountMeans": (
+                                  "distinct flagged STRINGS across all critics, after "
+                                  "normalising whitespace and case - not distinct problems. "
+                                  "Two critics objecting to one sentence in different words "
+                                  "count twice, and one critic splitting a sentence into two "
+                                  "flags counts twice. Deduplicating by meaning would need a "
+                                  "semantic judgement, which is the class of problem this "
+                                  "codebase has learned not to solve with a similarity "
+                                  "threshold. Read the statements, not only the count."),
                               "readThisFirst": (
                                   "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. "
                                   "Measured 2026-09-06: three fabricated sentences were appended to a real "

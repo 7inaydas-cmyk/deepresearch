@@ -79,6 +79,7 @@ SHARED = {
     "every refuter published":   ("\"refutedBy\": [", "refutedBy: refuters.map"),
     "counter-source published":  ("\"contradictedBy\":", "contradictedBy: refuters"),
     "critique leads with count":  ("untraceableCount", "untraceableCount"),
+    "count says what it counts": ("untraceableCountMeans", "untraceableCount"),
     "evidence-base label":       ("def _evidence_base(", "const evidenceBase = "),
     "limits on EVERY exit":      ("def honest_limits(extra=None)", "const honestLimits = (extra)"),
 }
