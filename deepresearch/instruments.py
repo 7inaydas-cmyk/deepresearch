@@ -61,6 +61,7 @@ def _adapter():
         "looks_challenged":    lambda body: _search._looks_challenged(body),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "evidence_base":       lambda rows: dr._evidence_base(rows)["citableSources"],
+        "is_nonanswer":        lambda text: dr.is_nonanswer(text),
     }
 
 

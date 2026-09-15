@@ -45,7 +45,8 @@
     "is_prose": "gate",
     "looks_challenged": "gate",
     "calibration_verdict": "gate",
-    "evidence_base": "gate"
+    "evidence_base": "gate",
+    "is_nonanswer": "gate"
   },
   "cases": {
     "webtext": [
@@ -614,6 +615,59 @@
           "out": 0,
           "why": "a fetched-but-silent source does NOT - the thinness gate counted paywalled shells that yielded nothing",
           "ref": "bad"
+        }
+      ]
+    },
+    "is_nonanswer": {
+      "why_python_only": "Not yet ported. The JS build runs the same synthesis rule and can fail the same way, so this is a known gap rather than a runtime limit - unlike quote_span or is_prose, nothing about the Workflow runtime prevents it.",
+      "cases": [
+        {
+          "in": [
+            "The conclusion rests almost entirely on two crossover RCTs whose participants were recruited from a single university, and selection into those trials plausibly correlates with the outcome measured. If baseline brain creatine is the real moderator, the pooled estimate is an average over two different populations and means little for either."
+          ],
+          "out": false,
+          "ref": "good",
+          "why": "a real steelman is an answer and is left alone"
+        },
+        {
+          "in": [
+            "Selection bias is the live risk here: see the coverage gaps above for which sub-questions went unanswered, and note that the two largest trials shared an author team."
+          ],
+          "out": false,
+          "ref": "good",
+          "why": "and so is an argument that happens to CITE another section mid-sentence - the check is anchored at both ends so it catches a field that is ONLY a pointer, never one that refers to something while also arguing"
+        },
+        {
+          "in": [
+            "See strongestArgumentAgainst field above (duplicate not needed)."
+          ],
+          "out": true,
+          "ref": "bad",
+          "why": "the verbatim string from runs/calibration-2026-09-06.json. Five of 21 recorded runs published a strongestArgumentAgainst pointing at itself, and in none of them does the argument exist anywhere else in the report - a 24% silent-content rate on the one field whose job is to argue against the answer"
+        },
+        {
+          "in": [
+            "See strongestArgumentAgainst field above (also populated in dedicated field)."
+          ],
+          "out": true,
+          "ref": "bad",
+          "why": "and the variant from the live run of 2026-09-15, which also invented a sibling key `strongestArgumentAgainst_unused` holding an empty string"
+        },
+        {
+          "in": [
+            ""
+          ],
+          "out": true,
+          "ref": "bad",
+          "why": "an empty mandatory field is a non-answer too - `required` only ever meant key-present"
+        },
+        {
+          "in": [
+            "N/A"
+          ],
+          "out": true,
+          "ref": "bad",
+          "why": "and so is a refusal token"
         }
       ]
     }

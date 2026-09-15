@@ -162,9 +162,22 @@ def install(cfg):
                          "reasoning": "claim [0] triggers it", "claimsCited": [0]},
                         {"hypothesis": "h2", "hypothesisNumber": 2, "verdict": "untested", "killCriterion": "k2",
                          "reasoning": "no confirmed claim bears on it"}],
-                    "strongestArgumentAgainst": "the crux was never evidenced",
+                    # The shape a real run produced: a cross-reference to the field
+                    # itself. `pointer_steelman` reproduces it; `pointer_steelman_hard`
+                    # makes the re-ask fail too, so the disclosure path is exercised.
+                    "strongestArgumentAgainst": (
+                        "See strongestArgumentAgainst field above (duplicate not needed)."
+                        if cfg.get("pointer_steelman") or cfg.get("pointer_steelman_hard")
+                        else "the crux was never evidenced"),
                     "whatWouldChangeThisCall": ["a real RCT"],
                     "caveats": "c", "openQuestions": ["o"]}
+        if label == "steelman-retry":
+            if cfg.get("pointer_steelman_hard"):
+                return {"strongestArgumentAgainst": "See above."}
+            return {"strongestArgumentAgainst":
+                    "The two crossover trials that carry this conclusion recruited from one "
+                    "university, and selection into them plausibly tracks the outcome measured, "
+                    "so the pooled estimate may be one population counted twice."}
         if label.startswith("critic:"):
             return {"untraceableStatements": ["u1"], "coverageGaps": ["g1"], "planFlaws": ["p1"],
                     "verdict": "material-gaps" if label.endswith("2") else "minor-gaps", "rationale": "r"}
@@ -1935,6 +1948,59 @@ ok(_st.render_depths(_DEPTHS) in open(
 ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" in _js_block,
    "the generator owns the one thing that genuinely differs between the runtimes: the "
    "key names. The numbers cannot differ because there is only one set")
+
+print("\n-- the coverage line counts sub-questions, not buckets --")
+# A live run logged "Verify pool spans 9 distinct sub-question buckets (of 8)" - more
+# than the total, because `(unassigned)` is a bucket and was counted as a sub-question.
+# Impossible-looking, and wrong in the flattering direction: it overstates how much of
+# the checklist the verify pool reaches.
+ok(dr.sq_key({"subQuestionIndex": 0}, 4) == "(unassigned)"
+   and dr.sq_key({"subQuestionIndex": 9}, 4) == "(unassigned)"
+   and dr.sq_key({"subQuestionIndex": 2}, 4) == "sq2",
+   "an index outside the checklist lands in (unassigned), which is a bucket and not a "
+   "sub-question")
+ok("of %d sub-questions" in _ENG and "map to no sub-question" in _ENG,
+   "so the log reports assigned coverage and unassigned claims separately, and can never "
+   "print a number larger than the checklist")
+
+print("\n-- a mandatory field that points at itself is not an answer --")
+# Found by reading a real report, not by a test. 4 of the 20 recorded runs carrying
+# `strongestArgumentAgainst` published a cross-reference to the field itself - and the
+# live run of 2026-09-15 made it 5 of 21, inventing a sibling key
+# `strongestArgumentAgainst_unused` holding "". In none of them does the argument exist
+# anywhere else in the report: it is missing, not misfiled. A 24% silent-content rate on
+# the one field whose entire job is to argue against the answer.
+for _ptr in ("See strongestArgumentAgainst field above (duplicate not needed).",
+             "See strongestArgumentAgainst field above (also populated in dedicated field).",
+             "", "N/A", "see above"):
+    ok(dr.is_nonanswer(_ptr), "a pointer where an argument was required is caught: %r" % _ptr[:52])
+_real = ("Selection bias is the live risk here: see the coverage gaps above for which "
+         "sub-questions went unanswered, and note that the two largest trials shared an "
+         "author team, so the pooled estimate may be one lab's result counted twice.")
+ok(not dr.is_nonanswer(_real),
+   "while an argument that CITES another section mid-sentence is left alone - the rule "
+   "needs a pointer AND a short field, because either alone would be wrong")
+_measured = [41, 64, 65, 74]
+ok(max(_measured) < dr._NONANSWER_MAX < 906,
+   "and the bar sits in the measured gap: non-answers run 41-74 characters in runs/, "
+   "genuine steelmen 906-2101, nothing in between (bar=%d)" % dr._NONANSWER_MAX)
+
+_ptrrep = run({"pointer_steelman": True}, q="Does the re-ask recover the steelman?")
+ok(not dr.is_nonanswer(_ptrrep.get("strongestArgumentAgainst")),
+   "when synthesis returns a pointer, ONE more call is made for that field alone and the "
+   "argument is recovered")
+ok("university" in (_ptrrep.get("strongestArgumentAgainst") or ""),
+   "and it is the re-asked text that lands in the report, not the pointer")
+ok("noSteelman" not in (_ptrrep.get("honestLimits") or {}),
+   "with no false alarm in honestLimits when the recovery worked")
+
+_hardrep = run({"pointer_steelman_hard": True}, q="Does a failed re-ask get disclosed?")
+ok("NOT PRODUCED" in (_hardrep.get("strongestArgumentAgainst") or ""),
+   "and when the re-ask ALSO returns a pointer, the field says so plainly instead of "
+   "publishing a cross-reference that reads like content")
+ok("noSteelman" in (_hardrep.get("honestLimits") or {}),
+   "the limit travels with the report, so a reader of the pasted JSON sees that the "
+   "conclusion stands unopposed")
 
 print("\n-- a CALIBRATED run reaches the end, not just the calibration --")
 # The path no test ever ran. Every calibration test until now called

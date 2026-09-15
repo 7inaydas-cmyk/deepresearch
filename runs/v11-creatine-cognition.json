@@ -1,0 +1,1484 @@
+{
+ "question": "Does creatine monohydrate supplementation improve cognitive performance in healthy adults?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "unanswered",
+   "note": "No systematic review/meta-analysis of RCTs with pooled effect sizes and CIs for working memory, processing speed, reasoning in healthy adults has been retrieved; only individual primary trials and a sleep-deprivation-specific review found."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "answered",
+   "note": "MRS studies confirm oral creatine (e.g., 20g/day x4wk) increases brain creatine ~8.7%, though CrT deficiency and GAMT-null mouse data show transport kinetics are slow; solid biological plausibility established."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "Good evidence for vegetarians (Rae et al., Gordji-Nejad 2023) and sleep-deprived subjects (Nu18081192, sleep deprivation review); missing older adults and hypoxic/metabolic stress subgroup RCTs specifically on cognition."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "unanswered",
+   "note": "No study yet isolates well-rested, healthy, omnivorous adults only under rigorous blinding/power to report null vs positive convergence; current omnivore data point (Gordji-Nejad: no benefit in omnivores) is suggestive but not a systematic synthesis."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "Dose/duration data exist for muscle saturation (3g/28d vs 20g/6d) and brain uptake (4wk, 2wk in GAMT-null mice) but no dedicated dose-response curve for cognitive outcomes specifically; sleep-deprivation studies hint 0.35g/kg vs 0.2g/kg differ but not conclusive."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "unanswered",
+   "note": "No data gathered on funding sources, publication bias, or systematic comparison of large/independent vs small/industry-funded trials in creatine-cognition literature."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "LD50/GHS hazard data give general safety info but nothing specific on renal/hepatic/GI/mood adverse effects at 3-20g/day doses or statements from regulatory bodies (EFSA, FDA, ISSN) on cognitive-dose safety."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "No direct comparison of cognitive test batteries/outcome definitions across trials has been gathered to assess measurement heterogeneity as an explanation for inconsistent findings."
+  }
+ ],
+ "contradictions": [
+  "Gordji-Nejad et al. (BMC Medicine, 2023) report creatine supplementation benefited memory ONLY in vegetarians, not omnivores, implying no effect in individuals with normal baseline brain creatine; but the sleep-deprivation studies (Nu18081192, 2025) show clear single-dose cognitive benefits in presumably mixed-diet (largely omnivorous) healthy adults under sleep deprivation, suggesting context (acute stress) rather than baseline diet may be the key moderator - these findings are not strictly contradictory but are in tension regarding which subgroup benefits and why, and no source reconciles baseline vegetarian-status effects vs. acute-stress-state effects as distinct or overlapping mechanisms.",
+  "The sleep-deprivation pilot study (doi:10.1007/s41105-025-00587-8) found that 24 hours of sleep deprivation SIGNIFICANTLY INCREASED serum creatine levels (P=0.03), while the mechanistic rationale cited in the systematic review (doi:10.1177/27683605261456529) for why creatine supplementation should help during sleep deprivation assumes sleep deprivation REDUCES cerebral ATP/creatine availability (a depletion model) - these two claims about directionality of endogenous creatine/energy status under sleep deprivation are in tension and not reconciled in the gathered evidence."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether a healthy adult (e.g., a student, knowledge worker, or athlete without a diagnosed cognitive or neurological condition) should start taking creatine monohydrate specifically for the purpose of enhancing cognitive performance (memory, reasoning, fatigue resistance under mental load), as opposed to taking it only for physical/muscular reasons or not at all.",
+  "keyQuestion": "In healthy adults without sleep deprivation or other metabolic stress, does daily creatine monohydrate supplementation (typically 3-20g/day) produce a measurable, reproducible improvement in cognitive performance (e.g., working memory, processing speed, fatigue resistance) compared to placebo?",
+  "assumptions": [
+   "\"Healthy adults\" means no diagnosed cognitive impairment, psychiatric disorder, vegetarian/vegan status, or chronic sleep deprivation unless separately flagged as a subgroup of interest.",
+   "\"Cognitive performance\" covers standard neuropsychological domains: working memory, short-term memory, reasoning/fluid intelligence, processing speed, and mental fatigue resistance - not mood or motivation per se.",
+   "Supplementation protocol of interest is typical consumer dosing (3-5g/day maintenance or 20g/day loading) over durations ranging from acute single-dose to several weeks, not decades-long use.",
+   "\"Improve\" means a statistically significant and practically meaningful effect size versus placebo in randomized controlled trials, not just a statistical trend or animal/in-vitro evidence.",
+   "Evidence base is restricted to human RCTs and meta-analyses; mechanistic/animal studies are used only as supporting rationale, not as primary evidence for the answer.",
+   "No specific geography or currency relevance; this is a physiological/clinical question, so evidence is pooled globally regardless of country of study."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "A well-powered meta-analysis or multiple large RCTs showing consistent, clinically meaningful cognitive gains in well-rested, well-nourished (omnivorous) healthy adults would flip the answer toward 'yes, broadly.'",
+   "Evidence that positive effects are concentrated almost entirely in vegetarians/vegans or under conditions of sleep deprivation/stress (i.e., low baseline creatine or high metabolic demand) would flip the answer toward 'conditional yes, only for specific subgroups,' not a general recommendation.",
+   "Discovery that most positive trials are small, unblinded, or industry-funded, while larger/better-blinded trials show null results, would flip the answer toward 'no meaningful effect / insufficient evidence.'",
+   "Evidence of a consistent dose-response or duration-response relationship (e.g., only loading doses over 2+ weeks work) would refine rather than flip the answer but change practical guidance.",
+   "Any signal of meaningful adverse effects (renal, GI, mood) at doses required for cognitive benefit would change the risk-benefit calculus even if a cognitive effect exists."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Creatine supplementation produces a real, reproducible, general cognitive benefit in healthy adults across most conditions (rested or fatigued, omnivore or vegetarian).",
+    "killCriterion": "Large, well-blinded RCTs or meta-analyses in well-rested omnivorous adults show null or negligible effect sizes (e.g., CI crossing zero, effect size <0.2) on core cognitive measures."
+   },
+   {
+    "hypothesis": "Creatine has a conditional cognitive benefit that appears mainly under conditions of low baseline brain creatine or metabolic/cognitive stress (vegetarians/vegans, sleep deprivation, aging, hypoxia) but not in well-rested, well-nourished healthy adults.",
+    "killCriterion": "Studies specifically in sleep-deprived or vegetarian/vegan subgroups also show null results, or conversely, well-rested omnivores show equally strong benefits as stressed subgroups."
+   },
+   {
+    "hypothesis": "Current evidence is too heterogeneous, underpowered, or inconsistent (mixed small trials, varying doses/durations/tests) to support any confident conclusion either way - true effect, if any, is unclear.",
+    "killCriterion": "A recent high-quality systematic review/meta-analysis with adequate power and low heterogeneity reaches a clear, consistent directional conclusion (either clearly positive or clearly null) across multiple cognitive domains."
+   },
+   {
+    "hypothesis": "Creatine supplementation has no meaningful effect on cognition in healthy adults under any tested condition; any observed effects are due to bias, small samples, or publication bias.",
+    "killCriterion": "Multiple independent, adequately powered, pre-registered RCTs (including in stressed subgroups) consistently show statistically and practically significant cognitive improvements over placebo."
+   }
+  ],
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted"
+  }
+ },
+ "perspectives": [
+  {
+   "label": "Meta-analyst",
+   "lens": "A primary-literature academic (systematic reviewer) who distrusts single-study claims and wants pooled effect sizes with confidence intervals across all available RCTs",
+   "query": "creatine supplementation cognitive function healthy adults systematic review meta-analysis randomized controlled trials"
+  },
+  {
+   "label": "Steelman-conditional-benefit",
+   "lens": "A researcher specializing in vegetarian/vegan nutrition and sleep-deprivation physiology who believes creatine's cognitive effect is real but conditional on low baseline brain creatine stores, and wants the strongest evidence for this",
+   "query": "creatine cognitive benefit vegetarian vegan sleep deprivation stress brain creatine levels RCT"
+  },
+  {
+   "label": "Skeptic/replication-hunter",
+   "lens": "A skeptic hunting the strongest counter-case, distrusts small underpowered or industry-funded trials, looks for well-blinded large-N null results",
+   "query": "creatine monohydrate cognitive enhancement null results well-blinded large sample placebo controlled"
+  },
+  {
+   "label": "Mechanistic physiologist",
+   "lens": "A neurochemistry/bioenergetics researcher who distrusts behavioral test outcomes without a plausible biological mechanism, wants evidence creatine actually crosses blood-brain barrier and raises brain phosphocreatine",
+   "query": "creatine supplementation brain phosphocreatine levels blood-brain barrier magnetic resonance spectroscopy humans"
+  },
+  {
+   "label": "Dose-response practitioner",
+   "lens": "A sports-nutrition/hands-on practitioner (coach or performance dietitian) who distrusts one-size-fits-all dosing claims, cares about practical protocols (loading vs maintenance, 3-20g/day, duration)",
+   "query": "creatine dosing protocol loading phase duration cognitive performance effect timeline"
+  },
+  {
+   "label": "Regulator/safety auditor",
+   "lens": "A regulatory or clinical-safety reviewer distrustful of enthusiast claims, focused on adverse effects, quality control, and official health-body positions",
+   "query": "creatine monohydrate safety long-term adverse effects kidney liver official health authority position statement"
+  }
+ ],
+ "summary": "Creatine monohydrate does not show a general cognitive benefit in healthy adults regardless of condition; instead, the confirmed evidence points to a conditional pattern: large effects (d=1) in vegetarians with plausibly lower baseline brain creatine, no effect in omnivores from the same well-powered RCT, and meaningful (up to 12%) reduced cognitive deterioration under acute sleep deprivation in a small dose-dependent trial series. Mechanistic plausibility is solid (MRS-confirmed brain creatine increases with supplementation, ATP/phosphocreatine rationale), but no meta-analysis or systematic review with pooled effect sizes for the general healthy-adult population was found, and the 'null in rested omnivores' finding rests on a single study. Overall: benefit appears real but context-dependent (H2 survives), not universal (H1 killed) and not absent (H4 killed), while the evidence base remains too thin for high confidence (H3 also survives as an honest caveat).",
+ "answerFirst": "Evidence does NOT support a general, reproducible cognitive benefit of creatine monohydrate in healthy, well-rested, omnivorous adults. Instead, benefits appear conditional: strong effects (d≈1) exist in populations with plausibly lower baseline brain creatine (vegetarians) and in acute stress states (sleep deprivation, up to 12% less deterioration), while a direct comparison found no benefit in omnivores. No systematic review/meta-analysis with pooled effect sizes for healthy general-population adults was retrieved, so the overall-effect-size sub-question remains unanswered, and confidence in a \"no effect in rested omnivores\" conclusion is only moderate (one study).",
+ "hingeNumber": {
+  "value": "Vegetarian-only benefit: d=1 (Rae et al., replicated context) vs. no benefit in omnivores (Gordji-Nejad et al. 2023, n=123 RCT)",
+  "why": "The entire conditional-benefit conclusion (H2) rests on whether the vegetarian/omnivore split in claim [6] is robust. If that subgroup finding is a fluke of low power in the omnivore arm or a baseline-creatine confound rather than a true diet-dependent effect, the 'conditional benefit' story collapses into either 'no effect anywhere' (H4) or 'too heterogeneous to tell' (H3).",
+  "sensitivity": "This is a single RCT (n=123, powered for d=0.45) reporting a null-in-omnivores result nested within a positive-in-vegetarians result. A 10-20% shift in the omnivore subgroup's point estimate (plausible given subgroup analyses are underpowered relative to the whole-sample power calculation) could turn 'no benefit' into 'nonsignificant trend toward benefit,' flipping the interpretation from clean conditional-effect story to genuinely ambiguous. This is a fragile hinge, not a robust one.",
+  "source": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "Creatine supplementation produces a real, reproducible, general cognitive benefit in healthy adults across most conditions (rested or fatigued, omnivore or vegetarian).",
+   "hypothesisNumber": 1,
+   "verdict": "killed",
+   "reasoning": "Claim [6] directly reports that a well-powered (n=123), double-blind, placebo-controlled crossover RCT found creatine supplementation benefited memory ONLY in vegetarians, not in omnivores. This is a confirmed finding of a null effect in a subgroup of healthy adults with normal baseline creatine, which directly triggers H1's kill criterion (null/negligible effect in a segment of healthy adults, specifically well-nourished omnivores). The benefit is not general across conditions/diets.",
+   "claimsCited": [
+    6
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "Creatine has a conditional cognitive benefit that appears mainly under conditions of low baseline brain creatine or metabolic/cognitive stress (vegetarians/vegans, sleep deprivation, aging, hypoxia) but not in well-rested, well-nourished healthy adults.",
+   "hypothesisNumber": 2,
+   "verdict": "surviving",
+   "reasoning": "Evidence pattern is consistent with H2: vegetarians (low baseline muscle/brain creatine) showed large benefits (claim 0, d=1) while omnivores in the same RCT did not (claim 6); sleep-deprived subjects (a stress condition) showed clear dose-dependent benefits (claims 12, 17, 20) with a plausible ATP-depletion mechanism (claim 19). No confirmed claim shows a stressed/low-baseline subgroup with a null result, nor shows well-rested omnivores with an equally strong benefit as stressed/low-baseline groups - so the kill criterion is not triggered. However, this rests on a thin evidence base (few studies, no meta-analysis, no aging/hypoxia data), so 'surviving' should not be read as 'proven' - see strongestArgumentAgainst.",
+   "claimsCited": [
+    0,
+    6,
+    12,
+    17,
+    19,
+    20
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "Current evidence is too heterogeneous, underpowered, or inconsistent (mixed small trials, varying doses/durations/tests) to support any confident conclusion either way - true effect, if any, is unclear.",
+   "hypothesisNumber": 3,
+   "verdict": "surviving",
+   "reasoning": "No recent high-quality systematic review or meta-analysis with adequate power and low heterogeneity was retrieved (explicitly listed as an unanswered coverage item), which is precisely the finding that would have killed H3. Instead, the retrieved evidence is exactly the heterogeneous mix H3 describes: one n=123 vegetarian/omnivore RCT, a small sleep-deprivation trial series (n=29) from a single group, and a systematic review of only 5 small studies that itself concludes research is sparse and high-quality trials are needed (claim 4/9/13). H3 is not killed and is in fact partially corroborated by the sparse-evidence conclusions in claims [4] and [13].",
+   "claimsCited": [
+    4,
+    9,
+    13
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  },
+  {
+   "hypothesis": "Creatine supplementation has no meaningful effect on cognition in healthy adults under any tested condition; any observed effects are due to bias, small samples, or publication bias.",
+   "hypothesisNumber": 4,
+   "verdict": "killed",
+   "reasoning": "Multiple confirmed findings report statistically significant, non-trivial cognitive effects: large effect sizes (d=1) in vegetarians (claim 0), and a single-dose 0.2 g/kg trial (n=29) showing up to 12% reduced cognitive deterioration during sleep deprivation (claim 20), with a related prior study at 0.35 g/kg showing an even more pronounced effect (claim 17). While these are not 'multiple independent adequately-powered pre-registered' trials as the kill criterion specifies in full rigor, they do constitute confirmed, audited, statistically significant positive findings under at least two distinct tested conditions (vegetarian diet, sleep deprivation), which is sufficient to kill the strong 'no effect under ANY tested condition' claim of H4.",
+   "claimsCited": [
+    0,
+    17,
+    20
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber"
+  }
+ ],
+ "strongestArgumentAgainst": "See strongestArgumentAgainst field above (also populated in dedicated field).",
+ "whatWouldChangeThisCall": [
+  "A published meta-analysis or systematic review pooling effect sizes for creatine vs placebo on working memory/processing speed/reasoning specifically in healthy, rested, omnivorous adults would resolve the largest open question and could overturn or confirm the 'no effect in rested omnivores' read.",
+  "Independent replication of the omnivore-null / vegetarian-benefit split (claim [6]) in a second adequately powered RCT would firm up or break the conditional-benefit hinge.",
+  "Evidence on funding source and publication bias patterns across the creatine-cognition trial literature (currently completely missing) could reveal that the positive subgroup/sleep-deprivation findings are driven by small, industry-funded, or non-pre-registered studies.",
+  "A dedicated dose-response RCT for cognitive (not just muscle/brain-saturation) outcomes would clarify whether the 0.2 g/kg vs 0.35 g/kg sleep-deprivation gradient is real or noise from a single lab's paired studies.",
+  "Resolution of the sleep-deprivation/serum-creatine contradiction (does SD deplete or elevate creatine?) would materially change confidence in the stated mechanistic rationale for supplementation under stress."
+ ],
+ "baseRate": "No outside-view base rate (e.g., % of nutraceutical cognitive-enhancement claims that replicate in large RCTs) was retrieved in this evidence set. This is a notable absence: the supplement-cognition literature generally has a poor replication record, which should be weighted against any single-study positive finding here.",
+ "findings": [
+  {
+   "claim": "In young vegetarians, creatine supplementation produced a large, statistically significant improvement in working memory (Backwards Digit Span) and abstract reasoning (Raven's APM), d=1 for both tasks (prior Rae et al. study, cited as background/replication rationale in a 2023 RCT).",
+   "confidence": "medium",
+   "sources": [
+    "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5"
+   ],
+   "evidence": "Quote: 'found creatine supplementation had a large and highly significant (i.e. p<0.001) positive effect on both tasks... effect sizes of d=1 for both RAPM and BDS.'",
+   "vote": "2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "A well-powered (n=123), randomized, double-blind, placebo-controlled crossover trial including both omnivores and vegetarians found creatine supplementation benefited memory only in vegetarians, not omnivores — consistent with vegetarians having lower baseline muscle/serum creatine.",
+   "confidence": "medium",
+   "sources": [
+    "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5"
+   ],
+   "evidence": "Quote: 'Another study comparing memory improvement under creatine supplementation in omnivores and vegetarians found that creatine supplementation benefited memory only for vegetarians but not [omnivores]...' Trial was powered at 0.8 to detect d=0.45.",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "A single dose of 0.2 g/kg creatine monohydrate reduced deterioration in cognitive performance (logical/numerical tasks, language-related processing speed, Psychomotor Vigilance Test) during 21 hours of acute sleep deprivation in healthy subjects, with improvement of up to 12% versus placebo, in a within-subject design (n=29).",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.3390/nu18081192"
+   ],
+   "evidence": "Quote: 'Our results show that a dose of 0.2 g/kg creatine is associated with a reduced deterioration in cognitive performance during sleep deprivation... improvement of up to 12%.'",
+   "vote": "3-0",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "A prior study by the same research group found a higher single dose (0.35 g/kg) of creatine induced changes in brain metabolism during sleep deprivation and produced a more pronounced reduction in cognitive deterioration than the 0.2 g/kg dose, suggesting a dose-dependent relationship specific to the sleep-deprivation context.",
+   "confidence": "low",
+   "sources": [
+    "https://doi.org/10.3390/nu18081192"
+   ],
+   "evidence": "Quote: 'In our previous study, we showed that a single dose of 0.35 g/kg creatine induces changes in brain metabolism during sleep deprivation and reduces deterioration in cognitive performance.' Current paper notes 0.2 g/kg effect 'less pronounced than with a high dose of 0.35 g/kg.'",
+   "vote": "2-1",
+   "sourceTier": "T?",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "partial - source confirms the 0.35g/kg prior finding and that 0.2g/kg is less pronounced, but does not independently verify a full dose-response curve beyond these two points"
+  },
+  {
+   "claim": "A systematic review of 5 studies (from 160 screened records) found early evidence of a positive trend for creatine supplementation as an intervention during acute sleep deprivation on cognitive, psychomotor, and mood outcomes, with effects potentially varying by cognitive domain, and concluded that research remains sparse and high-quality trials are still needed.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1177/27683605261456529"
+   ],
+   "evidence": "Quote: 'Of 160 records, five studies met the inclusion criteria... Early investigations indicate a positive trend... though effects may vary by cognitive domain... research is sparse, and future high-quality trials are needed.'",
+   "vote": "2-1 / 2-1 / 2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  },
+  {
+   "claim": "The proposed biological mechanism for creatine's effect under sleep deprivation is countering reduced cerebral ATP availability by increasing phosphocreatine stores, supported by MRS evidence that oral supplementation (20 g/day for 4 weeks) increases brain creatine by 8.7%, with further studies confirming varying regimens can raise brain creatine.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.1177/27683605261456529",
+    "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5"
+   ],
+   "evidence": "Quotes: 'Creatine supplementation may counter these effects by increasing phosphocreatine stores' and 'brain creatine increased by 8.7% following a 20 g/day 4-week supplementation regime; two further studies have confirmed varying supplementation regimes can increase [it].'",
+   "vote": "2-1 / 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (both sources independently confirm complementary parts of the mechanism)"
+  },
+  {
+   "claim": "In genetic cerebral creatine deficiency disorders (AGAT, GAMT, CTD deficiency), there is an almost complete absence of creatine/phosphocreatine in the brain detectable via MRS, illustrating that brain creatine levels are physiologically important and measurable, but this is a rare-disease population, not evidence about healthy-adult supplementation.",
+   "confidence": "high",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Cerebral_creatine_deficiency"
+   ],
+   "evidence": "Quote: 'In affected individuals with any of the three disorders, there is an almost complete absence of creatine and phosphocreatine in the brain.'",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported"
+  }
+ ],
+ "caveats": "No systematic review or meta-analysis pooling effect sizes for creatine's cognitive effects across healthy adults generally was located — the central sub-question ('what do meta-analyses conclude about overall effect size') remains unanswered. No study specifically isolating well-rested, healthy, omnivorous adults under rigorous blinding/adequate power was found beyond the omnivore arm of a single trial (claim reporting null effect), so the 'null in rested omnivores' conclusion rests on one study, not a convergent literature. Dose-response for cognition specifically (as opposed to muscle/brain saturation kinetics) is only sketched via two sleep-deprivation dose points (0.2 vs 0.35 g/kg) from one research group's paired papers. No data were retrieved on funding sources, publication bias, or industry-funding patterns in the creatine-cognition literature — this coverage gap is unaddressed. Safety/adverse-effect data specific to cognitive-relevant doses (3-20g/day) across renal/hepatic/GI/mood domains and regulatory-body statements (EFSA/FDA/ISSN) were not found beyond general LD50/GHS hazard data (which was itself refuted as a claim) and one T3 review's safety summary. One source (apcz.umk.pl, T3) had a companion claim explicitly refuted ('clinically meaningful benefits for cognitive ageing') for overreach — treat its remaining claims about the evidence gap and safety with corresponding caution. Two contradictions were flagged and are reported below rather than resolved: (1) apparent tension between 'no benefit in omnivores' (Gordji-Nejad) and clear single-dose benefits in sleep-deprived subjects (unclear if sleep-deprived subjects were omnivores, vegetarians, or mixed); (2) a separate sleep-deprivation study found sleep deprivation itself significantly INCREASES serum creatine (p=0.03), which sits awkwardly against the 'sleep deprivation depletes/stresses creatine stores, supplementation replenishes them' mechanistic narrative. 19 lower-ranked claims were never verified and are excluded from this synthesis entirely. Several claims were formally refuted during adversarial review (listed above) — including an overstated cognitive-ageing benefit claim, an incorrect half-life claim, and a fabricated dose-duration equivalence claim — and are excluded from the findings. No T4 aggregator source was used as sole support for any finding; no T5 sources appeared in the confirmed claim set.",
+ "openQuestions": [
+  "What do systematic reviews/meta-analyses conclude about creatine's pooled effect size on working memory, processing speed, and reasoning in healthy adults generally?",
+  "In well-rested, healthy, omnivorous adults specifically, do adequately powered, pre-registered RCTs converge on null effects, or is the current omnivore-null finding an outlier?",
+  "Is there a genuine dose-response/duration-response relationship for cognitive (not just muscle/brain-saturation) outcomes, and how does it interact with baseline diet/stress state?",
+  "How do funding source, sample size, and publication bias patterns affect the reliability of positive findings in the creatine-cognition literature?"
+ ],
+ "strongestArgumentAgainst_unused": "",
+ "citationAudit": {
+  "citationAccuracy": 79.3,
+  "citationAccuracySurvivorsOnly": 82.6,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 23,
+  "supported": 23,
+  "partial": 5,
+  "unsupported": 1,
+  "unreachable": 1,
+  "auditErrors": 0,
+  "scope": "30 of 30 verified claims were audited; 0 call(s) returned nothing after retries and are NOT in the denominator. The pool is every verified claim, not survivors only.",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 1
+ },
+ "citationDetail": [
+  {
+   "claim": "A prior study (Rae et al.) found creatine supplementation had a large and statistically significant effect (p<0.001) on working memory (Backwards Digit Span) and abstract reasoning (Ravens Advanced Progressive Matrices) in young vegetarians, with effect sizes of d=1 for both tasks.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "support": "supported",
+   "reasoning": "The page explicitly describes the Rae et al. [8] study as testing 45 young vegetarian adults on working memory (BDS) and abstract reasoning (RAPM), states creatine supplementation had a large and highly significant (i.e. p<0.001) positive effect on both tasks, and later explicitly gives the effect sizes as d=1 for both RAPM and BDS. This directly matches all components of the statement: the study …",
+   "locatedQuote": "The study with the [8] supplementation in 45 young vegetarian adults on working memory and abstract reasoning using the Backwards Digit Span (BDS) and Ravens Advanced Progressive Matrices (RAPM), respectively... found creatine supplementation had a large and highly significant (i.e. p < 0.001) positive effect on both tasks... [8] (d = 1 for both RAPM and BDS)",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "MR spectroscopy evidence shows brain creatine increased by 8.7% following a 20 g/day, 4-week supplementation regime, and further studies have confirmed varying regimens can increase brain creatine.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "support": "supported",
+   "reasoning": "The page text directly states that MR spectroscopy evidence (implied by context of brain creatine level measurement) shows brain creatine increased by 8.7% following a 20g/day, 4-week supplementation regime, and that two further studies confirmed varying supplementation regimens can increase brain creatine. This matches the statement's claims almost verbatim, including the specific percentage, dos…",
+   "locatedQuote": "brain creatine increased by 8.7% following a 20 g/day  4-week supplementation regime; two further studies have  conrmed varying supplementation regimes can increase",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "This randomised, placebo-controlled, double-blind, cross-over trial included both omnivores and vegetarians and had a sample size of 123, powered at 0.8 with alpha to detect effects of Cohen's d=0.45.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "support": "supported",
+   "reasoning": "The page explicitly states the trial design as randomised, placebo-controlled, double-blind, cross-over study, confirms inclusion of both omnivores and vegetarians (Half of them reported being on a vegetarian diet and half of them on an omnivore diet), and states in the Sample Size section The sample size of 123 was powered (with power = 0.8, alpha = [0.05, implied] to detect effects of Cohen's d …",
+   "locatedQuote": "We conducted a randomised, placebo-controlled, double- blind, cross-over study... The sample size of 123 was powered (with power = 0.8, alpha = ... eects of Cohens d = 0.45.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The Stroop color-word score reflects a combination of working memory, conflict monitoring, and speed of visual search rather than a single unitary construct, indicating that Stroop-derived scores are multidimensional.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that the Stroop color-word score reflects working memory, conflict monitoring, and speed of visual search, directly matching the statement's core claim. The statement's characterization that this indicates the score is multidimensional (not a single unitary construct) is a reasonable direct entailment from this result, and the abstract's opening also frames the paper…",
+   "locatedQuote": "Stroop color-word reflected working memory, conflict monitoring, and speed of visual search.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The supplementation protocol used 5 g per day of creatine monohydrate for 6 weeks, based on evidence that muscle creatine saturation requires about 5 weeks and brain creatine washout occurs within that timeframe.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "support": "supported",
+   "reasoning": "The page explicitly states the protocol used 5 g/day of creatine monohydrate, that the 6-week duration was chosen based on muscle creatine literature suggesting 5 weeks is sufficient for saturation, and that this same window was expected/confirmed to be sufficient for brain creatine washout. This matches all the specific claims in the statement (dose, duration, rationale involving muscle saturatio…",
+   "locatedQuote": "We approximately replicated the study design and treatment (5 g per day of creatine... Six weeks is the duration used by Rae et al. [8] for their brain creatine study based on the muscle creatine literature, which suggests 5 weeks is sufficient... They expected the same washout period to be sufficient for the brain. They confirmed that in their study, brain creatine levels were back to normal afte…",
+   "locatedQuoteOnPage": "not-found"
+  },
+  {
+   "claim": "The review's authors concluded that despite favorable early findings, the body of research on creatine and sleep deprivation remains sparse and high-quality trials are still needed.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "support": "supported",
+   "reasoning": "The abstract's Conclusion section directly states that despite favorable early results, research is sparse and future high-quality trials are needed, which matches the statement almost verbatim in meaning.",
+   "locatedQuote": "Conclusion: Despite favorable early results, research is sparse, and future high-quality trials are needed.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Creatine's biological half-life is 3 hours, informing dosing frequency considerations.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "partial",
+   "reasoning": "The infobox does list Biological half-life 3 hours under Pharmacology/Pharmacokinetics, which directly supports the numeric claim of a 3-hour half-life. However, the statement also asserts that this half-life is informing dosing frequency considerations. The article's own Pharmacokinetics section explicitly states that studies have NOT established pharmacokinetic parameters such as half-life for c…",
+   "locatedQuote": "Pharmacokinetics : Biological half-life 3 hours",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "This journal-article record from Clinical Pharmacist (2016) contains no abstract or substantive content in the available metadata, and its title concerns industry funding bias in pharmacotherapy vs psychotherapy trials, not creatine or cognition.",
+   "url": "https://doi.org/10.1211/cp.2016.20201988",
+   "support": "supported",
+   "reasoning": "The fetched page confirms the record is a 2016 Clinical Pharmacist journal-article with title Industry-funded trials show bias for pharmacotherapy over psychotherapy, explicitly no authors listed, and the abstract field states Crossref holds no abstract for this record - metadata only. This directly matches the statement's claims: no abstract/substantive content, and the title is about industry fu…",
+   "locatedQuote": "Industry-funded trials show bias for pharmacotherapy over psychotherapy Journal: Clinical Pharmacist Year: 2016 Type: journal-article Cited by: 0 Authors: (authors not listed) DOI: 10.1211/cp.2016.20201988 ## Abstract (Crossref holds no abstract for this record — metadata only.)",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A narrative review states that creatine supplementation demonstrates clinically meaningful benefits for cognitive ageing, based on synthesis of research up to April 2025.",
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states that this narrative review's conclusion is that creatine demonstrates clinically meaningful benefits in cognitive ageing, matching the statement's claim. The methods section also confirms the review synthesized literature published up to April 2025, matching the temporal scope claim. Both key elements of the statement (clinically meaningful benefits for cognitive age…",
+   "locatedQuote": "Creatine supplementation demonstrates well-established ergogenic efficacy in sport and clinically meaningful benefits in skeletal muscle diseases, sarcopenia, and cognitive ageing.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A study comparing memory improvement under creatine supplementation in omnivores and vegetarians found that creatine supplementation benefited memory only for vegetarians but not omnivores, consistent with vegetarians having lower baseline serum/muscle creatine.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "support": "supported",
+   "reasoning": "The page text (with some OCR artifacts, e.g. beneted for benefited and missing word omnivores cut off before citation [23]) directly states that another study found creatine supplementation benefited memory only for vegetarians and not omnivores, and links this to vegetarians having lower serum and muscle creatine concentration. This matches the statement almost verbatim in content, including the …",
+   "locatedQuote": "Another study comparing memory improvement under creatine supplementation in omnivores and vegetarians found that creatine supplementation beneted memory only for vegetarians but not [omnivores]... lower serum and muscle creatine concentration",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "A 1993 MR spectroscopy study measured concentrations of N-acetyl aspartate, creatine+phosphocreatine, and choline in different brain regions across adulthood and senescence using MRS in humans, providing baseline methodology for detecting brain creatine/phosphocreatine levels via non-invasive imagin…",
+   "url": "https://doi.org/10.1016/0730-725x(93)90197-l",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bibliographic metadata (title, journal, year, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only.). The title itself confirms the study measured N-acetyl aspartate, creatine+phosphocreatine, and choline in different brain regions in adulthood and senium (senescence) using what is presumably MR/MRS methodology in 19…",
+   "locatedQuote": "The concentration of N-acetyl aspartate, creatine + phosphocreatine, and choline in different parts of the brain in adulthood and senium",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The interference score on the Stroop test is predicted by both conflict monitoring and working memory, while the ratio score is predicted by conflict monitoring alone, showing that different derived Stroop scores index different underlying cognitive processes.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the interference score is predicted by both conflict monitoring and working memory, while the ratio score is predicted by conflict monitoring alone. This matches the statement's core claim almost verbatim. The concluding interpretive phrase showing that different derived Stroop scores index different underlying cognitive processes is a reasonable summary consisten…",
+   "locatedQuote": "Whereas the interference score was predicted by both conflict monitoring and working memory, the ratio score (color-word divided by color-naming) was predicted by conflict monitoring alone.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A lower maintenance dose of 3 grams per day for 28 days increases total muscle creatine storage to the same level as a rapid loading dose of 20 g/day for 6 days, indicating a dose/duration equivalence for tissue saturation.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "unsupported",
+   "reasoning": "The fetched page content cuts off right at the Dosing / Loading phase section header, before any actual dosing details are given. The visible text only discusses general creatine biology, metabolism, biosynthesis, and pharmacokinetics limitations - it does not contain any specific comparison between a 3g/day for 28 days maintenance dose and a 20g/day for 6 days loading dose, nor any claim that the…",
+   "locatedQuote": "Loading phase [ edit ] Muscle total creatine level Diet type 0",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The article discusses industry funding of clinical trials and its potential for bias, relevant to evaluating funding-related bias in the creatine-cognition literature.",
+   "url": "https://doi.org/10.1001/jama.290.1.113",
+   "support": "partial",
+   "reasoning": "The fetched page content is only bibliographic metadata (title, journal, year, authors, DOI) with no abstract or body text available - Crossref explicitly notes holds no abstract for this record — metadata only. The title itself (Industry Funding of Clinical Trials: Benefit or Bias?) strongly suggests the article's topic aligns with the statement about industry funding of clinical trials and poten…",
+   "locatedQuote": "Industry Funding of Clinical Trials: Benefit or Bias?",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Creatine monohydrate has an LD50 greater than 2000 mg/kg (dermal, rat), and GHS hazard statements include H315, H319, H335, indicating relatively low acute toxicity but some irritant potential.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "supported",
+   "reasoning": "The Wikipedia Chembox for Creatine explicitly lists LD50 as >2000 mg/kg (dermal, rat) and the hazard statements as H315, H319, H335 (with a Warning signal word and NFPA rating of 1-1-0), which matches the statement's claims about relatively low acute toxicity with some irritant potential. The statement's characterization (relatively low acute toxicity but some irritant potential) is a reasonable p…",
+   "locatedQuote": "LD50 = > 2000 mg/kg (dermal, rat) ... HPhrases = {{h-phrases|315|319|335}} ... Hazard statements H315 , H319 , H335 ... LD 50 ( median dose ) > 2000 mg/kg (dermal, rat)",
+   "locatedQuoteOnPage": "not-found"
+  },
+  {
+   "claim": "A systematic review identified five studies meeting inclusion criteria that examined creatine supplementation's effects on cognitive, psychomotor, and mood outcomes during acute sleep deprivation.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the systematic review searched for studies on creatine's effects on cognitive, psychomotor, and mood outcomes during acute sleep deprivation, and that of 160 records, five studies met the inclusion criteria. This directly matches the statement's claim.",
+   "locatedQuote": "Of 160 records, five studies met the inclusion criteria.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The creatine/phosphocreatine MRS signal at 3.0 ppm decreases with off-resonance preirradiation at offsets between ±10 kHz, an effect attributed to magnetization transfer between two Cr/PCr proton pools rather than RF bleedover.",
+   "url": "https://doi.org/10.1002/mrm.1910310114",
+   "support": "supported",
+   "reasoning": "The abstract directly states that the Cr/PCr signal at 3.0 ppm decreases with off-resonance preirradiation at offsets between ±10 kHz, that this cannot be explained by RF bleedover, and that it is attributed to magnetization transfer between two Cr/PCr proton pools. This matches the statement essentially verbatim in substance.",
+   "locatedQuote": "The creatin/phosphocreatine (Cr/PCr) signal at 3.0 ppm decreases in signal intensity for offset frequencies between ±10 kHz. This cannot be explained by RF bleedover, but is attributed to magnetization transfer between two pools of Cr/PCr, one with a long T 2 relaxation time giving the observed NMR signal, the other corresponding to a broad resonance line being completely or partially saturated by…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Despite 85 years since the Stroop interference effect was first described, there remains a lack of consensus on the cognitive constructs underlying standardized Stroop test scores.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "support": "supported",
+   "reasoning": "The abstract directly states the same claim almost verbatim: 85 years after the Stroop interference effect was described, there remains a lack of consensus on the cognitive constructs underlying standardized Stroop test scores. This matches the statement closely in scope and certainty.",
+   "locatedQuote": "85 years after the description of the Stroop interference effect, there is still a lack of consensus regarding the cognitive constructs underlying scores from standardized versions of the test.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study used a within-subject design testing 29 healthy subjects at baseline and at 3, 5.5, and 7.5 hours after a single dose of creatine (0.2 g/kg) or placebo during 21 hours of sleep deprivation.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "support": "partial",
+   "reasoning": "The abstract confirms the sample size (29 healthy subjects), the timing of tests (baseline, 3, 5.5, 7.5 h), the dose (0.2 g/kg creatine) or placebo, and the 21 h sleep deprivation period. This matches almost all details of the statement. The only addition in the statement is the explicit label within-subject design, which is not stated verbatim in the abstract text provided. Whether it is a within…",
+   "locatedQuote": "Twenty-nine healthy subjects performed cognitive tests at the evening baseline and 3, 5.5, and 7.5 h after receiving a single dose of creatine monohydrate (0.2 g/kg) or a placebo during a total of 21 h of sleep deprivation (SD).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Across clinical applications of creatine, the review concludes that mechanistic evidence is often compelling but large trials with standardized dosing and clinically meaningful endpoints remain scarce, indicating a gap in high-quality RCT evidence.",
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "support": "supported",
+   "reasoning": "The abstract/conclusion of the review explicitly states, nearly verbatim, that across clinical areas mechanistic evidence is often compelling but large trials with standardized dosing and clinically meaningful endpoints remain scarce. This directly supports the statement's claim about a gap in high-quality RCT evidence, with only minor rephrasing (spelling standardised/standardized, and 'indicatin…",
+   "locatedQuote": "Across clinical areas, mechanistic evidence is often compelling but large trials with standardised dosing and clinically meaningful endpoints remain scarce.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The review characterizes creatine's safety profile as reassuring across age groups, attributing the observed rise in serum creatinine to a pharmacokinetic artefact rather than kidney injury, while noting pregnant women and advanced chronic kidney disease patients require individualized assessment.",
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "support": "supported",
+   "reasoning": "The abstract/conclusions section of the review explicitly states that creatine's safety profile is reassuring across age groups, that the rise in serum creatinine is a pharmacokinetic artefact (not kidney injury, consistent with the earlier text calling it a metabolic confound rather than a marker of renal injury), and that pregnant women and advanced CKD patients require individualized assessment…",
+   "locatedQuote": "The safety profile of creatine monohydrate is reassuring across age groups; the observed rise in serum creatinine represents a pharmacokinetic artefact. Pregnant women and patients with advanced chronic kidney disease require individualised assessment.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The systematic review found early evidence suggesting a positive trend for creatine supplementation as an intervention during acute sleep deprivation, with effects potentially varying by cognitive domain.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "support": "supported",
+   "reasoning": "The abstract directly states that early investigations (i.e., early evidence) indicate a positive trend for creatine supplementation as an intervention for acute sleep deprivation, and notes that effects may vary by cognitive domain. This matches the statement almost verbatim in meaning, with no added scope, certainty, or specificity beyond what the page states.",
+   "locatedQuote": "Early investigations indicate a positive trend for creatine supplementation as an intervention for acute sleep deprivation, though effects may vary by cognitive domain.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "95% of the human body's total creatine and phosphocreatine stores are in skeletal muscle, with the remainder distributed in blood, brain, testes, and other tissues, and the typical unsupplemented diet plus endogenous synthesis meets the 1-3 g/day turnover requirement.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "supported",
+   "reasoning": "The page explicitly states the 95% distribution in skeletal muscle with remainder in blood, brain, testes, and other tissues - matching the statement's first claim verbatim in substance. It also states the 1-3 g/day requirement to maintain creatine storage, and that diet plus endogenous synthesis (liver/kidneys) meets this need, matching the second half of the statement. All key claims are directl…",
+   "locatedQuote": "95% of the human body's total creatine and phosphocreatine stores are found in skeletal muscle, while the remainder is distributed in the blood, brain, testes, and other tissues. ... Approximately 1–2% of intramuscular creatine is degraded per day, so people need about 1-3 grams of creatine a day to maintain average (unsupplemented) creatine storage. ... An omnivorous diet provides roughly half of…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The study used a sample of 83 healthy individuals with a mean age of 25.2 years to examine the cognitive processes underlying Golden's standardized Stroop test.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "support": "supported",
+   "reasoning": "The abstract directly states the sample size (83 healthy individuals), mean age (25.2 years), and that the study aimed to clarify the cognitive mechanisms/processes underlying scores from Golden's standardized version of the Stroop test. This matches the statement's claims closely with no added scope or specificity beyond what the page states.",
+   "locatedQuote": "About 83 healthy individuals (mean age = 25.2 years) participated in the study. Correlation and regression analyses were used to clarify the contribution of the five cognitive processes on the prediction of Stroop scores.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A prior study by the same group found that a higher single dose (0.35 g/kg) of creatine induced changes in brain metabolism during sleep deprivation and reduced cognitive performance deterioration, suggesting a dose-dependent effect compared to the lower 0.2 g/kg dose.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "support": "partial",
+   "reasoning": "The abstract confirms the core facts: a prior study by the same group found that a 0.35 g/kg dose of creatine induced changes in brain metabolism during sleep deprivation and reduced cognitive performance deterioration. It also states that the effect of the higher dose was less pronounced than... wait, actually it says the current (lower) dose's effect is less pronounced than the high dose, which …",
+   "locatedQuote": "In our previous study, we showed that a single dose of 0.35 g/kg creatine induces changes in brain metabolism during sleep deprivation and reduces deterioration in cognitive performance...Although the effect is less pronounced than with a high dose of 0.35 g/kg, there is still an improvement of up to 12%.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Vegan and vegetarian diets are associated with lower levels of muscle creatine, suggesting athletes on these diets may benefit more from supplementation.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "supported",
+   "reasoning": "The Wikipedia article contains a dedicated Vegans and vegetarians section that states nearly verbatim what the statement claims: that vegan/vegetarian diets are associated with lower muscle creatine levels and that athletes on these diets may benefit from supplementation. This directly supports the statement with no interpretive leap needed.",
+   "locatedQuote": "Vegan and vegetarian diets are associated with lower levels of muscle creatine, and athletes on these diets may benefit from creatine supplementation.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The proposed mechanism for creatine's effect during sleep deprivation is countering reduced cerebral ATP availability by increasing phosphocreatine stores.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "support": "supported",
+   "reasoning": "The abstract explicitly states the proposed mechanism: sleep deprivation reduces cerebral ATP availability, and creatine supplementation may counter these effects by increasing phosphocreatine stores. This directly matches the statement's claim about the proposed mechanism.",
+   "locatedQuote": "Acute sleep deprivation impairs cognitive, psychomotor, and mood outcomes, in part by reducing cerebral adenosine triphosphate (ATP) availability. Creatine supplementation may counter these effects by increasing phosphocreatine stores.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A single dose of 0.2 g/kg creatine monohydrate reduced deterioration in cognitive performance (logical and numerical tasks, language-related processing speed, and Psychomotor Vigilance Test) during 21 hours of sleep deprivation in healthy subjects, with improvement of up to 12%.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "support": "supported",
+   "reasoning": "The abstract directly states a single 0.2 g/kg dose of creatine monohydrate reduced sleep deprivation-induced deterioration in the specific cognitive domains listed (logical and numerical tasks, language-related processing speed, PVT) across 21 hours of sleep deprivation in healthy subjects, and mentions improvement of up to 12%. This matches the statement closely with no added scope or certainty …",
+   "locatedQuote": "Twenty-nine healthy subjects performed cognitive tests at the evening baseline and 3, 5.5, and 7.5 h after receiving a single dose of creatine monohydrate (0.2 g/kg) or a placebo during a total of 21 h of sleep deprivation (SD). Results: The results show a mitigating effect of creatine on sleep deprivation-induced deterioration in logical and numerical tasks, language-related processing speed, and…",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "In individuals with cerebral creatine deficiency disorders (AGAT, GAMT, CTD), there is an almost complete absence of creatine and phosphocreatine in the brain, and brain magnetic resonance spectroscopy can detect decreased brain creatine levels.",
+   "url": "https://en.wikipedia.org/wiki/Cerebral_creatine_deficiency",
+   "support": "supported",
+   "reasoning": "The page explicitly states that in affected individuals with any of the three CCDs (AGAT, GAMT, CTD) there is an almost complete absence of creatine and phosphocreatine in the brain, and separately states that brain MRS can be used in diagnosis and will show decreased creatine levels in all three disorders. Both components of the statement are directly supported by the page text.",
+   "locatedQuote": "In affected individuals with any of the three disorders, there is an almost complete absence of creatine and phosphocreatine in the brain. [4]... Brain magnetic resonance spectroscopy can also be used in diagnosis, but will show decreased creatine levels in all three disorders",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "The study's findings suggest a complex, not straightforwardly depletive, relationship between sleep deprivation and creatine metabolism, warranting further research into creatine's potential protective role under stress.",
+   "url": "https://doi.org/10.1007/s41105-025-00587-8",
+   "support": "unreachable",
+   "reasoning": "The fetched page content only provides bibliographic metadata (title, journal, year, authors, DOI) and explicitly states 'Crossref holds no abstract for this record — metadata only.' There is no actual study text, findings, discussion, or interpretation available to verify the claim about a 'complex, not straightforwardly depletive' relationship between sleep deprivation and creatine metabolism, o…",
+   "locatedQuote": "Crossref holds no abstract for this record — metadata only.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "A prior study (Rae et al.) found creatine supplementation had a large and statistically significant effect (p<0.001) on working memory (Backwards Digit Span) and abstract reasoning (Ravens Advanced Progressive Matrices) in young vegetarians, with effect sizes of d=1 for both tasks.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "quote": "found creatine supplementation had a large and highly  signicant (i.e. p  <  0.001) positive eect on both tasks. We  deemed this study particularly worth replicating.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1118
+  },
+  {
+   "claim": "MR spectroscopy evidence shows brain creatine increased by 8.7% following a 20 g/day, 4-week supplementation regime, and further studies have confirmed varying regimens can increase brain creatine.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "quote": "brain creatine increased by 8.7% following a 20 g/day  4-week supplementation regime; two further studies have  conrmed varying supplementation regimes can increase",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2223
+  },
+  {
+   "claim": "This randomised, placebo-controlled, double-blind, cross-over trial included both omnivores and vegetarians and had a sample size of 123, powered at 0.8 with alpha to detect effects of Cohen's d=0.45.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "quote": "e sample size of 123 was powered (with power  = 0.8,  alpha  =  40 eects of Cohens d  =  0.45.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 8413
+  },
+  {
+   "claim": "The Stroop color-word score reflects a combination of working memory, conflict monitoring, and speed of visual search rather than a single unitary construct, indicating that Stroop-derived scores are multidimensional.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "quote": "Stroop color-word reflected working memory, conflict monitoring, and speed of visual search.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1696
+  },
+  {
+   "claim": "The review's authors concluded that despite favorable early findings, the body of research on creatine and sleep deprivation remains sparse and high-quality trials are still needed.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "quote": "Despite favorable early results, research is sparse, and future high-quality trials are needed.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1067
+  },
+  {
+   "claim": "This journal-article record from Clinical Pharmacist (2016) contains no abstract or substantive content in the available metadata, and its title concerns industry funding bias in pharmacotherapy vs psychotherapy trials, not creatine or cognition.",
+   "url": "https://doi.org/10.1211/cp.2016.20201988",
+   "quote": "(Crossref holds no abstract for this record — metadata only.)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 220
+  },
+  {
+   "claim": "A study comparing memory improvement under creatine supplementation in omnivores and vegetarians found that creatine supplementation benefited memory only for vegetarians but not omnivores, consistent with vegetarians having lower baseline serum/muscle creatine.",
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "quote": "Another study comparing memory  improvement under creatine supplementation in omni-vores and vegetarians found that creatine supplemen-tation beneted memory only for vegetarians but not",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2478
+  },
+  {
+   "claim": "A 1993 MR spectroscopy study measured concentrations of N-acetyl aspartate, creatine+phosphocreatine, and choline in different brain regions across adulthood and senescence using MRS in humans, providing baseline methodology for detecting brain creatine/phosphocreatine levels via non-invasive imagin…",
+   "url": "https://doi.org/10.1016/0730-725x(93)90197-l",
+   "quote": "The concentration of N-acetyl aspartate, creatine + phosphocreatine, and choline in different parts of the brain in adulthood and senium",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  },
+  {
+   "claim": "The interference score on the Stroop test is predicted by both conflict monitoring and working memory, while the ratio score is predicted by conflict monitoring alone, showing that different derived Stroop scores index different underlying cognitive processes.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "quote": "Whereas the interference score was predicted by both conflict monitoring and working memory, the ratio score (color-word divided by color-naming) was predicted by conflict monitoring alone.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1789
+  },
+  {
+   "claim": "A systematic review identified five studies meeting inclusion criteria that examined creatine supplementation's effects on cognitive, psychomotor, and mood outcomes during acute sleep deprivation.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "quote": "Of 160 records, five studies met the inclusion criteria.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 829
+  },
+  {
+   "claim": "The creatine/phosphocreatine MRS signal at 3.0 ppm decreases with off-resonance preirradiation at offsets between ±10 kHz, an effect attributed to magnetization transfer between two Cr/PCr proton pools rather than RF bleedover.",
+   "url": "https://doi.org/10.1002/mrm.1910310114",
+   "quote": "The creatin/phosphocreatine (Cr/PCr) signal at 3.0 ppm decreases in signal intensity for offset frequencies between ±10 kHz. This cannot be explained by RF bleedover, but is attributed to magnetization transfer between two pools of Cr/PCr, one with a long T 2 relaxation time giving the observed NMR signal, the other corresponding to a broad resonance line being completely or partially saturated by off‐resonance preirradiation.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 470
+  },
+  {
+   "claim": "Despite 85 years since the Stroop interference effect was first described, there remains a lack of consensus on the cognitive constructs underlying standardized Stroop test scores.",
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "quote": "85 years after the description of the Stroop interference effect, there is still a lack of consensus regarding the cognitive constructs underlying scores from standardized versions of the test.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 400
+  },
+  {
+   "claim": "The study used a within-subject design testing 29 healthy subjects at baseline and at 3, 5.5, and 7.5 hours after a single dose of creatine (0.2 g/kg) or placebo during 21 hours of sleep deprivation.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "quote": "Twenty-nine healthy subjects performed cognitive tests at the evening baseline and 3, 5.5, and 7.5 h after receiving a single dose of creatine monohydrate (0.2 g/kg) or a placebo during a total of 21 h of sleep deprivation (SD).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 864
+  },
+  {
+   "claim": "Across clinical applications of creatine, the review concludes that mechanistic evidence is often compelling but large trials with standardized dosing and clinically meaningful endpoints remain scarce, indicating a gap in high-quality RCT evidence.",
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "quote": "Across clinical areas, mechanistic evidence is often compelling but large trials with standardised dosing and clinically meaningful endpoints remain scarce.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4993
+  },
+  {
+   "claim": "The review characterizes creatine's safety profile as reassuring across age groups, attributing the observed rise in serum creatinine to a pharmacokinetic artefact rather than kidney injury, while noting pregnant women and advanced chronic kidney disease patients require individualized assessment.",
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "quote": "The safety profile of creatine monohydrate is reassuring across age groups; the observed rise in serum creatinine represents a pharmacokinetic artefact. Pregnant women and patients with advanced chronic kidney disease require individualised assessment.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4740
+  },
+  {
+   "claim": "The systematic review found early evidence suggesting a positive trend for creatine supplementation as an intervention during acute sleep deprivation, with effects potentially varying by cognitive domain.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "quote": "Early investigations indicate a positive trend for creatine supplementation as an intervention for acute sleep deprivation, though effects may vary by cognitive domain.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 886
+  },
+  {
+   "claim": "95% of the human body's total creatine and phosphocreatine stores are in skeletal muscle, with the remainder distributed in blood, brain, testes, and other tissues, and the typical unsupplemented diet plus endogenous synthesis meets the 1-3 g/day turnover requirement.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "quote": "95% of the human body's total creatine and phosphocreatine stores are found in skeletal muscle, while the remainder is distributed in the blood , brain, testes, and other tissues.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7272
+  },
+  {
+   "claim": "A prior study by the same group found that a higher single dose (0.35 g/kg) of creatine induced changes in brain metabolism during sleep deprivation and reduced cognitive performance deterioration, suggesting a dose-dependent effect compared to the lower 0.2 g/kg dose.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "quote": "In our previous study, we showed that a single dose of 0.35 g/kg creatine induces changes in brain metabolism during sleep deprivation and reduces deterioration in cognitive performance.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 478
+  },
+  {
+   "claim": "Vegan and vegetarian diets are associated with lower levels of muscle creatine, suggesting athletes on these diets may benefit more from supplementation.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "quote": "Vegan and vegetarian diets are associated with lower levels of muscle creatine, and athletes on these diets may benefit from creatine supplementation.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 11238
+  },
+  {
+   "claim": "The proposed mechanism for creatine's effect during sleep deprivation is countering reduced cerebral ATP availability by increasing phosphocreatine stores.",
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "quote": "Acute sleep deprivation impairs cognitive, psychomotor, and mood outcomes, in part by reducing cerebral adenosine triphosphate (ATP) availability. Creatine supplementation may counter these effects by increasing phosphocreatine stores.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 348
+  },
+  {
+   "claim": "A single dose of 0.2 g/kg creatine monohydrate reduced deterioration in cognitive performance (logical and numerical tasks, language-related processing speed, and Psychomotor Vigilance Test) during 21 hours of sleep deprivation in healthy subjects, with improvement of up to 12%.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "quote": "Our results show that a dose of 0.2 g/kg creatine is associated with a reduced deterioration in cognitive performance during sleep deprivation. Although the effect is less pronounced than with a high dose of 0.35 g/kg, there is still an improvement of up to 12%.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1420
+  },
+  {
+   "claim": "In individuals with cerebral creatine deficiency disorders (AGAT, GAMT, CTD), there is an almost complete absence of creatine and phosphocreatine in the brain, and brain magnetic resonance spectroscopy can detect decreased brain creatine levels.",
+   "url": "https://en.wikipedia.org/wiki/Cerebral_creatine_deficiency",
+   "quote": "In affected individuals with any of the three disorders, there is an almost complete absence of creatine and phosphocreatine in the brain.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2581
+  },
+  {
+   "claim": "The study's findings suggest a complex, not straightforwardly depletive, relationship between sleep deprivation and creatine metabolism, warranting further research into creatine's potential protective role under stress.",
+   "url": "https://doi.org/10.1007/s41105-025-00587-8",
+   "quote": "Our findings suggest a complex relationship between sleep deprivation and creatine metabolism, emphasizing the need for further research using advanced biomarkers to elucidate these mechanisms and assess creatine’s potential protective role under stress conditions.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 869
+  }
+ ],
+ "rescue": {
+  "wipedSubQuestions": [
+   "What do systematic reviews and meta-analyses of RCTs conclude about creatine monohydrate's overall effect size on cognitive performance measures (working memory, processing speed, reasoning) in healthy adults, and how wide/heterogeneous are the confidence intervals?"
+  ],
+  "targeted": 1,
+  "sourcesAdded": 0,
+  "claimsReVerified": 0,
+  "claimsSaved": 0
+ },
+ "calibration": {
+  "n": 30,
+  "rawAgreement": 0.8667,
+  "expectedByChance": 0.64,
+  "confusion": {
+   "survive_survive": 21,
+   "kill_kill": 5,
+   "survive_then_kill": 3,
+   "kill_then_survive": 1
+  },
+  "surviveRateRun1": 0.8,
+  "surviveRateRun2": 0.7333,
+  "cohenKappa": 0.6296,
+  "scottPi": 0.6273,
+  "verdictFlips": 4,
+  "flipRate": 0.1333,
+  "measures": "reliability (does the panel repeat), NOT validity (is the panel right)",
+  "perLens": {
+   "counter": {
+    "cohenKappa": 0.7826,
+    "rawAgreement": 0.9667,
+    "refuteRateRun1": 0.1,
+    "refuteRateRun2": 0.0667,
+    "n": 30
+   },
+   "provenance": {
+    "cohenKappa": 0.7982,
+    "rawAgreement": 0.9,
+    "refuteRateRun1": 0.4333,
+    "refuteRateRun2": 0.4667,
+    "n": 30
+   },
+   "support": {
+    "cohenKappa": 0.8571,
+    "rawAgreement": 0.9333,
+    "refuteRateRun1": 0.3333,
+    "refuteRateRun2": 0.4,
+    "n": 30
+   }
+  },
+  "lensSplit": {
+   "claims": 30,
+   "split": 16,
+   "disagreementRate": 0.5333,
+   "unanimityRate": 0.4667
+  },
+  "missingLensVerdicts": 0,
+  "excludedForLensErrors": 0,
+  "scope": "30 of 30 sampled claims; 0 excluded because a lens call errored in one pass. Reliability is measured only where both panels actually voted - an errored call is an infrastructure failure, not a changed mind.",
+  "gateVerdict": "calibrated",
+  "preRegisteredAction": "PASS (necessary, not sufficient): proceed to the doc-vs-code work and publish the number. This says the panel repeats itself; it does not say the panel is right.",
+  "thresholds": {
+   "noise": "< 0.4",
+   "noisy": "0.4-0.6",
+   "calibrated": ">= 0.6",
+   "minimumN": 30,
+   "minimumPerLensKappa": 0.4,
+   "note": "bands fixed 2026-09-06 before this instrument was built; the two preconditions added by dated amendment the same day, before the runs they govern produced any numbers. The amendment can only make the gate stricter - it cannot promote a verdict."
+  }
+ },
+ "droppedSample": {
+  "sampled": 10,
+  "survived": 10,
+  "survivalRate": 1.0,
+  "keptClaimSurvivalRate": 0.8,
+  "reading": "dropped claims survive at a materially different rate to kept ones"
+ },
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 15,
+   "floor": 5,
+   "thin": false,
+   "verdict": "15 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry - and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists."
+ },
+ "citationPartials": [
+  {
+   "claim": "Creatine's biological half-life is 3 hours, informing dosing frequency considerations.",
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "support": "partial",
+   "reasoning": "The infobox does list Biological half-life 3 hours under Pharmacology/Pharmacokinetics, which directly supports the numeric claim of a 3-hour half-life. However, the statement also asserts that this half-life is informing dosing frequency considerations. The article's own Pharmacokinetics section explicitly states that studies have NOT established pharmacokinetic parameters such as half-life for c…",
+   "locatedQuote": "Pharmacokinetics : Biological half-life 3 hours",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A 1993 MR spectroscopy study measured concentrations of N-acetyl aspartate, creatine+phosphocreatine, and choline in different brain regions across adulthood and senescence using MRS in humans, providing baseline methodology for detecting brain creatine/phosphocreatine levels via non-invasive imagin…",
+   "url": "https://doi.org/10.1016/0730-725x(93)90197-l",
+   "support": "partial",
+   "reasoning": "The fetched page only provides bibliographic metadata (title, journal, year, authors, DOI) with no abstract or body text (Crossref holds no abstract for this record — metadata only.). The title itself confirms the study measured N-acetyl aspartate, creatine+phosphocreatine, and choline in different brain regions in adulthood and senium (senescence) using what is presumably MR/MRS methodology in 19…",
+   "locatedQuote": "The concentration of N-acetyl aspartate, creatine + phosphocreatine, and choline in different parts of the brain in adulthood and senium",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The article discusses industry funding of clinical trials and its potential for bias, relevant to evaluating funding-related bias in the creatine-cognition literature.",
+   "url": "https://doi.org/10.1001/jama.290.1.113",
+   "support": "partial",
+   "reasoning": "The fetched page content is only bibliographic metadata (title, journal, year, authors, DOI) with no abstract or body text available - Crossref explicitly notes holds no abstract for this record — metadata only. The title itself (Industry Funding of Clinical Trials: Benefit or Bias?) strongly suggests the article's topic aligns with the statement about industry funding of clinical trials and poten…",
+   "locatedQuote": "Industry Funding of Clinical Trials: Benefit or Bias?",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The study used a within-subject design testing 29 healthy subjects at baseline and at 3, 5.5, and 7.5 hours after a single dose of creatine (0.2 g/kg) or placebo during 21 hours of sleep deprivation.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "support": "partial",
+   "reasoning": "The abstract confirms the sample size (29 healthy subjects), the timing of tests (baseline, 3, 5.5, 7.5 h), the dose (0.2 g/kg creatine) or placebo, and the 21 h sleep deprivation period. This matches almost all details of the statement. The only addition in the statement is the explicit label within-subject design, which is not stated verbatim in the abstract text provided. Whether it is a within…",
+   "locatedQuote": "Twenty-nine healthy subjects performed cognitive tests at the evening baseline and 3, 5.5, and 7.5 h after receiving a single dose of creatine monohydrate (0.2 g/kg) or a placebo during a total of 21 h of sleep deprivation (SD).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "A prior study by the same group found that a higher single dose (0.35 g/kg) of creatine induced changes in brain metabolism during sleep deprivation and reduced cognitive performance deterioration, suggesting a dose-dependent effect compared to the lower 0.2 g/kg dose.",
+   "url": "https://doi.org/10.3390/nu18081192",
+   "support": "partial",
+   "reasoning": "The abstract confirms the core facts: a prior study by the same group found that a 0.35 g/kg dose of creatine induced changes in brain metabolism during sleep deprivation and reduced cognitive performance deterioration. It also states that the effect of the higher dose was less pronounced than... wait, actually it says the current (lower) dose's effect is less pronounced than the high dose, which …",
+   "locatedQuote": "In our previous study, we showed that a single dose of 0.35 g/kg creatine induces changes in brain metabolism during sleep deprivation and reduces deterioration in cognitive performance...Although the effect is less pronounced than with a high dose of 0.35 g/kg, there is still an improvement of up to 12%.",
+   "locatedQuoteOnPage": "partial"
+  }
+ ],
+ "processCritique": {
+  "untraceableCount": 9,
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "Creatine monohydrate does not show a general cognitive benefit in healthy adults regardless of condition; instead, the confirmed evidence points to a conditional pattern: large effects (d=1) in vegetarians with plausibly lower baseline brain creatine, no effect in omnivores from the same well-powered RCT, and meaningful (up to 12%) reduced cognitive deterioration under acute sleep deprivation in a small dose-dependent trial series.",
+   "Mechanistic plausibility is solid (MRS-confirmed brain creatine increases with supplementation, ATP/phosphocreatine rationale)",
+   "Mechanistic plausibility is solid (MRS-confirmed brain creatine increases with supplementation, ATP/phosphocreatine rationale), but no meta-analysis or systematic review with pooled effect sizes for the general healthy-adult population was found, and the 'null in rested omnivores' finding rests on a single study.",
+   "Overall: benefit appears real but context-dependent (H2 survives), not universal (H1 killed) and not absent (H4 killed), while the evidence base remains too thin for high confidence (H3 also survives as an honest caveat).",
+   "no meta-analysis or systematic review with pooled effect sizes for the general healthy-adult population was found"
+  ],
+  "untraceableStatements": [
+   "Claim that a well-powered RCT (n=123, d=0.45 sensitivity) is 'the same well-powered RCT' that produced both the vegetarian benefit and the omnivore null result, when claim [2] establishes the power/sample size but does not explicitly state it is the same trial as the vegetarian-only-benefit finding [6]",
+   "Executive summary asserts H4 ('not absent') is 'killed' based on the same conditional-benefit evidence, but no claim pool item establishes convergence or non-convergence of well-powered null-result RCTs in rested omnivores beyond the single n=123 study",
+   "Executive summary claims benefit 'appears real' as an overall conclusion, which overstates confidence given only two conditional-benefit study lines (vegetarian and sleep-deprivation) and explicit caveats about sparse evidence in the underlying claims themselves",
+   "Executive summary states no effect in omnivores 'from the same well-powered RCT' is generalized to claim 'no general cognitive benefit... regardless of condition' — this is an overreach beyond a single trial's finding",
+   "Finding 6's mechanism is described as [high] confidence, but the underlying claims [19] (proposed mechanism) and [1] (MRS evidence in a general supplementation context, not specifically tied to the sleep-deprivation trials) do not establish this mechanism was verified specifically for the sleep-deprivation cognitive effect - it is a proposed/plausible mechanism, not confirmed causal linkage, yet stated with high confidence",
+   "Mechanistic plausibility is solid (MRS-confirmed brain creatine increases with supplementation, ATP/phosphocreatine rationale)",
+   "The executive summary states 'no meta-analysis or systematic review with pooled effect sizes for the general healthy-adult population was found' as if this were an actively searched-for and confirmed absence, but no claim in the pool documents a search for or absence of such a meta-analysis",
+   "The mechanistic plausibility sentence conflates general 'solid' plausibility with evidence that is explicitly framed in the claims as supporting a sleep-deprivation-specific ATP/phosphocreatine mechanism, not a general cognitive-enhancement mechanism",
+   "The summary's framing 'benefit appears real but context-dependent... not universal... and not absent' asserts a settled conclusion ('benefit appears real') that overstates the evidence, which per claims [4], [13], and [15] is described as 'sparse,' 'early evidence,' 'a positive trend,' and needing further high-quality trials"
+  ],
+  "coverageGaps": [
+   "Checklist item 1 (systematic reviews/meta-analyses of RCTs with pooled effect sizes on working memory, processing speed, reasoning, and CI widths) was never answered - no such meta-analysis appears anywhere in the claim pool; the report only asserts its absence without evidence of having searched exhaustively (e.g., no PubMed/Cochrane systematic search claim, no citation of a 'no meta-analysis exists' source)",
+   "Checklist item 1 (systematic reviews/meta-analyses with pooled effect sizes for cognitive performance in general healthy adults) was never found or answered — the report explicitly admits this gap but the executive summary still asserts confident conclusions ('appears real') despite lacking this foundational evidence.",
+   "Checklist item 3 (differential benefit in older adults or metabolic/hypoxic stress subgroups) — only vegetarians and sleep-deprivation were covered; older adults and hypoxic/metabolic stress subgroups were never investigated at all despite being explicitly named in the scoping question.",
+   "Checklist item 3's subgroups (older adults, individuals under metabolic/hypoxic stress) are entirely unaddressed - only vegetarians/vegans and sleep-deprived individuals are covered; no claim discusses older adults or hypoxic/metabolic stress populations at all",
+   "Checklist item 4 (do well-blinded, adequately powered RCTs in healthy, well-rested, omnivorous adults converge on null vs. some showing benefit) is answered by only ONE study (finding #2), not a body of evidence; no second replication or counter-study in rested omnivores was sought or found, so 'convergence' cannot be assessed at all.",
+   "Checklist item 4 (well-blinded, adequately powered RCTs in healthy, well-rested, omnivorous adults) is answered only by a single trial [2]/[6] - no second independent replication or larger N was sought, and no skeptic-perspective 'well-blinded large-N null result' claim from dedicated searching appears in the pool despite a Skeptic/replication-hunter perspective being tasked with finding exactly this",
+   "Checklist item 5 (dose-response/duration-response, loading vs maintenance protocols) is only partially covered via two sleep-deprivation acute single-dose comparisons (0.2 vs 0.35 g/kg); no claim addresses typical multi-week loading (e.g., 20g/day for 5-7 days then maintenance) vs long-term maintenance dosing for cognition specifically, despite the Dose-response practitioner perspective being tasked with this",
+   "Checklist item 5 (dose-response/duration-response, loading vs maintenance) is only addressed for the acute sleep-deprivation context (single-dose 0.2g/kg vs 0.35g/kg), not for the standard multi-week loading/maintenance protocols (e.g., 20g/day loading x 5-7 days then 3-5g/day maintenance) relevant to general cognitive supplementation claims — a major gap in dose-response coverage.",
+   "Checklist item 6 (funding sources, sample sizes, blinding quality, publication bias patterns across the body of trials) is never addressed - no claim discusses funding sources or publication bias for creatine-cognition trials specifically (claim [5] is explicitly irrelevant/off-topic per its own description)",
+   "Checklist item 6 (funding sources, sample sizes, blinding quality, publication bias patterns across the trial body) was never systematically investigated; no claim addresses funding/industry bias or publication bias patterns specific to creatine-cognition trials (claim [5] is explicitly irrelevant/empty on this topic).",
+   "Checklist item 7 (safety/adverse effects - renal, hepatic, GI, mood - and regulatory statements) is touched only lightly by claim [14] but this finding was not surfaced in the executive summary or findings list at all, meaning the safety question was searched but its results were dropped from the final output",
+   "Checklist item 7 (safety/adverse-effect profile at 3-20g/day and regulatory body statements) is only thinly covered by claim [14] (a general safety review), which is not reflected in the findings list at all — none of the 7 findings address safety, meaning this checklist item was dropped from the report despite being 'searched'.",
+   "Checklist item 8 (consistency of cognitive test batteries/outcome definitions across trials) is addressed only via Stroop-construct claims [3],[8],[11], which were never surfaced as findings or connected to the overall heterogeneity discussion — the measurement-heterogeneity question is effectively unanswered in the findings/summary.",
+   "Checklist item 8 (consistency of cognitive test batteries/outcome definitions across trials, e.g., Stroop heterogeneity) was searched (claims [3], [8], [11]) but none of this material appears in the findings or summary - a fully researched sub-question was omitted from the final output entirely",
+   "No primary meta-analysis paper, no regulatory body statement (e.g., FDA, EFSA, ISSN position stand), and no dissenting/skeptic-sourced large-N null RCT in general healthy adults were retrieved, despite a dedicated 'Skeptic/replication-hunter' perspective being assigned to find exactly this."
+  ],
+  "planFlaws": [
+   "Claim [14] (safety/regulatory) was retrieved but also dropped from synthesis, meaning the regulator/safety-auditor perspective's work was wasted in the final report despite being explicitly commissioned in the scoping",
+   "Claims [3], [8], [11] (Stroop construct-validity/measurement heterogeneity - directly answering checklist item 8) were retrieved but never synthesized into a finding, suggesting the synthesis step dropped an entire searched perspective's output without explanation",
+   "No perspective was tasked with directly searching for or retrieving existing meta-analyses/systematic reviews on creatine-and-general-cognition (checklist item 1 is the report's own top-priority question), which is a scoping failure since the Meta-analyst perspective apparently could not locate any such synthesis, and no fallback search (e.g., broader database, preprint, or narrower cognitive-domain synthesis) was attempted or reported.",
+   "No perspective was tasked with searching for older-adult or hypoxic/metabolic-stress subgroups despite these being named explicitly in the scoper's checklist item 3, leaving a scoped question with no corresponding search assignment",
+   "The 'older adults' and 'hypoxic/metabolic stress' subgroups named explicitly in checklist item 3 were never assigned a dedicated search perspective (only vegetarian/vegan and sleep-deprivation physiology were covered), so the sub-question was only partially operationalized from the outset.",
+   "The Regulator/safety-auditor perspective's findings (claim [14]) were not carried into the findings list or executive summary at all, indicating the safety checklist item was scoped and searched but then dropped during synthesis — a process flaw where committed coverage was not delivered to the final report despite being available in the claim pool.",
+   "The Skeptic/replication-hunter perspective, explicitly tasked with finding 'well-blinded large-N null results,' failed to surface any such large-N null RCT beyond the single n=123 vegetarian/omnivore crossover trial — yet the executive summary treats the omnivore null finding from that one trial as sufficient basis to declare 'no general cognitive benefit,' effectively laundering an absent skeptic-sourced result through a differently-motivated trial.",
+   "The perspective set combined 'meta-analyst' and 'skeptic/replication-hunter' as separate roles, but neither actually produced a pooled meta-analytic effect size or a large-N null RCT in the claim pool - the scoping assumed such sources existed and were findable, but the plan had no fallback or explicit acknowledgment step when they weren't found, leading the report to quietly assert non-existence rather than flag this as a search failure",
+   "The scoping treated 'lower baseline brain creatine' subgroups (vegetarians, sleep-deprived) as a single coherent category to test the 'conditional benefit' hypothesis, but sleep deprivation is an acute metabolic/energetic stress state fundamentally different from chronic dietary creatine depletion in vegetarians — conflating these in the executive summary as one unified 'conditional pattern' is a premise-acceptance flaw baked in from the steelman-conditional-benefit perspective's framing.",
+   "The steelman-conditional-benefit perspective's premise (that creatine's effect is real but conditional on low baseline brain creatine) was largely accepted rather than rigorously tested against disconfirming evidence - the single n=123 crossover trial supporting the vegetarian/omnivore dichotomy was treated as sufficient to 'kill H1' and 'kill H4' in the executive summary, an overly strong causal conclusion drawn from one study"
+  ],
+  "rationales": [
+   "The executive summary and findings selectively surface only two of the six searched perspectives (vegetarian/conditional-benefit and sleep-deprivation dose-response), while completely dropping the safety/regulatory finding (claim 14) and the entire test-battery-heterogeneity thread (claims 3, 8, 11) from the final output, despite both having been actively researched. The summary also asserts 'no meta-analysis... was found' and declares 'benefit appears real' with unwarranted confidence, when the…",
+   "The executive summary overreaches significantly beyond the underlying claim pool: it declares creatine 'does not show a general cognitive benefit... regardless of condition' and that 'benefit appears real,' framing this as if hypotheses were rigorously tested and 'killed,' when in fact the evidence base consists of (a) one small vegetarian-vs-omnivore RCT, (b) a small sleep-deprivation dose-series, and (c) an admitted absence of any pooled meta-analytic effect size for the primary research quest…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "The supplementation protocol used 5 g per day of creatine monohydrate for 6 weeks, based on evidence that muscle creatine saturation requires about 5 weeks and brain creatine washout occurs within that timeframe.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "why": "The supporting quote fragment 27 washout period nor second baseline testing after the rst is a garbled OCR-like snippet that says nothing about a 5 g per day, 6 weeks, muscle creatine saturation requires about 5 weeks, or brain creatine washout timeframe. None of the specific numbers or mechanistic claims in the claim under review (5g dose, 6-week duration, 5-week saturation rationale) appear anywhere in the quoted text. Additionally, the quote is only 50% located on the cited page, meaning it w…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The supporting quote fragment 27 washout period nor second baseline testing after the rst is a garbled OCR-like snippet that says nothing about a 5 g per day, 6 weeks, muscle creatine saturation requires about 5 weeks, or brain creatine washout timeframe. None of the specific numbers or mechanistic claims in the claim under review (5g dose, 6-week duration, 5-week saturation rationale) appear anywhere in the quoted text. Additionally, the quote is only 50% located on the cited page, meaning it w…",
+     "counterSource": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim asserts a specific mechanistic rationale (5g/day for 6 weeks, justified by muscle creatine saturation requires about 5 weeks and brain creatine washout occurs within that timeframe) but only 50% of the supporting quote is actually verifiable on the cited page - the located fragment (27 washout period nor second baseline testing after the rst) does not contain any of the specific dosing figures (5g/day, 6 weeks, 5 weeks saturation) or the causal justification linking muscle saturation t…",
+     "counterSource": "https://doi.org/10.1017/cts.2024.1047 (Eight weeks of creatine monohydrate supplementation is feasible and associated with increased brain creatine)"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The supporting quote actually located on the cited page (27 washout period nor second baseline testing after the first) does not state a 5g/day, 6-week protocol, nor does it mention 5 weeks for muscle saturation or brain creatine washout timeframes. The quote-match tool confirms only 50% of the claimed text is verifiable on the page - the specific numeric/methodological details (5g/day, 6 weeks, 5-week saturation rationale) are the unverified half. This is a provenance defect: the claim is being…"
+    }
+   ],
+   "contradictedBy": [
+    "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+    "https://doi.org/10.1017/cts.2024.1047 (Eight weeks of creatine monohydrate supplementation is feasible and associated with increased brain creatine)"
+   ]
+  },
+  {
+   "claim": "Creatine's biological half-life is 3 hours, informing dosing frequency considerations.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Creatine",
+   "why": "The quote merely states the raw fact Biological half-life 3 hours (a data-table entry on the Wikipedia infobox). It says nothing about dosing frequency, loading, maintenance schedules, or any clinical/practical implication. The claim under review adds the unsupported inferential clause informing dosing frequency considerations, which is an interpretive leap not present in or licensed by the quoted text. This is a case of the claim generalizing beyond what the quote actually states—the source giv…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote merely states the raw fact Biological half-life 3 hours (a data-table entry on the Wikipedia infobox). It says nothing about dosing frequency, loading, maintenance schedules, or any clinical/practical implication. The claim under review adds the unsupported inferential clause informing dosing frequency considerations, which is an interpretive leap not present in or licensed by the quoted text. This is a case of the claim generalizing beyond what the quote actually states—the source giv…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim leans on a bare Wikipedia infobox/pharmacokinetic figure (Biological half-life 3 hours) with no cited primary source visible in the quote, no publish/revision date, and no indication of which population or dosing context it applies to. Wikipedia pages are crowd-edited and can change without notice, so this factoid is not traceable to a peer-reviewed pharmacokinetic study and its currency cannot be verified. Using an undated, unsourced infobox figure to ground dosing-frequency reasoning…",
+     "counterSource": "Persky AM, Brazeau GA, Hochhaus G. Pharmacokinetics of the dietary supplement creatine. Clin Pharmacokinet. 2003;42(6):557-574."
+    }
+   ],
+   "contradictedBy": [
+    "Persky AM, Brazeau GA, Hochhaus G. Pharmacokinetics of the dietary supplement creatine. Clin Pharmacokinet. 2003;42(6):557-574."
+   ]
+  },
+  {
+   "claim": "A narrative review states that creatine supplementation demonstrates clinically meaningful benefits for cognitive ageing, based on synthesis of research up to April 2025.",
+   "killedBy": "counter+provenance",
+   "vote": "1-2",
+   "source": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "why": "The search results provided contain no substantive counter-evidence directly addressing creatine's effects on cognitive aging—the five results are conference abstract collections (Parkinson Congress, IUNS-ICN Paris, neuromuscular disease congress, GSA abstract book) and an unrelated narrative review on dietary supplements for muscle function, none of which were opened or shown to discuss cognitive outcomes specifically. This means I cannot verify that the underlying literature actually supports …",
+   "refutedBy": [
+    {
+     "lens": "counter",
+     "evidence": "The search results provided contain no substantive counter-evidence directly addressing creatine's effects on cognitive aging—the five results are conference abstract collections (Parkinson Congress, IUNS-ICN Paris, neuromuscular disease congress, GSA abstract book) and an unrelated narrative review on dietary supplements for muscle function, none of which were opened or shown to discuss cognitive outcomes specifically. This means I cannot verify that the underlying literature actually supports …",
+     "counterSource": "No direct contradicting source found in provided search results; refutation based on lack of independent corroboration for the 'clinically meaningful' characterization and known inconsistency of creatine-cognition effects in healthy adults reported e…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "Provenance/date anomaly: the publish date given (2026-05-15) is in the future relative to now, and the article claims to synthesize research up to April 2025 — a ~13 month gap that cannot be verified as current and raises red flags about metadata reliability (either the date is wrong or the claim of up to April 2025 coverage is stale/incomplete for a fast-moving supplement-research field). Additionally, the claim conflates a narrative review's broad summary statement (creatine has benefits in sk…"
+    }
+   ],
+   "contradictedBy": [
+    "No direct contradicting source found in provided search results; refutation based on lack of independent corroboration for the 'clinically meaningful' characterization and known inconsistency of creatine-cognition effects in healthy adults reported e…"
+   ]
+  },
+  {
+   "claim": "The article discusses industry funding of clinical trials and its potential for bias, relevant to evaluating funding-related bias in the creatine-cognition literature.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://doi.org/10.1001/jama.290.1.113",
+   "why": "The quote is merely the article's title, Industry Funding of Clinical Trials: Benefit or Bias? - a title alone does not establish that the article discusses industry funding of clinical trials and its potential for bias in any substantive way, nor does it say anything about creatine-cognition literature. The claim asserts a specific relevance link (relevant to evaluating funding-related bias in the creatine-cognition literature) that is entirely absent from the quoted text; the quote contains no…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote is merely the article's title, Industry Funding of Clinical Trials: Benefit or Bias? - a title alone does not establish that the article discusses industry funding of clinical trials and its potential for bias in any substantive way, nor does it say anything about creatine-cognition literature. The claim asserts a specific relevance link (relevant to evaluating funding-related bias in the creatine-cognition literature) that is entirely absent from the quoted text; the quote contains no…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim is a generic, off-topic assertion: the cited JAMA 2003 article is a general commentary on industry funding of clinical trials writ large and never mentions creatine, cognition, or supplement research specifically. The claim's leap from discusses industry funding bias in general to relevant to evaluating funding-related bias in the creatine-cognition literature is an unsupported inferential overreach not actually made in the source text - the quote merely gives the article's title. Furt…",
+     "counterSource": "https://doi.org/10.64628/aa.khsh44u4u (Research funding does not have to equal industry bias, 2011)"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The cited source is a 2003 JAMA editorial titled Industry Funding of Clinical Trials: Benefit or Bias? that discusses general publication bias/funding bias in clinical trials broadly—it is not about creatine, cognition, or any creatine-cognition study, and contains no data or discussion specific to that literature. The claim merely asserts generic relevance without the source actually analyzing funding sources of creatine-cognition trials, making it a non-specific, tangential citation used to im…",
+     "counterSource": "No creatine-specific funding-bias analysis is cited; a current systematic review or meta-analysis of creatine-cognition RCTs with funding-source disclosure (e.g., a 2023-2024 meta-analysis in journals like Nutrients or European Journal of Nutrition) …"
+    }
+   ],
+   "contradictedBy": [
+    "https://doi.org/10.64628/aa.khsh44u4u (Research funding does not have to equal industry bias, 2011)",
+    "No creatine-specific funding-bias analysis is cited; a current systematic review or meta-analysis of creatine-cognition RCTs with funding-source disclosure (e.g., a 2023-2024 meta-analysis in journals like Nutrients or European Journal of Nutrition) …"
+   ]
+  },
+  {
+   "claim": "Creatine monohydrate has an LD50 greater than 2000 mg/kg (dermal, rat), and GHS hazard statements include H315, H319, H335, indicating relatively low acute toxicity but some irritant potential.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://en.wikipedia.org/wiki/Creatine",
+   "why": "The supporting quote only states LD50 (median dose) > 2000 mg/kg (dermal, rat) - it does not mention or include GHS hazard statements H315, H319, or H335 anywhere in the quoted text. The claim asserts these three hazard codes are part of what the quote supports, but the quote as given contains no such information. This is an unsupported addition beyond the literal quoted text - the claim bundles the GHS classifications with the LD50 figure as if both come from the same cited passage, when only t…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The supporting quote only states LD50 (median dose) > 2000 mg/kg (dermal, rat) - it does not mention or include GHS hazard statements H315, H319, or H335 anywhere in the quoted text. The claim asserts these three hazard codes are part of what the quote supports, but the quote as given contains no such information. This is an unsupported addition beyond the literal quoted text - the claim bundles the GHS classifications with the LD50 figure as if both come from the same cited passage, when only t…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim is about acute dermal toxicity/irritancy hazard classification (LD50, GHS H315/H319/H335), which is entirely orthogonal to the research question of whether creatine supplementation improves cognitive performance in healthy adults. This is a provenance/relevance mismatch: the Wikipedia infobox safety data (likely sourced from an SDS/chemical safety database, undated on the page) is being used as if it bears on cognitive efficacy, which it does not. Additionally, the publish date is unst…"
+    }
+   ],
+   "contradictedBy": []
+  },
+  {
+   "claim": "The study used a sample of 83 healthy individuals with a mean age of 25.2 years to examine the cognitive processes underlying Golden's standardized Stroop test.",
+   "killedBy": "support+provenance",
+   "vote": "1-2",
+   "source": "https://doi.org/10.1093/arclin/acaa034",
+   "why": "The quote states About 83 healthy individuals (mean age = 25.2 years) participated in the study, which is a hedged, approximate figure (About 83). The claim under review drops this hedge and asserts flatly a sample of 83 healthy individuals with a mean age of 25.2 years, presenting the approximate count as an exact, precise number. This overstates the precision the quote actually supports. Additionally, the claim adds specificity about the purpose (to examine the cognitive processes underlying G…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote states About 83 healthy individuals (mean age = 25.2 years) participated in the study, which is a hedged, approximate figure (About 83). The claim under review drops this hedge and asserts flatly a sample of 83 healthy individuals with a mean age of 25.2 years, presenting the approximate count as an exact, precise number. This overstates the precision the quote actually supports. Additionally, the claim adds specificity about the purpose (to examine the cognitive processes underlying G…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim is likely mismatched to the research question. This source (Arch Clin Neuropsychol 2020, doi 10.1093/arclin/acaa034) describes a study of 83 healthy individuals examining the cognitive processes underlying Golden's standardized Stroop test — i.e., a psychometric/validation study of the Stroop test itself, with no mention of creatine monohydrate or any supplementation intervention in the supporting quote or claim text. There is no indication this paper tested creatine's effect on cognit…",
+     "counterSource": "Source itself (doi.org/10.1093/arclin/acaa034) — abstract describes psychometric properties of the Stroop test, not a creatine supplementation trial; no mention of creatine monohydrate in the provided quote or title context."
+    }
+   ],
+   "contradictedBy": [
+    "Source itself (doi.org/10.1093/arclin/acaa034) — abstract describes psychometric properties of the Stroop test, not a creatine supplementation trial; no mention of creatine monohydrate in the provided quote or title context."
+   ]
+  },
+  {
+   "claim": "A lower maintenance dose of 3 grams per day for 28 days increases total muscle creatine storage to the same level as a rapid loading dose of 20 g/day for 6 days, indicating a dose/duration equivalence for tissue saturation.",
+   "killedBy": "provenance+citation-audit",
+   "vote": "2-1",
+   "source": "https://en.wikipedia.org/wiki/Creatine",
+   "why": "The claim's provenance is a Wikipedia article, a tertiary/crowd-sourced encyclopedia rather than a primary or citable secondary source itself — its value depends entirely on the underlying citation it uses, which is not provided here (no inline citation, no publish/access date, no link to the original loading-dose study, e.g. Hultman et al. 1996). This is a well-known, decades-old creatine loading/maintenance-dose finding, and while the underlying science is not fast-moving, Wikipedia pages are …",
+   "refutedBy": [
+    {
+     "lens": "provenance",
+     "evidence": "The claim's provenance is a Wikipedia article, a tertiary/crowd-sourced encyclopedia rather than a primary or citable secondary source itself — its value depends entirely on the underlying citation it uses, which is not provided here (no inline citation, no publish/access date, no link to the original loading-dose study, e.g. Hultman et al. 1996). This is a well-known, decades-old creatine loading/maintenance-dose finding, and while the underlying science is not fast-moving, Wikipedia pages are …",
+     "counterSource": "Hultman E, Soderlund K, Timmons JA, Cederblad G, Greenhaff PL. Muscle creatine loading in men. J Appl Physiol. 1996;81(1):232-237 (the presumed primary source Wikipedia is paraphrasing, not cited/dated in the reviewed claim)"
+    }
+   ],
+   "contradictedBy": [
+    "Hultman E, Soderlund K, Timmons JA, Cederblad G, Greenhaff PL. Muscle creatine loading in men. J Appl Physiol. 1996;81(1):232-237 (the presumed primary source Wikipedia is paraphrasing, not cited/dated in the reviewed claim)"
+   ]
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Creatine",
+   "quality": "secondary",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Strength_training",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Caffeine",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.3390/nu18081192",
+   "quality": "primary",
+   "perspective": "Steelman-conditional-benefit",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1177/27683605261456529",
+   "quality": "secondary",
+   "perspective": "Steelman-conditional-benefit",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1007/s41105-025-00587-8",
+   "quality": "primary",
+   "perspective": "Steelman-conditional-benefit",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1016/0006-8993(89)90035-8",
+   "quality": "primary",
+   "perspective": "Steelman-conditional-benefit",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://bmcmedicine.biomedcentral.com/counter/pdf/10.1186/s12916-023-03146-5",
+   "quality": "primary",
+   "perspective": "Skeptic/replication-hunter",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "pdf"
+  },
+  {
+   "url": "https://www.medrxiv.org/content/medrxiv/early/2023/04/06/2023.04.05.23288194.full.pdf",
+   "quality": "unreliable",
+   "perspective": "Skeptic/replication-hunter",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "pdf"
+  },
+  {
+   "url": "http://insight.jci.org/articles/view/140173/files/pdf",
+   "quality": "primary",
+   "perspective": "Skeptic/replication-hunter",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://www.mdpi.com/2072-6643/17/17/2748/pdf?version=1756174254",
+   "quality": "unreliable",
+   "perspective": "Skeptic/replication-hunter",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Cerebral_creatine_deficiency",
+   "quality": "secondary",
+   "perspective": "Mechanistic physiologist",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1016/0730-725x(93)90197-l",
+   "quality": "primary",
+   "perspective": "Mechanistic physiologist",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1002/mrm.1910310114",
+   "quality": "primary",
+   "perspective": "Mechanistic physiologist",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1016/0730-725x(92)90453-7",
+   "quality": "primary",
+   "perspective": "Mechanistic physiologist",
+   "wave": "w1",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1519/00126548-200402000-00007",
+   "quality": "unreliable",
+   "perspective": "Dose-response practitioner",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Exercise",
+   "quality": "unreliable",
+   "perspective": "Meta-analysis effect sizes",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://surface.syr.edu/context/thesis/article/2029/viewcontent/1253433.pdf",
+   "quality": "unreliable",
+   "perspective": "Omnivore-only RCT synthesis",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3",
+   "via": "pdf-unreadable"
+  },
+  {
+   "url": "https://apcz.umk.pl/QS/article/download/71160/46452",
+   "quality": "secondary",
+   "perspective": "Omnivore-only RCT synthesis",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://doi.org/10.1001/jama.290.1.113",
+   "quality": "secondary",
+   "perspective": "Publication bias and funding",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1211/cp.2016.20201988",
+   "quality": "unreliable",
+   "perspective": "Publication bias and funding",
+   "wave": "w2",
+   "claims": 1,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC7871530",
+   "quality": "unreliable",
+   "perspective": "Safety profile at cognitive doses",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC8912867",
+   "quality": "unreliable",
+   "perspective": "Safety profile at cognitive doses",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC5469049",
+   "quality": "unreliable",
+   "perspective": "Safety profile at cognitive doses",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC6090881",
+   "quality": "unreliable",
+   "perspective": "Safety profile at cognitive doses",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://doi.org/10.1093/arclin/acaa034",
+   "quality": "primary",
+   "perspective": "Test battery heterogeneity",
+   "wave": "w2",
+   "claims": 4,
+   "tier": "T2",
+   "via": "crossref-api"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 49,
+  "urlDupes": 2,
+  "budgetDropped": 12,
+  "claimsDroppedBeforeVerify": 19,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 82,
+    "ok": 0,
+    "fail": 82,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 82,
+    "ok": 0,
+    "fail": 82,
+    "challenged": 26,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 82,
+    "ok": 0,
+    "fail": 82,
+    "challenged": 25,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 82,
+    "ok": 0,
+    "fail": 82,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 82,
+    "ok": 75,
+    "fail": 7,
+    "challenged": 0,
+    "junk": 0,
+    "results": 27
+   },
+   "crossref": {
+    "attempts": 80,
+    "ok": 73,
+    "fail": 7,
+    "challenged": 0,
+    "junk": 0,
+    "results": 382
+   },
+   "europepmc": {
+    "attempts": 8,
+    "ok": 3,
+    "fail": 5,
+    "challenged": 0,
+    "junk": 4,
+    "results": 12
+   },
+   "openalex": {
+    "attempts": 6,
+    "ok": 5,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 19
+   },
+   "pubmed": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 5,
+    "ok": 0,
+    "fail": 5,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "hn": {
+    "attempts": 5,
+    "ok": 5,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   }
+  },
+  "sourceTiers": {
+   "T2": 20,
+   "T?": 2,
+   "T1": 1,
+   "T3": 3
+  },
+  "killsByLens": {
+   "support": 5,
+   "counter": 3,
+   "provenance": 6
+  },
+  "fetchVia": {
+   "http": 7,
+   "crossref-api": 11,
+   "pdf": 4,
+   "failed": 3,
+   "pdf-unreadable": 1
+  },
+  "pickStarvation": {
+   "calls": 12,
+   "starved": 1,
+   "hits": 85,
+   "rate": 0.083
+  },
+  "agentCalls": 283,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 583794,
+  "outputTokens": 136584,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {
+   "cache_creation.ephemeral_5m_input_tokens": 0,
+   "cache_creation.ephemeral_1h_input_tokens": 0,
+   "output_tokens_details.thinking_tokens": 0
+  },
+  "quoteLocation": {
+   "located": 46,
+   "unverifiable": 1,
+   "partial": 2,
+   "onPageRate": 0.939
+  },
+  "auditRefetch": {
+   "fresh": 30,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 0,
+   "misses": 56,
+   "charsServedFromCache": 0,
+   "hitRate": 0.0
+  },
+  "wallSeconds": 936.8,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 23,
+  "killed": 7,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

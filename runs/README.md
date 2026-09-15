@@ -466,6 +466,69 @@ amount of reading would have produced:
 - `webText(x, 300)` had been discarding its cap in JS for months — found while building
   the adapter, not while reading the code.
 
+## A real run, end to end, 2026-09-15 — `v11-creatine-cognition.json`
+
+The first thing anyone had run end to end in a while. It found two defects that 454 tests,
+53 conformance references, a 53-row parity table and seven CI jobs had all been green
+through — both of them in code, not in prompts, and neither reachable from any test.
+
+**Every calibrated run had been dying at the final step.** `TypeError: object of type
+'int' has no len()`. The calibration block binds `dropped` to an int counter, and that
+name already held the URL-dedup LIST in the same 486-line scope, which `stats()` closes
+over to publish `budgetDropped=len(dropped)`. So the run did framing, two search waves, 26
+sources, 66 claims, 30 verified, the dropped-claim sample, the citation audit and the
+calibration itself — 283 agent calls, ten minutes — and then threw while assembling the
+report. Nothing written. Everything lost, at the moment it was all most worth having.
+
+Nothing caught it because **no test ever ran that path**: every calibration test called
+`calibration.py` directly or searched engine source for a string. `"globals()
+['CALIBRATE_N'] = a.calibrate" in _main_src` is not a run.
+
+**A mandatory field had been pointing at itself, on a quarter of all runs.**
+`strongestArgumentAgainst` came back as *"See strongestArgumentAgainst field above (also
+populated in dedicated field)"*, with an invented sibling key
+`strongestArgumentAgainst_unused` holding `""`. Across the recorded runs that is **4 of
+20**, and this one makes 5 of 21. The argument is not misfiled — searching the whole
+report for it finds only the *perspective label* "Steelman-conditional-benefit". It is
+missing, on the one field whose entire job is to argue against the answer.
+
+The separation is not subtle, which is why it is now decided in code:
+
+| | length |
+|---|---|
+| the four non-answers | 41, 64, 65, 74 characters |
+| the sixteen genuine steelmen | 906 – 2101 characters |
+
+A pointer **and** a short field. Either test alone is wrong: a real steelman may cite
+another section mid-argument, and a short field may be a blunt honest answer.
+
+Also fixed: the verify pool logged *"spans 9 distinct sub-question buckets (of 8)"* —
+counting `(unassigned)` as a sub-question, a number larger than the total that overstates
+coverage in the flattering direction.
+
+### What the run itself did
+
+| | |
+|---|---|
+| sources → claims → verified | 26 → 49 → 30 |
+| confirmed / killed | 23 / 7 |
+| kills by lens | support 5, counter 3, provenance 6 |
+| citation accuracy | 79.3% (survivors-only 82.6%), 1 unsupported, 1 unreachable |
+| calibration | n=30, κ=0.630, Scott's π=0.627, 4 flips → **calibrated** |
+| per-lens κ | support 0.857, provenance 0.798, counter 0.783 |
+| quotes located on page | 23/23 |
+| coverage | 1 answered, 3 partial, 4 unanswered — and it says so |
+
+**The audit demoted a claim.** Phase 7's demotion had never once fired across every run
+previously reviewed; here the panel passed a claim and the blind re-fetch did not support
+it. The mechanism works.
+
+**The dropped-claim sample says the ranking does not select for verifiability.** 10 of 10
+dropped claims survived (100%) against 80% of kept ones. The crashed first run measured
+8/10 (80%) against 83%. Two independent measurements, same conclusion: the
+`(importance, sourceQuality)` sort is not predicting which claims survive the panel. That
+is a live open question, not a fixed bug.
+
 ## The files
 
 | Prefix | What it is |

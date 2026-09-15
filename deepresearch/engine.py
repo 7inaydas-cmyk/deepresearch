@@ -1162,6 +1162,45 @@ def _same_hypothesis(a, b):
     return False
 
 
+_POINTER = re.compile(
+    r"^\s*\[?(?:n/?a|none|tbd|todo|not applicable|no comment"
+    r"|see\b[^.]{0,80}?\b(?:above|below|field|section)"
+    r"|(?:as|same)\s+(?:stated|noted|described)\s+(?:above|below))", re.I)
+# A pointer AND a short field. Either alone is wrong: a real steelman can cite another
+# section mid-argument, and a short field can still be a blunt honest answer. Together
+# they are the measured shape. Across the 20 recorded runs carrying this field:
+#   non-answers      41, 64, 65, 74 characters
+#   genuine steelmen 906 - 2101 characters
+# a gap of an order of magnitude, with nothing in between. The bar sits in it.
+_NONANSWER_MAX = 200
+
+
+def is_nonanswer(text):
+    """Is this a POINTER where an answer was required, rather than an answer?
+
+    A mandatory narrative field can be a perfectly valid string, pass every type check,
+    and still contain nothing. Measured across the 21 recorded runs on 2026-09-15: FIVE
+    of them published a `strongestArgumentAgainst` reading
+
+        "See strongestArgumentAgainst field above (duplicate not needed)."
+
+    which points at itself. The model believes it is avoiding a duplicate key and writes
+    a cross-reference instead of the steelman; one run also invented a sibling key
+    `strongestArgumentAgainst_unused` holding "". In none of those runs does the argument
+    exist anywhere else in the report - it is not misfiled, it is missing. That is a 24%
+    silent-content rate on the one field whose whole job is to argue against the answer.
+
+    Deliberately narrow: a field is a non-answer only if it BOTH opens with a pointer or
+    refusal AND is short. Either test alone is wrong - a real steelman may cite another
+    section mid-argument, and a short field may be a blunt honest answer. Together they
+    are the measured shape. Across the 20 recorded runs carrying this field, non-answers
+    measure 41, 64, 65 and 74 characters and genuine steelmen 906-2101 - an order of
+    magnitude apart, with nothing in between.
+    """
+    t = str(text or "").strip()
+    return (not t) or (len(t) <= _NONANSWER_MAX and bool(_POINTER.match(t)))
+
+
 def _hyp_unrelated(verdict_text, registered_text):
     """Is the verdict adjudicating something ENTIRELY different from the hypothesis it names?
 
@@ -2276,8 +2315,16 @@ def deepresearch(question, depth="standard", contract=None):
     if dropped_pre > 0:
         log("NOTE: %d lower-ranked claims dropped before verification (cap %d) - NOT covered by this report"
             % (dropped_pre, T["max_verify"]))
-    log("Verify pool spans %d distinct sub-question buckets (of %d)"
-        % (len({sq_key(c, len(subqs)) for c in ranked}), len(subqs)))
+    # `(unassigned)` is a bucket, not a sub-question. Counting it with the rest printed
+    # "spans 9 distinct sub-question buckets (of 8)" on a live run - a number larger than
+    # the total, which reads as impossible and overstates coverage in the flattering
+    # direction: it makes the pool look like it reaches more of the checklist than it
+    # does. Report the two separately, and say how many claims answer nothing on it.
+    _keys = [sq_key(c, len(subqs)) for c in ranked]
+    _unassigned = sum(1 for k in _keys if k == "(unassigned)")
+    log("Verify pool spans %d of %d sub-questions%s"
+        % (len(set(_keys) - {"(unassigned)"}), len(subqs),
+           ("; %d claim(s) map to no sub-question" % _unassigned) if _unassigned else ""))
     if _pick_tally["calls"] >= 4 and _pick_tally["starved"] / _pick_tally["calls"] >= 0.6:
         log("WARNING: the source picker rejected EVERY hit in %d of %d searches. Search "
             "returned %d results, so this is not an empty web - it is an upstream engine "
@@ -2826,6 +2873,39 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                     sources=src_rows(), stats=stats(claimsVerified=len(voted), confirmed=len(confirmed),
                                                     killed=len(killed), afterSynthesis=0))
 
+    # A MANDATORY narrative field can pass every type check and still say nothing.
+    # Measured on the recorded runs: 5 of 21 published a `strongestArgumentAgainst` that
+    # pointed at itself. Ask once more for just that field - it is one call, and only on
+    # the runs that need it - then disclose if it is still missing rather than publishing
+    # the pointer as though it were the argument.
+    _steelman_missing = False
+    if is_nonanswer(report.get("strongestArgumentAgainst")):
+        log("SYNTHESIS: strongestArgumentAgainst came back as a cross-reference, not an "
+            "argument - re-asking for that field alone")
+        _again = agent(
+            "Below is a research conclusion. Write the strongest HONEST case AGAINST it: a "
+            "genuine steelman, not a strawman. Include survivorship/selection-bias risk if it "
+            "applies. Write the argument ITSELF in the field - do NOT cross-reference another "
+            "field, do not write 'see above', and do not say a duplicate is unnecessary. There "
+            "is exactly one place this text goes and it is the field you are filling.\n\n"
+            "## The conclusion\n" + webtext(report.get("answerFirst", ""), 1200) + "\n\n"
+            "## Its summary\n" + webtext(report.get("summary", ""), 2000) + "\n\n"
+            "## What was refuted\n"
+            + "\n".join("- " + webtext(c["claim"], 200) for c in killed[:8]),
+            {"type": "object", "required": ["strongestArgumentAgainst"],
+             "properties": {"strongestArgumentAgainst": {"type": "string"}}},
+            label="steelman-retry", max_tokens=1200)
+        if _again and not is_nonanswer(_again.get("strongestArgumentAgainst")):
+            report["strongestArgumentAgainst"] = _again["strongestArgumentAgainst"]
+        else:
+            report["strongestArgumentAgainst"] = (
+                "NOT PRODUCED. The synthesis step returned a cross-reference instead of an "
+                "argument and did not produce one when asked again. Treat this report as "
+                "having NO steelman against its own conclusion, and supply one yourself "
+                "before acting on it - an unopposed conclusion is the failure mode this "
+                "field exists to prevent.")
+            _steelman_missing = True
+
     # Phase 8 - Critique. Critical hallucinations hide in intermediate steps and
     # stay invisible to end-to-end checks; most final-report errors originate at
     # the synthesis step rather than in retrieval. So audit the PLAN and the
@@ -2875,7 +2955,14 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     out["droppedSample"] = dropped_sample
     # These limits travel WITH the report. A caveat that only exists in the README
     # is a caveat the person reading a pasted JSON blob never sees.
-    out["honestLimits"] = honest_limits()
+    out["honestLimits"] = honest_limits(
+        {"noSteelman": (
+            "`strongestArgumentAgainst` is NOT an argument in this report. The synthesis "
+            "step returned a cross-reference to the field itself and did not produce one "
+            "when asked again, so the conclusion above stands unopposed. Measured across "
+            "the recorded runs, this happens on roughly a quarter of them; the field is "
+            "now checked in code rather than trusted, which is why you are reading this "
+            "instead of a sentence that looks like content.")} if _steelman_missing else None)
     # `hypothesisVerdicts` arrives from the synthesis model through out.update(report)
     # and was never gated. When framing produced no hypotheses the model invents them
     # AFTER seeing the evidence and adjudicates those - which is exactly what this tool
