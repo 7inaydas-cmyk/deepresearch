@@ -1949,6 +1949,25 @@ ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" 
    "the generator owns the one thing that genuinely differs between the runtimes: the "
    "key names. The numbers cannot differ because there is only one set")
 
+print("\n-- the README's #9 table is generated, not typed --")
+# It claimed a tool regenerated it so it "cannot drift again". That was true of the
+# regime tables and NOT of this one: it listed five samples when eight were archived,
+# omitting v3-minwage-fixed (90% vs 67%) and v3-nudge-contract (60% vs 67%), and its
+# headline read "four of five" where no stated rule gives four. Both omissions and the
+# overstatement run in the flattering direction, in the section whose whole purpose is to
+# report an unflattering result.
+sys.path.insert(0, os.path.join(_ROOT, "tools"))
+import compare_regimes as _cr   # noqa: E402
+_readme = open(os.path.join(_ROOT, "README.md"), encoding="utf-8").read()
+ok(_cr.dropped_markdown() in _readme,
+   "the README carries exactly what tools/compare_regimes.py --dropped-md emits, so a "
+   "new run cannot leave the table behind")
+ok(_cr.DROPPED_START in _readme and _cr.DROPPED_END in _readme,
+   "and the block is marked generated, so nobody hand-edits it back into drift")
+ok(_cr.SAME_WITHIN == 5,
+   "the headline tally has a STATED rule - within %d points counts as 'as well as' - "
+   "because the previous count could not be derived from any rule" % _cr.SAME_WITHIN)
+
 print("\n-- the coverage line counts sub-questions, not buckets --")
 # A live run logged "Verify pool spans 9 distinct sub-question buckets (of 8)" - more
 # than the total, because `(unassigned)` is a bucket and was counted as a sub-question.

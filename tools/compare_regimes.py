@@ -6,12 +6,62 @@ never struck. This reads both sets and prints the comparison, so the claim "Sear
 the fixes changed the numbers" is a table anyone can regenerate rather than an assertion.
 
     python3 tools/compare_regimes.py
+    python3 tools/compare_regimes.py --dropped-md   # the README's #9 table, regenerated
+
+The README said this table "cannot drift again" because a tool regenerates it. That was
+true of the regime tables and NOT of the dropped-claim one, which stayed hand-maintained
+and drifted: it listed five samples when eight were archived, omitting v3-minwage-fixed
+(90% vs 67%) and v3-nudge-contract (60% vs 67%), and its headline read "four of five"
+where no stated rule gives four. --dropped-md emits the block, and tests/test_pipeline.py
+compares it against the README so the two cannot separate again.
 """
 import glob
+import sys
 import json
 import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+
+# Within this many points counts as "as well as". Stated so the headline tally is
+# reproducible: the previous prose count could not be derived from any rule.
+SAME_WITHIN = 5
+
+DROPPED_START = "<!-- BEGIN GENERATED: tools/compare_regimes.py --dropped-md -->"
+DROPPED_END = "<!-- END GENERATED -->"
+
+
+def dropped_markdown():
+    """The README's issue-#9 table, built from every archived run that carries a sample."""
+    rows = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "runs", "*.json"))):
+        try:
+            d = json.load(open(f, encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(d, dict):
+            continue
+        ds = d.get("droppedSample")
+        if not isinstance(ds, dict) or ds.get("survivalRate") is None:
+            continue
+        rows.append((os.path.basename(f)[:-5], ds.get("sampled"),
+                     ds["survivalRate"], ds.get("keptClaimSurvivalRate") or 0))
+    out = [DROPPED_START,
+           "", "| Run | n | Dropped claims that survived | Kept claims that survived |",
+           "|---|---|---|---|"]
+    same = 0
+    for name, n, sv, kp in rows:
+        if 100 * (sv - kp) >= -SAME_WITHIN:
+            same += 1
+        out.append("| %s | %s | %.0f%% | %.0f%% |" % (name, n, 100 * sv, 100 * kp))
+    out += ["",
+            "**In %d of %d samples the discarded claims verified as well as or better than the "
+            "kept ones** (within %d points, or higher). The ranking is not selecting for "
+            "verifiability. That is the unfavourable answer, it is the one the data gives, and it "
+            "is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9)."
+            % (same, len(rows), SAME_WITHIN),
+            "", DROPPED_END]
+    return "\n".join(out)
 
 
 def row(path):
@@ -71,6 +121,9 @@ def spread(rows, key):
 
 
 def main():
+    if "--dropped-md" in sys.argv:
+        print(dropped_markdown())
+        return 0
     # A framing contract is not a run. Persisting it beside the report made
     # runs/*.json match it, and this tool listed two empty rows as if they were runs.
     paths = sorted(p for p in glob.glob(os.path.join(ROOT, "runs", "*.json"))

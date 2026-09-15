@@ -103,6 +103,18 @@ doubles the verify cost for those N claims, so do not add it to an ordinary rese
 request. **The gate needs N ≥ 30** — below that it returns `underpowered` on purpose,
 because one flipped claim moves kappa by about the width of the bands at that size.
 
+`args: {question, depth, sampleDropped: N}` verifies N of the claims the verify cap
+discarded and reports their survival rate beside the kept claims'. The cap drops most of
+the evidence — typically around 80% — and nothing checked whether the ranking that chooses
+what to drop predicts anything. Measured twice on the Python build: **10 of 10 dropped
+claims survived (100%) against 80% of kept, and 8 of 10 (80%) against 83%.** On that
+evidence the `(importance, sourceQuality)` sort is not selecting for verifiability, so
+read `droppedSample.reading` before treating the cap as a quality filter. It costs one
+panel pass over N claims.
+
+Both instruments run before synthesis and are published even when synthesis fails — a
+failed run is when you most want to know whether the panel was behaving.
+
 Read `calibration.gateVerdict` with `calibration.perLens` beside it. A clean aggregate
 with one lens below 0.4 is capped at `usable but noisy`, because a 2-of-3 vote can turn
 unstable raters into a stable-looking verdict.

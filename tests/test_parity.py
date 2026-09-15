@@ -95,6 +95,10 @@ SHARED = {
     "count says what it counts": ("untraceableCountMeans", "untraceableCount"),
     "evidence-base label":       ("def _evidence_base(", "const evidenceBase = "),
     "limits on EVERY exit":      ("def honest_limits(extra=None)", "const honestLimits = (extra)"),
+    "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
+    "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
+    "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),
+    "steelman re-asked once":    ('label="steelman-retry"', "label: 'steelman-retry'"),
 }
 
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
@@ -114,9 +118,6 @@ PYTHON_ONLY = {
     "keyless search module":
         "The JS build uses the runtime's WebSearch/WebFetch tools. search.py exists "
         "because the CLI has no such tools to borrow.",
-    "dropped-claim sampling":
-        "Needs a second panel pass over discarded claims. Portable in principle; "
-        "not yet ported, and tracked as a known gap rather than an oversight.",
     "quote located in code":
         "Locating a quote needs the exact page text the extractor was shown, and in the JS "
         "build that text never reaches the orchestrator: its extract subagent calls the "

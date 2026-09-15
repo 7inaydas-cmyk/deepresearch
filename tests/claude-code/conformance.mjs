@@ -22,7 +22,7 @@ if (SPLIT < 0) {
 const noop = () => {}
 const M = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
   '"use strict"; ' + SRC.slice(0, SPLIT) +
-  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypUnrelated, normHyp }')(
+  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypUnrelated, normHyp, isNonanswer, evidenceBase }')(
   noop, noop, noop, noop, noop, { question: 'conformance', depth: 'standard' }, {})
 
 // The adapter: one entry per contract function. Return conventions differ between the
@@ -36,6 +36,13 @@ const ADAPTER = {
   same_hypothesis: (a, b) => M.sameHyp(M.normHyp(a), M.normHyp(b)),
   hyp_unrelated:   (a, b) => M.hypUnrelated(M.normHyp(a), M.normHyp(b)),
   shape_problems:  (schema, obj) => M.shape(schema, obj, 'conformance').problems.length,
+  is_nonanswer:    text => M.isNonanswer(text),
+  // The one real shape difference between the builds: the Python engine's source rows
+  // carry a claim COUNT, this build's carry the claim ARRAY. The contract asks the
+  // logical question once and each adapter says it in its own runtime's shape — which is
+  // this layer's whole job, and the only place such a difference may appear.
+  evidence_base:   rows => M.evidenceBase(
+                     rows.map(r => ({ ...r, claims: Array.from({ length: r.claims || 0 }) }))).citableSources,
 }
 
 const DOC = JSON.parse(fs.readFileSync(here + '../../contract/conformance.json', 'utf8'))

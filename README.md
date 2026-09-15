@@ -287,16 +287,24 @@ So: **two runs pass, one lands in the middle band, three cannot be adjudicated.*
 
 ### What the discarded evidence does
 
-The budget caps verification, so most extracted claims are never checked. `--sample-dropped N` verifies some of them anyway. Five samples so far:
+The budget caps verification, so most extracted claims are never checked. `--sample-dropped N` verifies some of them anyway, in both runtimes. The table below is GENERATED from every archived run that carries a sample — `python3 tools/compare_regimes.py --dropped-md` — and the test suite compares it against `runs/`, because the hand-maintained version drifted: it listed five samples when eight were archived, dropping two, and its headline read "four of five" where no stated rule gives four.
 
-| Run | Dropped claims that survived | Kept claims that survived |
-|---|---|---|
-| minimum-wage-employment | 80% | 63% |
-| mammography-forties | 90% | 87% |
-| standing-desks | 80% | 90% |
-| (two earlier, n=3 and n=6) | 33%, 100% | 83%, 83% |
+<!-- BEGIN GENERATED: tools/compare_regimes.py --dropped-md -->
 
-**In four of five samples the discarded claims verified as well as or better than the kept ones.** The ranking is not selecting for verifiability. That is the unfavourable answer, it is the one the data gives, and it is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9).
+| Run | n | Dropped claims that survived | Kept claims that survived |
+|---|---|---|---|
+| calibration-2026-09-06 | 6 | 100% | 83% |
+| nudge-searxng-2026-09-06 | 3 | 33% | 83% |
+| v11-creatine-cognition | 10 | 100% | 80% |
+| v2-mammography-forties | 10 | 90% | 87% |
+| v2-minimum-wage-employment | 10 | 80% | 63% |
+| v2-standing-desks | 10 | 80% | 90% |
+| v3-minwage-fixed | 10 | 90% | 67% |
+| v3-nudge-contract | 10 | 60% | 67% |
+
+**In 5 of 8 samples the discarded claims verified as well as or better than the kept ones** (within 5 points, or higher). The ranking is not selecting for verifiability. That is the unfavourable answer, it is the one the data gives, and it is tracked as [#9](https://github.com/7inaydas-cmyk/deepresearch/issues/9).
+
+<!-- END GENERATED -->
 
 > **Correction, 2026-09-06.** This table previously read `37%, 50%, 53%, 54%, 60%, 71%` for the kill rate and `86.7%, 88.1%, 90%` for citation accuracy. **50%, 53%, 60% and 90% appear in no run, under any definition of the denominator.** The published range also dropped the four lowest kill rates — 7%, 17%, 20%, 27% — which are the unflattering ones, the runs where the panel barely killed anything. Corrected below against every recorded run, and `tools/compare_regimes.py` now regenerates this table from `runs/` so it cannot drift again. A tool that exists to catch unsupported numbers had unsupported numbers in its own README; that is the least defensible place for them.
 

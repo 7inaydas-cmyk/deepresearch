@@ -529,6 +529,44 @@ dropped claims survived (100%) against 80% of kept ones. The crashed first run m
 `(importance, sourceQuality)` sort is not predicting which claims survive the panel. That
 is a live open question, not a fixed bug.
 
+## Closing the recorded gaps, 2026-09-15
+
+Three items were carrying a note saying they were portable and simply not done. Doing
+them turned up two more defects — both in the flattering direction, both in places that
+existed to report unflattering things.
+
+**The JS build threw away its calibration when synthesis failed.** Python fixed this on
+2026-09-06 after losing a full n=30 calibration and a dropped-claim sample that way, and
+wrote the reason down; the JS twin kept the bug. Both instruments run *before* synthesis,
+so a failed synthesis says nothing about them — and a failed run is when you most want to
+know whether the panel was behaving. Both now ride every exit in both builds.
+
+**The README's issue-#9 table had drifted, and the README said it couldn't.** It claimed
+a tool regenerated it so it "cannot drift again". True of the regime tables, not of this
+one, which stayed hand-maintained:
+
+| | claimed | actual |
+|---|---|---|
+| samples listed | five | **eight archived** |
+| omitted | — | `v3-minwage-fixed` (90% vs 67%), `v3-nudge-contract` (60% vs 67%) |
+| headline | "four of five" | **5 of 8**, under a stated rule |
+
+No rule gives four. The omissions and the overstatement both run the flattering way, in
+the one section whose purpose is to report a result that goes against the tool. It is
+generated now — `tools/compare_regimes.py --dropped-md` — with the "as well as" rule
+stated as a constant, and a test compares the README against `runs/`.
+
+**On the ranking itself: disclosed, not silently changed.** Across eight samples the
+discarded claims verify about as well as the kept ones. The honest response is not to
+swap the sort — there is no evidence a different sort does better, and changing it would
+alter what every recorded run means. It stays disclosed in-band, tracked as #9, and now
+measurable from either runtime instead of only one.
+
+Also ported: `is_nonanswer` with its one-call re-ask and `honestLimits.noSteelman`, and
+`evidenceBase`, which took no arguments and so could not be asked anything — the single
+instrument deciding whether a report is labelled THIN had no callable form. Parity is 57
+shared features, up from 53.
+
 ## The files
 
 | Prefix | What it is |

@@ -59,7 +59,8 @@ if (!TIERS[DEPTH]) DEPTH = 'standard'
 // re-runs. `args.calibrate: N` turns it on. The pre-registered gate needs N >= 30, and
 // the code says so rather than leaving a caller to discover it from a verdict of
 // "underpowered".
-const T = { ...TIERS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0) }
+const T = { ...TIERS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibrate, 10) || 0),
+  sampleDropped: Math.max(0, parseInt(RAW.sampleDropped, 10) || 0) }
 
 // ── Contract intake. `args.contract` is an object holding any SUBSET of the five framing
 //    fields the asker already ratified (CONTEXT.md: Supplied field). Supplied fields are
@@ -805,6 +806,59 @@ async function sweep(angles, fetchBudget, tag, subQuestions) {
 }
 
 // ═══ Phase 1: Scope ═════════════════════════════════════════════════════════
+// A run that found almost nothing still produces a report, and it reads exactly like
+// a thick one until you check the source count. Deliberately a LABEL, not an abort:
+// the thinnest run on record was thin because PDFs were reaching the model as raw
+// binary, and stopping it early would have hidden the bug instead of exposing it.
+const MIN_CITABLE_SOURCES = 5
+
+// Takes rows, and is hoisted above the pipeline with the rest of the pure decision
+// logic. It closed over `allSources` and took nothing, so contract/conformance.json
+// could not ask it anything: the one instrument deciding whether a report is labelled
+// THIN had no callable form, so its cases sat in python_cases while the Python twin
+// was checked and this one was not.
+const evidenceBase = rows => {
+  // Count CITABLE sources, not all of them. Calling the total 'citableSources' would
+  // quietly count T5 content farms toward the floor — a source the pipeline refuses to
+  // cite would have been evidence that the report is not thin.
+  // Reuse the tier computed at FETCH time (s.tier), the same value stats.sourceTiers
+  // censuses. Recomputing it here from the URL alone gave a different answer for the
+  // same source once already, so a report could disagree with itself about a tier.
+  // Count sources that produced a CLAIM, not URLs fetched and graded citable. A fetch
+  // returning nothing still emits a source row, so five paywalled shells read as a
+  // healthy evidence base on the one field callers are told to gate on.
+  const n = rows.filter(s => CITABLE.has(s.tier || 'T3') && (s.claims || []).length > 0).length
+  const thin = n < MIN_CITABLE_SOURCES
+  return { citableSources: n, floor: MIN_CITABLE_SOURCES, thin,
+    verdict: thin
+      ? 'THIN: ' + n + ' citable source(s), under the floor of ' + MIN_CITABLE_SOURCES +
+        '. Treat every finding as provisional and check the sources by hand — a report this thin has been recorded at 25% citation accuracy. Thinness is usually a retrieval failure rather than a silent world.'
+      : n + ' citable sources, at or above the floor of ' + MIN_CITABLE_SOURCES + '.',
+    note: 'This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having.' }
+}
+
+
+// ── A MANDATORY narrative field can pass every type check and still say nothing.
+//    Measured on the Python build's 20 recorded runs: FOUR published a
+//    `strongestArgumentAgainst` reading "See strongestArgumentAgainst field above
+//    (duplicate not needed)" — a pointer at itself — and a live run of 2026-09-15 made
+//    it five, inventing a sibling key `strongestArgumentAgainst_unused` holding "". In
+//    none of them does the argument exist anywhere else in the report: it is missing,
+//    not misfiled, on the one field whose whole job is to argue against the answer.
+//    This build runs the same synthesis rule and can fail the same way.
+//
+//    A pointer AND a short field. Either test alone is wrong: a real steelman may cite
+//    another section mid-argument, and a short field may be a blunt honest answer.
+//    Across those runs the four non-answers measure 41, 64, 65 and 74 characters and the
+//    sixteen genuine steelmen 906-2101 — an order of magnitude apart, nothing between.
+const POINTER = /^\s*\[?(?:n\/?a|none|tbd|todo|not applicable|no comment|see\b[^.]{0,80}?\b(?:above|below|field|section)|(?:as|same)\s+(?:stated|noted|described)\s+(?:above|below))/i
+const NONANSWER_MAX = 200
+const isNonanswer = text => {
+  const t = String(text === null || text === undefined ? '' : text).trim()
+  return !t || (t.length <= NONANSWER_MAX && POINTER.test(t))
+}
+
+
 // ── The hypothesis matcher. Pure, and hoisted here with the rest of the pure
 //    decision logic: it used to sit 900 lines down, inside the run, which put it
 //    out of reach of any check that calls it directly. Every drift this repo has
@@ -1113,37 +1167,12 @@ log('Total: ' + allSources.length + ' sources → ' + allClaims.length + ' claim
 
 const sourceRows = () => allSources.map(s => ({ url: webText(s.url), quality: s.sourceQuality, angle: s.angle, wave: s.wave, claimCount: s.claims.length }))
 
-// A run that found almost nothing still produces a report, and it reads exactly like
-// a thick one until you check the source count. Deliberately a LABEL, not an abort:
-// the thinnest run on record was thin because PDFs were reaching the model as raw
-// binary, and stopping it early would have hidden the bug instead of exposing it.
-const MIN_CITABLE_SOURCES = 5
-const evidenceBase = () => {
-  // Count CITABLE sources, not all of them. Calling the total 'citableSources' would
-  // quietly count T5 content farms toward the floor — a source the pipeline refuses to
-  // cite would have been evidence that the report is not thin.
-  // Reuse the tier computed at FETCH time (s.tier), the same value stats.sourceTiers
-  // censuses. Recomputing it here from the URL alone gave a different answer for the
-  // same source once already, so a report could disagree with itself about a tier.
-  // Count sources that produced a CLAIM, not URLs fetched and graded citable. A fetch
-  // returning nothing still emits a source row, so five paywalled shells read as a
-  // healthy evidence base on the one field callers are told to gate on.
-  const n = allSources.filter(s => CITABLE.has(s.tier || 'T3') && (s.claims || []).length > 0).length
-  const thin = n < MIN_CITABLE_SOURCES
-  return { citableSources: n, floor: MIN_CITABLE_SOURCES, thin,
-    verdict: thin
-      ? 'THIN: ' + n + ' citable source(s), under the floor of ' + MIN_CITABLE_SOURCES +
-        '. Treat every finding as provisional and check the sources by hand — a report this thin has been recorded at 25% citation accuracy. Thinness is usually a retrieval failure rather than a silent world.'
-      : n + ' citable sources, at or above the floor of ' + MIN_CITABLE_SOURCES + '.',
-    note: 'This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having.' }
-}
-
 // These limits travel WITH the report, on EVERY exit. They used to be written inline
 // on the happy path only, so the four early exits — no claims, all killed, all demoted,
 // synthesis failed — carried none of them. The parity marker check could not see this:
 // the string `honestLimits` existed in the file, just not on the exits that needed it.
 const honestLimits = (extra) => ({
-  evidenceBase: evidenceBase(),
+  evidenceBase: evidenceBase(allSources),
   falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
   reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
   confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
@@ -1357,6 +1386,41 @@ const interpretGate = (kappa, n, perLens) => {
   if (kappa >= 0.6) return ['calibrated', 'PASS (necessary, not sufficient): the panel repeats itself. It does NOT say the panel is right.']
   if (kappa >= 0.4) return ['usable but noisy', 'MIDDLE BAND: publish the number, then add abstention (KILL / SURVIVE / UNRESOLVED) before adding judges, and diversify the model rather than the prompt.']
   return ['noise', 'FAIL: the central claim does not hold. Stop and redesign before any polish.']
+}
+
+// ═══ Dropped-claim sample — what did the cap actually discard? ══════════════
+// The verify cap keeps the top `maxVerify` claims by (importance, sourceQuality) and
+// drops the rest, which is typically 80% of the evidence. Nothing checked whether that
+// ranking predicts anything, so "80% of the evidence is dropped" stayed a worry rather
+// than a number. Verify a sample of the discarded claims and compare survival rates.
+//
+// The Python twin has measured this twice, and the answer is uncomfortable: 10/10
+// dropped claims survived against 80% of kept, and 8/10 against 83%. The ranking is not
+// selecting for verifiability. That is exactly why this belongs in BOTH builds rather
+// than being a Python curiosity — a number this awkward should not depend on which
+// runtime you happened to run.
+let droppedSample = null
+if (T.sampleDropped > 0) {
+  const kept = new Set(rankedClaims)
+  const pool = citableClaims.filter(c => !kept.has(c)).slice(0, T.sampleDropped)
+  if (pool.length) {
+    phase('Sample dropped')
+    log('SAMPLING ' + pool.length + ' dropped claims to measure what the cap discarded')
+    const sv = await runPanel(pool)
+    const survived = sv.filter(c => c.survives).length
+    const keptRate = voted.length ? confirmed.length / voted.length : 0
+    const rate = survived / pool.length
+    droppedSample = {
+      sampled: pool.length, survived,
+      survivalRate: Math.round(rate * 1000) / 1000,
+      keptClaimSurvivalRate: Math.round(keptRate * 1000) / 1000,
+      reading: Math.abs(rate - keptRate) < 0.15
+        ? 'dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability'
+        : 'dropped claims survive at a materially different rate to kept ones',
+    }
+    log('SAMPLING: ' + survived + '/' + pool.length + ' dropped claims survived (' +
+        Math.round(100 * rate) + '%) vs ' + Math.round(100 * keptRate) + '% of kept claims')
+  }
 }
 
 let calibration = null
@@ -1648,9 +1712,46 @@ if (!report) {
     findings: [],
     confirmedRaw: confirmed.map(c => ({ claim: webText(c.claim), source: webText(c.sourceUrl), quote: webText(c.quote), vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes })),
     coverage: lastCoverage, citationAudit: factMetrics,
+    // Carry the INSTRUMENTS through this path. Both run BEFORE synthesis, and dropping
+    // them here throws away the most expensive measurements in the run at exactly the
+    // moment they are most worth having - a failed run is when you most want to know
+    // whether the panel was behaving. The Python twin lost a full calibration (n=30,
+    // kappa 0.7115, gate `calibrated`) and a dropped-claim sample this way on 2026-09-06,
+    // logging both and then discarding them because synthesis failed afterwards.
+    // Synthesis failing says nothing about the verification that already happened.
+    calibration, droppedSample,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
     sources: sourceRows(), honestLimits: honestLimits({ synthesisFailed: 'The synthesis step returned nothing; the verified claims below are raw, unsummarised output.' }),
     stats: baseStats({ claimsVerified: voted.length, confirmed: confirmed.length, killed: killed.length, unverified: unverified.length, afterSynthesis: 0 }),
+  }
+}
+
+// Ask once more for just that field — one call, and only on the runs that need it —
+// then disclose if it is still missing rather than publishing the pointer as the argument.
+let steelmanMissing = false
+if (isNonanswer(report.strongestArgumentAgainst)) {
+  log('SYNTHESIS: strongestArgumentAgainst came back as a cross-reference, not an argument — re-asking for that field alone')
+  const again = await agentChecked(
+    'Below is a research conclusion. Write the strongest HONEST case AGAINST it: a genuine ' +
+    'steelman, not a strawman. Include survivorship/selection-bias risk if it applies. Write the ' +
+    'argument ITSELF in the field — do NOT cross-reference another field, do not write "see above", ' +
+    'and do not say a duplicate is unnecessary. There is exactly one place this text goes and it is ' +
+    'the field you are filling.\n\n' +
+    '## The conclusion\n' + webText(report.answerFirst || '', 1200) + '\n\n' +
+    '## Its summary\n' + webText(report.summary || '', 2000) + '\n\n' +
+    '## What was refuted\n' + killed.slice(0, 8).map(c => '- ' + webText(c.claim, 200)).join('\n'),
+    { label: 'steelman-retry',
+      schema: { type: 'object', required: ['strongestArgumentAgainst'],
+                properties: { strongestArgumentAgainst: { type: 'string' } } } })
+  if (again && !isNonanswer(again.strongestArgumentAgainst)) {
+    report.strongestArgumentAgainst = again.strongestArgumentAgainst
+  } else {
+    steelmanMissing = true
+    report.strongestArgumentAgainst =
+      'NOT PRODUCED. The synthesis step returned a cross-reference instead of an argument and did ' +
+      'not produce one when asked again. Treat this report as having NO steelman against its own ' +
+      'conclusion, and supply one yourself before acting on it — an unopposed conclusion is the ' +
+      'failure mode this field exists to prevent.'
   }
 }
 
@@ -1762,9 +1863,12 @@ return {
   citationAudit: factMetrics,
   rescue: rescueStats,
   calibration,
+  droppedSample,
   // These limits travel WITH the report. A caveat that only exists in the README
   // is one the person reading a pasted JSON blob never sees.
   honestLimits: honestLimits({
+    ...(steelmanMissing ? { noSteelman:
+      '`strongestArgumentAgainst` is NOT an argument in this report. The synthesis step returned a cross-reference to the field itself and did not produce one when asked again, so the conclusion above stands unopposed. Measured across the recorded runs, this happens on roughly a quarter of them; the field is now checked in code rather than trusted, which is why you are reading this instead of a sentence that looks like content.' } : {}),
     ...(POST_HOC.length ? { postHocHypotheses:
       POST_HOC.length + ' of ' + VERDICTS.length + ' entries in `hypothesisVerdicts` adjudicate a hypothesis that was NOT registered before the search — the synthesis step wrote them after seeing the evidence. Each carries `preRegistered: false`. A hypothesis invented after the evidence and then judged against it is not a test of anything, and this tool\'s whole claim is that kill criteria are written first. Read those entries as a summary of what the evidence showed, never as a prediction that survived.' } : {}),
     ...(HYP.length ? {} : { noFramingContract:

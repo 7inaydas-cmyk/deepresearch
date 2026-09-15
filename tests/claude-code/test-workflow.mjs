@@ -213,6 +213,9 @@ import fs2 from 'node:fs'
      'untested is a first-class verdict')
   ok(out.honestLimits && out.honestLimits.falseKillRateUnmeasured,
      'honestLimits travel with the JS report as well (#12)')
+  ok(out.honestLimits.evidenceBase && typeof out.honestLimits.evidenceBase.citableSources === 'number',
+     'and the evidence base is COUNTED in a real report, not just present in the source: ' +
+     JSON.stringify(out.honestLimits.evidenceBase.citableSources))
   ok(out.processCritique.policy === 'flag' && Array.isArray(out.processCritique.struckFromSummary),
      'strike/flag policy is present and defaults to flag (#4)')
   // Stamped, and stamped with HOW it was decided. This used to be asserted by matching a
@@ -221,6 +224,55 @@ import fs2 from 'node:fs'
   ok(out.hypothesisVerdicts.every(h => h.preRegistered === true &&
                                        h.preRegisteredBy === 'hypothesisNumber'),
      'every verdict is stamped pre-registered BY the number it declared, so a reader can tell a certainty from a guess')
+}
+{
+  // The dropped-claim sample, which was PYTHON_ONLY until now: "portable in principle,
+  // not yet ported". The Python twin has measured it twice and the answer is awkward -
+  // 10/10 dropped claims survived against 80% of kept, and 8/10 against 83%. A number
+  // that uncomfortable should not depend on which runtime you happened to run.
+  // `quick` caps verification at 10 and the simulation yields 18 citable claims, so the
+  // cap actually bites here. At `standard` (cap 30) nothing is dropped — which is the
+  // mirror case, checked below.
+  const { out, logs } = await run('T17f the cap is measured, not assumed',
+    { question: 'Q', depth: 'quick', sampleDropped: 3 })
+  ok(out.droppedSample && out.droppedSample.sampled > 0,
+     'claims the verify cap discarded are sampled and put through the panel')
+  ok(typeof out.droppedSample.survivalRate === 'number' &&
+     typeof out.droppedSample.keptClaimSurvivalRate === 'number',
+     'and BOTH rates are published, because one without the other says nothing: ' +
+     out.droppedSample.survivalRate + ' vs ' + out.droppedSample.keptClaimSurvivalRate)
+  ok(/not selecting for verifiability|materially different rate/.test(out.droppedSample.reading || ''),
+     'with a reading that states which of the two it is, rather than leaving the reader to subtract')
+  ok(logs.some(l => /dropped claims survived/.test(l)), 'and it is logged as it happens')
+
+  // The mirror: when the cap discarded NOTHING, no rate is invented. A survival rate
+  // over an empty pool would be a number with no measurement behind it.
+  const none = await run('T17g nothing dropped means nothing claimed',
+    { question: 'Q', depth: 'standard', sampleDropped: 3 })
+  ok(none.out.droppedSample === null || none.out.droppedSample === undefined,
+     'with 18 claims under a cap of 30 nothing is discarded, so no sample is published')
+}
+{
+  // A mandatory field that points at itself. Four of the Python build's 20 recorded runs
+  // published a `strongestArgumentAgainst` cross-referencing the field itself, and in
+  // none of them does the argument exist anywhere else in the report. This build runs
+  // the same synthesis rule, so it gets the same check rather than a comment saying it
+  // would probably be fine.
+  const { out, logs } = await run('T17d a self-referential mandatory field is re-asked, then disclosed',
+    { question: 'Q', depth: 'standard' }, { pointer_steelman: true })
+  ok(logs.some(l => /came back as a cross-reference/.test(l)),
+     'the pointer is detected and named in the log, not accepted as content')
+  ok(/one university/.test(out.strongestArgumentAgainst || ''),
+     'ONE more call is made for that field alone and the argument is recovered')
+  ok(!(out.honestLimits || {}).noSteelman,
+     'with no false alarm in honestLimits when the recovery worked')
+
+  const hard = await run('T17e a re-ask that also points is disclosed, not published',
+    { question: 'Q', depth: 'standard' }, { pointer_steelman_hard: true })
+  ok(/NOT PRODUCED/.test(hard.out.strongestArgumentAgainst || ''),
+     'when the re-ask ALSO returns a pointer the field says so plainly')
+  ok((hard.out.honestLimits || {}).noSteelman,
+     'and the limit travels with the report, so the reader sees the conclusion stands unopposed')
 }
 {
   // The attack, run on THIS build rather than only on the Python one: a verdict
@@ -323,8 +375,11 @@ import fs2 from 'node:fs'
      'every one of the ' + nExits + ' report exits builds honestLimits (' + nLimits + ' do)')
   ok(/honestLimits: honestLimits\(\)/.test(src) && !/honestLimits: \{/.test(src),
      'there is ONE honestLimits builder, so a caveat cannot be added to one exit and missed on the others')
-  ok(/evidenceBase: evidenceBase\(\)/.test(src) && /MIN_CITABLE_SOURCES = 5/.test(src),
-     'every exit reports how many citable sources the report rests on')
+  // `evidenceBase(allSources)`, not `evidenceBase()`. It used to close over the run's
+  // sources and take nothing, which left contract/conformance.json unable to ask the one
+  // instrument that decides whether a report is labelled THIN anything at all.
+  ok(/evidenceBase: evidenceBase\(allSources\)/.test(src) && /MIN_CITABLE_SOURCES = 5/.test(src),
+     'every exit reports how many citable sources the report rests on, from rows PASSED to it')
   // Must reuse s.tier, the value computed at fetch time and censused by
   // stats.sourceTiers. Recomputing from the URL alone made a report disagree with
   // itself about one source's tier once already.

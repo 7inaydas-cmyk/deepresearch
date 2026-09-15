@@ -139,11 +139,23 @@ function makeAgent(cfg) {
                    reasoning: 'claim [0] triggers it', claimsCited: [0] },
                  { hypothesis: 'h2', hypothesisNumber: 2, verdict: 'untested', killCriterion: 'k2',
                    reasoning: 'no confirmed claim bears on it' }],
-               strongestArgumentAgainst: 'the crux was never evidenced',
+               // The shape a real Python run produced: a cross-reference to the field
+               // itself. `pointer_steelman` reproduces it; `pointer_steelman_hard` makes
+               // the re-ask fail too, so the disclosure path is exercised.
+               strongestArgumentAgainst: (cfg.pointer_steelman || cfg.pointer_steelman_hard)
+                 ? 'See strongestArgumentAgainst field above (duplicate not needed).'
+                 : 'the crux was never evidenced',
                whatWouldChangeThisCall: ['a real RCT'],
                caveats: 'caveats', openQuestions: ['OQ1'] }
     }
 
+    if (L === 'steelman-retry') {
+      if (cfg.pointer_steelman_hard) return { strongestArgumentAgainst: 'See above.' }
+      return { strongestArgumentAgainst:
+        'The two crossover trials that carry this conclusion recruited from one university, and ' +
+        'selection into them plausibly tracks the outcome measured, so the pooled estimate may be ' +
+        'one population counted twice.' }
+    }
     if (L.startsWith('critic:')) return {
       untraceableStatements: ['stmt 2 untraceable'], coverageGaps: ['no non-English sources'], planFlaws: ['SQ2 leading'],
       verdict: L.endsWith('2') ? 'material-gaps' : 'minor-gaps', rationale: 'because' }
