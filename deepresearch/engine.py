@@ -159,6 +159,10 @@ def host_of(u):
 
 # --- Source tiering (shared contract, see contract/tiers.json) ---------------
 from . import calibration as _cal
+# instruments.py imports THIS module lazily, inside its adapter, so the pair is not
+# circular at import time: the gates it checks are defined here, but nothing here needs
+# it until selftest() and the preflight run it.
+from . import instruments
 from .tiers import (RESOLVERS, RANK as TIER_RANK, CITABLE,
                     tier_of as _shared_tier_of, census as _tier_census)
 
@@ -3038,6 +3042,22 @@ def selftest():
     "passes on plumbing, not effect" shape this tool exists to catch.
     """
     ok = True
+    # Step 0, before the credential and long before any API call: do this build's own
+    # gates still accept what they should and catch what they should? Ponytail's rule,
+    # and the cheapest check here by orders of magnitude - pure functions, milliseconds.
+    # A run whose gates are broken produces a report nobody can check, which is worse
+    # than no run, so this one refuses to continue rather than warning and proceeding.
+    print("0. instruments       ...", end=" ")
+    _bad = instruments.verify()
+    _ni, _ng, _nc = instruments.counts()
+    if _bad:
+        print("FAIL (%d)" % len(_bad))
+        for _f in _bad:
+            print("      %s" % _f)
+        print("\n  A gate that cannot fail is indistinguishable from no gate.")
+        return EXIT_CONTRACT
+    print("OK (%d references, %d instruments, %d gates, each proving a good and a bad case)"
+          % (_nc, _ni, _ng))
     print("1. credential       ...", end=" ")
     try:
         sch, sec = credential(); print("OK (%s, len %d)" % (sch, len(sec)))
@@ -3150,6 +3170,22 @@ def main():
         sys.exit(selftest())
     if not a.question or not a.question.strip():
         ap.error("--question is required (or use --selftest)")
+    # Preflight, before the first API call and before the --bg re-exec, for the same
+    # reason the contract is validated here: a failure must land on the terminal, not in
+    # a detached child's log. Every gate proves a good reference it accepts and a bad one
+    # it catches; a build whose gates are broken produces a report nobody can check,
+    # which is worse than no report, so this refuses rather than warns. It is pure and
+    # takes milliseconds, so it costs nothing to run on every single invocation.
+    _broken = instruments.verify()
+    if _broken:
+        print(json.dumps({"error": "instrument check failed - refusing to start",
+                          "detail": _broken,
+                          "why": "A gate that cannot fail is indistinguishable from no "
+                                 "gate. This build's own checks were verified against "
+                                 "contract/conformance.json before spending a token, and "
+                                 "did not answer correctly.",
+                          "exit": EXIT_CONTRACT}, indent=1))
+        sys.exit(EXIT_CONTRACT)
     # Absolutise BEFORE the --bg re-exec: the child runs with cwd=pkg_parent, so a
     # relative path survives the argv copy and then resolves somewhere else. --out had
     # this bug already; it only worked because pkg_parent happened to be the repo root.

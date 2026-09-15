@@ -431,6 +431,41 @@ record — nine now — was a pure function over plain data. `contract/conforman
 both runtimes the same 35 questions and compares their answers. Markers stay for prompts
 and prose, which have no return value to compare.
 
+## Every gate proves a good and a bad reference, 2026-09-15
+
+Adopted from [ponytail](https://github.com/DietrichGebert/ponytail)'s benchmark method,
+which states it better than this repo had: *"every instrument ships a `good` and a `bad`
+reference and is verified by `--selftest` (the good ref must pass, the bad ref must be
+caught) **before any API call**."* Its `bad` reference is defined as *"the lazy-but-plausible
+version: correct on the happy path, unsafe on the adversarial input — exactly the code a
+binary correctness gate passes,"* which is this project's bug class written by someone else.
+
+The rule now runs at preflight: 47 references over 12 instruments, 9 of them gates. A
+build whose gates answer wrongly exits `CONTRACT` (4) having spent no tokens. Verified by
+breaking `is_prose` in the source and watching a real run refuse to start.
+
+**The half that bites is not "has a bad reference" but "the bad reference answers
+differently."** A gate can carry many cases and still never have been observed to reject
+anything — which is precisely what the parity markers did for years, and what `catchRate`
+did by counting a partial as a catch. Both failure shapes are now caught: a gate with no
+bad reference, and a gate whose bad references answer exactly what its good ones answer.
+
+**Writing the bad reference is where the value was.** Three things fell out of it that no
+amount of reading would have produced:
+
+- The first bad reference for `is_prose` was a navigation wordlist. It **passed** — and
+  correctly. That gate detects binary wearing a text costume, not boilerplate, and it
+  requires *both* signals to fail so a non-English paper is not discarded as garbage. The
+  real reference is a PDF with a broken ToUnicode map, long enough to clear the 40-word
+  floor so the ratio rule is what does the work. The non-English paper is now a *good*
+  reference, pinning the behaviour that rule exists to protect.
+- `host_is_ambiguous` had no demonstrated catch in the JS build at all. Probing for one
+  found `https://[::1]/x`: the host regex stops at the first colon and reads `[`, while
+  the standard parser reads `[::1]`. Both runtimes catch it, so both now have a real
+  rejection on record rather than a guard nobody had seen fire.
+- `webText(x, 300)` had been discarding its cap in JS for months — found while building
+  the adapter, not while reading the code.
+
 ## The files
 
 | Prefix | What it is |

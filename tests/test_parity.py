@@ -154,6 +154,13 @@ PYTHON_ONLY = {
         "an instruction is NOT the same feature as a code path, which is why this is "
         "recorded here rather than paired as a shared row. A parity row that accepts a "
         "sentence as the twin of a mechanism certifies drift as sameness.",
+    "instrument preflight before any API call":
+        "Both builds answer contract/conformance.json in CI - that part is shared, and "
+        "tests/claude-code/conformance.mjs applies the same structural rule. What is "
+        "Python-only is running it as a PREFLIGHT: the Workflow runtime owns the JS "
+        "build's lifecycle, there is no entry point there to refuse at and no exit code "
+        "to refuse with. A broken gate is caught in CI for both, and before the first "
+        "token for one.",
     "injected-defect probes":
         "probes.py and its runner operate on a finished report, not on the engine, so "
         "`python3 -m deepresearch.probes --report <any report.json>` already scores a "

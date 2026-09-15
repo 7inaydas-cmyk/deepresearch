@@ -1860,13 +1860,57 @@ ok("killsByLens=dict" in _engine_txt,
    "which lens killed what is STORED, not just logged: six runs reported killsByLens={} "
    "while the log line beside it read {'support': 9, 'provenance': 10, 'counter': 5}")
 
+print("\n-- every gate proves a good and a bad reference, before any API call --")
+# A gate that cannot fail is indistinguishable from no gate, and this project has shipped
+# that shape more than once: parity markers passing on a comment, catchRate counting a
+# partial as a catch, challenge markers unreachable for the input they were added for.
+import json as _json2   # noqa: E402
+from deepresearch import instruments as _inst   # noqa: E402
+_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+ok(_inst.verify() == [],
+   "every reference in contract/conformance.json answers correctly in this build")
+_ni, _ng, _nc = _inst.counts()
+ok(_ng >= 9 and _nc >= 45,
+   "and the contract covers %d instruments, %d of them gates, over %d references" % (_ni, _ng, _nc))
+
+_doc = _json2.load(open(os.path.join(_ROOT, "contract", "conformance.json"), encoding="utf-8"))
+_gate_names = [f for f, k in _doc["instruments"].items() if k == "gate"]
+ok(len(_gate_names) == _ng, "the gate count comes from the contract, not from a number typed here")
+
+# The structural rule, checked by breaking it. A gate with no bad reference, and a gate
+# whose bad reference answers exactly what its good ones answer, must BOTH be caught -
+# the second is the one that bites, because a gate can have many cases and still never
+# have been observed to reject anything.
+_no_bad = _json2.loads(_json2.dumps(_doc))
+_no_bad["cases"]["host_ambiguous"] = [c for c in _no_bad["cases"]["host_ambiguous"]
+                                      if c.get("ref") != "bad"]
+ok(any("no `bad` reference" in f for f in _inst.check_structure(_no_bad)),
+   "a gate with no bad reference is caught: nothing shows it can reject at all")
+
+_toothless = _json2.loads(_json2.dumps(_doc))
+for _c in _toothless["cases"]["host_ambiguous"]:
+    if _c.get("ref") == "bad":
+        _c["out"] = False
+        _c.pop("out_by_runtime", None)
+ok(any("never been observed to reject" in f for f in _inst.check_structure(_toothless)),
+   "and so is a gate whose bad references answer exactly what its good ones answer - "
+   "having cases is not the same as having been shown to reject something")
+
+_undeclared = _json2.loads(_json2.dumps(_doc))
+_undeclared["instruments"]["never_bound"] = "gate"
+ok(any("never_bound" in f for f in _inst.check_structure(_undeclared)),
+   "an instrument declared with no cases is caught too, so the contract cannot claim "
+   "coverage it does not have")
+
+ok(dr.EXIT_CONTRACT == 4,
+   "and a build whose gates are broken exits CONTRACT (4) rather than producing a report "
+   "nobody can check - verified by hand against a real run, which refused to start")
+
 print("\n-- depth budgets are contract data, not two literals --")
 # The tier RULES were moved to contract/tiers.json after researchgate.net graded T4 in
 # Python and T3 in JS. The BUDGETS were left behind and drifted the same way one file
 # over: `quick` verified 10 claims here and 14 in the JS build - 30 agent calls against
 # 42 for the same requested depth, declared nowhere.
-import json as _json2   # noqa: E402
-_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 _DEPTHS = _json2.load(open(os.path.join(_ROOT, "contract", "depths.json"), encoding="utf-8"))
 ok(dr.TIERS == _DEPTHS["depths"],
    "the engine's depth table IS the contract file, not a copy of it - a copy is what "

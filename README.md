@@ -170,7 +170,23 @@ instruments the numbers below were produced with.
 | `--sample-dropped N` | `DR_SAMPLE_DROPPED` | Verifies N claims the budget discarded and reports how often they would have survived. Turns "most of the evidence is never checked" from a worry into a number. |
 | — | `DR_UNTRACEABLE=strike` | Removes untraceable sentences from the summary instead of flagging them. Default is `flag`, because the critic's precision is unmeasured and deleting on an unmeasured judgement is the unearned confidence this tool exists to catch. |
 | `--contract path.json` | — | A framing contract you already ratified — any subset of `decisionAtStake`, `keyQuestion`, `assumptions`, `whatWouldChangeTheAnswer`, `hypotheses`. **Supplied fields are never re-derived**; the model drafts only what is missing. A malformed file exits `4` before any model call. Every run writes the contract it used to `<out-stem>.contract.json`, so a re-run can pass it straight back and hold framing constant. |
-| `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded** — everything works but no general-web backend returns anything after 3 probes with backoff, so the run would be scholarly-only. |
+| `--selftest` | — | Exit `0` healthy, `1` failed, `2` auth failed, **`3` degraded**, **`4` a gate in this build answered its own reference wrongly** — everything works but no general-web backend returns anything after 3 probes with backoff, so the run would be scholarly-only. |
+
+**Every run preflights its own gates, before the first API call.** A gate accepts or
+rejects — where a quote sits on a page, whether a schema leaf is really a string, whether
+extracted text is prose or binary wearing a text costume. Each one carries a *good*
+reference it must accept and a *bad* one it must catch, in `contract/conformance.json`,
+and the rule has a second half that matters more than the first: a gate's bad references
+must produce an answer none of its good references produce. A gate whose bad cases answer
+like its good ones has never been observed to reject anything, and a check that cannot
+fail is indistinguishable from no check. This project has shipped that shape more than
+once.
+
+47 references over 12 instruments, 9 of them gates. They are pure functions, so the whole
+preflight is milliseconds, and a build that fails it exits `4` having spent nothing —
+a report produced by broken checks is worse than no report. Both runtimes answer the same
+file in CI; only the Python CLI can refuse at a door, because the Workflow runtime owns
+the JS build's lifecycle.
 
 **A shell pipe swallows the exit code.** `python3 -m deepresearch --selftest \| tail` reports the exit status of `tail`, not of the selftest — measured live: it printed `0` while the selftest body said `DEGRADED`. Either don't pipe it, or `set -o pipefail` first so the real code survives:
 

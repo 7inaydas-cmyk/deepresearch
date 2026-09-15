@@ -145,6 +145,23 @@ selects for verifiability.
 A defect injected into a finished report on purpose, to measure whether a checker catches
 it. The only ground truth this domain has.
 
+**Instrument**:
+One check the engine makes in code rather than by asking a model. Two kinds, and the
+contract says which each one is: a **gate** accepts or rejects, so it can be wrong in two
+directions; a **transform** maps input to output with no verdict. Note the collision and
+keep them apart: the *calibration* **Gate** above is a set of pre-registered thresholds,
+not an instrument.
+_Avoid_: check, validator, guard
+
+**Reference**:
+An input an instrument must answer correctly, recorded in `contract/conformance.json`.
+Every gate carries a **good** reference it must accept and a **bad** one it must catch,
+and its bad references must produce an answer no good reference produces — a gate whose
+bad cases answer like its good ones has never been observed to reject anything, and a
+check that cannot fail is indistinguishable from no check. Proved at preflight, before
+any API call. Distinct from a [Probe], which tests a checker against a finished report
+rather than testing the checker's own code.
+
 **Quote location**:
 Where a [claim]'s verbatim quote actually sits in the page it was extracted from, decided
 in code rather than asked of a model. Graded, never boolean: located / located-elided /

@@ -11,7 +11,7 @@ will dare delete in two years.
 
 ```bash
 python3 tests/test_pipeline.py        # the engine: no API key, no network, a few seconds
-python3 tests/test_conformance.py     # the python build answers contract/conformance.json
+python3 tests/test_conformance.py     # every gate proves a good and a bad reference
 node tests/claude-code/conformance.mjs   # the JS build answers the SAME file
 cd tests/claude-code && node test-workflow.mjs   # the JS build end to end, model stubbed
 python3 tests/test_parity.py          # neither build is missing a feature the other has
@@ -20,6 +20,25 @@ python3 tests/test_parity.py          # neither build is missing a feature the o
 The suite stubs the model and the network, so you can change the pipeline and see the
 consequences without spending a token. If your change needs a live call to be tested, it is
 probably in the wrong place — push the judgement into a pure function and test that.
+
+## Adding or changing a gate
+
+A gate accepts or rejects — a quote location, a schema leaf, a prose check, the
+ambiguity guard. It must carry both references in `contract/conformance.json`: a `good`
+one it accepts and a `bad` one it catches. The structural rule is enforced, and the half
+that bites is the second one: a gate whose bad references answer exactly what its good
+ones answer has never been observed to reject anything, however many cases it has.
+
+That rule runs at **preflight, before any API call**, not only in CI. A build whose gates
+are broken exits `CONTRACT` (4) and spends no tokens, because a report produced by broken
+checks is worse than no report.
+
+Write the bad reference before the fix, and let it teach you what the gate is for. The
+first bad reference written for `is_prose` was a navigation wordlist — which is readable
+text and correctly passed. The gate detects binary wearing a text costume, not
+boilerplate, and writing the reference is what surfaced that.
+
+Do not delete a reference to make this green.
 
 ## Changing pure decision logic
 
