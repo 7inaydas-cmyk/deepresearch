@@ -51,11 +51,16 @@ CLAUDE_CODE_VERSION = os.environ.get("DR_CC_VERSION", "2.1.258")
 OAUTH_BETAS = "claude-code-20250219,oauth-2025-04-20"
 CC_SYSTEM_PREFIX = "You are Claude Code, Anthropic's official CLI for Claude."
 
-TIERS = {
-    "quick":      dict(perspectives=4, wave1=10, deepen=0, wave_n=0,  max_verify=10, lenses=3, audit=False, critics=1, rescue=False),
-    "standard":   dict(perspectives=6, wave1=16, deepen=1, wave_n=10, max_verify=30, lenses=3, audit=True,  critics=2, rescue=True),
-    "exhaustive": dict(perspectives=9, wave1=24, deepen=2, wave_n=14, max_verify=50, lenses=3, audit=True,  critics=3, rescue=True),
-}
+# Depth budgets live in contract/depths.json, not here, for the same reason the tier
+# RULES stopped living in two source files: two hand-maintained literals drift. Audited
+# 2026-09-15 - `quick` verified 10 claims here and 14 in the JS build, 30 agent calls
+# against 42 for the same requested depth, with nothing declaring the difference. The JS
+# block is generated from this file by tools/sync_tiers.py; this reads it directly.
+_DEPTHS_FILE = os.environ.get(
+    "DR_DEPTHS_FILE", os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "..", "contract", "depths.json"))
+with open(os.path.normpath(_DEPTHS_FILE), encoding="utf-8") as _df:
+    TIERS = json.load(_df)["depths"]
 # 2 of N lenses must refute to kill a claim, so every tier runs all 3: with only
 # 2 lenses a 1-1 split survives and no single lens can ever kill anything, which
 # makes the adversarial filter inert. Cut claim COUNT for a cheaper tier, never

@@ -1860,6 +1860,38 @@ ok("killsByLens=dict" in _engine_txt,
    "which lens killed what is STORED, not just logged: six runs reported killsByLens={} "
    "while the log line beside it read {'support': 9, 'provenance': 10, 'counter': 5}")
 
+print("\n-- depth budgets are contract data, not two literals --")
+# The tier RULES were moved to contract/tiers.json after researchgate.net graded T4 in
+# Python and T3 in JS. The BUDGETS were left behind and drifted the same way one file
+# over: `quick` verified 10 claims here and 14 in the JS build - 30 agent calls against
+# 42 for the same requested depth, declared nowhere.
+import json as _json2   # noqa: E402
+_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+_DEPTHS = _json2.load(open(os.path.join(_ROOT, "contract", "depths.json"), encoding="utf-8"))
+ok(dr.TIERS == _DEPTHS["depths"],
+   "the engine's depth table IS the contract file, not a copy of it - a copy is what "
+   "drifted")
+ok(dr.TIERS["quick"]["max_verify"] == 10,
+   "quick verifies 10 claims. Every recorded run and every calibration number in runs/ "
+   "came from this engine at 10, so adopting the JS build's 14 would have silently "
+   "changed what the historical quick numbers mean")
+for _d, _cfg in dr.TIERS.items():
+    ok(_cfg["lenses"] == 3,
+       "%s runs all 3 lenses: 2 of N must refute to kill, so at 2 lenses a 1-1 split "
+       "survives and no single lens can ever kill anything" % _d)
+_sys_path_added = os.path.join(_ROOT, "tools")
+if _sys_path_added not in sys.path:
+    sys.path.insert(0, _sys_path_added)
+import sync_tiers as _st   # noqa: E402
+_js_block = _st.render_depths(_DEPTHS)
+ok(_st.render_depths(_DEPTHS) in open(
+       os.path.join(_ROOT, "integrations", "claude-code", "deepresearch.js"), encoding="utf-8").read(),
+   "and the JS build's table is GENERATED from that same file, byte-for-byte - the "
+   "parity test checks this too, so neither copy can be edited by hand")
+ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" in _js_block,
+   "the generator owns the one thing that genuinely differs between the runtimes: the "
+   "key names. The numbers cannot differ because there is only one set")
+
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
    "kappa=1.0 on n=10 no longer returns 'calibrated' - that verdict was the whole complaint")

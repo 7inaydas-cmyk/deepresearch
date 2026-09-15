@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Regenerate the JS build's tier-rule block from contract/tiers.json.
+"""Regenerate the JS build's generated blocks from the files in contract/.
+
+Two blocks, two source files: the source-quality tier rules from contract/tiers.json,
+and the quick/standard/exhaustive depth budgets from contract/depths.json.
 
 Why this exists: contract/tiers.json's own $comment claims both runtimes read it. The
 JS build could not - it runs inside the Claude Code Workflow runtime, which has no
@@ -25,10 +28,21 @@ import sys
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TIERS_JSON = os.path.join(ROOT, "contract", "tiers.json")
+DEPTHS_JSON = os.path.join(ROOT, "contract", "depths.json")
 JS_FILE = os.path.join(ROOT, "integrations", "claude-code", "deepresearch.js")
 
 START = "// ── BEGIN GENERATED FROM contract/tiers.json — run tools/sync_tiers.py, do not hand-edit ──"
 END = "// ── END GENERATED ─────────────────────────────────────────────────────────────────────"
+D_START = "// ── BEGIN GENERATED FROM contract/depths.json — run tools/sync_tiers.py, do not hand-edit ──"
+D_END = "// ── END GENERATED DEPTHS ──────────────────────────────────────────────────────────────"
+
+# The two runtimes name these budgets differently and always have. The mapping lives
+# HERE, in one place, so contract/depths.json can keep the Python engine's key names and
+# neither runtime's call sites have to change.
+DEPTH_KEY_JS = {"deepen": "deepenRounds", "wave_n": "wavePerRound",
+                "max_verify": "maxVerify", "audit": "factAudit"}
+DEPTH_ORDER = ["perspectives", "wave1", "deepen", "wave_n", "max_verify",
+               "lenses", "audit", "critics", "rescue", "calibrate"]
 
 
 def render(contract: dict) -> str:
@@ -48,25 +62,51 @@ def render(contract: dict) -> str:
     return "\n".join(lines)
 
 
+def render_depths(contract: dict) -> str:
+    """The JS build's depth table, emitted from contract/depths.json.
+
+    A literal rather than a loop so the generated file stays readable in review: a
+    reviewer comparing the two runtimes reads numbers, not a mapping applied at runtime.
+    """
+    lines = [D_START, "const TIERS = {"]
+    for name, cfg in contract["depths"].items():
+        fields = ", ".join(
+            "%s: %s" % (DEPTH_KEY_JS.get(k, k), json.dumps(cfg[k]))
+            for k in DEPTH_ORDER if k in cfg)
+        lines.append("  %-12s { %s }," % (name + ":", fields))
+    lines.append("}")
+    lines.append(D_END)
+    return "\n".join(lines)
+
+
+def _replace(src: str, start: str, end: str, generated: str, what: str):
+    pat = re.compile(re.escape(start) + r".*?" + re.escape(end), re.S)
+    if not pat.search(src):
+        return None, "ERROR: generated markers not found in %s - has the %s block moved?" % (JS_FILE, what)
+    return pat.sub(lambda _m: generated, src, count=1), None
+
+
 def main() -> int:
     check_only = "--check" in sys.argv
-    contract = json.load(open(TIERS_JSON, encoding="utf-8"))
-    generated = render(contract)
-    src = open(JS_FILE, encoding="utf-8").read()
-    pat = re.compile(re.escape(START) + r".*?" + re.escape(END), re.S)
-    if not pat.search(src):
-        print("ERROR: generated markers not found in %s - has the tier block moved?" % JS_FILE)
-        return 2
-    new_src = pat.sub(lambda _m: generated, src, count=1)
-    if new_src == src:
-        print("in sync: JS tier rules already match contract/tiers.json")
+    src = original = open(JS_FILE, encoding="utf-8").read()
+    for source_file, start, end, renderer, what in (
+            (TIERS_JSON, START, END, render, "tier"),
+            (DEPTHS_JSON, D_START, D_END, render_depths, "depth"),
+    ):
+        contract = json.load(open(source_file, encoding="utf-8"))
+        src, err = _replace(src, start, end, renderer(contract), what)
+        if err:
+            print(err)
+            return 2
+    if src == original:
+        print("in sync: the JS generated blocks already match contract/tiers.json and contract/depths.json")
         return 0
     if check_only:
         print("OUT OF SYNC: integrations/claude-code/deepresearch.js does not match "
-              "contract/tiers.json. Run `python3 tools/sync_tiers.py` and commit the result.")
+              "contract/. Run `python3 tools/sync_tiers.py` and commit the result.")
         return 1
-    open(JS_FILE, "w", encoding="utf-8").write(new_src)
-    print("synced: regenerated the tier block in %s from contract/tiers.json" % JS_FILE)
+    open(JS_FILE, "w", encoding="utf-8").write(src)
+    print("synced: regenerated the tier and depth blocks in %s from contract/" % JS_FILE)
     return 0
 
 

@@ -32,6 +32,16 @@ A model-supplied value dropped by the engine with no log line. The project's def
 class: nine of its recorded faults had silence as their only signature.
 _Avoid_: filtered out, skipped
 
+### Running
+
+**Depth**:
+How much of the pipeline a run buys: `quick`, `standard` or `exhaustive`. One named
+budget covering perspectives, search waves, claims verified, critics, and whether the
+citation audit and rescue pass run at all. A depth is contract data, never a literal in
+either runtime — the two hand-maintained copies drifted, and a reader comparing runs at
+the same named depth had no way to see it.
+_Avoid_: mode, level, effort
+
 ### Verification
 
 **Claim**:

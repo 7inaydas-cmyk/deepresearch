@@ -312,14 +312,22 @@ def check_tier_data():
     WHAT the rules say. Measured 2026-09-07: researchgate.net graded T4 in Python and T3
     in JS, listverse.com T5-excluded in Python and T3-citable in JS, and the marker check
     passed the whole time. tools/sync_tiers.py generates the JS block FROM
-    contract/tiers.json; this just asks it whether the two still match."""
+    contract/tiers.json; this just asks it whether the two still match.
+
+    The depth BUDGETS were the same bug one file over, and outlived the first fix by a
+    week: audited 2026-09-15, `quick` verified 10 claims in Python and 14 in JS, which at
+    3 lenses per claim is 30 agent calls against 42 for the same requested depth. Both
+    files contained the token, so every marker row passed. They are generated from
+    contract/depths.json now and checked here the same way."""
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import sync_tiers
     contract = __import__("json").load(open(sync_tiers.TIERS_JSON, encoding="utf-8"))
     generated = sync_tiers.render(contract)
+    depths = __import__("json").load(open(sync_tiers.DEPTHS_JSON, encoding="utf-8"))
     # Raw, NOT comment-stripped: this compares a generated block against the file
-    # byte-for-byte, and the generated block carries its own "do not edit" comment.
-    return generated in read_raw(JS)
+    # byte-for-byte, and each generated block carries its own "do not edit" comment.
+    js = read_raw(JS)
+    return generated in js and sync_tiers.render_depths(depths) in js
 
 
 def main():
@@ -352,8 +360,8 @@ def main():
              "no row pairs a code token with a prompt sentence" if shape_ok
              else "a row certifies an INSTRUCTION as the twin of a MECHANISM"))
     tiers_ok = check_tier_data()
-    print("  %s  %-28s python=contract/tiers.json  js=%s"
-          % ("ok " if tiers_ok else "GAP", "tier DATA (not just tierOf)",
+    print("  %s  %-28s python=contract/*.json  js=%s"
+          % ("ok " if tiers_ok else "GAP", "tier + depth DATA",
              "generated, matches" if tiers_ok else "STALE - run tools/sync_tiers.py"))
 
     if missing_js or missing_py or not tiers_ok or not shape_ok or not strip_ok:
@@ -363,7 +371,7 @@ def main():
         for f, m in missing_py:
             print("    Python build is missing %r (marker %r)" % (f, m))
         if not tiers_ok:
-            print("    JS tier rules do not match contract/tiers.json - "
+            print("    JS tier rules or depth budgets do not match contract/ - "
                   "run `python3 tools/sync_tiers.py` and commit the result.")
         if not strip_ok:
             print("    Marker matching is unsound: fix strip_comments before trusting "

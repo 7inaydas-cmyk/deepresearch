@@ -101,8 +101,16 @@ import fsCap from 'node:fs'
   const { out, logs } = await run('T6 coverage-balanced claim selection', { question: 'Q', depth: 'standard' })
   const capSrc = fsCap.readFileSync(new URL('../../integrations/claude-code/deepresearch.js', import.meta.url).pathname,'utf8')
   const caps = Object.fromEntries([...capSrc.matchAll(/(quick|standard|exhaustive):\s*\{[^}]*maxVerify:\s*(\d+)/g)].map(m=>[m[1],+m[2]]))
-  ok(caps.standard === 30 && caps.exhaustive === 50 && caps.quick === 14,
-     'verify budgets raised: quick=' + caps.quick + ' standard=' + caps.standard + ' exhaustive=' + caps.exhaustive)
+  // Checked against contract/depths.json, NOT against a number typed here. This
+  // assertion used to read `caps.quick === 14` — written against this build's own copy
+  // rather than the shared budget — so the JS suite actively certified the drift:
+  // quick verified 14 claims here and 10 in the Python engine, 42 agent calls against
+  // 30 for the same requested depth, green in both suites the whole time.
+  const DEPTHS = JSON.parse(fsCap.readFileSync(new URL('../../contract/depths.json', import.meta.url).pathname, 'utf8')).depths
+  const mismatch = Object.keys(DEPTHS).filter(d => caps[d] !== DEPTHS[d].max_verify)
+  ok(mismatch.length === 0,
+     'verify budgets come from contract/depths.json: quick=' + caps.quick + ' standard=' + caps.standard +
+     ' exhaustive=' + caps.exhaustive + (mismatch.length ? ' — DRIFTED at: ' + mismatch.join(', ') : ''))
   ok(out.stats.claimsVerified === Math.min(out.stats.claimsExtracted, caps.standard),
      'every extracted claim verified when under cap (' + out.stats.claimsVerified + '/' + out.stats.claimsExtracted + ', cap ' + caps.standard + ')')
   ok(out.stats.claimsDroppedBeforeVerify === Math.max(0, out.stats.claimsExtracted - caps.standard),
