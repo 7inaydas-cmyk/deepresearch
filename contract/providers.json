@@ -1,0 +1,47 @@
+{
+  "$comment": [
+    "The model providers the Python CLI can run on. Every fact here is a TRANSPORT fact:",
+    "endpoint, credential environment variables, default model, identity system text, and",
+    "for Anthropic the Claude Code OAuth login this tool was born on. Behaviour that is",
+    "policy rather than fact - retries, sentinel recovery, schema shaping, the 429 backoff",
+    "curve - stays in engine.agent() behind this seam, per ADR-0001 and ADR-0004.",
+    "",
+    "A provider is ADDABLE HERE without engine changes only while it speaks the Anthropic",
+    "Messages wire format (tools + tool_choice). A different wire needs a real adapter and",
+    "an ADR of its own; none exists yet, and none is pretended to.",
+    "",
+    "The glm baseUrl is the vendor's documented Anthropic-compatible endpoint. Nothing in",
+    "this repo can verify an endpoint from a JSON file - preflight() and --selftest do",
+    "that live, on the first call, and that is the only place the claim is checked."
+  ],
+  "default": "claude",
+  "providers": {
+    "claude": {
+      "label": "Anthropic",
+      "baseUrlEnv": "ANTHROPIC_BASE_URL",
+      "baseUrl": "https://api.anthropic.com",
+      "keyEnvs": ["ANTHROPIC_API_KEY"],
+      "keyHelp": "https://console.anthropic.com/settings/keys",
+      "defaultModel": "claude-sonnet-5",
+      "systemPrefix": "You are Claude Code, Anthropic's official CLI for Claude.",
+      "staticHeaders": {"anthropic-version": "2023-06-01"},
+      "oauth": {
+        "credPaths": ["~/.claude/.credentials.json", "$HERMES_HOME/.claude/.credentials.json"],
+        "betas": "claude-code-20250219,oauth-2025-04-20",
+        "userAgent": "claude-cli/{version} (external, cli)",
+        "versionEnv": "DR_CC_VERSION",
+        "defaultVersion": "2.1.258"
+      }
+    },
+    "glm": {
+      "label": "Z.ai GLM",
+      "baseUrlEnv": "GLM_BASE_URL",
+      "baseUrl": "https://api.z.ai/api/anthropic",
+      "keyEnvs": ["ZAI_API_KEY", "GLM_API_KEY"],
+      "keyHelp": "https://z.ai",
+      "defaultModel": "glm-5.3",
+      "systemPrefix": "You are GLM, a large language model trained by Z.ai, running as the model inside a multi-agent research harness.",
+      "staticHeaders": {"anthropic-version": "2023-06-01"}
+    }
+  }
+}

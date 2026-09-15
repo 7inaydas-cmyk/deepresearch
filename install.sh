@@ -45,4 +45,4 @@ fi
 echo
 say "CLI: pip install -e \"$REPO\"   (no dependencies)"
 say "or:  python3 -m deepresearch --selftest"
-say "Set ANTHROPIC_API_KEY, or rely on an existing Claude Code login."
+say "Set ANTHROPIC_API_KEY (Claude) or ZAI_API_KEY (GLM 5.3), or rely on an existing Claude Code login."

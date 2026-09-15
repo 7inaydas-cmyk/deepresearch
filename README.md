@@ -9,7 +9,7 @@
 
 Most research agents retrieve, summarise, and hand you the result. This one retrieves, then spends the rest of the run attacking what it found.
 
-It needs a model: set `ANTHROPIC_API_KEY`, or let it use a Claude Code login already on the machine. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref, Europe PMC, PubMed, arXiv and Hacker News (plus a self-hosted SearXNG if you have one), no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
+It needs a model: set `ANTHROPIC_API_KEY` (or use a Claude Code login already on the machine), or set `ZAI_API_KEY` to run it on **GLM 5.3** — the set key variable picks the provider. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref, Europe PMC, PubMed, arXiv and Hacker News (plus a self-hosted SearXNG if you have one), no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
 
 Before any evidence exists, it writes a contract: the decision at stake, the assumptions it is making, and 2–4 hypotheses each with an explicit **kill criterion**. That contract ships in the output JSON, so you can check what it committed to before it went looking. It does not claim the frame is *right* — only that the frame was fixed and visible before the evidence arrived.
 
@@ -81,6 +81,18 @@ python3 -m deepresearch --selftest          # ~30s, no install needed
 export ANTHROPIC_API_KEY=sk-ant-...          # or skip it if Claude Code is logged in here
 python3 -m deepresearch --question "your question" --depth standard --out report.json --bg
 ```
+
+**GLM instead of Claude** — one variable, nothing else:
+
+```bash
+export ZAI_API_KEY=your-zai-key              # glm-5.3 via Z.ai's Anthropic-compatible endpoint
+python3 -m deepresearch --question "your question" --depth standard --out report.json --bg
+```
+
+The set key variable decides the provider (`DR_PROVIDER` forces it; both set together is
+refused aloud rather than guessed). On GLM the run is honest on the wire: no claude-cli
+headers, an identity block that says GLM, and errors that name `ZAI_API_KEY`, never
+`ANTHROPIC_API_KEY`. Provider facts live in [`contract/providers.json`](contract/providers.json) — see [ADR-0004](docs/adr/0004-one-wire-many-providers.md).
 
 `--bg` detaches and returns the log path immediately. A standard run takes 6–10 minutes; agent harnesses that kill commands at 180s will otherwise cut it off mid-flight.
 

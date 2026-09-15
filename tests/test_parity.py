@@ -169,6 +169,11 @@ PYTHON_ONLY = {
         "probes.py and its runner operate on a finished report, not on the engine, so "
         "`python3 -m deepresearch.probes --report <any report.json>` already scores a "
         "report from either build. Nothing to port.",
+    "provider selection (ADR-0004)":
+        "The JS build's model is owned by its Workflow runtime - it never makes an API "
+        "call, holds no credential and reads no endpoint, so it has no provider to "
+        "choose and nothing to port. If that runtime ever exposes its own model seam, "
+        "contract/providers.json is where the shared facts already live.",
 }
 
 

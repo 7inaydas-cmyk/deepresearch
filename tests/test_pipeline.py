@@ -2188,5 +2188,132 @@ ok(_verdicts == ["noise", "usable but noisy", "calibrated"],
    "the original bands are untouched: %s" % _verdicts)
 ok(C.MIN_N == 30 and C.MIN_LENS_KAPPA == 0.4, "the amended constants are named and inspectable")
 
+print("\n-- the provider seam: selection, transport facts, and honest errors --")
+# ADR-0004. The CLI was born on Anthropic (API key or a Claude Code OAuth login) with
+# the provider as seven module constants; GLM 5.3 is the second adapter, which makes
+# the seam real. These pin the three things that must hold: unset means Anthropic
+# BYTE FOR BYTE, a GLM key alone means GLM with GLM facts in every error, and two
+# set keys are refused aloud rather than resolved by dict order.
+import deepresearch.providers as _P   # noqa: E402
+import json as _pj  # noqa: E402
+
+def _with_env(env, fn):
+    """Run fn under a mutated environment, restoring exactly what was there."""
+    _saved = {k: _os.environ.get(k) for k in env}
+    _old_provider = _os.environ.get("DR_PROVIDER")
+    _old_model = _os.environ.get("DR_MODEL")
+    for k in ("DR_PROVIDER", "DR_MODEL"):
+        _os.environ.pop(k, None)
+    for k, v in env.items():
+        if v is None:
+            _os.environ.pop(k, None)
+        else:
+            _os.environ[k] = v
+    try:
+        _P.reset()
+        return fn()
+    finally:
+        for k, v in _saved.items():
+            if v is None:
+                _os.environ.pop(k, None)
+            else:
+                _os.environ[k] = v
+        if _old_provider is None:
+            _os.environ.pop("DR_PROVIDER", None)
+        else:
+            _os.environ["DR_PROVIDER"] = _old_provider
+        if _old_model is None:
+            _os.environ.pop("DR_MODEL", None)
+        else:
+            _os.environ["DR_MODEL"] = _old_model
+        _P.reset()
+
+ok(_with_env({}, lambda: _P.select()["name"]) == "claude",
+   "nothing set selects claude, the contract default - an unused option must not "
+   "perturb the configuration the prompts were calibrated against")
+ok(_with_env({"ZAI_API_KEY": "k"}, lambda: _P.select()["name"]) == "glm",
+   "a lone ZAI_API_KEY infers glm: the one-env-var run, no new concepts to learn")
+ok(_with_env({"GLM_API_KEY": "k"}, lambda: _P.select()["name"]) == "glm",
+   "GLM_API_KEY is accepted as an alias and infers glm too")
+ok(_with_env({"DR_PROVIDER": "glm"}, lambda: _P.select()["name"]) == "glm",
+   "DR_PROVIDER explicit wins even with no key set (credential loads later, at transport)")
+try:
+    _with_env({"DR_PROVIDER": "sonnet"}, lambda: _P.select())
+    ok(False, "an unknown DR_PROVIDER must be refused")
+except dr.AuthError as e:
+    ok("sonnet" in str(e) and "claude" in str(e) and "glm" in str(e),
+       "an unknown DR_PROVIDER is refused listing the valid names - a typo must not "
+       "fall through to inference and bill a different account")
+try:
+    _with_env({"ANTHROPIC_API_KEY": "a", "ZAI_API_KEY": "b"}, lambda: _P.select())
+    ok(False, "both keys set must be refused")
+except dr.AuthError as e:
+    ok("ANTHROPIC_API_KEY" in str(e) and "ZAI_API_KEY" in str(e) and "DR_PROVIDER" in str(e),
+       "two set key variables are refused ALOUD, naming both and the way out - "
+       "guessing by dict order would bill the wrong account")
+
+_glm = _with_env({"ZAI_API_KEY": "sk-glm"}, lambda: _P.transport())
+ok(_glm["url"].startswith("https://api.z.ai/") and _glm["url"].endswith("/v1/messages"),
+   "the glm transport targets the Anthropic-compatible endpoint")
+ok(_glm["headers"].get("x-api-key") == "sk-glm" and "anthropic-beta" not in _glm["headers"],
+   "glm authenticates with a plain key and carries no Claude Code OAuth beta headers - "
+   "impersonating claude-cli at a third-party endpoint would be a lie in the wire")
+ok(_glm["default_model"] == "glm-5.3", "glm's default model is glm-5.3")
+ok("GLM" in _glm["system_prefix"] and "Claude Code" not in _glm["system_prefix"],
+   "glm's identity block tells the truth about who is talking - the Claude Code "
+   "prefix on a GLM run would be the same overclaim the labels keep making")
+try:
+    _with_env({"DR_PROVIDER": "glm"}, lambda: _P.credential())  # no glm key set
+    ok(False, "glm with no key must raise")
+except dr.AuthError as e:
+    ok("ZAI_API_KEY" in str(e) and "ANTHROPIC" not in str(e),
+       "a GLM run short a key is told to set ZAI_API_KEY, never ANTHROPIC_API_KEY - "
+       "preflight and selftest quote these messages verbatim")
+
+_claude = _with_env({"ANTHROPIC_API_KEY": "sk-ant"}, lambda: _P.transport())
+ok(_claude["url"] == "https://api.anthropic.com/v1/messages"
+   and _claude["headers"] == {"content-type": "application/json",
+                              "anthropic-version": "2023-06-01",
+                              "x-api-key": "sk-ant"},
+   "the unset-anthropic path is BYTE-IDENTICAL to the pre-seam constants: same URL, "
+   "same three headers - the rewrite bought GLM without spending any Claude behaviour")
+ok(_with_env({"ANTHROPIC_BASE_URL": "https://relay.example"}, lambda: _P.transport()["url"])
+   == "https://relay.example/v1/messages",
+   "ANTHROPIC_BASE_URL still overrides the claude endpoint (relays, proxies)")
+ok(dr.CC_SYSTEM_PREFIX == "You are Claude Code, Anthropic's official CLI for Claude.",
+   "the Claude identity constant survives under its old name for anything grepping for it")
+
+# The contract is data, so it can be WRONG in a way code review cannot see: a provider
+# row missing its endpoint or key env would select fine and fail at the first call.
+# Same shape as the tier contract check in CI.
+_pc = _pj.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                  "contract", "providers.json"), encoding="utf-8"))
+ok(_pc.get("default") in _pc.get("providers", {}),
+   "providers.json names a default that exists")
+for _pname, _prow in _pc["providers"].items():
+    ok(_prow.get("baseUrl", "").startswith("https://")
+       and _prow.get("keyEnvs") and _prow.get("defaultModel") and _prow.get("systemPrefix"),
+       "provider %r carries endpoint, key envs, default model and an identity block" % _pname)
+
+# The CLI surface of the same rules: a bad DR_PROVIDER and a two-key ambiguity must
+# refuse with the house error shape (JSON, exit 2) rather than an import-time
+# traceback, and --help must work under a bad env because the package imports for it.
+import subprocess as _sp
+_r = _sp.run([sys.executable, "-m", "deepresearch", "--question", "x"],
+             capture_output=True, text=True, env=dict(_os.environ, DR_PROVIDER="bogus"),
+             cwd=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ok(_r.returncode == 2 and "bogus" in _r.stdout and "claude" in _r.stdout and "glm" in _r.stdout,
+   "a bad DR_PROVIDER refuses with JSON + exit 2 naming the valid providers - not an "
+   "import-time traceback")
+_r2 = _sp.run([sys.executable, "-m", "deepresearch", "--help"], capture_output=True,
+              text=True, env=dict(_os.environ, DR_PROVIDER="bogus"),
+              cwd=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ok(_r2.returncode == 0 and "--provider" in _r2.stdout,
+   "--help still works under a bad DR_PROVIDER: the import falls back provisionally "
+   "and only main() refuses")
+
+print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
+sys.exit(1 if FAIL else 0)
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

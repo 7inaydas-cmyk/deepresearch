@@ -21,8 +21,10 @@ Nine phases. The first five gather; the last four try to destroy what was gather
              claim — the orchestrator inventing things is a separate failure from
              the retrievers being wrong.
 
-Search is keyless and costs nothing. The model is not: set ANTHROPIC_API_KEY, or
-let it fall back to a Claude Code credential already present on the machine.
+Search is keyless and costs nothing. The model is not: set ANTHROPIC_API_KEY
+(Anthropic) or ZAI_API_KEY (Z.ai GLM) - or, on Anthropic only, let it fall back to
+a Claude Code login already on the machine. DR_PROVIDER forces the choice;
+otherwise the set key variable decides it, and both set together is refused.
 
 Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
@@ -37,19 +39,21 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # `search` module, which is standard-library only and needs no API key.
 from . import search as _search
 
-# Auth. An ordinary Anthropic API key is the documented path. If none is set we
-# fall back to a local Claude Code credential when one happens to be present,
-# which is what makes this run with no key on a machine that already has Claude
-# Code signed in.
-API_KEY_ENV = "ANTHROPIC_API_KEY"
-CRED_PATHS = [
-    os.path.expanduser("~/.claude/.credentials.json"),
-    os.path.join(os.environ.get("HERMES_HOME", "/opt/data"), ".claude", ".credentials.json"),
-]
-API_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com") + "/v1/messages"
-CLAUDE_CODE_VERSION = os.environ.get("DR_CC_VERSION", "2.1.258")
-OAUTH_BETAS = "claude-code-20250219,oauth-2025-04-20"
-CC_SYSTEM_PREFIX = "You are Claude Code, Anthropic's official CLI for Claude."
+# Auth and endpoint. Until 2026-09-15 these were seven module constants hard-wiring
+# Anthropic: the API key env, the Claude Code OAuth login file, the claude-cli
+# user-agent and beta headers, the "You are Claude Code" identity block, the default
+# model. GLM 5.3 (Z.ai, Anthropic-compatible endpoint, plain API key) is the second
+# provider, and two adapters make the seam real rather than hypothetical. The FACTS
+# live in contract/providers.json and deepresearch/providers.py resolves them; the
+# POLICY (retries, the corrective re-ask, sentinel recovery, the 429 backoff curve)
+# stays here in agent(), where ADR-0001 put it. See ADR-0004.
+from . import providers as _providers
+from .providers import AuthError  # re-exported: pmap's never-swallow catch and the tests
+                                   # were both written against the name engine.AuthError
+# The Claude identity prefix, kept as a name for the one test that asserts its size
+# and for anyone grepping for it. agent() uses the SELECTED provider's prefix - on a
+# GLM run this constant is inert, never sent.
+CC_SYSTEM_PREFIX = _providers.spec("claude")["system_prefix"]
 
 # NOT `TIERS`. That name said "tiers" while holding depth budgets, beside a real TIER
 # table for source quality - flagged by review 2026-09-15, and the kind of collision this
@@ -71,7 +75,14 @@ with open(os.path.normpath(_DEPTHS_FILE), encoding="utf-8") as _df:
 REFUTATIONS_REQUIRED = 2
 RESCUE_MAX_SUBQ, RESCUE_FETCH = 4, 8
 MAX_CONCURRENCY = int(os.environ.get("DR_CONCURRENCY", "8"))
-MODEL = os.environ.get("DR_MODEL", "claude-sonnet-5")
+# The default model belongs to the SELECTED provider (claude-sonnet-5, glm-5.3, ...);
+# DR_MODEL still overrides it, and --model still overrides that. A BAD DR_PROVIDER
+# must not explode at import - the package imports on every `--help` - so the import
+# falls back provisionally and main() re-resolves and refuses cleanly (JSON, exit 2).
+try:
+    MODEL = os.environ.get("DR_MODEL", "") or _providers.select()["default_model"]
+except AuthError:
+    MODEL = os.environ.get("DR_MODEL", "") or _providers.spec(_providers.names()[0])["default_model"]
 CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
 # Filled in at ranking time so synthesis can disclose the coverage limit.
 DROP_N = DROP_TOTAL = DROP_PCT = 0
@@ -296,46 +307,20 @@ def web_fetch(url, cap=14000, fresh=False):
     return text
 
 
-# --- Anthropic call over the Claude Code OAuth subscription credential ------
-class AuthError(RuntimeError):
-    pass
-
+# --- Model call, on whichever provider the environment selected -------------
+# AuthError is imported from .providers above; load_credential/credential moved
+# there with it (a GLM run must never be told to set ANTHROPIC_API_KEY, and the
+# two builds of that logic were this file's last provider-coupled functions).
+# These shims keep the engine-level names and arities the tests were written against.
 def load_credential():
-    """(scheme, secret). An API key if one is set, else a local Claude Code
-    credential if one happens to exist."""
-    key = os.environ.get(API_KEY_ENV, "").strip()
-    if key:
-        return "api-key", key
-    tried = []
-    for p in CRED_PATHS:
-        tried.append(p)
-        try:
-            with open(p) as f:
-                d = json.load(f)
-        except Exception:
-            continue
-        o = d.get("claudeAiOauth") or {}
-        tok = o.get("accessToken")
-        if tok:
-            exp = o.get("expiresAt")
-            if exp and exp / 1000.0 < time.time():
-                raise AuthError("Local Claude Code credential expired at %s. Set %s instead."
-                                % (time.strftime("%Y-%m-%d %H:%M", time.localtime(exp / 1000.0)), API_KEY_ENV))
-            return "oauth", tok
-    raise AuthError("No credentials. Set %s (https://console.anthropic.com/settings/keys). "
-                    "Looked for a local Claude Code credential in: %s" % (API_KEY_ENV, ", ".join(tried)))
-
-
-_CRED = None
-_cred_lock = threading.Lock()
+    """(scheme, secret), as the old engine-local loader returned them."""
+    scheme, secret, _via = _providers.credential()
+    return scheme, secret
 
 
 def credential():
-    global _CRED
-    with _cred_lock:
-        if _CRED is None:
-            _CRED = load_credential()
-        return _CRED
+    """(scheme, secret) for the selected provider. Memoised in providers."""
+    return load_credential()
 
 
 # Every token field the API reports, not just the two we happened to know about.
@@ -559,12 +544,19 @@ def _record_usage(u, into=None):
 
 
 def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5):
-    """One independent subagent. Returns the validated structured object, or None."""
+    """One independent subagent. Returns the validated structured object, or None.
+
+    The request head - URL, headers, credential, identity system block - comes from
+    the provider seam in one call; everything after it (retry policy, the corrective
+    re-ask, sentinel recovery, max_tokens growth) is provider-agnostic and stays
+    here, per ADR-0001 and ADR-0004.
+    """
+    t = _providers.transport()
     body = {
         "model": model or MODEL,
         "max_tokens": max_tokens,
         "system": [
-            {"type": "text", "text": CC_SYSTEM_PREFIX},
+            {"type": "text", "text": t["system_prefix"]},
             {"type": "text", "text": "You are one worker in a multi-agent research harness. "
                                      "Your reply IS the return value: call the StructuredOutput "
                                      "tool and nothing else."},
@@ -576,17 +568,7 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
         "tool_choice": {"type": "tool", "name": "StructuredOutput"},
     }
     data = json.dumps(body).encode()
-    scheme, secret = credential()
-    headers = {"content-type": "application/json", "anthropic-version": "2023-06-01"}
-    if scheme == "api-key":
-        headers["x-api-key"] = secret
-    else:
-        headers.update({
-            "authorization": "Bearer " + secret,
-            "anthropic-beta": OAUTH_BETAS,
-            "user-agent": "claude-cli/%s (external, cli)" % CLAUDE_CODE_VERSION,
-            "x-app": "cli",
-        })
+    headers = t["headers"]
     delay = 2.0
     # A blind retry re-sends the identical prompt, so a deterministic failure just
     # repeats. Watched live 2026-09-06: the framing call returned zero assumptions and
@@ -600,7 +582,7 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                 data = json.dumps(body).encode()
             elif body["max_tokens"] != max_tokens:
                 data = json.dumps(body).encode()
-            req = urllib.request.Request(API_URL, data=data, headers=headers, method="POST")
+            req = urllib.request.Request(t["url"], data=data, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=180) as r:
                 out = json.loads(r.read().decode())
             with _stats_lock:
@@ -695,7 +677,8 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
             if e.code in (500, 502, 503) and attempt < retries - 1:
                 time.sleep(delay); delay *= 2; continue
             if e.code in (401, 403):
-                raise AuthError("Anthropic rejected the OAuth credential (%d): %s" % (e.code, detail))
+                raise AuthError("%s rejected the credential (%d): %s"
+                                % (t["label"], e.code, detail))
             log("  [%s] HTTP %d %s" % (label, e.code, detail))
             break
         except Exception as e:
@@ -2336,11 +2319,12 @@ def preflight():
                    "properties": {"reply": {"type": "string"}}},
                   label="preflight", max_tokens=64, retries=1)
     if probe is None:
+        t = _providers.transport()
         raise AuthError(
-            "Preflight failed: the credential loaded (%s) but the API would not answer. "
-            "If this is an OAuth credential it may have been revoked server-side - the "
-            "local file cannot tell you that. Re-authenticate Claude Code, or set %s to "
-            "remove the dependency entirely." % (scheme, API_KEY_ENV))
+            "Preflight failed: %s's credential loaded (%s) but the endpoint would not "
+            "answer. If this is an OAuth credential it may have been revoked server-side "
+            "- the local file cannot tell you that. Re-authenticate, or set %s to remove "
+            "the dependency entirely." % (t["label"], scheme, t["key_env"]))
     return scheme
 
 
@@ -2351,10 +2335,12 @@ def deepresearch(question, depth="standard", contract=None):
     supplied = dict(contract or {})
     t0 = time.time()
     scheme = preflight()
-    log("Credential: %s%s" % (scheme,
+    _t = _providers.transport()
+    log("Provider: %s | model: %s | credential: %s%s" % (
+        _t["label"], MODEL, scheme,
         "" if scheme == "api-key" else
-        " (local Claude Code login; set %s to avoid a server-side revocation "
-        "taking a run down mid-flight)" % API_KEY_ENV))
+        " (a local login file; set %s to avoid a server-side revocation "
+        "taking a run down mid-flight)" % _t["key_env"]))
     log("Question: " + question[:110])
     log("Depth: %s (%d perspectives, %d deepening round(s), %d-lens verify, citation audit %s)"
         % (depth, T["perspectives"], T["deepen"], T["lenses"], "ON" if T["audit"] else "off"))
@@ -2495,7 +2481,8 @@ def deepresearch(question, depth="standard", contract=None):
                             if (_fetch_meta.get(s["url"]) or {}).get("abstractOnly") else {})}
                         for s in sources]
     def stats(**kw):
-        d = dict(depth=depth, perspectives=len(persps), subQuestions=len(subqs),
+        d = dict(depth=depth, provider=_providers.select()["name"], model=MODEL,
+                 perspectives=len(persps), subQuestions=len(subqs),
                  sourcesFetched=len(sources), claimsExtracted=len(all_claims),
                  urlDupes=len(dupes), budgetDropped=len(dropped),
                  claimsDroppedBeforeVerify=dropped_pre,
@@ -3313,6 +3300,10 @@ def selftest():
         sch, sec = credential(); print("OK (%s, len %d)" % (sch, len(sec)))
     except AuthError as e:
         print("FAIL:", e); return False
+    # Name the provider and the env var that fed it. A GLM run told to "set
+    # ANTHROPIC_API_KEY" would be the seam lying about itself; describe() exists
+    # so it cannot.
+    print("   provider: %s" % _providers.describe())
     print("2. keyless search    ...", end=" ")
     hits = web_search("anthropic claude", n=3)
     print("OK (%d hits)" % len(hits) if hits else "FAIL (0 hits)"); ok &= bool(hits)
@@ -3385,7 +3376,15 @@ def main():
     ap.add_argument("--question", "-q")
     ap.add_argument("--depth", "-d", default="standard", choices=list(DEPTH_BUDGETS))
     ap.add_argument("--out", "-o", help="write the full JSON report here")
-    ap.add_argument("--model", "-m", default=MODEL)
+    ap.add_argument("--model", "-m", default=None,
+                    help="Override the provider's default model. Default: the selected "
+                         "provider's own (claude-sonnet-5 / glm-5.3 / ...). Env: DR_MODEL.")
+    ap.add_argument("--provider", "-p", default=None, choices=_providers.names(),
+                    help="Which model provider to run on: %s. Default: DR_PROVIDER if set, "
+                         "else inferred from which key variable is set (%s), else anthropic. "
+                         "Env: DR_PROVIDER."
+                         % (", ".join(_providers.names()),
+                            " / ".join(_providers.spec(n)["key_env"] for n in _providers.names())))
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)
     # Read the environment as the DEFAULT rather than assigning 0 and overwriting it
     # below. DR_CALIBRATE=8 was parsed correctly at import and then silently replaced
@@ -3413,7 +3412,25 @@ def main():
                     help="Detach and run in the background, printing the log and report paths "
                          "immediately. Use this from any agent harness with a command timeout.")
     a = ap.parse_args()
-    MODEL, MAX_CONCURRENCY = a.model, a.concurrency
+    # --provider resolves FIRST: it decides whose default model --model left blank.
+    # Set the env rather than passing a second channel down, so select() stays the
+    # one resolver and the --bg child (which re-reads env) cannot disagree with us.
+    if a.provider:
+        os.environ["DR_PROVIDER"] = a.provider
+        _providers.reset()
+    if a.model:
+        os.environ["DR_MODEL"] = a.model
+    try:
+        MODEL = a.model or _providers.select()["default_model"]
+    except AuthError as e:
+        # A bad DR_PROVIDER (or two set key variables) reaches here, after argparse
+        # but before any work, and refuses the way the CLI's other preflight errors
+        # refuse: JSON on stdout, auth exit code. The import-time MODEL above is a
+        # provisional fallback precisely so `--help` never needs this path.
+        print(json.dumps({"error": "provider selection failed", "detail": str(e)},
+                         indent=1))
+        sys.exit(EXIT_AUTH)
+    MAX_CONCURRENCY = a.concurrency
     globals()['CALIBRATE_N'] = a.calibrate
     globals()['SAMPLE_DROPPED_N'] = a.sample_dropped
     if a.selftest:
@@ -3465,9 +3482,12 @@ def main():
         # documented `python3 -m deepresearch ... --bg` invocation was run for real.
         pkg_parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         # Rebuild argv from the PARSED args rather than copying sys.argv, so the
-        # absolutised --out and --contract are what the child sees.
+        # absolutised --out and --contract are what the child sees. --model and
+        # --provider travel via DR_MODEL/DR_PROVIDER in `env` (set above) rather
+        # than argv, so the child re-resolves them through the same select() and
+        # an explicit None can never be forwarded as the string "None".
         argv = [sys.executable, "-m", "deepresearch", "--question", a.question.strip(),
-                "--depth", a.depth, "--out", out, "--model", a.model,
+                "--depth", a.depth, "--out", out,
                 "--concurrency", str(a.concurrency),
                 "--sample-dropped", str(a.sample_dropped), "--calibrate", str(a.calibrate)]
         if a.contract:
