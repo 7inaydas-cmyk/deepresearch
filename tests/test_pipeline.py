@@ -1982,6 +1982,35 @@ ok("maxVerify: 10" in _js_block and "deepenRounds" in _js_block and "factAudit" 
    "the generator owns the one thing that genuinely differs between the runtimes: the "
    "key names. The numbers cannot differ because there is only one set")
 
+print("\n-- an ADDED negation is caught; a registered null is not accused --")
+# The first version fired on any polarity disagreement, which falsely accused the
+# commonest shape in a real hypothesis set: two of runs/v10's four registered hypotheses
+# carry a negator, H1 being the null hypothesis, so a faithful positive rewording of it
+# was relabelled "does not state that hypothesis".
+_V10_NULL = ("No meaningful difference: under matched calorie deficits, IF and CCR produce "
+             "statistically similar fat loss, and the difference is adherence, not "
+             "metabolic superiority")
+_V10_RW = ("H1: Under matched calorie deficits, IF and CCR produce statistically similar fat "
+           "loss; the difference is adherence rather than metabolic superiority")
+ok(not dr._hyp_mismatch(dr._hyp_key(_V10_RW), dr._hyp_key(_V10_NULL)),
+   "a faithful positive rewording of a registered NULL hypothesis is not accused - 'No "
+   "effect' is how a null hypothesis is normally written, so this was the common case")
+_MWR = "Minimum wage increases reduce teen employment"
+for _neg in ("Minimum wage increases do not reduce teen employment",
+             "Minimum wage increases have no effect on teen employment"):
+    ok(dr._hyp_mismatch(dr._hyp_key(_neg), dr._hyp_key(_MWR)),
+       "while a verdict that ADDS a negation is caught at any coverage: %r" % _neg[24:52])
+ok(dr._adds_negation("does not reduce employment", "reduces employment")
+   and not dr._adds_negation("reduces employment", "no meaningful difference"),
+   "the check is one-directional by construction, not by threshold")
+ok(not dr._hyp_mismatch(dr._hyp_key("Minimum wage increases raise teen employment"),
+                        dr._hyp_key(_MWR)),
+   "and the NAMED LIMIT is pinned rather than claimed closed: an antonym flip carries no "
+   "negator word, covers 0.833 and passes, which is why the label says 'added negation "
+   "checked - NOT polarity'")
+ok("added negation checked - NOT " in _ENG,
+   "the published label says what is checked, not more")
+
 print("\n-- the README's #9 table is generated, not typed --")
 # It claimed a tool regenerated it so it "cannot drift again". That was true of the
 # regime tables and NOT of this one: it listed five samples when eight were archived,
@@ -2015,9 +2044,10 @@ for _same, _tot, _want in ((9, 9, "not selecting"), (8, 9, "not selecting"),
     ok(_want in _cr.reading_for(_same, _tot),
        "%d of %d reads as %r, so the sentence follows the tally rather than restating a "
        "conclusion the samples no longer support" % (_same, _tot, _want))
-ok(_cr.reading_for(0, 0) and _cr.CLEAR_MINORITY < _cr.CLEAR_MAJORITY,
-   "the bands are named constants, not inline numbers beside a test-pinned one, and an "
-   "empty table does not divide by zero")
+ok(_cr.reading_for(0, 0) and (_cr.CLEAR_MINORITY, _cr.CLEAR_MAJORITY) == (0.25, 0.75),
+   "the bands are named constants pinned to their VALUES - a review noted the previous "
+   "assertion only checked one was smaller than the other, which both could have moved "
+   "without failing - and an empty table does not divide by zero")
 
 print("\n-- the coverage line counts sub-questions, not buckets --")
 # A live run logged "Verify pool spans 9 distinct sub-question buckets (of 8)" - more

@@ -891,8 +891,10 @@ const isNonanswer = text => {
 // Prefix matching was the wrong tool — the model rewords mid-sentence, and word overlap
 // does not care where the rewording happened.
 const HYP_LABEL = /^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*/i
-const HYP_STOP = new Set(('the a an of to in is are and or that this it its as be for with by on at from than ' +
-  'not but so if then also more most some other others their there was were has have').split(' '))
+// ── BEGIN GENERATED FROM contract/hypothesis-words.json — run tools/sync_tiers.py, do not hand-edit ──
+const HYP_STOP = new Set(["a", "also", "an", "and", "are", "as", "at", "be", "but", "by", "for", "from", "has", "have", "if", "in", "is", "it", "its", "more", "most", "not", "of", "on", "or", "other", "others", "so", "some", "than", "that", "the", "their", "then", "there", "this", "to", "was", "were", "with"])
+const NEGATORS = new Set(["absent", "aren't", "can't", "cannot", "didn't", "doesn't", "don't", "fail", "fails", "isn't", "lack", "lacks", "neither", "never", "no", "none", "nor", "not", "wasn't", "weren't", "without", "won't"])
+// ── END GENERATED WORDS ───────────────────────────────────────────────────────────────
 const HYP_MATCH_THRESHOLD = 0.65
 const HYP_MIN_TOKENS = 4
 // Below this, the verdict does not actually state the hypothesis it names — the only
@@ -957,12 +959,25 @@ const sameHyp = (a, b) => {
 // against "output is unstable" at 1.000, the Python SequenceMatcher 0.941, and now the
 // token measure that replaced both scores a flat negation at 1.000. A flip is a different
 // answer wearing the same words; it needs its own check, not a better number.
-const NEGATORS = new Set(("not no never cannot nor neither none without fails fail lacks " +
-  "lack absent doesn't don't didn't won't isn't aren't wasn't weren't can't").split(' '))
 const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).some(w => NEGATORS.has(w))
+// Does the VERDICT introduce a negation its registered hypothesis does not carry?
+// One-directional, and the direction is the whole point. The first version fired on any
+// disagreement, which falsely accused the commonest shape in a real hypothesis set:
+// audited against runs/v10, TWO of its four registered hypotheses carry a negator — H1
+// being the null hypothesis, "No meaningful difference: … adherence, not metabolic
+// superiority" — so a faithful positive rewording of H1 was relabelled "does not state
+// that hypothesis". "No effect" is how a null hypothesis is normally written.
+// The reverse direction needs no check, measured on that run: a verdict asserting a
+// difference covers 0.176-0.238 against the registered null and the coverage bar catches
+// it. The attack direction does — a verdict negating a positive claim covers 1.000.
+// This is NOT a polarity check and the label no longer claims it is: an ANTONYM flip
+// carries no negator word, so "raise" against "reduce" covers 0.833 and passes.
+const addsNegation = (verdictText, registeredText) => isNegated(verdictText) && !isNegated(registeredText)
 const hypMismatch = (verdictText, registeredText) => {
-  // Polarity first: overlap is blind to it, and a flat negation scores 1.000.
-  if (isNegated(verdictText) !== isNegated(registeredText)) return true
+  // An ADDED negation first: overlap is blind to it, and a flat negation scores 1.000.
+  // One-directional — see addsNegation for why the symmetric version falsely accused
+  // half of a real registered hypothesis set.
+  if (addsNegation(verdictText, registeredText)) return true
   const ta = hypTokens(verdictText), tb = hypTokens(registeredText)
   if (Math.min(ta.size, tb.size) < HYP_MIN_TOKENS) return false
   let shared = 0
@@ -1884,7 +1899,7 @@ const VERDICTS = asObjList(report.hypothesisVerdicts, 'hypothesisVerdicts').map(
     // a reversed causal direction (0.714) both pass it, and no lexical rule catches
     // either. Stop the label claiming more than the check delivers.
     return { ...v, preRegistered: true,
-             preRegisteredBy: 'hypothesisNumber (subject, scope and polarity checked - not that the claim is identical)' }
+             preRegisteredBy: 'hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)' }
   }
   if (n === 0) {
     return { ...v, preRegistered: false, preRegisteredBy: 'hypothesisNumber (declared post-hoc by the synthesis step)' }

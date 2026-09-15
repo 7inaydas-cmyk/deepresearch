@@ -1111,9 +1111,18 @@ def read_provenance(url, text):
 #      threshold stands; but the honest margin is ~0.22 below, not ~0.35. If a true pair
 #      is ever seen under 0.7, lower the threshold rather than accepting the false stamp.
 _HYP_LABEL = re.compile(r"^\s*(?:h|hypothesis)\s*\d+\s*[:.)-]\s*", re.I)
-_HYP_STOP = frozenset(
-    "the a an of to in is are and or that this it its as be for with by on at from than "
-    "not but so if then also more most some other others their there was were has have".split())
+# Both wordlists were hand-duplicated in both builds with no LIST-level guard: parity
+# asserts the functions exist and conformance exercises two of twenty-two negators, so a
+# word added to one build only passed every check and drifted silently for every word no
+# case covered. contract/hypothesis-words.json is the one place they live now, generated
+# into the JS build like the tier rules and the depth budgets. Note `not` is a STOPWORD,
+# which is exactly why a flat negation scored 1.000 and needs a separate categorical check.
+_WORDS_FILE = os.environ.get(
+    "DR_HYP_WORDS_FILE", os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "..", "contract", "hypothesis-words.json"))
+with open(os.path.normpath(_WORDS_FILE), encoding="utf-8") as _wf:
+    _HYP_WORDS = json.load(_wf)
+_HYP_STOP = frozenset(_HYP_WORDS["stopwords"])
 # Mid-gap between the superset attacks (max 0.45) and true rewordings (min 0.82).
 HYP_MATCH_THRESHOLD = 0.65
 _HYP_MIN_TOKENS = 4
@@ -1280,14 +1289,37 @@ def is_nonanswer(text):
 # replaced both scores a flat negation at 1.000. A flip is not a small distance; it is a
 # different answer wearing the same words, and it needs its own check rather than a
 # better number.
-_NEGATORS = frozenset(
-    "not no never cannot nor neither none without fails fail lacks lack absent "
-    "doesn't don't didn't won't isn't aren't wasn't weren't can't".split())
+_NEGATORS = frozenset(_HYP_WORDS["negators"])
 
 
 def _negated(text):
-    """Does this hypothesis assert the negative? A whole-word test, deliberately crude."""
+    """Does this hypothesis carry an explicit negator word? Whole-word, deliberately crude."""
     return bool(_NEGATORS & set(re.findall(r"[a-z']+", str(text or "").lower())))
+
+
+def _adds_negation(verdict_text, registered_text):
+    """Does the VERDICT introduce a negation its registered hypothesis does not carry?
+
+    One-directional, and the direction is the whole point. The first version fired on any
+    disagreement, which falsely accused the commonest shape in a real hypothesis set:
+    audited against runs/v10, TWO of its four registered hypotheses carry a negator - H1
+    being the null hypothesis, "No meaningful difference: ... adherence, not metabolic
+    superiority" - so a faithful positive rewording of H1 was relabelled "does not state
+    that hypothesis". "No effect" is how a null hypothesis is normally written, which made
+    that misfire the common case rather than a corner.
+
+    The reverse direction needs no check, measured on that same run: a verdict asserting a
+    difference, scored against the registered null, covers 0.176-0.238, and the coverage
+    bar already catches it. The attack direction does need one - a verdict negating a
+    positive registered claim covers 1.000 ("do not reduce") and 0.833 ("have no effect"),
+    which no threshold can see.
+
+    What this is NOT is a polarity check, and the label no longer claims it is: an ANTONYM
+    flip carries no negator word at all. "raise teen employment" against a registered
+    "reduce teen employment" covers 0.833 and passes. That is a real polarity flip and
+    nothing lexical here catches it.
+    """
+    return _negated(verdict_text) and not _negated(registered_text)
 
 
 def _hyp_mismatch(verdict_text, registered_text):
@@ -1312,9 +1344,10 @@ def _hyp_mismatch(verdict_text, registered_text):
     number is believed. `preRegisteredBy` says which path stamped it, so a reader can see
     which verdicts rest on an unchecked number.
     """
-    # Polarity first, because it is categorical and overlap is blind to it: a flat
-    # negation scores 1.000. Disagreeing on polarity is a mismatch at any coverage.
-    if _negated(verdict_text) != _negated(registered_text):
+    # An ADDED negation first, because it is categorical and overlap is blind to it: a
+    # flat negation scores 1.000. One-directional - see _adds_negation for why the
+    # symmetric version falsely accused half of a real registered hypothesis set.
+    if _adds_negation(verdict_text, registered_text):
         return True
     ta, tb = _hyp_tokens(verdict_text), _hyp_tokens(registered_text)
     if min(len(ta), len(tb)) < _HYP_MIN_TOKENS:
@@ -3097,8 +3130,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 # Three rounds have now established that; the answer is to stop the label
                 # claiming more than the check delivers, not to invent a fourth threshold.
                 _v["preRegisteredBy"] = (
-                    "hypothesisNumber (subject, scope and polarity checked - not that the "
-                    "claim is identical)")
+                    "hypothesisNumber (subject, scope and added negation checked - NOT "
+                    "polarity, and not that the claim is identical)")
                 continue
             _v["preRegisteredBy"] = ("inferred from text - hypothesisNumber said H%d, but this "
                                      "verdict's wording does not state that hypothesis" % _num)

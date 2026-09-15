@@ -47,9 +47,9 @@ SHARED = {
     # The marker is the STAMP, not the field name. `hypothesisNumber` as a bare token
     # passed this row while the JS build's only occurrence of it was a comment saying the
     # mechanism existed - the seventh drift, certified by prose about the code.
-    "hypothesisNumber over text": ('"hypothesisNumber (subject, scope and polarity checked',
-                                   "'hypothesisNumber (subject, scope and polarity checked"),
-    "polarity is categorical":   ("def _negated(", "const isNegated = "),
+    "hypothesisNumber over text": ('"hypothesisNumber (subject, scope and added negation checked',
+                                   "'hypothesisNumber (subject, scope and added negation checked"),
+    "added negation, one way":   ("def _adds_negation(", "const addsNegation = "),
     "number checked vs text":    ("def _hyp_mismatch(", "const hypMismatch = "),
     "string leaf enforced":      ("isinstance(v, str)", "typeof v === 'string') out[name] = v"),
     "evidence counts claims":    ("(r.get(\"claims\") or 0) > 0", "(s.claims || []).length > 0"),
@@ -350,10 +350,12 @@ def check_tier_data():
     contract = __import__("json").load(open(sync_tiers.TIERS_JSON, encoding="utf-8"))
     generated = sync_tiers.render(contract)
     depths = __import__("json").load(open(sync_tiers.DEPTHS_JSON, encoding="utf-8"))
+    words = __import__("json").load(open(sync_tiers.WORDS_JSON, encoding="utf-8"))
     # Raw, NOT comment-stripped: this compares a generated block against the file
     # byte-for-byte, and each generated block carries its own "do not edit" comment.
     js = read_raw(JS)
-    return generated in js and sync_tiers.render_depths(depths) in js
+    return (generated in js and sync_tiers.render_depths(depths) in js
+            and sync_tiers.render_words(words) in js)
 
 
 def main():
@@ -387,7 +389,7 @@ def main():
              else "a row certifies an INSTRUCTION as the twin of a MECHANISM"))
     tiers_ok = check_tier_data()
     print("  %s  %-28s python=contract/*.json  js=%s"
-          % ("ok " if tiers_ok else "GAP", "tier + depth DATA",
+          % ("ok " if tiers_ok else "GAP", "tier, depth + wordlist DATA",
              "generated, matches" if tiers_ok else "STALE - run tools/sync_tiers.py"))
 
     if missing_js or missing_py or not tiers_ok or not shape_ok or not strip_ok:
@@ -397,8 +399,9 @@ def main():
         for f, m in missing_py:
             print("    Python build is missing %r (marker %r)" % (f, m))
         if not tiers_ok:
-            print("    JS tier rules or depth budgets do not match contract/ - "
-                  "run `python3 tools/sync_tiers.py` and commit the result.")
+            print("    A generated JS block (tier rules, depth budgets or the hypothesis "
+                  "wordlists) does not match contract/ - run `python3 tools/sync_tiers.py` "
+                  "and commit the result.")
         if not strip_ok:
             print("    Marker matching is unsound: fix strip_comments before trusting "
                   "any row above - a marker that can match a COMMENT proves nothing.")

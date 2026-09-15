@@ -704,8 +704,9 @@ post-hoc *"…do **not** reduce teen employment"* scores content-token overlap o
 
 The lesson had been written down twice and applied to neither replacement. Polarity is
 **categorical** — a flip is a different answer wearing the same words — so it is now
-checked before any coverage, in both builds, and the three negation phrasings are
-conformance references.
+checked before any coverage, in both builds, with two negation phrasings pinned as
+conformance references. (An earlier version of this paragraph said "the three negation
+phrasings"; there are two, beside one untagged intensity case. Corrected.)
 
 **And the label stopped claiming more than the check delivers.** An intensity change
 (*"eliminate"* for *"reduce"*) passes at 0.833 and a reversed causal direction at 0.714;
@@ -723,6 +724,48 @@ were bare numbers beside a test-pinned constant; and the test for the derived co
 passed on a phrase appearing anywhere, reading live `runs/`, so archiving a tenth sample
 would have flipped its subject with no code change. It drives the derivation with counts
 now.
+
+## The sixth audit, 2026-09-15 — the negation fix accused the null hypothesis
+
+The polarity check shipped one round earlier fired on *any* disagreement between the two
+sides. That is symmetric, and the data is not.
+
+**Two of four registered hypotheses in `runs/v10` carry a negator.** H1 is the null
+hypothesis — *"No meaningful difference: … the difference is adherence, **not** metabolic
+superiority"* — so a faithful positive rewording of it came back `mismatch=True` and was
+relabelled *"does not state that hypothesis"*. "No effect" is how a null hypothesis is
+normally written in a MECE set, which made the misfire the **common case**, not a corner.
+
+The direction that needs checking is only one of the two, and the run's own numbers say
+which:
+
+| | coverage against the registered hypothesis | caught by the bar? |
+|---|---|---|
+| verdict asserts a difference vs a registered **null** | 0.176 – 0.238 | **yes** |
+| verdict **adds** "do not" to a positive claim | 1.000 | no |
+| verdict **adds** "no effect" to a positive claim | 0.833 | no |
+
+So the check fires one way — a verdict adding a negation its hypothesis does not carry —
+and the reverse is left to coverage, which already handles it.
+
+**And the label was still overclaiming.** An **antonym flip** carries no negator word at
+all: *"raise teen employment"* against a registered *"reduce teen employment"* covers
+0.833 and passes. That is a genuine polarity flip, and calling the check "polarity" was
+the third label in this feature to promise more than it delivers. It now reads *added
+negation checked — NOT polarity*. The antonym flip, the intensity change and the reversed
+causal direction are all three pinned as untagged named limits; the causal one had existed
+only inside another case's prose.
+
+**The wordlists were twins with nothing guarding the lists.** Parity asserted the
+functions existed and conformance exercised two of twenty-two negators, so a word added to
+one build passed every gate. Both lists moved to `contract/hypothesis-words.json` and are
+generated into the JS build like the tier rules and the depth budgets — verified by adding
+a negator to the contract without regenerating and watching parity report STALE.
+
+Two smaller corrections: this file said "the three negation phrasings are conformance
+references" when there were two beside one untagged case, and a test asserting
+`CLEAR_MINORITY < CLEAR_MAJORITY` pinned no actual value — both could have moved without
+failing it.
 
 ## The files
 

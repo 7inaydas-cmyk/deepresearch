@@ -624,6 +624,31 @@
         ],
         "out": false,
         "why": "NOT a reference, deliberately untagged. It pins a NAMED LIMIT: an intensity change scores 0.833 and passes, as does a reversed causal direction at 0.714. No lexical rule catches either, which is why preRegisteredBy now says 'subject, scope and polarity checked - not that the claim is identical' rather than reading as certainty. Expected False records what the code does, not what would be correct"
+      },
+      {
+        "in": [
+          "H1: Under matched calorie deficits, IF and CCR produce statistically similar fat loss; the difference is adherence rather than metabolic superiority",
+          "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
+        ],
+        "out": false,
+        "ref": "good",
+        "why": "a faithful positive rewording of a REGISTERED NULL HYPOTHESIS, taken verbatim from runs/v10. The first negation check fired on any polarity disagreement and relabelled this 'does not state that hypothesis' - and two of that run's four registered hypotheses carry a negator, so the misfire hit half a real set. 'No effect' is how a null hypothesis is normally written, which made it the common case rather than a corner. The check is one-directional now: only a verdict ADDING a negation counts"
+      },
+      {
+        "in": [
+          "Minimum wage increases raise teen employment",
+          "Minimum wage increases reduce teen employment"
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged. A NAMED LIMIT: an antonym flip carries no negator word, so it covers 0.833 and passes. That is a genuine polarity flip the check does not catch, which is why preRegisteredBy says 'added negation checked - NOT polarity'. Expected False records what the code does, not what would be correct"
+      },
+      {
+        "in": [
+          "Teen employment reductions cause minimum wage increases",
+          "Minimum wage increases reduce teen employment"
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged. The other NAMED LIMIT: a reversed causal direction covers 0.714 and passes. A review noted this case existed only inside another case's prose rather than as its own pinned pair, so here it is"
       }
     ]
   },

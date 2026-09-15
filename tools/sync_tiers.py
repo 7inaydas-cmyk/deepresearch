@@ -29,12 +29,15 @@ import sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TIERS_JSON = os.path.join(ROOT, "contract", "tiers.json")
 DEPTHS_JSON = os.path.join(ROOT, "contract", "depths.json")
+WORDS_JSON = os.path.join(ROOT, "contract", "hypothesis-words.json")
 JS_FILE = os.path.join(ROOT, "integrations", "claude-code", "deepresearch.js")
 
 START = "// ── BEGIN GENERATED FROM contract/tiers.json — run tools/sync_tiers.py, do not hand-edit ──"
 END = "// ── END GENERATED ─────────────────────────────────────────────────────────────────────"
 D_START = "// ── BEGIN GENERATED FROM contract/depths.json — run tools/sync_tiers.py, do not hand-edit ──"
 D_END = "// ── END GENERATED DEPTHS ──────────────────────────────────────────────────────────────"
+W_START = "// ── BEGIN GENERATED FROM contract/hypothesis-words.json — run tools/sync_tiers.py, do not hand-edit ──"
+W_END = "// ── END GENERATED WORDS ───────────────────────────────────────────────────────────────"
 
 # The two runtimes name these budgets differently and always have. The mapping lives
 # HERE, in one place, so contract/depths.json can keep the Python engine's key names and
@@ -60,6 +63,20 @@ def render(contract: dict) -> str:
     lines.append("const CITABLE = new Set(%s)" % json.dumps(contract["citable"]))
     lines.append(END)
     return "\n".join(lines)
+
+
+def render_words(contract: dict) -> str:
+    """The hypothesis matcher's two wordlists, emitted from contract/hypothesis-words.json.
+
+    Both were hand-duplicated in both builds with nothing checking the LISTS - only that
+    the functions using them existed. A word added to one build passed every gate.
+    """
+    return "\n".join([
+        W_START,
+        "const HYP_STOP = new Set(%s)" % json.dumps(sorted(contract["stopwords"])),
+        "const NEGATORS = new Set(%s)" % json.dumps(sorted(contract["negators"])),
+        W_END,
+    ])
 
 
 def render_depths(contract: dict) -> str:
@@ -92,6 +109,7 @@ def main() -> int:
     for source_file, start, end, renderer, what in (
             (TIERS_JSON, START, END, render, "tier"),
             (DEPTHS_JSON, D_START, D_END, render_depths, "depth"),
+            (WORDS_JSON, W_START, W_END, render_words, "hypothesis wordlist"),
     ):
         contract = json.load(open(source_file, encoding="utf-8"))
         src, err = _replace(src, start, end, renderer(contract), what)
@@ -99,7 +117,7 @@ def main() -> int:
             print(err)
             return 2
     if src == original:
-        print("in sync: the JS generated blocks already match contract/tiers.json and contract/depths.json")
+        print("in sync: the JS generated blocks already match everything in contract/")
         return 0
     if check_only:
         print("OUT OF SYNC: integrations/claude-code/deepresearch.js does not match "
