@@ -310,6 +310,34 @@ two scored **0.82**, against a calibration whose lowest true pair was 0.95. The 
 stands, since 0.82 clears 0.6 and the highest cross pair anywhere is 0.22, but the honest
 margin is ~0.22 rather than the ~0.35 the first eight pairs implied.
 
+## The audit response, and what it did NOT change (2026-09-15)
+
+An external audit read both runtimes and ran the repo's own code against each instrument,
+finding eleven places where a check passed the input it existed to catch. All eleven are
+fixed. The interesting part for this file is the published number.
+
+**`quoteAudit` 97.8% stands, re-verified under the tightened elision rule.** The fix
+requires elision fragments to appear in source order within a bounded gap — before it, two
+sentences from different sections joined by "..." scored 100%, in either order. Re-scoring
+the 46 published quotes with the fix:
+
+| | |
+|---|---|
+| pages that no longer fetch | **4** — link rot since 2026-09-08, not a scoring change |
+| comparable quotes on a live page | 42 |
+| re-scored with the fixed rule | **97.6%**, against the published 97.8% |
+| quotes the elision fix moved | **0** |
+
+So the fix caught nothing here, and that is the honest result rather than a
+disappointment: this corpus contains no stitched quotes, so a rule that rejects them has
+nothing to reject. It protects against an input these runs never carried. The 0.2-point
+difference is the four rotted pages leaving the denominator, not the scorer changing its
+mind about anything.
+
+Stated plainly because the opposite reading was available and tempting: a raw recompute
+across all 46 reads 89.1%, which looks like the fix exposing an inflated headline. It is
+not — it is four dead links counted as failures.
+
 ## The files
 
 | Prefix | What it is |

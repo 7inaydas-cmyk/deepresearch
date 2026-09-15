@@ -162,6 +162,24 @@ recovering, because the corrective retry re-asks the same question and gets the 
 so the whole retry budget burns on a payload already in hand.
 _Avoid_: parse failure, dropped item
 
+**Challenged backend**:
+A search backend that reached the network and was refused — an anti-bot interstitial, a
+403, a rate limit. Distinct from a dead parser and from a poisoned one: the three have
+three different fixes, and `stats.searchHealth` names which.
+_Avoid_: failed backend, search error
+
+**Poisoned backend**:
+An engine that answers successfully with results about something else. Counting results
+is not the same as getting answers, and the pipeline's only symptom was the picker
+choosing nothing.
+_Avoid_: bad results, irrelevant hits
+
+**Control arm**:
+The same probe scored against output where nothing was planted. Whatever the scorer
+credits there is the false-positive floor, and a detection rate that does not clear it is
+not evidence of detection.
+_Avoid_: baseline, clean run
+
 **Read provenance**:
 How the engine actually obtained the page behind a [claim] — the full page, an abstract
 because the publisher blocked it, an archived copy, or nothing at all. Recorded at the
