@@ -48,7 +48,11 @@ def install(cfg):
     """Replace the model and the network with deterministic stubs."""
     counter = itertools.count(1)
 
-    def fake_search(q, n=6):
+    # `junk_filter` is not decoration: without it every counter-evidence call raised
+    # TypeError, pmap swallowed it as a worker error and returned None, and the suite
+    # went green with 90 of them printed. The lens the panel depends on most was not
+    # being exercised end-to-end at all - a stale stub signature reading as coverage.
+    def fake_search(q, n=6, junk_filter=True):
         if cfg.get("no_search"):
             searchmod._note("ddg-html", "fail", 0)
             return []
