@@ -64,6 +64,14 @@ reading as complete (#8). Verified reachable from this container on 2026-09-06. 
 container is not running, `curl -s -m 5 http://searxng:8080/ >/dev/null` fails fast —
 drop the variable and SAY in your report that coverage was scholarly-only.
 
+Two port spellings exist on purpose - do not "fix" either one into the other:
+`http://searxng:8080` is the docker-network address, resolvable INSIDE this container
+(use it in the launch command above); `http://127.0.0.1:8888` is the host-side address
+(the engine's selftest hint and `contrib/searxng/verify.sh` print it - use that only when
+running on the host itself). The variable must be passed inline on every launch: it is
+NOT exported in the session environment, so a bare `python3 -m deepresearch` silently
+runs without it and the selftest reports `searxng FAIL` even though the container is up.
+
 It prints JSON immediately: `pid`, `log`, `report`, `poll`, and an `expect` duration.
 Use a distinct `--out` filename per run if two could overlap.
 
@@ -115,16 +123,20 @@ the handle read exit 0 while the body plainly said `DEGRADED`. If you must captu
 
 To update the engine: `cd /opt/data/deepresearch-repo && git pull`.
 
-### Timing to quote to the user
+### Timing and cost - the ONE table (quote these, and only these)
 
-| depth | healthy search | degraded search | agents |
-|---|---|---|---|
-| `quick` | ~2-3 min | up to ~9 min | ~30-45 |
-| `standard` | ~6-10 min | up to ~12 min | ~145-160 |
-| `exhaustive` | ~15-25 min | longer | ~250 |
+| depth | agents | healthy search | degraded search | use for |
+|---|---|---|---|---|
+| `quick` | ~40 | ~2-3 min | up to ~9 min | a factual check or fast second opinion. Still 3 lenses; no deepening, no citation audit, no rescue. |
+| `standard` | ~140-180 | ~6-10 min | up to ~15-30 min | **the default.** Full pipeline. |
+| `exhaustive` | ~250-300 | ~15-25 min | 35-60 min | decisions with real consequences, contested topics, anything the user will act on. |
 
-Wall time is dominated by search latency, not agent count: when the general web backends
-are rate-limited, every query walks the whole failover chain first.
+Agent counts come from the engine's depth budgets (`contract/depths.json`); healthy-search
+wall time is the README's measured range; the degraded column is what a rate-limited or
+scholarly-only run actually costs - when the general web backends are challenged, every
+query walks the whole failover chain first, and that, not agent count, dominates. This
+table is the single source: an earlier revision carried two tables with different numbers
+for the same depth, and an agent quoting both contradicted itself.
 
 ### Sharpen the question before running
 
@@ -145,11 +157,9 @@ relaunch. Every run also writes the contract it used beside the report as
 
 ### Choosing depth
 
-| depth | agents | wall time | use for |
-|---|---|---|---|
-| `quick` | ~40 | 3-8 min | a factual check or fast second opinion. Still 3 lenses; no deepening, no citation audit, no rescue. |
-| `standard` | ~140-180 | 15-30 min | **the default.** Full pipeline. |
-| `exhaustive` | ~250-300 | 35-60 min | decisions with real consequences, contested topics, anything the user will act on. |
+The table above is the whole answer: `quick` for checks, `standard` unless the user will
+act on it, `exhaustive` when the stakes are real. Prefix the depth to the question
+(`exhaustive: should we ...`) - the defaults are calibrated, not vibes.
 
 ## Reading the result
 
@@ -294,12 +304,24 @@ Beyond the six numbered items above, surface:
 ## Cost and limits
 
 Search is free (Hermes's own keyless `research` tool: DuckDuckGo, Mojeek, Wikipedia,
-OpenAlex, Crossref, HN with failover). Model calls use the Claude Code OAuth subscription
-credential at `/opt/data/.claude/.credentials.json` - **no API key and no per-token
-billing**, but runs do consume subscription rate limit. If the token expires, run any
-Claude Code command on the host to refresh it.
+OpenAlex, Crossref, HN with failover). Model calls are **per-token billed by whoever's
+credential is active** - the engine is provider-aware since v1.12 (ADR-0004):
 
-- **The panel is harsh** - it kills 55-70% of claims and occasionally kills a true one
+- **`ZAI_API_KEY` set** (what this gateway provides): runs on **glm-5.3** via Z.ai's
+  Anthropic-compatible endpoint, billed to the Z.ai plan. `DR_MODEL` overrides the model.
+- **`ANTHROPIC_API_KEY` set**: Anthropic, billed to that key.
+- **Neither, on a host with a Claude Code login**: the OAuth credential at
+  `/opt/data/.claude/.credentials.json` (subscription rate limit, not per-token).
+- Both set together is refused aloud - set `DR_PROVIDER` to choose. A 401/403 names the
+  SELECTED provider and its key variable in the error text; follow that, do not guess.
+  There is no OAuth-refresh remedy on the API-key paths.
+
+The auth paragraph above replaced one written for the OAuth-only era ("no API key and no
+per-token billing; run any Claude Code command to refresh") - on a Z.ai-key deployment
+that remedy is impossible and the billing claim is false, and it is the doc the agent
+reads mid-failure.
+
+- **The panel is harsh** - it kills 11-70% of claims depending on the topic (the measured band across recorded runs is 11-52%, plus one 74% outlier) and occasionally kills a true one
   whose near-duplicate survives. Read `refuted` before concluding something is unsupported.
 - **The scoper's checklist steers everything.** If your question hands it a premise, it may
   verify that premise rather than test it. Check `processCritique.planFlaws`.
