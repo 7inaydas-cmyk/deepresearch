@@ -1314,10 +1314,14 @@ def _adds_negation(verdict_text, registered_text):
     positive registered claim covers 1.000 ("do not reduce") and 0.833 ("have no effect"),
     which no threshold can see.
 
-    What this is NOT is a polarity check, and the label no longer claims it is: an ANTONYM
-    flip carries no negator word at all. "raise teen employment" against a registered
-    "reduce teen employment" covers 0.833 and passes. That is a real polarity flip and
-    nothing lexical here catches it.
+    What this is NOT is a polarity check, and the label no longer claims it is. An ANTONYM
+    flip carries no negator word at all: "raise teen employment" against a registered
+    "reduce teen employment" covers 0.833 and passes. Nor does it help when the flip sits
+    INSIDE a negation both sides share - "not unlikely to reduce" against "not likely to
+    reduce" has a negator on each side, so nothing is added, and the inversion lives in
+    "unlikely" against "likely" at coverage 0.857. That pair is the one worth naming,
+    because this function looks like it should catch it. It does not, and nothing lexical
+    here does. All of them are pinned in contract/conformance.json as untagged limits.
     """
     return _negated(verdict_text) and not _negated(registered_text)
 

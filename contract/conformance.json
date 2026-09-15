@@ -649,6 +649,22 @@
         ],
         "out": false,
         "why": "NOT a reference, deliberately untagged. The other NAMED LIMIT: a reversed causal direction covers 0.714 and passes. A review noted this case existed only inside another case's prose rather than as its own pinned pair, so here it is"
+      },
+      {
+        "in": [
+          "Minimum wage increases are not unlikely to reduce teen employment",
+          "Minimum wage increases are not likely to reduce teen employment"
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged. A NAMED LIMIT, and the sneakiest instance of it: BOTH sides carry a negator, so the added-negation check correctly does not fire, and the flip lives in 'unlikely' against 'likely' - an antonym inside a negation. Coverage 0.857, passes. The negation check LOOKS like it should catch this one, which is exactly why it is pinned rather than left to a reader's assumption"
+      },
+      {
+        "in": [
+          "not larger",
+          "not smaller"
+        ],
+        "out": false,
+        "why": "NOT a reference, deliberately untagged. The terse hole and an antonym flip at once: one content token after stopwords, so the _HYP_MIN_TOKENS guard returns before any coverage is scored. Two known limits stacked, pinned so a change to either shows up here"
       }
     ]
   },

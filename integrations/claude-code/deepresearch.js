@@ -970,8 +970,13 @@ const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).s
 // The reverse direction needs no check, measured on that run: a verdict asserting a
 // difference covers 0.176-0.238 against the registered null and the coverage bar catches
 // it. The attack direction does — a verdict negating a positive claim covers 1.000.
-// This is NOT a polarity check and the label no longer claims it is: an ANTONYM flip
-// carries no negator word, so "raise" against "reduce" covers 0.833 and passes.
+// This is NOT a polarity check and the label no longer claims it is. An ANTONYM flip
+// carries no negator word, so "raise" against "reduce" covers 0.833 and passes. Nor does
+// it help when the flip sits INSIDE a negation both sides share — "not unlikely to
+// reduce" against "not likely to reduce" has a negator each side, so nothing is added,
+// and the inversion lives in "unlikely" against "likely" at 0.857. That pair is worth
+// naming because this function looks like it should catch it; it does not, and nothing
+// lexical here does. All pinned in contract/conformance.json as untagged limits.
 const addsNegation = (verdictText, registeredText) => isNegated(verdictText) && !isNegated(registeredText)
 const hypMismatch = (verdictText, registeredText) => {
   // An ADDED negation first: overlap is blind to it, and a flat negation scores 1.000.

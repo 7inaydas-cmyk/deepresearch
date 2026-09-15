@@ -2011,6 +2011,17 @@ ok(not dr._hyp_mismatch(dr._hyp_key("Minimum wage increases raise teen employmen
 ok("added negation checked - NOT " in _ENG,
    "the published label says what is checked, not more")
 
+# The sneakiest instance of the antonym limit: BOTH sides negate, so nothing is added and
+# the check correctly does not fire - the flip lives in "unlikely" against "likely". This
+# function looks like it should catch it, so the limit is pinned rather than assumed.
+ok(not dr._hyp_mismatch(
+       dr._hyp_key("Minimum wage increases are not unlikely to reduce teen employment"),
+       dr._hyp_key("Minimum wage increases are not likely to reduce teen employment")),
+   "a flip INSIDE a shared negation passes at 0.857 - pinned as a named limit, because "
+   "the added-negation check looks like it should see this one and does not")
+ok(not dr._adds_negation("not unlikely to reduce", "not likely to reduce"),
+   "and it is right not to fire: neither side ADDS a negation, they both carry one")
+
 print("\n-- the README's #9 table is generated, not typed --")
 # It claimed a tool regenerated it so it "cannot drift again". That was true of the
 # regime tables and NOT of this one: it listed five samples when eight were archived,
@@ -2021,6 +2032,10 @@ print("\n-- the README's #9 table is generated, not typed --")
 sys.path.insert(0, os.path.join(_ROOT, "tools"))
 import compare_regimes as _cr   # noqa: E402
 _readme = open(os.path.join(_ROOT, "README.md"), encoding="utf-8").read()
+# NOT vestigial, though a review read it that way: this is the guard that the README
+# block matches what the tool emits from runs/, which is a different assertion from the
+# derived-conclusion ones below. Archiving a run without regenerating turns this red on
+# purpose, and CONTRIBUTING now says how to satisfy it.
 ok(_cr.dropped_markdown() in _readme,
    "the README carries exactly what tools/compare_regimes.py --dropped-md emits, so a "
    "new run cannot leave the table behind")

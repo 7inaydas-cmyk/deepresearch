@@ -40,6 +40,26 @@ boilerplate, and writing the reference is what surfaced that.
 
 Do not delete a reference to make this green.
 
+## Archiving a run in `runs/`
+
+Copy the report in, then **regenerate the README's issue-#9 table**:
+
+```bash
+cp /tmp/my-run.json runs/v13-something.json
+python3 tools/compare_regimes.py --dropped-md   # paste the block into README.md
+python3 tests/test_pipeline.py                  # the guard compares the two
+```
+
+A test asserts the README block is byte-identical to what the tool emits from `runs/`, so
+archiving a run that carries a `droppedSample` and not regenerating turns the suite red.
+That coupling is the point — the table drifted once by five samples to eight, and its
+headline said "four of five" where no stated rule gave four — but it was undocumented
+until a review called the guard "vestigial". It is load-bearing; this is how you satisfy it.
+
+The conclusion sentence is derived from the tally, so a new sample can legitimately change
+it. If your run moves the count across a band, the wording changes with it and that is
+correct.
+
 ## Changing pure decision logic
 
 A matcher, a schema leaf, a tier lookup, a normaliser — anything that is a function from

@@ -767,6 +767,30 @@ references" when there were two beside one untagged case, and a test asserting
 `CLEAR_MINORITY < CLEAR_MAJORITY` pinned no actual value — both could have moved without
 failing it.
 
+### Addendum, same day: the flip inside a shared negation
+
+The sixth audit was written against v1.10.0 and reached one item the v1.10.1 fix did not
+cover. Three of its findings were already closed at HEAD by the time it landed; this one
+was not.
+
+**"not unlikely to reduce" against "not likely to reduce".** Both sides carry a negator,
+so nothing is *added* and `_adds_negation` correctly does not fire. The inversion lives in
+*unlikely* against *likely* — an antonym flip wearing a negation — and coverage is 0.857,
+so it passes. `"not larger"` against `"not smaller"` passes too, by the terse hole: one
+content token after stopwords, so `_HYP_MIN_TOKENS` returns before coverage is scored.
+
+Neither is a new class — both are instances of limits already named. But the first is the
+one worth pinning, because the added-negation check *looks* like it should catch it. Both
+are now untagged cases in the contract, and the docstring says so in both builds.
+
+**And the guard the review called "vestigial" was load-bearing, in a way nobody had
+written down.** `ok(_cr.dropped_markdown() in _readme, ...)` asserts the README block is
+byte-identical to what the tool emits from `runs/` — so archiving a run with a
+`droppedSample` and not regenerating turns the suite red. That coupling is the point; the
+table had drifted from five samples to eight with a headline no rule produced. It was
+undocumented, which is why it read as dead weight. CONTRIBUTING now carries the three-line
+workflow.
+
 ## The files
 
 | Prefix | What it is |
