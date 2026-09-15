@@ -763,6 +763,47 @@ ok('"auditErrors": audit_errors' in _src and "audit_errors = len(_audit_out)" in
 ok("are NOT in the denominator" in _src,
    "and the scope string states the real denominator rather than implying the full pool")
 
+# S2 — relevant() guarded ONE backend of eleven, and it guarded the one backend that is
+# off on this host, so the filter against a poisoned engine was protecting nothing.
+_saved_impl = dict(searchmod._IMPL)
+_saved_health = dict(searchmod._health)
+try:
+    searchmod._IMPL["t_junk"] = lambda q, n: [
+        {"url": "https://cebupacificair.com/%d" % i, "title": "Cebu Pacific booking",
+         "snippet": "book flights"} for i in range(8)]
+    searchmod._IMPL["t_good"] = lambda q, n: [
+        {"url": "https://x.org/%d" % i, "title": "minimum wage employment effects",
+         "snippet": "study"} for i in range(4)]
+    searchmod._IMPL["t_chal"] = lambda q, n: (_ for _ in ()).throw(RuntimeError("challenged"))
+    searchmod._health.clear()
+    ok(searchmod.search("minimum wage employment", n=8, backends=["t_junk"]) == [],
+       "a backend serving results about something else is filtered to nothing, whichever "
+       "backend it is - the airline-results failure was on SearXNG, the filter now covers all 11")
+    ok(len(searchmod.search("minimum wage employment", n=8, backends=["t_good"])) == 4,
+       "while a backend serving related results is untouched")
+    searchmod.search("x", n=4, backends=["t_chal"])
+    _h = searchmod._health
+    ok(_h["t_junk"].get("junk") == 1 and _h["t_chal"].get("challenged") == 1,
+       "and searchHealth names WHICH failure: junk, challenged and fail had all been "
+       "recorded identically, and they have three different fixes")
+finally:
+    searchmod._IMPL.clear(); searchmod._IMPL.update(_saved_impl)
+    searchmod._health.clear(); searchmod._health.update(_saved_health)
+
+# S1 — challenge detection was a two-word blocklist, so it held only for the one
+# interstitial that had been measured.
+for _w in ("anomaly detected", "Our systems have detected unusual traffic",
+           "Please verify you are a human", "Complete the CAPTCHA", "Access Denied",
+           "Too Many Requests", "bot detection triggered"):
+    ok(bool(searchmod._CHALLENGE.search(_w)),
+       "a challenge page worded %r is recognised" % _w[:34])
+ok(not searchmod._CHALLENGE.search("Results for minimum wage employment effects"),
+   "and a real results page is not mistaken for one")
+ok(searchmod._LITE_MIN_RESULTS >= 2,
+   "the lite fallback needs more than one anchor: it harvests ANY external link, so an "
+   "interstitial carrying a single sponsor link reported ok with one result, and the "
+   "selftest then printed 'general web live'")
+
 print("\n-- the version is declared in three files and they must agree --")
 # Three copies of one fact, with nothing checking them. The same shape as the tier
 # rules, which sat out of sync between the two runtimes while the marker test passed.

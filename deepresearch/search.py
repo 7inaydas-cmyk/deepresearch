@@ -90,12 +90,33 @@ def reset_health() -> None:
         _health.clear()
 
 
+# A challenged page is not a dead parser and not an empty web. The old test was a
+# two-word blocklist - "anomaly" or "challenge" - so it held only for the one interstitial
+# that had been measured. These are the wordings the major engines actually serve, plus
+# two shape rules below: a results page has more than one result, and is not tiny.
+_CHALLENGE = re.compile(
+    r"anomal|challenge|unusual traffic|verify (?:you|that you)|are you a (?:human|robot)"
+    r"|captcha|access denied|rate.?limit|too many requests|bot detection|blocked", re.I)
+_LITE_MIN_RESULTS = 2
+_CHALLENGE_MAX_BODY = 2000
+
+
 def _note(backend: str, status: str, n: int) -> None:
+    """Record one backend attempt.
+
+    `status` is ok | fail | challenged | junk. The last two used to be folded into
+    `fail`, which made a rate-limited IP, a poisoned engine and a dead parser the same
+    number - and they have three different fixes. The code already knew the difference
+    (_ddg raises "challenged" explicitly) and threw it away one layer up.
+    """
     with _health_lock:
-        h = _health.setdefault(backend, {"attempts": 0, "ok": 0, "fail": 0, "results": 0})
+        h = _health.setdefault(backend, {"attempts": 0, "ok": 0, "fail": 0,
+                                         "challenged": 0, "junk": 0, "results": 0})
         h["attempts"] += 1
         h["results"] += n
-        h["ok" if status == "ok" else "fail"] += 1
+        h[status if status in ("ok", "challenged", "junk") else "fail"] += 1
+        if status in ("challenged", "junk"):
+            h["fail"] += 1          # still a failure; the label says WHICH
 
 
 def _get_bytes(url: str, headers: dict | None = None, timeout: int = TIMEOUT):
@@ -223,7 +244,7 @@ def _ddg(query: str, n: int, lite: bool) -> list[dict]:
     body = _get(base + "?q=" + urllib.parse.quote(query))
     # A challenge page parses to nothing but returns HTTP 200/202. Say so rather
     # than silently reporting an empty result set.
-    if "anomaly" in body.lower() or "challenge" in body.lower():
+    if _CHALLENGE.search(body):
         raise RuntimeError("challenged")
     out, seen = [], set()
     for m in re.finditer(r'<a[^>]+class="[^"]*result[^"]*a[^"]*"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', body, re.S):
@@ -236,14 +257,26 @@ def _ddg(query: str, n: int, lite: bool) -> list[dict]:
         if len(out) >= n:
             break
     if not out:  # lite layout
+        lite = []
         for m in re.finditer(r'<a[^>]+href="(https?://[^"]+)"[^>]*>(.*?)</a>', body, re.S):
             href, title = m.group(1), _clean(m.group(2))
             if "duckduckgo.com" in href or not title or href in seen:
                 continue
             seen.add(href)
-            out.append({"url": href, "title": title, "snippet": ""})
-            if len(out) >= n:
+            lite.append({"url": href, "title": title, "snippet": ""})
+            if len(lite) >= n:
                 break
+        # This harvests ANY external anchor with text, so a differently-worded
+        # interstitial carrying one outbound link used to report `ok, results=1` - and
+        # the selftest then printed "general web live via: ddg-html". A results page
+        # carries several results; one link is a page about something else.
+        out = lite if len(lite) >= _LITE_MIN_RESULTS else []
+        if lite and not out:
+            raise RuntimeError("challenged")
+    if not out and len(body) < _CHALLENGE_MAX_BODY:
+        # Nothing parsed out of a body too small to be a results page. That is a blocked
+        # or interstitial response, not an empty web, and the two need different fixes.
+        raise RuntimeError("challenged")
     return out
 
 
@@ -478,9 +511,10 @@ def _searxng(query: str, n: int) -> list[dict]:
             "SearXNG answered but every upstream engine is unavailable: %s. Your instance "
             "is up and rate-limited, not broken - wait, or enable more engines in "
             "settings.yml (see contrib/searxng)." % ", ".join(sorted(set(dead))[:8]))
-    return relevant([{"url": r.get("url", ""), "title": r.get("title", ""),
-                      "snippet": (r.get("content") or "")[:300]}
-                     for r in rows[:n]], query)
+    # No relevant() call here any more: run() applies it to every backend, so filtering
+    # here as well would double-count and hide which layer rejected what.
+    return [{"url": r.get("url", ""), "title": r.get("title", ""),
+             "snippet": (r.get("content") or "")[:300]} for r in rows[:n]]
 
 
 _IMPL = {
@@ -516,10 +550,24 @@ def search(query: str, n: int = 8, backends: list[str] | None = None,
     def run(b: str) -> list[dict]:
         try:
             got = [r for r in _IMPL[b](query, n) if r.get("url")]
+            # The junk filter guards EVERY backend here. It used to live inside _searxng
+            # alone - one of eleven - so the ten that actually carry most runs passed
+            # whatever they were served straight to the picker. Worse on this host:
+            # SearXNG is the one backend that is off, so the filter protecting against a
+            # poisoned engine was protecting nothing at all.
+            got = relevant(got, query)
             _note(b, "ok", len(got))
             return got
-        except Exception:
-            _note(b, "fail", 0)
+        except Exception as e:
+            # Three different failures used to read identically as `fail`. They need
+            # different fixes: `challenged` means this IP is blocked and a proxy or
+            # SearXNG helps; `junk` means the engine answered with unrelated results and
+            # the backend is poisoned, not quiet; `fail` means it is actually down.
+            kind = ("challenged" if "challenged" in str(e)
+                    else "junk" if isinstance(e, RuntimeError) and "unrelated" in str(e)
+                    or isinstance(e, RuntimeError) and "topically related" in str(e)
+                    else "fail")
+            _note(b, kind, 0)
             return []
 
     if all_backends:
