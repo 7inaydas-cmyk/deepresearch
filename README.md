@@ -9,7 +9,7 @@
 
 Most research agents retrieve, summarise, and hand you the result. This one retrieves, then spends the rest of the run attacking what it found.
 
-It needs a model: set `ANTHROPIC_API_KEY` (or use a Claude Code login already on the machine), or set `ZAI_API_KEY` to run it on **GLM 5.3** — the set key variable picks the provider. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref, Europe PMC, PubMed, arXiv and Hacker News (plus a self-hosted SearXNG if you have one), no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
+It needs a model — but not an API key. If this machine has a logged-in harness (`claude` on PATH, or hermes for the zai plan), deepresearch powers every call through it: **`claude -p` / `hermes -p glm -z`, login-powered** (ADR-0005). Set `ANTHROPIC_API_KEY` or `ZAI_API_KEY` only on headless servers; `DR_TRANSPORT=http` forces that path. **Search** is keyless and costs nothing — DuckDuckGo, Mojeek, Wikipedia, OpenAlex, Crossref, Europe PMC, PubMed, arXiv and Hacker News (plus a self-hosted SearXNG if you have one), no accounts, no Tavily/Serper/Exa signup. `dependencies = []`: Python 3.9+, standard library only, MIT.
 
 Before any evidence exists, it writes a contract: the decision at stake, the assumptions it is making, and 2–4 hypotheses each with an explicit **kill criterion**. That contract ships in the output JSON, so you can check what it committed to before it went looking. It does not claim the frame is *right* — only that the frame was fixed and visible before the evidence arrived.
 

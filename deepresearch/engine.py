@@ -543,13 +543,54 @@ def _record_usage(u, into=None):
                     st["usageUnrecorded"][key] = st["usageUnrecorded"].get(key, 0) + v2
 
 
+def _session_prompt(t, prompt, schema):
+    """The whole agent() contract, flattened into one prompt for a harness CLI.
+
+    The HTTP path gets structure for free (system blocks, tools, tool_choice); a
+    `claude -p` / `hermes -z` print mode gets text. The schema is stated verbatim and
+    the reply demanded as bare JSON, because the seam's shape() - not the harness -
+    remains the only authority on what counts as a valid response (ADR-0001: both
+    transports, one policy).
+    """
+    return (t["system_prefix"] + "\n\n"
+            "You are one worker in a multi-agent research harness. Your reply IS the return value.\n"
+            "Respond with ONE JSON object and NOTHING ELSE - no prose before or after, no "
+            "markdown fences - conforming exactly to this JSON shape:\n"
+            + json.dumps(schema, indent=1) + "\n\n" + prompt)
+
+
+def _extract_json(text):
+    """Pull the first JSON object out of a print-mode reply, tolerating fences and prose.
+
+    The HTTP path enforces structure with tool_choice; print mode can only be asked
+    nicely, so the extractor is deliberately tolerant - fenced blocks first, then the
+    first '{' to its matching last '}'. What it returns is STILL only a candidate:
+    shape() decides validity, never the extractor.
+    """
+    s = (text or "").strip()
+    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", s, re.S)
+    if m:
+        cand = m.group(1)
+    else:
+        i, j = s.find("{"), s.rfind("}")
+        cand = s[i:j + 1] if 0 <= i < j else ""
+    try:
+        got = json.loads(cand)
+        return got if isinstance(got, dict) else None
+    except Exception:
+        return None
+
+
 def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5):
     """One independent subagent. Returns the validated structured object, or None.
 
-    The request head - URL, headers, credential, identity system block - comes from
-    the provider seam in one call; everything after it (retry policy, the corrective
-    re-ask, sentinel recovery, max_tokens growth) is provider-agnostic and stays
-    here, per ADR-0001 and ADR-0004.
+    The request head comes from the provider seam in one call; everything after it
+    (retry policy, the corrective re-ask, sentinel recovery, max_tokens growth) is
+    transport-agnostic and stays here, per ADR-0001 and ADR-0004 - and ADR-0005,
+    which adds the second transport: when the seam resolved a harness (session
+    scheme), the model call is a spawned `claude -p` / `hermes -p <provider> -z`
+    whose own login pays, deepresearch reads no credential, and the SAME retry and
+    shaping policy runs over its stdout as over an HTTP response.
     """
     t = _providers.transport()
     body = {
@@ -577,86 +618,105 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
     correction = ""
     for attempt in range(retries):
         try:
-            if correction:
-                body["messages"] = [{"role": "user", "content": prompt + correction}]
-                data = json.dumps(body).encode()
-            elif body["max_tokens"] != max_tokens:
-                data = json.dumps(body).encode()
-            req = urllib.request.Request(t["url"], data=data, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=180) as r:
-                out = json.loads(r.read().decode())
-            with _stats_lock:
-                _stats["calls"] += 1
-                _record_usage(out.get("usage") or {})
-            for blk in out.get("content", []):
-                if blk.get("type") == "tool_use" and blk.get("name") == "StructuredOutput":
-                    got = blk.get("input")
-                    if _has_unknown_sentinel(got) and attempt < retries - 1:
-                        log("  [%s] API returned an <UNKNOWN> sentinel instead of the "
-                            "structured fields; retrying (%d/%d)" % (label, attempt + 1, retries))
-                        time.sleep(delay); delay *= 2
-                        break
-                    shaped, short = shape(schema, got, label)
-                    if short and attempt < retries - 1:
-                        with _stats_lock:
-                            _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
-                        # stop_reason separates the two explanations: `max_tokens` means the
-                        # response was cut off and the budget is too small, anything else
-                        # means the model chose to return nothing. They need opposite fixes.
-                        stop = out.get("stop_reason")
-                        if stop == "max_tokens":
-                            # This is the whole explanation, and it is not the model's
-                            # judgement: the response was CUT OFF, and a truncated tool call
-                            # comes back with empty arrays rather than partial ones - which
-                            # is why it looked like "the model returned nothing" for so long.
-                            # Measured 2026-09-06 on the framing call at max_tokens=2500.
-                            # Scolding a truncated response achieves nothing; give it room.
-                            body["max_tokens"] = min(16000, int(body["max_tokens"] * 2))
-                            data = json.dumps(body).encode()
-                            log("  [%s] response was TRUNCATED (%s), so its required arrays came "
-                                "back empty: %s. Retrying with max_tokens=%d (%d/%d)"
-                                % (label, stop, ", ".join(short), body["max_tokens"],
-                                   attempt + 1, retries))
-                            time.sleep(1.0)
-                            break
-                        log("  [%s] response violates its own schema: %s (stop_reason=%s); "
-                            "retrying (%d/%d)"
-                            % (label, ", ".join(short), stop, attempt + 1, retries))
-                        correction = (
-                            "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
-                            "You returned: " + "; ".join(short) + ".\n"
-                            "Each of those is a schema violation: a required field missing, an array "
-                            "shorter than its declared minimum, an enum value that is not one of the "
-                            "allowed values, or a boolean that is not true/false. It is not an "
-                            "answer; it is a malformed response, and it silently breaks every later "
-                            "stage that reads it.\n"
-                            "If the question seems too broad, too narrow or badly posed, that is "
-                            "NOT a reason to return nothing - state the difficulty as one of the "
-                            "assumptions and fill the fields anyway. Produce at least the minimum "
-                            "number of items for each, and keep them short if that helps.")
-                        time.sleep(delay); delay *= 2
-                        break
-                    if short:
-                        # Last attempt and still unrepairable at the top level. The seam
-                        # never guesses at a leaf: a `support` outside its enum or a
-                        # `refuted` that is not a bool would otherwise reach the kill
-                        # decision as a coerced value. None is what every caller handles.
-                        log("  [%s] gave up after %d attempt(s): %s" % (label, retries, "; ".join(short)[:200]))
-                        with _stats_lock:
-                            _stats["errors"] += 1
-                        return None
-                    return shaped
+            if t.get("scheme") == "session":
+                out_text = _providers.run_harness(
+                    t["harness_argv"], _session_prompt(t, prompt + correction, schema))
+                with _stats_lock:
+                    _stats["calls"] += 1
+                got, stop = _extract_json(out_text), None
+                if got is not None and _has_unknown_sentinel(got) and attempt < retries - 1:
+                    log("  [%s] harness returned an <UNKNOWN> sentinel; retrying (%d/%d)"
+                        % (label, attempt + 1, retries))
+                    time.sleep(delay); delay *= 2
+                    continue
+                if got is None:
+                    # No stop_reason exists over a print mode; an unparseable reply is
+                    # always the model choosing prose, so it gets the corrective re-ask
+                    # rather than a budget it cannot grow (there is no max_tokens knob
+                    # on a spawn - the instruction to answer JSON IS the budget).
+                    stop = "unparseable-reply"
             else:
-                # No StructuredOutput block in the response. Say what DID come back:
-                # this path returned None silently, and a caller three phases later
-                # reported "synthesis failed" with nothing anywhere saying why.
-                kinds = [b.get("type") for b in (out.get("content") or [])]
-                log("  [%s] no StructuredOutput in the response (stop_reason=%s, blocks=%s); "
-                    "giving up on this call" % (label, out.get("stop_reason"), kinds or "none"))
+                if correction:
+                    body["messages"] = [{"role": "user", "content": prompt + correction}]
+                    data = json.dumps(body).encode()
+                elif body["max_tokens"] != max_tokens:
+                    data = json.dumps(body).encode()
+                req = urllib.request.Request(t["url"], data=data, headers=headers, method="POST")
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    out = json.loads(r.read().decode())
+                with _stats_lock:
+                    _stats["calls"] += 1
+                    _record_usage(out.get("usage") or {})
+                got, stop = None, out.get("stop_reason")
+                for blk in out.get("content", []):
+                    if blk.get("type") == "tool_use" and blk.get("name") == "StructuredOutput":
+                        got = blk.get("input")
+                        break
+                if got is not None and _has_unknown_sentinel(got) and attempt < retries - 1:
+                    log("  [%s] API returned an <UNKNOWN> sentinel instead of the "
+                        "structured fields; retrying (%d/%d)" % (label, attempt + 1, retries))
+                    time.sleep(delay); delay *= 2
+                    continue
+            if got is None and attempt < retries - 1:
+                # The HTTP path distinguishes truncation (stop_reason=max_tokens ->
+                # grow the budget) from refusal (corrective re-ask). A spawn has no
+                # budget knob, so unparseable always means: re-ask with the correction.
+                if stop == "max_tokens":
+                    body["max_tokens"] = min(16000, int(body["max_tokens"] * 2))
+                    data = json.dumps(body).encode()
+                    log("  [%s] response was TRUNCATED (%s); retrying with max_tokens=%d (%d/%d)"
+                        % (label, stop, body["max_tokens"], attempt + 1, retries))
+                    time.sleep(1.0)
+                    continue
+                with _stats_lock:
+                    _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
+                log("  [%s] no usable JSON in the reply (stop_reason=%s); retrying with a "
+                    "correction (%d/%d)" % (label, stop, attempt + 1, retries))
+                correction = (
+                    "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
+                    "You returned: no parseable JSON object.\n"
+                    "Your reply IS the return value: ONE JSON object conforming to the stated "
+                    "shape, no prose, no markdown fences. If the question seems too broad, too "
+                    "narrow or badly posed, that is NOT a reason to answer in prose - state the "
+                    "difficulty inside the required fields and fill them anyway.")
+                time.sleep(delay); delay *= 2
+                continue
+            if got is None:
+                log("  [%s] gave up after %d attempt(s): no usable JSON" % (label, retries))
                 with _stats_lock:
                     _stats["errors"] += 1
                 return None
-            continue
+            shaped, short = shape(schema, got, label)
+            if short and attempt < retries - 1:
+                with _stats_lock:
+                    _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
+                log("  [%s] response violates its own schema: %s (stop_reason=%s); "
+                    "retrying (%d/%d)"
+                    % (label, ", ".join(short), stop, attempt + 1, retries))
+                correction = (
+                    "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
+                    "You returned: " + "; ".join(short) + ".\n"
+                    "Each of those is a schema violation: a required field missing, an array "
+                    "shorter than its declared minimum, an enum value that is not one of the "
+                    "allowed values, or a boolean that is not true/false. It is not an "
+                    "answer; it is a malformed response, and it silently breaks every later "
+                    "stage that reads it.\n"
+                    "If the question seems too broad, too narrow or badly posed, that is "
+                    "NOT a reason to return nothing - state the difficulty as one of the "
+                    "assumptions and fill the fields anyway. Produce at least the minimum "
+                    "number of items for each, and keep them short if that helps.")
+                time.sleep(delay); delay *= 2
+                continue
+            if short:
+                # Last attempt and still unrepairable at the top level. The seam
+                # never guesses at a leaf: a `support` outside its enum or a
+                # `refuted` that is not a bool would otherwise reach the kill
+                # decision as a coerced value. None is what every caller handles.
+                log("  [%s] gave up after %d attempt(s): %s" % (label, retries, "; ".join(short)[:200]))
+                with _stats_lock:
+                    _stats["errors"] += 1
+                return None
+            return shaped
         except urllib.error.HTTPError as e:
             detail = ""
             try:
@@ -680,6 +740,12 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                 raise AuthError("%s rejected the credential (%d): %s"
                                 % (t["label"], e.code, detail))
             log("  [%s] HTTP %d %s" % (label, e.code, detail))
+            break
+        except subprocess.TimeoutExpired:
+            log("  [%s] harness timed out (attempt %d/%d)" % (label, attempt + 1, retries))
+            if attempt < retries - 1:
+                time.sleep(delay); delay *= 2
+                continue
             break
         except Exception as e:
             if attempt < retries - 1:
@@ -2336,19 +2402,27 @@ def preflight():
     giving up. One cheap call up front turns that into an immediate, actionable
     error.
     """
-    scheme, _ = credential()
+    # The probe is transport-agnostic: HTTP proves the credential answers, a session
+    # proves the harness answers - one cheap call either way (ADR-0005).
     probe = agent("Return the word ok in the field reply.",
                   {"type": "object", "required": ["reply"],
                    "properties": {"reply": {"type": "string"}}},
                   label="preflight", max_tokens=64, retries=1)
     if probe is None:
         t = _providers.transport()
+        if t.get("scheme") == "session":
+            raise AuthError(
+                "Preflight failed: the session harness %r was selected for %s but a "
+                "one-word probe did not come back as JSON. Run it yourself to see why "
+                "(it is powered by its own login, which deepresearch cannot inspect): "
+                "%s 'Reply with the word ok'" % (t["harness"]["label"], t["label"],
+                                                 " ".join(t["harness_argv"])))
         raise AuthError(
             "Preflight failed: %s's credential loaded (%s) but the endpoint would not "
             "answer. If this is an OAuth credential it may have been revoked server-side "
             "- the local file cannot tell you that. Re-authenticate, or set %s to remove "
-            "the dependency entirely." % (t["label"], scheme, t["key_env"]))
-    return scheme
+            "the dependency entirely." % (t["label"], t["scheme"], t["key_env"]))
+    return _providers.transport()["scheme"]
 
 
 def deepresearch(question, depth="standard", contract=None):
@@ -2513,6 +2587,7 @@ def deepresearch(question, depth="standard", contract=None):
                         for s in sources]
     def stats(**kw):
         d = dict(depth=depth, provider=_providers.select()["name"], model=MODEL,
+             transport=_providers.transport().get("scheme"),
                  perspectives=len(persps), subQuestions=len(subqs),
                  sourcesFetched=len(sources), claimsExtracted=len(all_claims),
                  urlDupes=len(dupes), budgetDropped=len(dropped),
@@ -3328,7 +3403,11 @@ def selftest():
           % (_nc, _ni, _ng))
     print("1. credential       ...", end=" ")
     try:
-        sch, sec = credential(); print("OK (%s, len %d)" % (sch, len(sec)))
+        _t1 = _providers.transport()
+        if _t1.get("scheme") == "session":
+            print("OK (none needed - session transport, login-powered)")
+        else:
+            sch, sec = credential(); print("OK (%s, len %d)" % (sch, len(sec)))
     except AuthError as e:
         print("FAIL:", e); return False
     # Name the provider and the env var that fed it. A GLM run told to "set

@@ -31,7 +31,8 @@
   "a failure, and `why` must say what makes the difference correct.",
   "",
   "`python_cases` holds gates the JS build genuinely does not have, each with the reason,",
-  "the same way tests/test_parity.py keeps PYTHON_ONLY honest."
+  "the same way tests/test_parity.py keeps PYTHON_ONLY honest.",
+  "_extract_json is python_cases-only: the extractor serves the session transport's spawn path, which the JS build does not have (it IS a session consumer; parity records this)."
  ],
  "instruments": {
   "webtext": "transform",
@@ -46,7 +47,8 @@
   "calibration_verdict": "gate",
   "evidence_base": "gate",
   "is_nonanswer": "gate",
-  "hyp_mismatch": "gate"
+  "hyp_mismatch": "gate",
+  "_extract_json": "gate"
  },
  "cases": {
   "webtext": [
@@ -789,6 +791,47 @@
      "out": "underpowered",
      "why": "and kappa=1.0 at n=10 is NOT - that verdict was the whole complaint, and the gate may only ever be tightened",
      "ref": "bad"
+    }
+   ]
+  },
+  "_extract_json": {
+   "why_python_only": "The JSON extractor serves the session transport's spawn path (ADR-0005), which the JS build does not have - its runtime provides agent() directly, so there is no print-mode reply to parse. Parity records the session transport as Python-only.",
+   "cases": [
+    {
+     "in": [
+      "prose before ```json\n{\"refuted\": true}\n``` after"
+     ],
+     "out": {
+      "refuted": true
+     },
+     "ref": "good",
+     "why": "A fenced JSON block inside prose is the common print-mode reply; the extractor returns the object"
+    },
+    {
+     "in": [
+      "Answer: {\"reply\": \"ok\"} thanks"
+     ],
+     "out": {
+      "reply": "ok"
+     },
+     "ref": "good",
+     "why": "Bare JSON inside prose: first brace to last brace"
+    },
+    {
+     "in": [
+      "no json at all"
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "No object anywhere: None, which agent() treats as an unparseable reply and corrects"
+    },
+    {
+     "in": [
+      "[1,2]"
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "A top-level ARRAY is not a shaped-response candidate; the extractor only ever yields dicts, because every schema in the engine is an object. Validity is shape()'s to decide - never the extractor's"
     }
    ]
   }

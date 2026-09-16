@@ -43,6 +43,8 @@ ANTHROPIC_API_KEY.
 """
 import json
 import os
+import shutil
+import subprocess
 import threading
 import time
 
@@ -89,11 +91,60 @@ def spec(name):
         "system_prefix": p["systemPrefix"],
         "static_headers": dict(p.get("staticHeaders") or {}),
         "oauth": p.get("oauth"),
+        "harness": p.get("harness"),
         # Filled in by _mark_endpoint_owner below when the effective base URL belongs
         # to a DIFFERENT contract provider than the one the credential selected.
         "endpoint_owner": None,
     }
     return _mark_endpoint_owner(s, p)
+
+
+def harness_command(spec):
+    """The full argv prefix that spawns this provider's harness, or None.
+
+    Session-first (ADR-0005): the owner's deployments hold no API keys - model calls
+    are powered by a harness CLI's own login (claude -p, hermes -p glm -z). If that
+    CLI resolves on this machine, IT is the intended power source and the HTTP path
+    is the fallback. Resolution order: the contract's command on PATH; the provider's
+    fallbackCommandEnv carrying a full command string (for harnesses that live inside
+    a container, e.g. 'docker exec <c> /opt/hermes/.venv/bin/hermes'); else None and
+    the seam falls back to key-env/OAuth HTTP. DR_TRANSPORT=http forces HTTP even
+    when a harness exists, because a user who holds BOTH may prefer one socket to
+    150 spawns.
+    """
+    if os.environ.get("DR_TRANSPORT", "").strip().lower() == "http":
+        return None
+    h = spec.get("harness") or {}
+    cmd = h.get("command")
+    if not cmd:
+        return None
+    if shutil.which(cmd):
+        return [cmd] + list(h.get("args") or [])
+    env_cmd = os.environ.get(h.get("fallbackCommandEnv") or "", "").strip()
+    if env_cmd:
+        head = env_cmd.split()[0]
+        if shutil.which(head) or os.path.exists(head):
+            return env_cmd.split() + list(h.get("args") or [])
+    return None
+
+
+def run_harness(argv, prompt, timeout=300):
+    """One model call through the harness CLI. Returns stdout, or raises.
+
+    The spawn is MECHANISM and lives at the seam; POLICY (retries, the corrective
+    re-ask, sentinel recovery, shape()) stays in engine.agent() exactly as it does on
+    the HTTP path - ADR-0001 applies to both transports equally. Non-zero exit and
+    timeouts raise RuntimeError so agent()'s retry loop can treat them like any other
+    failed attempt.
+    """
+    # A prompt of many kilobyts on the argv would blow ARG_MAX on some harnesses;
+    # claude -p and hermes -z both accept it positionally and handle long strings,
+    # but be defensive the cheap way.
+    proc = subprocess.run(argv + [prompt], capture_output=True, text=True, timeout=timeout)
+    if proc.returncode != 0 or not (proc.stdout or "").strip():
+        raise RuntimeError("harness %r exited %d: %s"
+                           % (argv[0], proc.returncode, (proc.stderr or "")[:200]))
+    return proc.stdout
 
 
 def _mark_endpoint_owner(s, p):
@@ -246,6 +297,16 @@ def transport():
     with _lock:
         if _TRANSPORT is None:
             spec = select()
+            # Session-first (ADR-0005): when the harness CLI that powers this provider
+            # exists on the machine, IT is the power source and no credential is read
+            # at all - the whole point is a run that holds no API key. Only the HTTP
+            # fallback resolves a credential, so a session-powered describe() can
+            # never misname a key nobody set.
+            argv = harness_command(spec)
+            if argv is not None:
+                _TRANSPORT = dict(spec, scheme="session", secret=None, via=None,
+                                  headers=None, harness_argv=argv)
+                return _TRANSPORT
             scheme, secret, via = credential(spec)
             headers = {"content-type": "application/json", **spec["static_headers"]}
             if scheme == "api-key":
@@ -272,6 +333,8 @@ def describe():
     mis-describe the wire.
     """
     t = transport()
+    if t.get("scheme") == "session":
+        return "%s (session via %s - login-powered, no API key)" % (t["label"], t["harness"]["label"])
     via = "via " + t["via"] if t.get("via") else ""
     owner = ("; endpoint is %s's (%s override) - model default follows the endpoint"
              % (_CONTRACT["providers"][t["endpoint_owner"]]["label"],

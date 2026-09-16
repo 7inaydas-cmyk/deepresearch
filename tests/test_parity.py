@@ -169,6 +169,10 @@ PYTHON_ONLY = {
         "probes.py and its runner operate on a finished report, not on the engine, so "
         "`python3 -m deepresearch.probes --report <any report.json>` already scores a "
         "report from either build. Nothing to port.",
+    "session transport (ADR-0005)":
+        "The JS build IS a session consumer - its runtime provides agent() directly, so "
+        "there is nothing to spawn and no transport to choose. The Python CLI gained the "
+        "spawn-based session transport because it must make its own calls; nothing ports.",
     "provider selection (ADR-0004)":
         "The JS build's model is owned by its Workflow runtime - it never makes an API "
         "call, holds no credential and reads no endpoint, so it has no provider to "

@@ -60,6 +60,7 @@ def _adapter():
         "is_prose":            lambda text: _search.is_prose(text)[0],
         "looks_challenged":    lambda body: _search._looks_challenged(body),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
+        "_extract_json":       lambda text: dr._extract_json(text),
         "evidence_base":       lambda rows: dr._evidence_base(rows)["citableSources"],
         "is_nonanswer":        lambda text: dr.is_nonanswer(text),
     }

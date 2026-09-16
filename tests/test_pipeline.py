@@ -20,6 +20,8 @@ import deepresearch as dr_pkg                  # noqa: E402
 # The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
 # anything wanting the REAL one has to hold a reference from before that happens.
 _REAL_WEB_FETCH = dr.web_fetch
+# The pipeline harness replaces dr.agent with a fixture stub and never restores it; the session-transport retry test at the foot of this file needs the real one.
+_REAL_AGENT = dr.agent
 _REAL_WEB_SEARCH = dr.web_search
 
 PASS = FAIL = 0
@@ -1523,7 +1525,7 @@ ok(dr._schema_shortfall({"type": "object", "required": ["a"],
    "but an EMPTY required array with no minItems is still legal - contradictions is "
    "legitimately empty, and rejecting that would retry every clean run")
 
-ok("no StructuredOutput in the response" in _agent_src and "exhausted" in _agent_src,
+ok(("no usable JSON in the reply" in _agent_src) and "exhausted" in _agent_src,
    "every way agent() can return None now logs a reason: one run reported 'synthesis "
    "failed' with nothing anywhere in the log saying why")
 
@@ -2275,14 +2277,15 @@ except dr.AuthError as e:
        "a GLM run short a key is told to set ZAI_API_KEY, never ANTHROPIC_API_KEY - "
        "preflight and selftest quote these messages verbatim")
 
-_claude = _with_env({"ANTHROPIC_API_KEY": "sk-ant"}, lambda: _P.transport())
+_claude = _with_env({"ANTHROPIC_API_KEY": "sk-ant", "DR_TRANSPORT": "http"}, lambda: _P.transport())
 ok(_claude["url"] == "https://api.anthropic.com/v1/messages"
    and _claude["headers"] == {"content-type": "application/json",
                               "anthropic-version": "2023-06-01",
                               "x-api-key": "sk-ant"},
    "the unset-anthropic path is BYTE-IDENTICAL to the pre-seam constants: same URL, "
    "same three headers - the rewrite bought GLM without spending any Claude behaviour")
-ok(_with_env({"ANTHROPIC_API_KEY": "k", "ANTHROPIC_BASE_URL": "https://relay.example"},
+ok(_with_env({"ANTHROPIC_API_KEY": "k", "DR_TRANSPORT": "http",
+                "ANTHROPIC_BASE_URL": "https://relay.example"},
              lambda: _P.transport()["url"]) == "https://relay.example/v1/messages",
    "ANTHROPIC_BASE_URL still overrides the claude endpoint (relays, proxies)")
 ok(dr.CC_SYSTEM_PREFIX == "You are Claude Code, Anthropic's official CLI for Claude.",
@@ -2322,19 +2325,19 @@ ok(_r2.returncode == 0 and "--provider" in _r2.stdout,
 # as "Anthropic (api-key)" while POSTing to api.z.ai with model name claude-sonnet-5 -
 # a name Z.ai tolerates by luck. When the override host matches a CONTRACT provider,
 # the default model follows the endpoint and describe() says whose endpoint it is.
-_shim = _with_env({"ANTHROPIC_API_KEY": "k",
+_shim = _with_env({"ANTHROPIC_API_KEY": "k", "DR_TRANSPORT": "http",
                    "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic"},
                   lambda: (_P.describe(), _P.select()["default_model"]))
 ok("Z.ai GLM" in _shim[0] and _shim[1] == "glm-5.3",
    "the env shim is described truthfully: describe() names Z.ai as the endpoint and "
    "the default model follows the endpoint (glm-5.3), not the credential that selected "
    "claude - a model name that only worked by Z.ai's tolerance")
-_relay = _with_env({"ANTHROPIC_API_KEY": "k", "ANTHROPIC_BASE_URL": "https://relay.internal"},
+_relay = _with_env({"ANTHROPIC_API_KEY": "k", "DR_TRANSPORT": "http", "ANTHROPIC_BASE_URL": "https://relay.internal"},
                    lambda: (_P.describe(), _P.select()["default_model"], _P.select()["endpoint_owner"]))
 ok(_relay[1] == "claude-sonnet-5" and _relay[2] is None,
    "a generic relay host matches no contract provider, so nothing is adopted - a "
    "proxy address is not evidence of anyone's model semantics")
-_forced = _with_env({"ANTHROPIC_API_KEY": "k",
+_forced = _with_env({"ANTHROPIC_API_KEY": "k", "DR_TRANSPORT": "http",
                      "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
                      "DR_MODEL": "glm-5.3-air"},
                     lambda: (_P.select()["default_model"], _P.select()["endpoint_owner"]))
@@ -2406,6 +2409,83 @@ ok(dr._negation_differs(_nl_v, _nl_r)
    "direction the repo's policy accepts, but note: v1.11's docstring claimed this shape "
    "kept its stamp via the text path - false in its own shipped code, which gated both "
    "paths with the same symmetric check")
+
+# SESSION TRANSPORT (ADR-0005). The owner's deployments hold no API keys: model calls
+# are powered by a harness CLI's own login - `claude -p` for the claude provider,
+# `hermes -p glm -z` for zai. Session-first: if the harness resolves on the machine,
+# IT is the power source; key-env HTTP is the fallback for headless servers; DR_TRANSPORT
+# forces either way. These tests are hermetic: shutil.which is stubbed so no harness is
+# ever spawned and no login is ever read.
+import shutil as _shutil
+def _with_harness(fake_which, env, fn):
+    """Run fn with which() lying about which harnesses exist, env cleared, restored."""
+    _real_which = _P.shutil.which
+    _P.shutil.which = fake_which
+    try:
+        return _with_env(env, fn)
+    finally:
+        _P.shutil.which = _real_which
+
+_nothing = lambda c: None                     # no harness on this machine
+_claude_only = lambda c: "/usr/bin/claude" if c == "claude" else None
+
+ok(_with_harness(_claude_only, {"DR_PROVIDER": "claude"}, lambda: _P.transport()["scheme"]) == "session",
+   "claude on PATH -> session transport: the login-powered CLI IS the intended source, "
+   "no credential is read at all")
+ok(_with_harness(_claaude_only := (lambda c: "/usr/bin/claude" if c == "claude" else None),
+                 {"DR_PROVIDER": "claude"}, lambda: _P.transport()["harness_argv"])
+   == ["claude", "-p"],
+   "the claude adapter spawns exactly `claude -p` + prompt - the verified shape")
+_glm_env = {"DR_PROVIDER": "glm", "DR_GLM_HARNESS":
+            "docker exec hermes-agent /opt/hermes/.venv/bin/hermes"}
+_glm_argv = _with_harness(lambda c: "/usr/bin/docker" if c == "docker" else None,
+                          _glm_env, lambda: _P.transport()["harness_argv"])
+ok(_glm_argv is not None and _glm_argv[:4] == ["docker", "exec", "hermes-agent",
+                                               "/opt/hermes/.venv/bin/hermes"]
+   and _glm_argv[4:] == ["-p", "glm", "-z"],
+   "the zai adapter spawns `hermes -p glm -z` - via the container where hermes lives, "
+   "the verified shape; hermes holds the credential, deepresearch holds nothing")
+ok(_with_harness(_nothing, {"DR_PROVIDER": "glm", "ZAI_API_KEY": "k"},
+                 lambda: _P.transport()["scheme"]) == "api-key",
+   "no harness resolvable -> the seam falls back to the credential path (HTTP), which "
+   "is the headless-server story")
+ok(_with_harness(_claude_only, {"DR_PROVIDER": "claude", "ANTHROPIC_API_KEY": "k",
+                                "DR_TRANSPORT": "http"},
+                 lambda: _P.transport()["scheme"]) == "api-key",
+   "DR_TRANSPORT=http forces HTTP even with the harness present: a user holding both "
+   "may prefer one socket to 150 spawns")
+_d = _with_harness(_claude_only, {"DR_PROVIDER": "claude"}, lambda: _P.describe())
+ok("session via claude -p" in _d and "no API key" in _d,
+   "describe() names the session honestly: %r" % _d)
+_sp = dr._session_prompt({"system_prefix": "PREFIX"}, "QUESTION", {"type": "object"})
+ok(_sp.startswith("PREFIX") and "ONE JSON object" in _sp and "QUESTION" in _sp,
+   "the session prompt flattens the whole agent() contract: identity, JSON-only "
+   "instruction, schema verbatim, then the task")
+for text, want in [('junk ```json\n{"refuted": true}\n``` trailing', {"refuted": True}),
+                   ('Answer: {"reply": "ok"} thanks', {"reply": "ok"}),
+                   ('no json', None), ('[1,2]', None)]:
+    ok(dr._extract_json(text) == want, "extractor: %r -> %r" % (text[:24], want))
+# retry policy over a spawn: first reply is prose, second is JSON - the corrective
+# re-ask must fire and the shaped result must come back (policy lives in agent(), ADR-0001)
+_spawns = iter(["I will not use JSON, sorry.",
+                '{"reply": "pong"}'])
+def _fake_run(argv, prompt, timeout=300):
+    _sp = next(_spawns)
+    return _sp
+_real_run = _P.run_harness
+_P.run_harness = _fake_run
+try:
+    _saved_t = _P._TRANSPORT
+    _P._TRANSPORT = dict(_P.spec("claude"), scheme="session", secret=None, via=None,
+                         headers=None, harness_argv=["claude", "-p"])
+    _r = _REAL_AGENT("test", {"type": "object", "required": ["reply"],
+                           "properties": {"reply": {"type": "string"}}}, label="t", retries=2)
+    ok(_r == {"reply": "pong"},
+       "a prose reply triggers the corrective re-ask and the second spawn's JSON is "
+       "shaped and returned - the same policy as HTTP, no coercion")
+finally:
+    _P.run_harness = _real_run
+    _P._TRANSPORT = _saved_t
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
