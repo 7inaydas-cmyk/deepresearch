@@ -3536,9 +3536,31 @@ def selftest():
         print("  blogs, documentation, pricing, news and practitioner experience entirely,")
         print("  and it will not say so in the answer - only in stats.searchHealth.")
         print("  Fix (about two minutes):")
-        print("      cd contrib/searxng && docker compose up -d")
-        print("      export DR_SEARXNG_URL=http://127.0.0.1:8888")
-        print("      sh contrib/searxng/verify.sh")
+        print("      cd contrib/searxng && docker compose up -d   # if not already up")
+        print("      sh contrib/searxng/verify.sh                  # proves JSON, not just /")
+        # The instance's address depends on where you stand: published to
+        # 127.0.0.1:8888 on the host, reachable as searxng:8080 from a container on
+        # its docker network (a messenger-hosted agent lives there). A hint that
+        # prescribed one address sent in-container agents to a dead URL - measured
+        # 2026-09-16, and it is the exact remedy path followed mid-failure. Probe
+        # from the vantage the failure happened in and name what answers.
+        cands = []
+        for c in [os.environ.get("DR_SEARXNG_URL", "").rstrip("/"),
+                  "http://127.0.0.1:8888", "http://searxng:8080"]:
+            if c and c not in cands:
+                cands.append(c)
+        probed = [(c, _search.probe_searxng(c)) for c in cands]
+        print("  SearXNG, probed from here just now:")
+        for c, n in probed:
+            if n is None:
+                print("      %-26s no answer" % c)
+            elif n > 0:
+                print("      %-26s ANSWERS - export DR_SEARXNG_URL=%s" % (c, c))
+            else:
+                print("      %-26s up, 0 results (suspended upstream engines -" % c)
+                print("                                wait, or enable more in settings.yml)")
+        if not any(n for _, n in probed):
+            print("      nothing answered from this vantage - start the instance above first")
         print("  Exit code %d = degraded but usable. 0 = healthy, 1 = failed, 2 = auth."
               % EXIT_DEGRADED)
         return EXIT_DEGRADED

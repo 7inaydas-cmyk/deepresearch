@@ -1728,6 +1728,47 @@ ok(set(["all_backends", "junk_filter"]).issubset(
    "already satisfying n, AND junk_filter, so the counter-evidence lens can opt out of a "
    "shared-word filter that would drop the contradiction it went looking for")
 
+print("\n-- the degraded-mode searxng remedy says what answers FROM HERE, not one address --")
+# Measured 2026-09-16 inside the messenger deployment: the DEGRADED hint told the agent
+# to export 127.0.0.1:8888 - the host-side publish - but from inside the container the
+# same instance answers only as searxng:8080, so the remedy followed verbatim fixed
+# nothing. The hint must probe candidates from the vantage the failure happened in.
+ok("probe_searxng" in _sel_src and "127.0.0.1:8888" in _sel_src and "searxng:8080" in _sel_src,
+   "the selftest's degraded hint probes BOTH compose addresses (host publish and docker "
+   "network name) via the search module's prober instead of prescribing one")
+import http.server as _hs, socket as _sock, threading as _thr  # noqa: E402
+
+class _ProbeJSON(_hs.BaseHTTPRequestHandler):
+    body = b'{"results": [{"url": "https://example.com/a"}, {"url": "https://example.com/b"}]}'
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(self.body)))
+        self.end_headers()
+        self.wfile.write(self.body)
+    def log_message(self, *a):
+        pass
+
+class _ProbeEmpty(_ProbeJSON):
+    body = b'{"results": []}'
+
+def _serve(cls):
+    srv = _hs.ThreadingHTTPServer(("127.0.0.1", 0), cls)
+    _thr.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+_srv_full, _srv_empty = _serve(_ProbeJSON), _serve(_ProbeEmpty)
+ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _srv_full.server_address[1]) == 2,
+   "a live searxng JSON endpoint reports its result count")
+ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _srv_empty.server_address[1]) == 0,
+   "reachable-but-empty reads as 0, not None - suspended upstream engines are a "
+   "different failure from a wrong address, and the hint must not conflate them")
+_srv_full.shutdown(); _srv_empty.shutdown()
+_sk = _sock.socket(); _sk.bind(("127.0.0.1", 0)); _dead = _sk.getsockname()[1]; _sk.close()
+ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _dead) is None,
+   "an address with nothing behind it reads as None - that is the 'wrong vantage' signal "
+   "the degraded hint prints next to each candidate")
+
 print("\n-- every report exit carries the instruments, not just the happy path --")
 # Architecture review, 2026-09-07: I had reported this fixed. It was fixed on ONE of
 # four exits. Verify by counting every `return dict(base` site in the source rather

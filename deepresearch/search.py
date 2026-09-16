@@ -543,6 +543,27 @@ def _searxng(query: str, n: int) -> list[dict]:
              "snippet": (r.get("content") or "")[:300]} for r in rows[:n]]
 
 
+def probe_searxng(base: str, timeout: int = 4) -> int | None:
+    """One cheap question for the degraded-mode hint: does this SearXNG address
+    answer search JSON from HERE?
+
+    The same compose instance is published to 127.0.0.1:8888 on the host and
+    answers as http://searxng:8080 from a container on its docker network, so
+    no single address is right from every vantage (measured 2026-09-16: the
+    selftest hint prescribed the host address to an agent running inside the
+    messenger container, who followed it verbatim and reached a dead URL).
+    Returns the result count, or None when nothing answers at all - reachable
+    but empty (suspended upstream engines) is a different failure and must not
+    read as "wrong address".
+    """
+    try:
+        data = json.loads(_get(base.rstrip("/") + "/search?format=json&q=test",
+                               timeout=timeout))
+        return len(data.get("results") or [])
+    except Exception:
+        return None
+
+
 _IMPL = {
     "searxng": _searxng,
     "ddg-html": lambda q, n: _ddg(q, n, lite=False),
