@@ -48,6 +48,22 @@ def _adapter():
     runtime-specific shape is allowed to appear.
     """
     from . import engine as dr
+
+    def _fm_via_tempfile(content):
+        """The contract speaks content; the production callers speak paths (real
+        SKILL.md locations). One temp file bridges that, keeping preflight pure in
+        behaviour: same input, same answer, milliseconds."""
+        if content is None:
+            return dr._frontmatter_version("/nonexistent-conformance-absent.md")
+        import tempfile
+        fd, p = tempfile.mkstemp(suffix=".md")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as t:
+                t.write(content)
+            return dr._frontmatter_version(p)
+        finally:
+            os.unlink(p)
+
     return {
         "webtext":             lambda s, cap: dr.webtext(s, cap),
         "tier_of":             lambda url: dr.tier_of(url)[0],
@@ -61,6 +77,7 @@ def _adapter():
         "looks_challenged":    lambda body: _search._looks_challenged(body),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "_extract_json":       lambda text: dr._extract_json(text),
+        "frontmatter_version": lambda content: _fm_via_tempfile(content),
         "evidence_base":       lambda rows: dr._evidence_base(rows)["citableSources"],
         "is_nonanswer":        lambda text: dr.is_nonanswer(text),
     }

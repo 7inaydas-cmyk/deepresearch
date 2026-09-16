@@ -58,6 +58,10 @@ def install(cfg):
         if cfg.get("no_search"):
             searchmod._note("ddg-html", "fail", 0)
             return []
+        # The measured Hermes failure 2026-09-16: general-web tried and dead while
+        # scholarly keeps answering - the pipeline must COMPLETE and DISCLOSE.
+        if cfg.get("dead_web"):
+            searchmod._note("ddg-html", "fail", 0)
         searchmod._note("crossref", "ok", 3)
         if cfg.get("rescue_marker", "SQ3") in q or "rescue" in q.lower():
             return [{"url": "https://primary-rescue.org/doc", "title": "primary", "snippet": "s"}]
@@ -2773,6 +2777,22 @@ with _tmp3.TemporaryDirectory() as _cd:
         dr.load_contract(_cf); ok(False, "a string needsGeneralWeb must be rejected")
     except dr.ContractError:
         ok(True, "a string needsGeneralWeb is rejected at intake, before any model call")
+
+# EFFECT, not source shape: drive a whole stubbed run with the general web dead and
+# scholarly backends answering. The first version of the banner NameError'd on this
+# exact path and the suite never knew - the stubbed runs never had a dead web, and the
+# banner was only grep-tested. This is the test that failure demanded.
+searchmod.reset_health()
+_r9 = run(cfg={"dead_web": 1})
+ok(not _r9.get("error") and _r9.get("searchDegraded") is True,
+   "a dead-general-web run COMPLETES and stamps searchDegraded: true - it does not crash "
+   "at synthesis (the NameError class) and it does not pass silently")
+ok(_r9["stats"]["confirmed"] > 0,
+   "the scholarly filler still flows through the panel - the fix discloses, it does not abort")
+searchmod.reset_health()
+_r10 = run()
+ok(_r10.get("searchDegraded") is False,
+   "and a healthy run reads searchDegraded: false - the flag is a verdict, not a constant")
 
 # The watchdog's searxng check must be a CONTENT check (HANDOVER §10): a suspended
 # instance answers 200 with zero results, and a status-code check calls that healthy.

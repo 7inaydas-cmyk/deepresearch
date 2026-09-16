@@ -3106,6 +3106,10 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # this had the fact in stats.searchHealth and nowhere a reader would look.
     deg_b = ""
     if _general_web_dead():
+        # base carries scopeContract; _synthesize has no `contract` parameter, and the
+        # first version NameError'd here on the one path this banner exists for - a
+        # dead-web run crashed at synthesis instead of disclosing the dead web. Caught
+        # by review 2026-09-16; the dead-web pipeline test pins it.
         deg_b = ("## THE GENERAL WEB WAS UNREACHABLE for this entire run\n"
                  "Every general-web backend (SearXNG, DuckDuckGo, Mojeek) returned zero results; only "
                  "scholarly backends (Wikipedia, Crossref, PubMed) produced sources. Everything below "
@@ -3113,7 +3117,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                  + (" - and this question's contract says it NEEDS the general web (needsGeneralWeb: "
                     "true), so claims that appear to answer job postings, pricing, product, news or "
                     "practitioner sub-questions are search artefacts, not evidence"
-                    if (contract or {}).get("needsGeneralWeb") else "") +
+                    if (base.get("scopeContract") or {}).get("needsGeneralWeb") else "") +
                  ". The FIRST sentence of answerFirst must state this limitation plainly, and no "
                  "finding may present coverage of a general-web topic as if the web was searched.\n\n")
 

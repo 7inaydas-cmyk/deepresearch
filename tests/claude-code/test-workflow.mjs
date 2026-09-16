@@ -333,13 +333,14 @@ import fs2 from 'node:fs'
 }
 {
   const sup = { keyQuestion: 'do standing desks improve health?', assumptions: ['office workers', '12 months'],
-                whatWouldChangeTheAnswer: ['an RCT showing harm', 'no effect'], decisionAtStake: 'buy 40 desks' }
+                whatWouldChangeTheAnswer: ['an RCT showing harm', 'no effect'], decisionAtStake: 'buy 40 desks',
+                needsGeneralWeb: false }
   const { out, logs } = await run('T20 contract intake: supplied fields win, the model drafts the rest',
     { question: 'Q', depth: 'standard', contract: sup })
   ok(out.scopeContract && out.scopeContract.keyQuestion === sup.keyQuestion, 'a supplied field reaches the report verbatim')
   ok(out.scopeContract.provenance && out.scopeContract.provenance.assumptions === 'supplied' && out.scopeContract.provenance.hypotheses === 'drafted',
      'provenance is per field: ' + JSON.stringify(out.scopeContract.provenance))
-  ok(logs.some(l => /Contract: 4 field\(s\) supplied/.test(l)), 'the log names what was supplied')
+  ok(logs.some(l => /Contract: 5 field\(s\) supplied/.test(l)), 'the log names what was supplied')
   ok(Array.isArray(out.hypothesisVerdicts) && out.hypothesisVerdicts.length === 2, 'drafted hypotheses are still adjudicated')
   const bad = await run('T20b malformed supplied field is rejected before any model call',
     { question: 'Q', depth: 'standard', contract: { assumptions: 'one prose string' } })
@@ -355,7 +356,8 @@ import fs2 from 'node:fs'
 {
   // Effect, not presence — the Python twin of this test passed while the rule was ignored.
   const sup = { keyQuestion: 'k', assumptions: ['a', 'b'], whatWouldChangeTheAnswer: ['w', 'x'],
-                decisionAtStake: 'd', hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }] }
+                decisionAtStake: 'd', hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }],
+                needsGeneralWeb: true }
   const { logs: L1 } = await run('T21 fully ratified framing: no untested-premise hunt', { question: 'Q', depth: 'standard', contract: sup })
   ok(L1.some(l => /nothing to draft/.test(l)), 'a fully supplied contract drafts nothing')
   const { out } = await run('T21b provenance reaches the report', { question: 'Q', depth: 'standard', contract: sup })

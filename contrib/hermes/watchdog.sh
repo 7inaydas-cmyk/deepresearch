@@ -4,6 +4,20 @@
 # stays asleep and spends no tokens. Any nonzero exit wakes the agent, whose
 # prompt does the LLM work: run the sync, verify, report.
 #
+# Registering (once, inside the hermes-agent container; monitor-gated means the
+# agent runs only when this script's OUTPUT changes, so a stable healthy line
+# costs nothing):
+#   docker exec hermes-agent /opt/hermes/.venv/bin/hermes -p glm cron create \
+#     --name deepresearch-watchdog --deliver telegram \
+#     --monitor-script deepresearch-watchdog.sh "0 9 * * *" \
+#     "The deepresearch deployment watchdog changed - act on exactly what its
+#      diff reports: skill drift -> sh /opt/data/deepresearch-repo/contrib/hermes/
+#      sync-skill.sh, verify the trees it named, re-run the watchdog, report
+#      old->new versions; sync failure -> ALERT with the error; searxng down ->
+#      report that the gateway's general-web search is degraded."
+# sync-skill.sh installs this script into every profile's scripts/ dir, which
+# is where the glm cron resolves --monitor-script from.
+#
 # Two checks per tick, both chosen because they failed silently in production
 # (2026-09-16):
 #   1. skill drift  - hermes serves real files that only sync-skill.sh moves;
@@ -11,11 +25,11 @@
 #   2. searxng      - the gateway's general-web search backend, probed from
 #      THIS vantage, on CONTENT not status code: a suspended instance answers
 #      HTTP 200 with zero results and every engine in unresponsive_engines
-#      (measured 2026-09-16 under two concurrent runs). HANDOVER §10's rule:
-#      health-check on result content, never on the status code. The instance
-#      is published to 127.0.0.1:8888 on the host and answers as searxng:8080
-#      from the docker network; probing the wrong one reports health while
-#      every in-container search is dead.
+#      (measured 2026-09-16 under two concurrent runs). Rule: health-check on
+#      result content, never on the status code. The instance is published to
+#      127.0.0.1:8888 on the host and answers as searxng:8080 from the docker
+#      network; probing the wrong one reports health while every in-container
+#      search is dead.
 #
 # Vantage note: when hermes cron runs this inside the hermes-agent container,
 # HERMES_HOME=/opt/data and the default probe URL below is the gateway's own

@@ -35,14 +35,15 @@ function makeAgent(cfg) {
       // declares can be checked against the one it names.
       if (cfg.misnumbered_verdict) {
         return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
-                 whatWouldChangeTheAnswer: ['w1', 'w2'],
+                 whatWouldChangeTheAnswer: ['w1', 'w2'], needsGeneralWeb: true,
                  hypotheses: [
                    { hypothesis: 'Minimum wage increases reduce teen employment modestly in the first two years', killCriterion: 'k1' },
                    { hypothesis: 'The apparent effect is largely a publication-selection artifact in the older literature', killCriterion: 'k2' }] }
       }
       return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
                whatWouldChangeTheAnswer: ['w1', 'w2'],
-               hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }] }
+               hypotheses: [{ hypothesis: 'h1', killCriterion: 'k1' }, { hypothesis: 'h2', killCriterion: 'k2' }],
+               needsGeneralWeb: true }
     }
     if (L.startsWith('plan')) {
       if (cfg.unknown_sentinel_once && !cfg._fired) {

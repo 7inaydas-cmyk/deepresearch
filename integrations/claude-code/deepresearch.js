@@ -67,7 +67,7 @@ const T = { ...DEPTH_BUDGETS[DEPTH], calibrate: Math.max(0, parseInt(RAW.calibra
 //    never re-derived; the model drafts only what is missing. A malformed field or an
 //    unknown key is an error before any model call - a person wrote this and can fix it,
 //    and dropping it would be a silent discard of something a human said.
-const FRAMING_FIELDS = ['decisionAtStake', 'keyQuestion', 'assumptions', 'whatWouldChangeTheAnswer', 'hypotheses']
+const FRAMING_FIELDS = ['decisionAtStake', 'keyQuestion', 'assumptions', 'whatWouldChangeTheAnswer', 'hypotheses', 'needsGeneralWeb']
 let SUPPLIED = {}
 const intakeContract = () => {
   if (RAW.contract === undefined || RAW.contract === null) return null
@@ -77,7 +77,7 @@ const intakeContract = () => {
   }
   const cleaned = Object.fromEntries(Object.entries(raw).filter(([k]) => k !== 'provenance'))
   const unknown = Object.keys(cleaned).filter(k => !FRAMING_FIELDS.includes(k)).sort()
-  if (unknown.length) return { error: 'contract rejected: unknown field(s) ' + unknown.join(', ') + ' - the five allowed are ' + FRAMING_FIELDS.join(', ') }
+  if (unknown.length) return { error: 'contract rejected: unknown field(s) ' + unknown.join(', ') + ' - the ' + FRAMING_FIELDS.length + ' allowed are ' + FRAMING_FIELDS.join(', ') }
   if (!Object.keys(cleaned).length) return { error: 'contract rejected: no fields supplied' }
   const { shaped, problems } = shape({ ...FRAMING_SCHEMA, required: [] }, cleaned, 'contract')
   if (problems.length) return { error: 'contract rejected: ' + problems.join('; ') }
@@ -488,7 +488,7 @@ const tierOf = (url, title) => {
 // longer starve the search plan.
 const FRAMING_SCHEMA = {
   type: 'object',
-  required: ['decisionAtStake', 'keyQuestion', 'assumptions', 'whatWouldChangeTheAnswer', 'hypotheses'],
+  required: ['decisionAtStake', 'keyQuestion', 'assumptions', 'whatWouldChangeTheAnswer', 'hypotheses', 'needsGeneralWeb'],
   properties: {
     decisionAtStake: { type: 'string' },
     keyQuestion: { type: 'string' },
@@ -497,6 +497,7 @@ const FRAMING_SCHEMA = {
     hypotheses: { type: 'array', minItems: 2, maxItems: 4, items: {
       type: 'object', required: ['hypothesis', 'killCriterion'],
       properties: { hypothesis: { type: 'string' }, killCriterion: { type: 'string' } } } },
+    needsGeneralWeb: { type: 'boolean' },
   },
 }
 const PLAN_SCHEMA = {
@@ -1031,13 +1032,13 @@ const AGREED = Object.keys(SUPPLIED).length
       const txt = Array.isArray(v) ? v.map(x => (x && typeof x === 'object') ? (x.hypothesis + ' (killed by: ' + x.killCriterion + ')') : String(x)).join('; ') : String(v)
       return '- **' + f + '**: ' + webText(txt, 600)
     }).join('\n') + '\n\n' +
-    'Return ALL five fields. For the fields above, copy them through unchanged. Draft only: ' + MISSING.join(', ') +
+    'Return ALL ' + FRAMING_FIELDS.length + ' fields. For the fields above, copy them through unchanged. Draft only: ' + MISSING.join(', ') +
     '. Make what you draft CONSISTENT with what was agreed.\n\n'
   : ''
 const framing = MISSING.length ? await agentChecked(
   '## Research Framing (scope contract)\n\nResearch question:\n"' + QUESTION + '"\n\n' + AGREED +
   'Write the contract BEFORE anything is searched. This costs a minute and prevents the most expensive failure ' +
-  'mode: a beautifully sourced answer to the WRONG question. Return these five fields and nothing else.\n\n' +
+  'mode: a beautifully sourced answer to the WRONG question. Return these ' + FRAMING_FIELDS.length + ' fields and nothing else.\n\n' +
   '- **decisionAtStake**: what will the reader DO differently depending on the answer? If nothing, say so plainly.\n' +
   '- **keyQuestion**: one sentence, answerable, falsifiable. Not "tell me about X" but "should we X given Y?"\n' +
   '- **assumptions**: scope, geography, time horizon, currency, what counts as "large" or "serious" — anything the ' +
@@ -1045,7 +1046,11 @@ const framing = MISSING.length ? await agentChecked(
   '- **whatWouldChangeTheAnswer**: the findings that would FLIP the conclusion, so the pipeline hunts those rather ' +
   'than hunting confirmations.\n' +
   '- **hypotheses**: 2-4 candidate answers, mutually exclusive and collectively exhaustive. For EACH give the ' +
-  'killCriterion — the specific finding that would eliminate it. Searches exist to DISCRIMINATE between these.\n\n' +
+  'killCriterion — the specific finding that would eliminate it. Searches exist to DISCRIMINATE between these.\n' +
+  '- **needsGeneralWeb**: true when answering needs the open web — job postings, company pages, pricing, product ' +
+  'docs, news, practitioner forums. False for questions a scholarly corpus can answer. When true and the general ' +
+  'web turns out to be unreachable, the run must SAY so instead of letting Wikipedia/Crossref filler stand in ' +
+  'for it — measured 2026-09-16, a job-board query came back as six DOI book chapters.\n\n' +
   'Structured output only.',
   { label: 'framing', schema: FRAMING_SCHEMA }
 ) : null

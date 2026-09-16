@@ -42,7 +42,14 @@ trees() {
   done
 }
 
-fm_version() { sed -n 's/^version:[[:space:]]*//p' "$1" 2>/dev/null | head -n 1 | tr -d '\r"'; }
+# Frontmatter-bounded on purpose: the Python twin (_frontmatter_version) stops at the
+# closing --- "so a version: in the body can never masquerade as the tag" - a plain sed
+# over the whole file has exactly the bug that docstring names.
+fm_version() {
+  awk 'NR==1 { if ($0 != "---") exit; next }
+       $0 == "---" { exit }
+       /^version:/ { sub(/^version:[[:space:]]*/, ""); gsub(/["\r]/, ""); print; exit }' "$1" 2>/dev/null
+}
 
 if [ "$MODE" = "check" ]; then
   eng=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' "$ENG" | head -n 1)

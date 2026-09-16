@@ -48,7 +48,8 @@
   "evidence_base": "gate",
   "is_nonanswer": "gate",
   "hyp_mismatch": "gate",
-  "_extract_json": "gate"
+  "_extract_json": "gate",
+  "frontmatter_version": "gate"
  },
  "cases": {
   "webtext": [
@@ -57,7 +58,7 @@
      "xxxxxxxxxxxxxxxxxxxx",
      5
     ],
-    "out": "xxxxx…",
+    "out": "xxxxx\u2026",
     "why": "a cap TRUNCATES. The JS helper took one parameter for months while seven call sites passed a length, so JavaScript discarded it in silence and shipped untruncated model text into prompts the Python twin bounded"
    },
    {
@@ -832,6 +833,51 @@
      "out": null,
      "ref": "bad",
      "why": "A top-level ARRAY is not a shaped-response candidate; the extractor only ever yields dicts, because every schema in the engine is an object. Validity is shape()'s to decide - never the extractor's"
+    }
+   ]
+  },
+  "frontmatter_version": {
+   "why_python_only": "The hermes deployment's skill trees are a Python-side concern: the engine's launch drift check reads SKILL.md frontmatter to warn when the deployment serves a stale skill. The JS build runs under the Claude Code client, which has no hermes deployment to drift.",
+   "cases": [
+    {
+     "in": [
+      "---\nname: x\nversion: 1.13.1\n---\nbody text\n"
+     ],
+     "out": "1.13.1",
+     "ref": "good",
+     "why": "the frontmatter version is returned unquoted"
+    },
+    {
+     "in": [
+      "---\nversion: \"9.9.9\"\n---\n"
+     ],
+     "out": "9.9.9",
+     "ref": "good",
+     "why": "quotes are stripped: frontmatter values may be quoted strings"
+    },
+    {
+     "in": [
+      "---\nname: x\n---\nversion: 0.0.0\n"
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "a version: in the BODY can never masquerade as the tag - the parser stops at the closing delimiter"
+    },
+    {
+     "in": [
+      "no frontmatter at all\nversion: 1.0\n"
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "a file whose first line is not --- has no frontmatter, so no version"
+    },
+    {
+     "in": [
+      null
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "an absent file reads as None and never raises - three launch surfaces call this on every run"
     }
    ]
   }

@@ -30,3 +30,13 @@ Provenance is per field (`scopeContract.provenance`), travels with the report, a
 the critic so a human-ratified assumption is not flagged as "a premise accepted instead of
 tested". Every run writes the contract it used beside the report, so a re-run can hold
 framing constant - the first controlled variable the panel has had.
+
+## Amendment — 2026-09-16
+
+The contract grew a sixth field, `needsGeneralWeb` (required boolean): true when answering
+needs the open web — job postings, pricing, product docs, news. It exists for the same
+reason every other field does: a decision the asker can ratify that the run must not
+re-derive silently, and a signal the source picker uses to refuse scholarly filler when
+the general web is unreachable (measured live 2026-09-16: a job-board query answered by
+six DOI book chapters). Supplied-wins, provenance, and never-drop-a-supplied-item apply
+to it exactly as to the original five.
