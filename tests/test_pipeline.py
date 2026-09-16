@@ -2608,6 +2608,107 @@ ok(_r_bg.returncode == 4 and "incompatible" in _r_bg.stdout and "stdout" in _r_b
    "(exit 4) - the detached child's stdout is the request stream and would be silently "
    "redirected to a log while the parent reported success")
 
+print("\n-- the hermes skill-drift warning: one string, three surfaces, never a gate --")
+# 2026-09-16: agents kept being served a v1.9.2 skill through four repo releases because
+# hermes' loader ignores symlinks and a real-file copy in the glm profile outranked every
+# symlinked "source of truth". The deployment now runs on real files + sync-skill.sh; this
+# is the engine-side tripwire. Effect tests: build real trees in a temp HERMES_HOME.
+import tempfile as _tmp2, subprocess as _sp3  # noqa: E402
+_V = dr_pkg.__version__
+_DOC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                    "integrations", "hermes", "SKILL.md")
+
+def _mk_tree(root, rel, version):
+    p = os.path.join(root, rel)
+    os.makedirs(p, exist_ok=True)
+    with open(os.path.join(p, "SKILL.md"), "w", encoding="utf-8") as f:
+        f.write("---\nname: deepresearch\nversion: %s\n---\nbody\n" % version)
+    return p
+
+with _tmp2.TemporaryDirectory() as _hh:
+    _mk_tree(_hh, "skills/research/deepresearch", _V)
+    _mk_tree(_hh, "profiles/glm/skills/research/deepresearch", "1.9.2")
+    _mk_tree(_hh, "profiles/other/skills/research/deepresearch", "0.0.1")
+    _w = _with_env({"HERMES_HOME": _hh}, dr.skill_drift_warning)
+    ok(_w and "profiles/glm" in _w and "1.9.2" in _w and "profiles/other" in _w
+       and "sync-skill.sh" in _w,
+       "a drifted profile tree is named per-tree in the warning, with the stale version, "
+       "the current one, and the remedy command")
+    ok(_w and (os.path.join(_hh, "skills", "research", "deepresearch") + " is") not in _w,
+       "a CURRENT tree (the shared root, at engine version) is not accused")
+    _mk_tree(_hh, "profiles/glm/skills/research/deepresearch", _V)
+    _mk_tree(_hh, "profiles/other/skills/research/deepresearch", _V)
+    ok(_with_env({"HERMES_HOME": _hh}, dr.skill_drift_warning) is None,
+       "all trees current -> None, not an empty string (surfaces check `is not None`)")
+    # Absent tree: silence, not accusation - sync-skill.sh creates it.
+    os.remove(os.path.join(_hh, "profiles/other/skills/research/deepresearch/SKILL.md"))
+    ok(_with_env({"HERMES_HOME": _hh}, dr.skill_drift_warning) is None,
+       "an absent tree is a silent skip: absence is nothing to disagree with")
+ok(_with_env({"HERMES_HOME": None}, dr.skill_drift_warning) is None,
+   "no HERMES_HOME -> only the doc-vs-engine compare, which agrees in this repo -> None")
+# The parser itself: quotes, body-versions, absent files.
+with _tmp2.TemporaryDirectory() as _pd:
+    _q = os.path.join(_pd, "SKILL.md")
+    with open(_q, "w", encoding="utf-8") as f:
+        f.write('---\nname: x\nversion: "9.9.9"\n---\nversion: 0.0.0\n')
+    ok(dr._frontmatter_version(_q) == "9.9.9",
+       "frontmatter version is unquoted, and a version: in the BODY cannot pose as the tag")
+    with open(_q, "w", encoding="utf-8") as f:
+        f.write("no frontmatter at all\nversion: 1.0\n")
+    ok(dr._frontmatter_version(_q) is None, "a file with no frontmatter has no version")
+    ok(dr._frontmatter_version(os.path.join(_pd, "nope.md")) is None,
+       "an absent file reads as None, never raises")
+
+# The wiring: the same string must reach all three surfaces (stderr at launch, the --bg
+# handle, the report base) - checked on source shape because driving main() to completion
+# needs model calls the suite refuses to make; the string's CONTENT is effect-tested above.
+ok('print(_drift, file=sys.stderr)' in _main_src and '"skillDrift": _drift' in _main_src,
+   "main() prints the drift to stderr and carries it in the --bg handle JSON")
+ok("skillDrift=skill_drift_warning()" in _ENG,
+   "the report base carries skillDrift, so all four exits persist it, not just the happy path")
+ok("skill sync:" in _engine_txt.split("def selftest(", 1)[1].split("\ndef ", 1)[0],
+   "selftest prints the plain skill-sync line (informational, never a failed check)")
+
+# The deterministic gate and the watchdog, by EFFECT, as real subprocesses.
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def _run_sh(script, *args, **env):
+    e = {"PATH": "/usr/bin:/bin", "HOME": "/tmp"}
+    e.update(env)
+    return _sp3.run(["sh", os.path.join(_REPO, "contrib", "hermes", script)] + list(args),
+                    capture_output=True, text=True, env=e, timeout=60)
+
+with _tmp2.TemporaryDirectory() as _gd:
+    _mk_tree(_gd, "skills/research/deepresearch", _V)
+    _mk_tree(_gd, "profiles/glm/skills/research/deepresearch", _V)
+    _c = _run_sh("sync-skill.sh", "--check", _gd)
+    ok(_c.returncode == 0 and "OK" in _c.stdout,
+       "sync-skill.sh --check exits 0 with OK when doc==engine==trees")
+    _mk_tree(_gd, "profiles/glm/skills/research/deepresearch", "1.9.2")
+    _c = _run_sh("sync-skill.sh", "--check", _gd)
+    ok(_c.returncode != 0 and "profiles/glm" in _c.stdout and "1.9.2" in _c.stdout,
+       "one drifted tree -> nonzero, naming the tree and both versions")
+    _i = _run_sh("sync-skill.sh", _gd)
+    ok(_i.returncode == 0 and _V in _i.stdout,
+       "install mode repairs the drift the check just caught (and reports the version it wrote)")
+    _c = _run_sh("sync-skill.sh", "--check", _gd)
+    ok(_c.returncode == 0, "and --check agrees afterwards: the gate and the fix share one definition of drift")
+    # The watchdog: quiet when healthy, wakes on drift AND on an unreachable searxng.
+    _srv2 = _serve(_ProbeJSON)
+    _probe_url = "http://127.0.0.1:%d/search?format=json&q=test" % _srv2.server_address[1]
+    _w0 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url)
+    ok(_w0.returncode == 0,
+       "watchdog exits 0 (stays asleep, spends nothing) when trees are synced and searxng answers")
+    _mk_tree(_gd, "profiles/glm/skills/research/deepresearch", "1.9.2")
+    _w1 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url)
+    ok(_w1.returncode != 0 and "skill drift" in _w1.stdout,
+       "watchdog wakes (nonzero + says why) on drift alone, even with searxng healthy")
+    _w2 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd,
+                  DR_WATCHDOG_SEARXNG="http://127.0.0.1:9/search?format=json&q=x")
+    ok(_w2.returncode != 0 and "searxng unreachable" in _w2.stdout,
+       "watchdog wakes on an unreachable searxng from its vantage - the failure that "
+       "silently degraded every gateway search to scholarly-only")
+    _srv2.shutdown()
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 

@@ -30,7 +30,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, contextlib, difflib, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, contextlib, difflib, glob, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -2627,6 +2627,11 @@ def deepresearch(question, depth="standard", contract=None):
     # scoring a paraphrase of the prompt the run actually used.
     base = dict(question=question, depth=depth, coverage=coverage, contradictions=contradictions,
                 scopeContract=contract,
+                # Computed at report time, not launch: a run long enough to finish
+                # deserves the drift state it finished under, and library callers
+                # (no main()) get the field too. One warning string, three surfaces
+                # (stderr, --bg handle, here) by design.
+                skillDrift=skill_drift_warning(),
                 perspectives=[{"label": p.get("label"), "lens": p.get("lens"), "query": p.get("query")}
                               for p in persps])
     src_rows = lambda: [{"url": webtext(s["url"], 300), "quality": s["sourceQuality"],
@@ -3438,6 +3443,73 @@ EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED, EXIT_CONTRACT = 0, 1, 2, 3, 4
 GENERAL_WEB = ("searxng", "ddg-html", "ddg-lite", "mojeek")
 
 
+def _frontmatter_version(path):
+    """The `version:` value of a SKILL.md frontmatter, or None when the file is
+    absent, unreadable, or has no frontmatter version. Stops at the closing
+    delimiter so a `version:` in the body can never masquerade as the tag."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            for i, line in enumerate(f):
+                if i > 40:
+                    break
+                s = line.strip()
+                if i == 0:
+                    if s != "---":
+                        return None
+                    continue
+                if s == "---":
+                    return None
+                if s.startswith("version:"):
+                    return s.split(":", 1)[1].strip().strip("'\"")
+    except OSError:
+        return None
+    return None
+
+
+def skill_drift_warning():
+    """One string when the hermes deployment can serve a stale deepresearch
+    skill; None when everything agrees. Hermes' skill loader does not follow
+    symlinks (measured 2026-09-16), so its skill trees are REAL files that
+    move only when contrib/hermes/sync-skill.sh runs - a tree that lags the
+    repo keeps serving yesterday's instructions to messenger agents after
+    every pull, which is exactly how a v1.9.2 doc outlived four repo releases.
+
+    Warn-only by design: drift is a deployment problem, not a reason to refuse
+    research. An absent tree is silent (sync-skill.sh creates it), and the
+    whole check degrades to None outside a checkout (pip install: no doc to
+    compare). Never raises - three launch surfaces depend on it.
+    """
+    try:
+        from . import __version__
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        doc_v = _frontmatter_version(os.path.join(root, "integrations", "hermes", "SKILL.md"))
+        if doc_v is None:
+            return None
+        problems = []
+        if doc_v != __version__:
+            problems.append("repo doc integrations/hermes/SKILL.md is %s, engine is %s"
+                            % (doc_v, __version__))
+        home = os.environ.get("HERMES_HOME", "").strip()
+        if home:
+            trees = [os.path.join(home, "skills", "research", "deepresearch")]
+            trees += sorted(glob.glob(os.path.join(home, "profiles", "*",
+                                                   "skills", "research", "deepresearch")))
+            for t in trees:
+                v = _frontmatter_version(os.path.join(t, "SKILL.md"))
+                if v is None:
+                    continue
+                if v != __version__:
+                    problems.append("%s is %s, engine is %s" % (t, v, __version__))
+        if not problems:
+            return None
+        return ("deepresearch skill drift: %s. Hermes serves these files verbatim, so its "
+                "agents get the old instructions. Fix: sh contrib/hermes/sync-skill.sh "
+                "(and bump the doc's version: if the engine moved first)."
+                % "; ".join(problems))
+    except Exception:
+        return None
+
+
 def selftest():
     """Prove every external dependency works before spending a real run.
 
@@ -3476,6 +3548,10 @@ def selftest():
     # ANTHROPIC_API_KEY" would be the seam lying about itself; describe() exists
     # so it cannot.
     print("   provider: %s" % _providers.describe())
+    # Plain line, never a gate: drift in the hermes skill trees is a deployment
+    # problem that must not fail a selftest of the engine's dependencies.
+    _sk_drift = skill_drift_warning()
+    print("   skill sync: %s" % ("current" if _sk_drift is None else _sk_drift))
     print("2. keyless search    ...", end=" ")
     hits = web_search("anthropic claude", n=3)
     print("OK (%d hits)" % len(hits) if hits else "FAIL (0 hits)"); ok &= bool(hits)
@@ -3652,6 +3728,13 @@ def main():
                                  "did not answer correctly.",
                           "exit": EXIT_CONTRACT}, indent=1))
         sys.exit(EXIT_CONTRACT)
+    # Launch surface for the drift warning: stderr, where a foreground caller sees
+    # it without polluting the report JSON on stdout. The --bg handle below and the
+    # report itself carry the same string as a field, so no consumer has to scrape
+    # stderr to know. Warn-only - drift never changes an exit code.
+    _drift = skill_drift_warning()
+    if _drift:
+        print(_drift, file=sys.stderr)
     # Absolutise BEFORE the --bg re-exec: the child runs with cwd=pkg_parent, so a
     # relative path survives the argv copy and then resolves somewhere else. --out had
     # this bug already; it only worked because pkg_parent happened to be the repo root.
@@ -3713,6 +3796,7 @@ def main():
             "pid": proc.pid,
             "log": logp,
             "report": out,
+            "skillDrift": _drift,
             "poll": "tail -15 " + logp,
             "done_when": "pgrep -f 'deepresearch --question' returns nothing",
             "expect": {"quick": "2-7 min", "standard": "6-10 min", "exhaustive": "15-25 min"},
