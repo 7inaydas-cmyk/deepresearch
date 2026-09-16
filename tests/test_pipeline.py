@@ -2214,8 +2214,9 @@ def _with_env(env, fn):
     # exactly the environment-dependent test this repo treats as no test at all
     # (caught by CI 2026-09-15: the BASE_URL-override case called transport() with no
     # key and silently borrowed the local Claude Code login to succeed).
-    _clear = ("DR_PROVIDER", "DR_MODEL", "ANTHROPIC_API_KEY", "ZAI_API_KEY",
-              "GLM_API_KEY", "ANTHROPIC_BASE_URL", "GLM_BASE_URL")
+    _clear = ("DR_PROVIDER", "DR_MODEL", "DR_TRANSPORT", "ANTHROPIC_API_KEY",
+              "ZAI_API_KEY", "GLM_API_KEY", "ANTHROPIC_BASE_URL", "GLM_BASE_URL",
+              "DR_GLM_HARNESS")
     _saved = {k: _os.environ.get(k) for k in list(env) + list(_clear)}
     for k in _clear:
         _os.environ.pop(k, None)
@@ -2486,6 +2487,67 @@ try:
 finally:
     _P.run_harness = _real_run
     _P._TRANSPORT = _saved_t
+
+# STDIO TRANSPORT (ADR-0005, third transport): the driving session window IS the
+# model. One JSON request per call on stdout, one id-matched reply on stdin, zero
+# spawns, zero credentials. Hermetic: stdin/stdout are swapped for pipes and a
+# scripted harness answers - the fifo pattern verified live 2026-09-16 before this
+# suite existed.
+ok(_with_env({"DR_PROVIDER": "glm", "DR_TRANSPORT": "stdio"},
+             lambda: _P.current_scheme()) == "stdio",
+   "DR_TRANSPORT=stdio selects the third transport before any harness lookup")
+ok("THIS WINDOW is the model" in _with_env({"DR_PROVIDER": "glm", "DR_TRANSPORT": "stdio"},
+                                           lambda: _P.describe()),
+   "describe() says who powers stdio: the driving window, no key, no spawn")
+import io as _io
+import json as _js
+def _stdio_roundtrip(replies):
+    """Feed agent() scripted id-matched replies through real pipes."""
+    import deepresearch.engine as _E2
+    _in_r, _in_w = os.pipe()      # engine reads answers from here
+    _out_r, _out_w = os.pipe()    # engine writes requests here
+    _saved_in, _saved_out = _E2.sys.stdin, _E2.sys.stdout
+    _E2.sys.stdin = os.fdopen(_in_r, "r")
+    _E2.sys.stdout = os.fdopen(_out_w, "w")
+    # scripted harness thread: read a request line, write the next scripted reply
+    import threading as _th
+    def _harness():
+        f = os.fdopen(_out_r, "r")
+        for line in f:
+            req = _js.loads(line)
+            spec_reply = replies.pop(0) if replies else None
+            if spec_reply is None:
+                ans = {"id": req["id"], "reply": {"reply": "pong"}}
+            elif spec_reply.get("id") == "mismatch":
+                ans = {"id": req["id"] + 100, "reply": spec_reply["reply"]}
+            else:
+                ans = {"id": req["id"], "reply": spec_reply.get("reply", {"reply": "pong"})}
+            os.write(_in_w, (_js.dumps(ans) + "\n").encode())
+        f.close()
+    _t = _th.Thread(target=_harness, daemon=True); _t.start()
+    _saved_tr = _P._TRANSPORT
+    # Pin the transport (as the session retry test does): the exchange is under test,
+    # not resolution - which the pure tests above already cover. Relying on ambient
+    # env made this test demand a credential on CI (no harness, no key, no login).
+    _P._TRANSPORT = dict(_P.spec("glm"), scheme="stdio", secret=None, via=None,
+                         headers=None, harness_argv=None)
+    try:
+        return _REAL_AGENT("probe", {"type": "object", "required": ["reply"],
+                                     "properties": {"reply": {"type": "string"}}},
+                           label="stdio-suite", retries=3)
+    finally:
+        _P._TRANSPORT = _saved_tr
+        _E2.sys.stdin.close(); _E2.sys.stdout.close()
+        _E2.sys.stdin, _E2.sys.stdout = _saved_in, _saved_out
+
+import json as _j3
+_r = _stdio_roundtrip([{"id": 1, "reply": {"reply": "pong"}}])
+ok(_r == {"reply": "pong"},
+   "a matching-id JSON reply on stdin is shaped and returned - the verified fifo pattern")
+_r2 = _stdio_roundtrip([{"id": "mismatch", "reply": {"reply": "wrong-id"}}])
+ok(_r2 == {"reply": "pong"},
+   "a mismatched-id reply is refused (None for that attempt) and the retry exchange "
+   "succeeds on the next id - correlation is by id, not by order alone")
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

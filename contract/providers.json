@@ -75,6 +75,10 @@
     "prompt": "positional",
     "fallbackCommandEnv": "DR_GLM_HARNESS",
     "note": "The hermes gateway's one-shot mode with the zai provider selected. Powered by hermes' own held credential for the GLM plan - deepresearch holds nothing. Where hermes is not on PATH, DR_GLM_HARNESS carries a full command string (e.g. 'docker exec <container> /opt/hermes/.venv/bin/hermes')."
+   },
+   "harnessStdio": {
+    "label": "zcode session (stdio)",
+    "note": "The third transport (ADR-0005): the engine speaks newline-delimited JSON on stdin/stdout - one request {id, prompt, schema} out, one reply {id, reply} in - and the driving session window IS the model, on its own subscription. Selected with DR_TRANSPORT=stdio; no credential exists anywhere in the path, and calls are serialized behind a lock because one window is one rater."
    }
   }
  }

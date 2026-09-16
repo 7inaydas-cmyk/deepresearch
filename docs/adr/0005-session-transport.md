@@ -32,6 +32,22 @@ unparseable reply always gets the corrective re-ask rather than budget growth.
 Both transports were verified live before this ADR was accepted: `claude -p` and
 `hermes -p glm -z` each answered a one-word probe, login-powered, no key in the path.
 
+## Amendment (same day): the third transport, stdio
+
+`DR_TRANSPORT=stdio` completes the matrix: **http | spawn-harness | stdio**. There is
+no headless `zcode -p` (it is an Electron app), but running research *in the driving
+window* does not need one — it needs the engine to hand its prompts to whatever
+session is driving it. Over stdio the engine emits one JSON request per call
+(`{id, prompt, schema}`) and reads one id-matched reply (`{id, reply}`); the driving
+window IS the model, on its own subscription; zero spawns, zero credentials, zero
+sockets. Calls serialize behind a lock — one window is one rater, and interleaved
+replies could not be correlated by a human reading the stream. The same shaping,
+sentinel and retry policy runs over every reply. Verified live by fifo before the
+suite existed, then pinned hermetically (the first version of the test deadlocked the
+engine when its harness thread died on a NameError — readline waits forever for a
+rater that will never answer, which is the protocol's one genuine failure mode and
+now a guarded test).
+
 ## Considered options
 
 **An explicit `--transport session` opt-in** was rejected: it leaves HTTP as the

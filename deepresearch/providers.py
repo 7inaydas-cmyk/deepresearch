@@ -92,6 +92,7 @@ def spec(name):
         "static_headers": dict(p.get("staticHeaders") or {}),
         "oauth": p.get("oauth"),
         "harness": p.get("harness"),
+        "harness_stdio": p.get("harnessStdio"),
         # Filled in by _mark_endpoint_owner below when the effective base URL belongs
         # to a DIFFERENT contract provider than the one the credential selected.
         "endpoint_owner": None,
@@ -112,8 +113,11 @@ def harness_command(spec):
     when a harness exists, because a user who holds BOTH may prefer one socket to
     150 spawns.
     """
-    if os.environ.get("DR_TRANSPORT", "").strip().lower() == "http":
+    mode = os.environ.get("DR_TRANSPORT", "").strip().lower()
+    if mode == "http":
         return None
+    if mode == "stdio":
+        return ["<stdio>"]  # sentinel: not a command; agent() speaks on stdin/stdout
     h = spec.get("harness") or {}
     cmd = h.get("command")
     if not cmd:
@@ -304,8 +308,10 @@ def transport():
             # never misname a key nobody set.
             argv = harness_command(spec)
             if argv is not None:
-                _TRANSPORT = dict(spec, scheme="session", secret=None, via=None,
-                                  headers=None, harness_argv=argv)
+                stdio = argv == ["<stdio>"]
+                _TRANSPORT = dict(spec, scheme=("stdio" if stdio else "session"),
+                                  secret=None, via=None, headers=None,
+                                  harness_argv=(None if stdio else argv))
                 return _TRANSPORT
             scheme, secret, via = credential(spec)
             headers = {"content-type": "application/json", **spec["static_headers"]}
@@ -334,7 +340,10 @@ def current_scheme():
     stats() and labels use this; transport() itself still resolves fully at call
     time, because a real model call has every right to demand a real credential.
     """
-    return "session" if harness_command(select()) is not None else "http"
+    argv = harness_command(select())
+    if argv is None:
+        return "http"
+    return "stdio" if argv == ["<stdio>"] else "session"
 
 
 def describe():
@@ -346,6 +355,9 @@ def describe():
     mis-describe the wire.
     """
     t = transport()
+    if t.get("scheme") == "stdio":
+        return "%s (session via %s - THIS WINDOW is the model, no key, no spawn)" % (
+            t["label"], (t.get("harness_stdio") or {}).get("label", "stdio"))
     if t.get("scheme") == "session":
         return "%s (session via %s - login-powered, no API key)" % (t["label"], t["harness"]["label"])
     via = "via " + t["via"] if t.get("via") else ""

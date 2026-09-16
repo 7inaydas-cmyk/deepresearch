@@ -543,6 +543,40 @@ def _record_usage(u, into=None):
                     st["usageUnrecorded"][key] = st["usageUnrecorded"].get(key, 0) + v2
 
 
+# The stdio transport's lock and request id. One window is one rater: pmap may run
+# eight workers, but prompts are handed to the driving session ONE AT A TIME, because
+# the session reads them sequentially and interleaved replies could not be correlated
+# by a human reading the stream. Serialization is the protocol's honesty, not a limit.
+_stdio_lock = threading.Lock()
+_stdio_next_id = [0]
+
+
+def _stdio_exchange(prompt, schema):
+    """One model call over stdin/stdout: {id, prompt, schema} out, {id, reply} in.
+
+    The driving window IS the model (ADR-0005's third transport). Replies are JSON
+    lines on stdin; the id must match. Returns the reply dict, or None on EOF or a
+    malformed/mismatched line - which agent()'s retry loop treats as a failed
+    attempt, exactly like a spawn that exits non-zero.
+    """
+    with _stdio_lock:
+        _stdio_next_id[0] += 1
+        rid = _stdio_next_id[0]
+        sys.stdout.write(json.dumps({"id": rid, "prompt": prompt,
+                                     "schema": schema}) + "\n")
+        sys.stdout.flush()
+        line = sys.stdin.readline()
+        if not line.strip():
+            return None
+        try:
+            ans = json.loads(line)
+            if ans.get("id") != rid or not isinstance(ans.get("reply"), dict):
+                return None
+            return ans["reply"]
+        except Exception:
+            return None
+
+
 def _session_prompt(t, prompt, schema):
     """The whole agent() contract, flattened into one prompt for a harness CLI.
 
@@ -618,7 +652,17 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
     correction = ""
     for attempt in range(retries):
         try:
-            if t.get("scheme") == "session":
+            if t.get("scheme") == "stdio":
+                got = _stdio_exchange(_session_prompt(t, prompt + correction, schema), schema)
+                with _stats_lock:
+                    _stats["calls"] += 1
+                if got is not None and _has_unknown_sentinel(got) and attempt < retries - 1:
+                    log("  [%s] stdio reply carried an <UNKNOWN> sentinel; retrying (%d/%d)"
+                        % (label, attempt + 1, retries))
+                    time.sleep(delay); delay *= 2
+                    continue
+                stop = None
+            elif t.get("scheme") == "session":
                 out_text = _providers.run_harness(
                     t["harness_argv"], _session_prompt(t, prompt + correction, schema))
                 with _stats_lock:
@@ -2410,6 +2454,11 @@ def preflight():
                   label="preflight", max_tokens=64, retries=1)
     if probe is None:
         t = _providers.transport()
+        if t.get("scheme") == "stdio":
+            raise AuthError(
+                "Preflight failed: the stdio session transport is selected but a one-word "
+                "probe received no usable reply. The driving window must read the emitted "
+                "JSON lines and answer each with a matching-id reply - see ADR-0005.")
         if t.get("scheme") == "session":
             raise AuthError(
                 "Preflight failed: the session harness %r was selected for %s but a "
