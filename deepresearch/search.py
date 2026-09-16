@@ -543,7 +543,7 @@ def _searxng(query: str, n: int) -> list[dict]:
              "snippet": (r.get("content") or "")[:300]} for r in rows[:n]]
 
 
-def probe_searxng(base: str, timeout: int = 4) -> int | None:
+def probe_searxng(base: str, timeout: int = 10) -> int | None:
     """One cheap question for the degraded-mode hint: does this SearXNG address
     answer search JSON from HERE?
 
@@ -555,6 +555,11 @@ def probe_searxng(base: str, timeout: int = 4) -> int | None:
     Returns the result count, or None when nothing answers at all - reachable
     but empty (suspended upstream engines) is a different failure and must not
     read as "wrong address".
+
+    The timeout is 10, not the 4 it first shipped with: a cold query through
+    the messenger deployment's instance took over 4s to aggregate its upstream
+    engines (warm: 1.2s), so the tighter budget reported a healthy instance as
+    "no answer" - the exact false negative the probe exists to avoid.
     """
     try:
         data = json.loads(_get(base.rstrip("/") + "/search?format=json&q=test",
