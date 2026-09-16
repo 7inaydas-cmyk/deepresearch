@@ -92,3 +92,23 @@ while IFS= read -r DEST; do
 done <<EOF
 $(trees)
 EOF
+
+# The watchdog rides along, so the deployment has ONE update path: git pull +
+# this script. The hermes cron's monitor resolves scripts under the PROFILE's
+# own scripts dir first (measured 2026-09-16: the glm cron looked at
+# profiles/glm/scripts/ and nothing else), so install it there per profile,
+# plus the shared dir.
+wdsts="$DATA/scripts"
+for p in "$DATA"/profiles/*; do
+  if [ -d "$p" ]; then wdsts="$wdsts
+$p/scripts"; fi
+done
+while IFS= read -r d; do
+  [ -n "$d" ] || continue
+  mkdir -p "$d"
+  cp "$HERE/contrib/hermes/watchdog.sh" "$d/deepresearch-watchdog.sh"
+  chmod +x "$d/deepresearch-watchdog.sh"
+  echo "installed: $d/deepresearch-watchdog.sh (hermes cron monitor)"
+done <<EOF
+$wdsts
+EOF
