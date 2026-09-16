@@ -324,6 +324,19 @@ def reset():
         _TRANSPORT = None
 
 
+def current_scheme():
+    """The transport this run would use, WITHOUT resolving any credential.
+
+    Session-first resolution is pure (a which() lookup); only the HTTP fallback
+    demands a credential, and demanding one just to LABEL a report broke every
+    stubbed pipeline test on credential-less CI machines (green locally where a
+    login or harness exists - the exact environment-dependence this suite outlaws).
+    stats() and labels use this; transport() itself still resolves fully at call
+    time, because a real model call has every right to demand a real credential.
+    """
+    return "session" if harness_command(select()) is not None else "http"
+
+
 def describe():
     """One line for --selftest and preflight: who we are calling and how.
 

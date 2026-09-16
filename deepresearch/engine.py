@@ -2587,7 +2587,7 @@ def deepresearch(question, depth="standard", contract=None):
                         for s in sources]
     def stats(**kw):
         d = dict(depth=depth, provider=_providers.select()["name"], model=MODEL,
-             transport=_providers.transport().get("scheme"),
+             transport=_providers.current_scheme(),
                  perspectives=len(persps), subQuestions=len(subqs),
                  sourcesFetched=len(sources), claimsExtracted=len(all_claims),
                  urlDupes=len(dupes), budgetDropped=len(dropped),
