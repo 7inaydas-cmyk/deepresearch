@@ -61,7 +61,44 @@ python3 -c "import json,sys; from deepresearch.engine import shape, S_VERDICT; \
 
 Subagents return JSON and nothing else — say so in every dispatch.
 
-## 1-9. The phases
+## Mode A - stdio: the ENGINE drives, this window is the model (preferred)
+
+Since ADR-0005 the engine can run its whole pipeline with the driving window as its
+model transport - every retry, sentinel recovery, schema shaping, ranking and the
+2-of-3 kill rule executed by the engine's audited code, not re-orchestrated by hand.
+
+```bash
+bash <repo>/contrib/zcode-session/drive.sh dr-launch "<question>" standard
+```
+
+Then loop: `dr-next` prints the pending request; read its `prompt` (and `schema`),
+compose the reply as that subagent would, and answer with ONE JSON object:
+
+```bash
+bash <repo>/contrib/zcode-session/drive.sh dr-answer '{"reply": "ok"}'   # probe shape
+```
+
+Rules of the loop:
+- Answer EVERY request - the engine blocks until a matching-id reply arrives, and a
+  window that stops answering is the protocol's one failure mode (a rater that never
+  answers; preflight refuses cleanly if the first probe goes unanswered).
+- One request at a time, by id. The driver compacts your JSON to one line; the
+  exchange is one readline per request.
+- Answer as the subagent, not as yourself: the prompt carries the identity block,
+  the schema, and the task. Real content, real hedges, no meta-commentary.
+- Phases are the engine's: you will see framing, plan, extraction (page text is IN
+  the prompt - the engine fetched it), gap analysis, lens verdicts, the blind audit
+  (claim + URL only - never invent the quote you were never shown), synthesis, and
+  the critic. The report lands at `$DR_RUN_DIR/report.json` with the same fields the
+  CLI produces, `stats.transport: "stdio"`.
+
+Use Mode A unless python cannot run at all. Mode B below (hand-orchestrated
+subagents) remains for windows that prefer agent-driven fan-out - it is the same
+pipeline, and its protocol is where Mode A's prompts come from.
+
+## Mode B - the phases (hand-orchestrated)
+
+
 
 **1. Framing** (one subagent, `p_framing` + `S_FRAMING`): the contract — decision at
 stake, key question, assumptions, what would change the answer, 2-4 hypotheses each
