@@ -2336,6 +2336,29 @@ ok(_forced[0] == "claude-sonnet-5" and _forced[1] == "glm",
    "stays claude-sonnet-5 (the caller chose a model; the seam does not second-guess), "
    "while describe() still says whose endpoint the wire goes to")
 
+# The ZCode skill is an executable protocol: a function name or field name it mentions
+# that does not exist in the engine is a bug a reader cannot see. Audited 2026-09-15:
+# it validated array replies against a per-object schema (every valid lens verdict
+# flagged), skipped citable_only (T5 farms in the verify pool), named a nonexistent
+# factOrInference field, and fed _evidence_base rows with no claims counts. This test
+# greps the skill's engine vocabulary against the engine itself, so the next drift is
+# a red test rather than a failed run.
+_zk = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                        "integrations", "zcode", "SKILL.md"), encoding="utf-8").read()
+_zsyms = sorted(set(_re.findall(r"\b((?:p_|S_)[A-Za-z_]+|quote_span|tier_of|shape|"
+                                r"coverage_balanced|citable_only|_hyp_mismatch|"
+                                r"_evidence_base|REFUTATIONS_REQUIRED)\b", _zk)))
+_missing = [s for s in _zsyms if not hasattr(dr, s)]
+ok(_zsyms and not _missing,
+   "every engine symbol the ZCode skill names exists in the engine (%d checked%s)"
+   % (len(_zsyms), ("; missing: " + ", ".join(_missing)) if _missing else ""))
+ok("factInferenceAssumption" in _zk and "factOrInference " not in _zk,
+   "the skill names the synthesis field by its real name, factInferenceAssumption")
+ok("'verdicts'" in _zk and "run `citable_only` FIRST" in _zk,
+   "the array-wrapper validation and the citable_only-before-ranking gate are both in "
+   "the protocol - the two audited shape bugs")
+ok("BEFORE dispatching the critics" in _zk,
+   "artifacts are persisted before critique - the live run's recorded defect")
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 
