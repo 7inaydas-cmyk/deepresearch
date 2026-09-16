@@ -5,6 +5,13 @@
 #   dr-next                          -> prints the pending request (or "waiting")
 #   dr-answer '<json reply>'         -> answers the pending request by id
 #
+# Failure modes, stated: if you stop answering, the engine blocks until its socket
+# timeout (the one real hang class - a rater that never answers); an unterminated
+# partial line on the fifo has the same effect. A malformed or mismatched-id reply
+# is refused and retried with a new id - tail -1 always sees the newest request.
+# DR_DEPTHS_FILE may point at a custom depth contract (e.g. a minimal e2e fixture);
+# every depth must keep perspectives >= 3 or the plan schema will reject the reply.
+#
 # The engine emits one JSON request per call ({id, prompt, schema}) on its stdout and
 # blocks until a matching-id reply arrives on the answer fifo. The WINDOW is the model:
 # read the request, answer it as the subagent prompt asks, echo the reply. One request

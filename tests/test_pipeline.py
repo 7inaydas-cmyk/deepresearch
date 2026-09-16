@@ -2549,6 +2549,24 @@ ok(_r2 == {"reply": "pong"},
    "a mismatched-id reply is refused (None for that attempt) and the retry exchange "
    "succeeds on the next id - correlation is by id, not by order alone")
 
+# E2E-run fixes (2026-09-16, stdio transport test with a minimal custom depth).
+ok("max(3, T[\"perspectives\"])" in _ENG,
+   "the plan ASKS for at least the schema floor of 3 perspectives, so a depth contract "
+   "with fewer cannot produce a contradictory prompt that burns the retry budget - "
+   "found live: a 2-perspective depth yielded three identical schema violations")
+ok("quick depth runs no gap " in _ENG and "Not scored" in _ENG,
+   "a quick-depth report SAYS its coverage table was never scored, rather than "
+   "rendering an empty table indistinguishable from a scored-and-silent one")
+import subprocess as _sp2
+_r_bg = _sp2.run([sys.executable, "-m", "deepresearch", "--question", "x", "--bg"],
+                 capture_output=True, text=True, env=dict(_os.environ, DR_PROVIDER="glm",
+                                                          DR_TRANSPORT="stdio"),
+                 cwd=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ok(_r_bg.returncode == 4 and "incompatible" in _r_bg.stdout and "stdout" in _r_bg.stdout,
+   "--bg under DR_TRANSPORT=stdio is refused in the parent with a visible JSON error "
+   "(exit 4) - the detached child's stdout is the request stream and would be silently "
+   "redirected to a log while the parent reported success")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 

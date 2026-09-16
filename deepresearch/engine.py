@@ -2541,7 +2541,13 @@ def deepresearch(question, depth="standard", contract=None):
     REQ = ["strategy", "subQuestions", "perspectives"]
     plan, subqs, persps = None, [], []
     for attempt in (1, 2):
-        plan = agent(p_plan(question, T["perspectives"], contract), S_PLAN,
+        # max(3, ...): S_PLAN demands minItems 3 perspectives, so a depth contract
+        # with fewer asks the model for a reply the schema must then reject - a
+        # contradictory prompt that burns the whole retry budget deterministically.
+        # Found live in the stdio e2e run 2026-09-16: a 2-perspective test depth
+        # produced three identical schema violations. The [:T] cap below still
+        # truncates any surplus back to the budget.
+        plan = agent(p_plan(question, max(3, T["perspectives"]), contract), S_PLAN,
                      label=("plan" if attempt == 1 else "plan:retry"), max_tokens=4000)
         if plan:
             subqs = plan["subQuestions"]
@@ -3032,7 +3038,14 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                ("Blind citation audit: **%s** - %s\n" % (f["support"], webtext(f["reasoning"], 400))) if f else ""))
 
     cov_b = ""
-    if coverage:
+    if T["deepen"] == 0 and not coverage:
+        # With no deepening rounds the gap analyst never runs, so `coverage` is null -
+        # indistinguishable in the rendered report from "ran and found nothing to say".
+        # Say the first, so a quick-depth reader knows the checklist was never scored.
+        cov_b = ("\n## Coverage checklist status\nNot scored: quick depth runs no gap "
+                 "analyst. The sub-questions above may or may not have been answered - "
+                 "check the findings, not this table.\n")
+    elif coverage:
         rows = []
         for c in coverage:
             try:
@@ -3639,6 +3652,18 @@ def main():
     # (agent harnesses commonly kill at 180s). Relying on the CALLER to remember
     # `nohup ... &` is a failure waiting to happen, so make the safe path a flag.
     if a.bg and os.environ.get("DR_BG_CHILD") != "1":
+        # stdout IS the request stream under the stdio transport; the detached child
+        # would inherit stdout=logfile and stdin=/dev/null, so every model call would
+        # read EOF and the parent would still print a success JSON. Found by review of
+        # the e2e run 2026-09-16 (dr-launch originally passed --bg). Refuse in the
+        # parent, where the refusal is visible, rather than in a detached child's log.
+        if _providers.current_scheme() == "stdio":
+            print(json.dumps({"error": "--bg is incompatible with DR_TRANSPORT=stdio: "
+                                      "the background child's stdout is the request "
+                                      "stream and would be redirected to a log. Run in "
+                                      "the foreground (a wrapper subshell can detach), "
+                                      "or use an http/session transport."}, indent=1))
+            sys.exit(EXIT_CONTRACT)
         out = a.out or "/tmp/deepresearch.json"
         logp = (out[:-5] if out.endswith(".json") else out) + ".log"
         # Re-exec as a MODULE, not as a file. Running engine.py directly breaks the
