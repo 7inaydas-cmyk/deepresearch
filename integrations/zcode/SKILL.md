@@ -71,6 +71,14 @@ model transport - every retry, sentinel recovery, schema shaping, ranking and th
 bash <repo>/contrib/zcode-session/drive.sh dr-launch "<question>" standard
 ```
 
+Search backend: the driver adopts a local SearXNG automatically when one answers
+(`127.0.0.1:8888`, then `:8080`) and says so; an explicit `DR_SEARXNG_URL` always
+wins. Do NOT conclude "the keyless web is dead from this machine" without checking
+that: with the var unset the searxng backend silently self-skips, and once DDG and
+Mojeek are blocked the chain falls through to Wikipedia/Crossref filler - which
+looks exactly like "the web has nothing" (measured 2026-09-16, a session restarted
+in Mode B on that false verdict while the instance was alive the whole time).
+
 Then loop: `dr-next` prints the pending request; read its `prompt` (and `schema`),
 compose the reply as that subagent would, and answer with ONE JSON object:
 

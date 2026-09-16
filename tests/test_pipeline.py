@@ -2794,6 +2794,17 @@ _r10 = run()
 ok(_r10.get("searchDegraded") is False,
    "and a healthy run reads searchDegraded: false - the flag is a verdict, not a constant")
 
+# The Mode A driver must not relive 2026-09-16: an unset DR_SEARXNG_URL makes the
+# searxng backend silently self-skip, a session read the Wikipedia/Crossref fall-through
+# as "the keyless web is dead from this machine", and Mode A was declared doomed while
+# a local instance answered the whole time. The driver now adopts a live local instance
+# (content probe, both common publishes) instead of trusting the environment to be set.
+_drive = open(os.path.join(_REPO, "contrib", "zcode-session", "drive.sh"), encoding="utf-8").read()
+ok("probe_searxng" in _drive and "127.0.0.1:8888" in _drive and "127.0.0.1:8080" in _drive,
+   "the Mode A driver probes both local searxng publishes with the repo's own content prober")
+ok('-z "${DR_SEARXNG_URL:-}"' in _drive and 'DR_SEARXNG_URL="${DR_SEARXNG_URL:-}"' in _drive,
+   "and an explicitly set DR_SEARXNG_URL always wins - the probe only runs when it is unset")
+
 # The watchdog's searxng check must be a CONTENT check (HANDOVER §10): a suspended
 # instance answers 200 with zero results, and a status-code check calls that healthy.
 class _ProbeSuspended(_ProbeJSON):

@@ -23,6 +23,24 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 case "${1:-}" in
   dr-launch)
     Q="${2:?question required}"; DEPTH="${3:-standard}"
+    # An unset DR_SEARXNG_URL silently drops the searxng backend from the chain, and
+    # once DDG/Mojeek are blocked the run degrades to Wikipedia/Crossref filler -
+    # which reads as "the web has nothing on this". Measured 2026-09-16: a session
+    # concluded Mode A was doomed when a local instance was alive the whole time at
+    # the host publish. Adopt one only when it actually ANSWERS (content, not status
+    # code); an explicit DR_SEARXNG_URL always wins and is never second-guessed.
+    if [ -z "${DR_SEARXNG_URL:-}" ]; then
+      for c in http://127.0.0.1:8888 http://127.0.0.1:8080; do
+        if (cd "$REPO" && DR_SEARXNG_URL= python3 -c "
+import sys; sys.path.insert(0, '.')
+from deepresearch.search import probe_searxng
+sys.exit(0 if (probe_searxng(sys.argv[1]) or 0) > 0 else 1)" "$c" 2>/dev/null); then
+          DR_SEARXNG_URL="$c"
+          echo "searxng: adopting $c (probed live: answers with results)"
+          break
+        fi
+      done
+    fi
     mkdir -p "$RUN"; rm -f "$RUN/req.out" "$RUN/ans.fifo" "$RUN/run.log" "$RUN/report.json"
     mkfifo "$RUN/ans.fifo"
     # A held-open writer keeps the engine's stdin alive between answers; without it
