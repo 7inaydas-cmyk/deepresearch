@@ -7,5 +7,5 @@ no verified claim.
 from .engine import deepresearch, selftest, main  # noqa: F401
 from . import search  # noqa: F401
 
-__version__ = "1.12.2"
+__version__ = "1.13.0"
 __all__ = ["deepresearch", "selftest", "search", "main"]

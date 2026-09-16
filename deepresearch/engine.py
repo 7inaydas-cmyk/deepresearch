@@ -836,7 +836,8 @@ def pmap(fn, items, workers=None):
 # its own budget, so a bad framing can no longer starve the search plan.
 S_FRAMING = {
     "type": "object",
-    "required": ["decisionAtStake", "keyQuestion", "assumptions", "whatWouldChangeTheAnswer", "hypotheses"],
+    "required": ["decisionAtStake", "keyQuestion", "assumptions", "whatWouldChangeTheAnswer", "hypotheses",
+                 "needsGeneralWeb"],
     "properties": {
         "decisionAtStake": {"type": "string"},
         "keyQuestion": {"type": "string"},
@@ -845,6 +846,7 @@ S_FRAMING = {
         "hypotheses": {"type": "array", "minItems": 2, "maxItems": 4, "items": {
             "type": "object", "required": ["hypothesis", "killCriterion"],
             "properties": {"hypothesis": {"type": "string"}, "killCriterion": {"type": "string"}}}},
+        "needsGeneralWeb": {"type": "boolean"},
     },
 }
 
@@ -997,7 +999,8 @@ LENSES = [
 
 
 # --- Prompt builders --------------------------------------------------------
-FRAMING_FIELDS = ("decisionAtStake", "keyQuestion", "assumptions", "whatWouldChangeTheAnswer", "hypotheses")
+FRAMING_FIELDS = ("decisionAtStake", "keyQuestion", "assumptions", "whatWouldChangeTheAnswer", "hypotheses",
+                  "needsGeneralWeb")
 
 
 def p_framing(q, supplied=None):
@@ -1025,14 +1028,16 @@ def p_framing(q, supplied=None):
         missing = [f for f in FRAMING_FIELDS if f not in supplied]
         agreed = ("## Already agreed by the asker - do NOT change, restate, or second-guess these\n"
                   + "\n".join(lines) + "\n\n"
-                  "Return ALL five fields. For the fields above, copy them through unchanged. Draft only: "
+                  "Return ALL %d fields. For the fields above, copy them through unchanged. Draft only: "
+                  % len(FRAMING_FIELDS)
                   + ", ".join(missing) + ". Make what you draft CONSISTENT with what was agreed - the "
                   "hypotheses must discriminate the agreed key question, and the kill criteria must be "
                   "findable within the agreed assumptions.\n\n")
     return (
         "## Research Framing (scope contract)\n\nResearch question:\n\"" + q + "\"\n\n" + agreed +
         "Write the contract BEFORE anything is searched. This costs a minute and prevents the most expensive "
-        "failure mode: a beautifully sourced answer to the WRONG question. Return these five fields and nothing else.\n\n"
+        "failure mode: a beautifully sourced answer to the WRONG question. Return these %d fields and nothing else.\n\n"
+        % len(FRAMING_FIELDS) +
         "- **decisionAtStake**: what will the reader DO differently depending on the answer? If nothing, say so plainly.\n"
         "- **keyQuestion**: one sentence, answerable, falsifiable. Not 'tell me about X' but 'should we X given Y?'\n"
         "- **assumptions**: scope, geography, time horizon, currency, what counts as 'large' or 'serious' - anything "
@@ -1040,7 +1045,11 @@ def p_framing(q, supplied=None):
         "- **whatWouldChangeTheAnswer**: the findings that would FLIP the conclusion, so the pipeline hunts those "
         "rather than hunting confirmations.\n"
         "- **hypotheses**: 2-4 candidate answers, mutually exclusive and collectively exhaustive. For EACH give the "
-        "killCriterion - the specific finding that would eliminate it. Searches exist to DISCRIMINATE between these.")
+        "killCriterion - the specific finding that would eliminate it. Searches exist to DISCRIMINATE between these.\n"
+        "- **needsGeneralWeb**: true when answering needs the open web - job postings, company pages, pricing, product "
+        "docs, news, practitioner forums. False for questions a scholarly corpus can answer. When true and the general "
+        "web turns out to be unreachable, the run must SAY so instead of letting Wikipedia/Crossref filler stand in "
+        "for it - measured 2026-09-16, a job-board query came back as six DOI book chapters.")
 
 
 def p_plan(q, n, contract):
@@ -1083,16 +1092,28 @@ def p_plan(q, n, contract):
         "Also give a 1-2 sentence overall strategy. Return exactly the three fields: strategy, subQuestions, perspectives.")
 
 
-def p_pick(q, persp, hits):
+def p_pick(q, persp, hits, needs_general_web=False):
     lines = []
     for i, h in enumerate(hits):
         lines.append("[%d] %s\n    %s\n    %s" % (i, webtext(h["title"], 160), webtext(h["url"], 200),
                                                   webtext(h["snippet"], 300)))
+    # Injected only when the general web is dead AND the question needs it: the
+    # hits above came from scholarly fall-through, which answers everything with
+    # something. Better an empty fetch list than a confident pool of filler -
+    # measured 2026-09-16, a job-board query returned six DOI book chapters.
+    degraded_note = ""
+    if needs_general_web and _general_web_dead():
+        degraded_note = (
+            "\n## WARNING: the general web is unreachable this run\n"
+            "These hits are scholarly fall-through (Wikipedia/Crossref/PubMed), not the web. This "
+            "question needs the general web, and a DOI link or encyclopedia page CANNOT answer a "
+            "sub-question about jobs, companies, pricing, products or current practice. Select NONE "
+            "of them for such sub-questions rather than filler - an empty result is the honest pick.\n")
     return (
         "## Source Selector - perspective: " + persp["label"] + "\n\n"
         "Research question: \"" + q + "\"\n"
         "Your lens: " + webtext(persp.get("lens", ""), 400) + "\n\n"
-        "## Search results\n" + WEB_NOTE + "\n".join(lines) + "\n\n"
+        "## Search results\n" + WEB_NOTE + "\n".join(lines) + "\n\n" + degraded_note +
         "## Task\nPick the 3-5 most worth fetching in full, ranked by relevance to the ORIGINAL question (not to the "
         "query). Prefer primary sources: papers, standards, official docs, filings, datasets, source code. Skip SEO "
         "spam, content farms, and listicles. Copy each url EXACTLY as given. Say in `why` what it should settle.")
@@ -1732,8 +1753,8 @@ def load_contract(path):
     raw = {k: v for k, v in raw.items() if k != "provenance"}
     unknown = sorted(k for k in raw if k not in FRAMING_FIELDS)
     if unknown:
-        raise ContractError("%s: unknown field(s) %s - the five allowed are %s"
-                            % (path, unknown, list(FRAMING_FIELDS)))
+        raise ContractError("%s: unknown field(s) %s - the %d allowed are %s"
+                            % (path, unknown, len(FRAMING_FIELDS), list(FRAMING_FIELDS)))
     if not raw:
         raise ContractError("%s: no fields supplied" % path)
     partial = dict(S_FRAMING, required=[])          # any subset, but each one well-formed
@@ -1878,9 +1899,10 @@ def _honest_limits(extra=None, evidence=None):
             "sources carry `abstractOnly: true`. A claim verified against an abstract has "
             "been checked against a summary of the paper, not the paper."),
         "searchCoverage": (
-            "Check stats.searchHealth. If every general-web backend reports 0 results, "
-            "this run saw a scholarly-only slice of the web and its coverage gaps are a "
-            "search artefact rather than evidence that nothing exists."),
+            "stats.searchDegraded is true when every general-web backend returned 0 results for the "
+            "whole run: the report then rests on a scholarly-only slice (Wikipedia/Crossref), and its "
+            "coverage gaps are a search artefact rather than evidence that nothing exists. "
+            "stats.searchHealth has the per-backend counts behind that verdict."),
     }
     if extra:
         out.update(extra)
@@ -2262,14 +2284,15 @@ def coverage_balanced(claims, cap, n_subq):
 
 
 # --- Sweep: search -> pick -> fetch -> extract ------------------------------
-def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped):
+def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped, needs_general_web=False):
     """One wave. Search and fetch are deterministic and free; agents only judge."""
     def do_search(p):
         hits = web_search(p["query"], n=8)
         if not hits:
             log("  [%s] %s: search returned NOTHING" % (tag, p["label"]))
             return None
-        pick = agent(p_pick(q, p, hits), S_PICK, label="pick:" + p["label"])
+        pick = agent(p_pick(q, p, hits, needs_general_web=needs_general_web),
+                     S_PICK, label="pick:" + p["label"])
         if not pick:
             return None
         # Index by BOTH the real URL and the form the model was actually shown. The pick
@@ -2566,7 +2589,8 @@ def deepresearch(question, depth="standard", contract=None):
     log("Perspectives: " + " | ".join(p["label"] for p in persps))
 
     seen, dupes, dropped = set(), [], []
-    sources = sweep(question, subqs, persps, T["wave1"], "w1", seen, dupes, dropped)
+    sources = sweep(question, subqs, persps, T["wave1"], "w1", seen, dupes, dropped,
+                    needs_general_web=bool(contract.get("needsGeneralWeb")))
 
     # Phase 4 - Deepen
     coverage, contradictions = None, []
@@ -2589,7 +2613,8 @@ def deepresearch(question, depth="standard", contract=None):
             % (rnd, open_n, len(subqs), len(gap.get("contradictions") or []), len(follow)))
         if not follow:
             log("Coverage complete - no further deepening needed"); break
-        sources += sweep(question, subqs, follow, T["wave_n"], "w%d" % (rnd + 1), seen, dupes, dropped)
+        sources += sweep(question, subqs, follow, T["wave_n"], "w%d" % (rnd + 1), seen, dupes, dropped,
+                         needs_general_web=bool(contract.get("needsGeneralWeb")))
 
     all_claims = [c for s in sources for c in s["claims"]]
     citable, non_citable = citable_only(all_claims)
@@ -2632,6 +2657,12 @@ def deepresearch(question, depth="standard", contract=None):
                 # (no main()) get the field too. One warning string, three surfaces
                 # (stderr, --bg handle, here) by design.
                 skillDrift=skill_drift_warning(),
+                # Same shape, different failure: every general-web backend dead
+                # while scholarly ones kept answering. The banner must ride the
+                # report (and the synthesis prompt below), because the run that
+                # exposed this produced 13 confident sources of Crossref filler
+                # for a job-discovery question and said nothing.
+                searchDegraded=_general_web_dead(),
                 perspectives=[{"label": p.get("label"), "lens": p.get("lens"), "query": p.get("query")}
                               for p in persps])
     src_rows = lambda: [{"url": webtext(s["url"], 300), "quality": s["sourceQuality"],
@@ -3070,11 +3101,27 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
              "\n".join("- " + webtext(x, 300) for x in contradictions) + "\n") if contradictions else ""
     drop_n = len(all_claims) - len(voted)
     drop_b = ("\n## Coverage limit\n%d lower-ranked claims were never verified. Say so in caveats.\n" % drop_n) if drop_n > 0 else ""
+    # The degraded banner rides at the TOP of the prompt, above the claims, because
+    # position is the difference between disclosed and buried: the run that exposed
+    # this had the fact in stats.searchHealth and nowhere a reader would look.
+    deg_b = ""
+    if _general_web_dead():
+        deg_b = ("## THE GENERAL WEB WAS UNREACHABLE for this entire run\n"
+                 "Every general-web backend (SearXNG, DuckDuckGo, Mojeek) returned zero results; only "
+                 "scholarly backends (Wikipedia, Crossref, PubMed) produced sources. Everything below "
+                 "is a scholarly-only slice of what exists"
+                 + (" - and this question's contract says it NEEDS the general web (needsGeneralWeb: "
+                    "true), so claims that appear to answer job postings, pricing, product, news or "
+                    "practitioner sub-questions are search artefacts, not evidence"
+                    if (contract or {}).get("needsGeneralWeb") else "") +
+                 ". The FIRST sentence of answerFirst must state this limitation plainly, and no "
+                 "finding may present coverage of a general-web topic as if the web was searched.\n\n")
 
     report = agent(
         "## Synthesis - final research report\n\n**Question:** " + q + "\n\n" +
         "%d claims survived a %d-lens adversarial panel%s.\n\n"
         % (len(confirmed), len(lenses), " and a blind citation-support audit" if T["audit"] else "") +
+        deg_b +
         "## Confirmed claims\n" + WEB_NOTE + "\n".join(blocks) + cov_b + con_b + kill_b + unv_b + drop_b + "\n\n" +
         (("## Coverage limit you MUST disclose\n"
           "%d of %d extracted claims (%d%%) were never verified — the panel budget stops at %d. "
@@ -3443,6 +3490,18 @@ EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED, EXIT_CONTRACT = 0, 1, 2, 3, 4
 GENERAL_WEB = ("searxng", "ddg-html", "ddg-lite", "mojeek")
 
 
+def _general_web_dead():
+    """True when every general-web backend was tried this run and produced
+    nothing. The chain then falls through to Wikipedia/Crossref, which ANSWER
+    any query with scholarly noise (measured 2026-09-16: "Recruitee job board
+    careers page" -> six DOI book chapters over HTTP 200), so a report built in
+    this state looks sourced while having seen none of the web the question
+    was about. Every surface that can carry it must - see searchDegraded."""
+    h = search_health()
+    tried = any((h.get(n) or {}).get("attempts", 0) > 0 for n in GENERAL_WEB)
+    return tried and all((h.get(n) or {}).get("results", 0) == 0 for n in GENERAL_WEB)
+
+
 def _frontmatter_version(path):
     """The `version:` value of a SKILL.md frontmatter, or None when the file is
     absent, unreadable, or has no frontmatter version. Stops at the closing
@@ -3678,10 +3737,10 @@ def main():
     ap.add_argument("--contract", metavar="PATH",
                     help="A framing contract the asker already ratified (any subset of: "
                          "decisionAtStake, keyQuestion, assumptions, whatWouldChangeTheAnswer, "
-                         "hypotheses). Supplied fields are never re-derived; the model drafts only "
-                         "what is missing. A malformed file exits %d before any model call. Every run "
-                         "writes the contract it used to <out-stem>.contract.json so it can be passed "
-                         "straight back here." % EXIT_CONTRACT)
+                         "hypotheses, needsGeneralWeb). Supplied fields are never re-derived; the "
+                         "model drafts only what is missing. A malformed file exits %d before any "
+                         "model call. Every run writes the contract it used to <out-stem>.contract.json "
+                         "so it can be passed straight back here." % EXIT_CONTRACT)
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--bg", action="store_true",
                     help="Detach and run in the background, printing the log and report paths "

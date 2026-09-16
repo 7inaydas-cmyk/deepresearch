@@ -100,7 +100,8 @@ def install(cfg):
             return {"decisionAtStake": "d", "keyQuestion": "k", "assumptions": ["a1", "a2"],
                     "whatWouldChangeTheAnswer": ["w1", "w2"],
                     "hypotheses": [{"hypothesis": "h1", "killCriterion": "k1"},
-                                   {"hypothesis": "h2", "killCriterion": "k2"}]}
+                                   {"hypothesis": "h2", "killCriterion": "k2"}],
+                    "needsGeneralWeb": True}
         if label.startswith("plan"):
             if cfg.get("bad_plan"):
                 return {"strategy": "x", "subQuestions": [], "perspectives": ["a bare string"]}
@@ -1382,14 +1383,15 @@ ok("deepresearch.py --question" not in _src, "the done_when hint matches the rea
 print("\n-- empty required arrays are a schema violation, not an answer (#16) --")
 _short = dr._schema_shortfall(dr.S_FRAMING, {
     "decisionAtStake": "x", "keyQuestion": "y",
-    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": []})
+    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": [], "needsGeneralWeb": True})
 ok(len(_short) == 3, "an empty framing contract is caught on all three required arrays, not accepted")
 ok(any("hypotheses=0" in x for x in _short), "and the log names which array and by how much: %r" % _short[:1])
 ok(dr._schema_shortfall(dr.S_FRAMING, {
     "decisionAtStake": "x", "keyQuestion": "y",
     "assumptions": ["a", "b"], "whatWouldChangeTheAnswer": ["c", "d"],
     "hypotheses": [{"hypothesis": "h1", "killCriterion": "k1"},
-                   {"hypothesis": "h2", "killCriterion": "k2"}]}) == [],
+                   {"hypothesis": "h2", "killCriterion": "k2"}],
+    "needsGeneralWeb": False}) == [],
    "a contract that meets its own minItems passes untouched")
 ok(dr._schema_shortfall(dr.S_PLAN, {"strategy": "s", "subQuestions": ["a"], "perspectives": []})
    and len(dr._schema_shortfall(dr.S_PLAN, {"strategy": "s", "subQuestions": ["a"], "perspectives": []})) == 2,
@@ -1812,7 +1814,8 @@ ok(any("Contract: 4 field(s) supplied" in l and "drafting decisionAtStake" not i
    "the log names what was supplied and what is being drafted")
 ok(len(_r.get("hypothesisVerdicts") or []) == 2, "drafted hypotheses are still adjudicated downstream - nine readers unchanged")
 ok("framingProvenance" in (_r.get("honestLimits") or {}), "honestLimits explains what provenance means")
-_full = dict(_sup, hypotheses=[{"hypothesis": "h1", "killCriterion": "k1"}, {"hypothesis": "h2", "killCriterion": "k2"}])
+_full = dict(_sup, hypotheses=[{"hypothesis": "h1", "killCriterion": "k1"}, {"hypothesis": "h2", "killCriterion": "k2"}],
+             needsGeneralWeb=True)
 _r2 = run(contract=_full)
 ok(any("nothing to draft" in l for l in LOGS) and not any(l.strip().startswith("[framing]") for l in LOGS),
    "a FULLY supplied contract skips the framing call entirely - no model call for a decision already made")
@@ -1928,7 +1931,7 @@ ok(_pr == [], "but an EMPTY hypothesisVerdicts is legal: no hypotheses is a real
 _sh, _pr = _ok(dr.S_PICK, {"results": [{"url": "https://a.org", "relevance": "high"}], "extra": 1})
 ok(_sh.get("extra") == 1, "undeclared keys pass through: the schema says what we NEED, not all we accept")
 ok(dr._schema_shortfall(dr.S_FRAMING, {"decisionAtStake": "x", "keyQuestion": "y",
-    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": []}),
+    "assumptions": [], "whatWouldChangeTheAnswer": [], "hypotheses": [], "needsGeneralWeb": True}),
    "_schema_shortfall still reports the framing shortfall (now defined by shape)")
 
 print("\n-- a rejected response is retried DIFFERENTLY, not identically --")
@@ -2708,6 +2711,88 @@ with _tmp2.TemporaryDirectory() as _gd:
        "watchdog wakes on an unreachable searxng from its vantage - the failure that "
        "silently degraded every gateway search to scholarly-only")
     _srv2.shutdown()
+
+print("\n-- a dead general web must be impossible to miss (searchDegraded + banners) --")
+# 2026-09-16, live under Hermes: every general-web backend returned zero while Crossref
+# answered a job-board query with six DOI book chapters over HTTP 200; the run produced
+# 13 confident sources of filler and the fact lived only in stats nobody opens. One
+# condition at the seam (_general_web_dead) now feeds the report field, the synthesis
+# banner, and the picker's refusal instruction - and the framing contract declares
+# needsGeneralWeb so the picker knows when filler cannot substitute.
+import json as _json3, tempfile as _tmp3  # noqa: E402
+_REAL_SH = dr.search_health
+def _health(**over):
+    h = {"searxng": {"ok": True, "results": 0, "attempts": 3},
+         "ddg-html": {"ok": True, "results": 0, "attempts": 2},
+         "ddg-lite": {"ok": True, "results": 0, "attempts": 2},
+         "mojeek": {"ok": True, "results": 0, "attempts": 1},
+         "wikipedia": {"ok": True, "results": 4, "attempts": 3},
+         "crossref": {"ok": True, "results": 6, "attempts": 3}}
+    h.update(over)
+    return lambda: h
+try:
+    dr.search_health = _health()
+    ok(dr._general_web_dead() is True,
+       "general-web 0-for-everyone while scholarly answers: the filler state is DETECTED")
+    dr.search_health = _health(searxng={"ok": True, "results": 5, "attempts": 3})
+    ok(dr._general_web_dead() is False,
+       "any live general-web backend -> not degraded")
+    dr.search_health = lambda: {}
+    ok(dr._general_web_dead() is False,
+       "no searches attempted at all -> not degraded (nothing tried, nothing lied about)")
+    dr.search_health = _health()
+    _hit = [{"url": "https://doi.org/10.1000/filler", "title": "A book chapter", "snippet": "unrelated"}]
+    _pp = dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit, needs_general_web=True)
+    ok("general web is unreachable" in _pp and "Select NONE" in _pp,
+       "the picker is told to refuse scholarly filler when the question needs the general web and it is dead")
+    ok("general web is unreachable" not in dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit,
+                                                   needs_general_web=False),
+       "a scholarly question gets no refusal note - the filler may be exactly its evidence")
+    dr.search_health = _health(searxng={"ok": True, "results": 5, "attempts": 3})
+    ok("general web is unreachable" not in dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit,
+                                                     needs_general_web=True),
+       "healthy web -> no note even when the question needs it")
+finally:
+    dr.search_health = _REAL_SH
+ok("searchDegraded=_general_web_dead()" in _ENG,
+   "the report base carries searchDegraded, so all four exits persist it - same shape as skillDrift")
+ok("THE GENERAL WEB WAS UNREACHABLE" in _ENG and "FIRST sentence of answerFirst" in _ENG,
+   "the synthesis banner sits above the claims and commands the first sentence of answerFirst")
+ok("needsGeneralWeb" in dr.S_FRAMING["required"] and
+   dr.S_FRAMING["properties"]["needsGeneralWeb"] == {"type": "boolean"},
+   "the framing contract declares needsGeneralWeb as a required boolean")
+with _tmp3.TemporaryDirectory() as _cd:
+    _cf = os.path.join(_cd, "c.json")
+    with open(_cf, "w") as f:
+        _json3.dump({"needsGeneralWeb": True}, f)
+    ok(dr.load_contract(_cf) == {"needsGeneralWeb": True},
+       "a supplied needsGeneralWeb is accepted by the intake and shaped to a real boolean")
+    with open(_cf, "w") as f:
+        _json3.dump({"needsGeneralWeb": "yes"}, f)
+    try:
+        dr.load_contract(_cf); ok(False, "a string needsGeneralWeb must be rejected")
+    except dr.ContractError:
+        ok(True, "a string needsGeneralWeb is rejected at intake, before any model call")
+
+# The watchdog's searxng check must be a CONTENT check (HANDOVER §10): a suspended
+# instance answers 200 with zero results, and a status-code check calls that healthy.
+class _ProbeSuspended(_ProbeJSON):
+    body = b'{"results": [], "unresponsive_engines": [["brave", "x"], ["google cse", "x"]]}'
+class _ProbeGarbage(_ProbeJSON):
+    body = b"<html>504 Gateway Timeout</html>"
+_srv4, _srv5 = _serve(_ProbeSuspended), _serve(_ProbeGarbage)
+with _tmp3.TemporaryDirectory() as _gd2:
+    _mk_tree(_gd2, "skills/research/deepresearch", _V)
+    _mk_tree(_gd2, "profiles/glm/skills/research/deepresearch", _V)
+    _w3 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd2,
+                  DR_WATCHDOG_SEARXNG="http://127.0.0.1:%d/search?format=json&q=test" % _srv4.server_address[1])
+    ok(_w3.returncode != 0 and "served 0 results" in _w3.stdout and "brave" in _w3.stdout,
+       "watchdog wakes on a SUSPENDED instance: 200 + empty results names the suspended engines")
+    _w4 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd2,
+                  DR_WATCHDOG_SEARXNG="http://127.0.0.1:%d/search?format=json&q=test" % _srv5.server_address[1])
+    ok(_w4.returncode != 0 and "not JSON" in _w4.stdout,
+       "watchdog wakes on a 200 whose body is not JSON - broken, not busy")
+_srv4.shutdown(); _srv5.shutdown()
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
