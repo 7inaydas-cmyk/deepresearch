@@ -2009,8 +2009,15 @@ ok(not dr._same_hypothesis(dr._hyp_key(_MWR), dr._hyp_key(_MWN)),
    "the TEXT path checks it too - fixing only the number path closed nothing, because "
    "this stamped true there instead by the same 1.000 overlap")
 ok(dr._negation_differs("does not reduce employment", "reduces employment")
-   and dr._negation_differs("reduces employment", "no meaningful difference"),
-   "the check is symmetric by construction, not by threshold")
+   and not dr._negation_differs("reduces employment", "no meaningful difference")
+   and not dr._negation_differs("the groups perform the same on memory tasks",
+                                "the groups show no difference in memory performance"),
+   "the check is DIRECTION-aware by construction: ADD fires, DROP fires only on "
+   "near-identity, and a faithful rewording that drops the negation while genuinely "
+   "rewording does not fire. The terse DROP pair here is the named residual - on "
+   "17-24 character strings the ratio compresses below any bar, so the number is "
+   "believed, exactly as _hyp_mismatch documents for the token floor")
+
 ok(dr._hyp_mismatch(dr._hyp_key(_V10_RW), dr._hyp_key(_V10_NULL)),
    "and the KNOWN COST is taken knowingly: a positive restatement of a registered null is "
    "marked post-hoc. Only 8 verdict/registered pairs on record carry a number and none "
@@ -2359,6 +2366,47 @@ ok("'verdicts'" in _zk and "run `citable_only` FIRST" in _zk,
    "the protocol - the two audited shape bugs")
 ok("BEFORE dispatching the critics" in _zk,
    "artifacts are persisted before critique - the live run's recorded defect")
+# The fifth reversal of the negation check, pinned. v1.10.0 symmetric -> accused the
+# null; v1.10.1 ADD-only -> opened the surgical-delete mirror; v1.11.0 symmetric again
+# -> re-accused the null (verified live by audit 2026-09-15 against runs/v10); now
+# direction-aware on the only axis that separates: character similarity. Attacks
+# 0.821-0.977, faithful compact rewordings 0.479-0.697, bar 0.75. The synonym-swap
+# rewording at 0.855 is inseparable from the attack band and is a NAMED LIMIT: it
+# fires, and pays only the label - the stamp survives via the text path.
+ok(dr._negation_differs("Minimum wage increases do not reduce teen employment",
+                        "Minimum wage increases reduce teen employment"),
+   "ADD direction fires categorically - a rewording never gains a negator")
+ok(dr._negation_differs("The intervention has an effect on employment",
+                        "The intervention has no effect on employment"),
+   "surgical DELETE fires: near-identical text, opposite claim (the v1.11 mirror stays closed)")
+ok(dr._negation_differs("Minimum wage increases reduce teen employment",
+                        "Minimum wage increases do not reduce teen employment"),
+   "and the registered-'do not' direction too - the conformance-pinned attack")
+_v10d = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                    "runs", "v10-hypothesis-matching.json"))
+                  ) if False else None
+import json as _j2
+_v10 = _j2.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                  "runs", "v10-hypothesis-matching.json")))
+ok(all(not dr._hyp_mismatch(dr._hyp_key(v["hypothesis"]), dr._hyp_key(h["hypothesis"]))
+       for h, v in zip(_v10["scopeContract"]["hypotheses"], _v10["hypothesisVerdicts"])),
+   "the v1.10.1 regression is fixed: all four v10 verdicts pass the number-path check, "
+   "including the faithful rewording of the null H1 - v1.11.0 re-accused it")
+ok(not dr._negation_differs("IF and CCR produce statistically similar fat loss under matched calorie deficits",
+                            "No meaningful difference: under matched calorie deficits, IF and CCR produce "
+                            "statistically similar fat loss, and the difference is adherence, not metabolic superiority"),
+   "a COMPACT rewording of a null (0.48-0.70 similarity) is not accused - the good reference")
+_nl_v = "H1: Under matched calorie deficits, IF and CCR produce statistically similar fat loss; the difference is adherence rather than metabolic superiority"
+_nl_r = "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
+ok(dr._negation_differs(_nl_v, _nl_r)
+   and not dr._same_hypothesis(dr._hyp_key(_nl_v), dr._hyp_key(_nl_r)),
+   "the NAMED LIMIT, pinned with its exact cost: the synonym-swap rewording ('not X' -> "
+   "'rather than X', 0.855) sits inside the attack band and fires in BOTH the number and "
+   "text paths - so it is marked post-hoc and loses the stamp. That is the UNDERSTATING "
+   "direction the repo's policy accepts, but note: v1.11's docstring claimed this shape "
+   "kept its stamp via the text path - false in its own shipped code, which gated both "
+   "paths with the same symmetric check")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 

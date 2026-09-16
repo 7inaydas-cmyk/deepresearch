@@ -974,7 +974,32 @@ const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).s
 // is two characters. Overlap 1.000. A registered NULL could be adjudicated as its exact
 // opposite and stamped a prediction that survived. The repo's policy is that a false
 // "pre-registered" is the failure to prevent and a false "post-hoc" only understates.
-const negationDiffers = (a, b) => isNegated(a) !== isNegated(b)
+// Direction-aware, measured - the fifth reversal of this check, and the docstring
+// in the Python twin carries the full history. ADD fires categorically (a rewording
+// never gains a negator); DROP fires only on the surgical deletion, detected by
+// CHARACTER similarity, the one axis where the two families separate:
+//   surgical negation deletion (must fire):  0.821 - 0.977
+//   faithful rewordings of nulls (must not): 0.492 - 0.697
+// Token measures cannot see this gap (0.933 vs 1.000). The bar sits mid-gap.
+const NEG_DROP_SIMILARITY = 0.75
+const lcsLen = (a, b) => {
+  // classic DP over hypothesis sentences - tens to hundreds of chars, not pages
+  let prev = new Array(b.length + 1).fill(0)
+  for (let i = 1; i <= a.length; i++) {
+    const cur = new Array(b.length + 1).fill(0)
+    for (let j = 1; j <= b.length; j++)
+      cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1])
+    prev = cur
+  }
+  return prev[b.length]
+}
+const charRatio = (a, b) => (2 * lcsLen(a, b)) / Math.max(1, a.length + b.length)
+const negationDiffers = (a, b) => {
+  const va = isNegated(a), ra = isNegated(b)
+  if (va === ra) return false
+  if (va && !ra) return true // the verdict ADDS a negation: never a rewording, always a flip
+  return charRatio(normHyp(a), normHyp(b)) >= NEG_DROP_SIMILARITY // DROP: surgical only
+}
 const hypMismatch = (verdictText, registeredText) => {
   // Negation first: overlap is blind to it in BOTH directions — adding one scores 1.000
   // and deleting one scores 1.000 too, since `not` is a stopword.

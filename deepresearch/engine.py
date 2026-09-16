@@ -30,7 +30,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, contextlib, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, contextlib, difflib, json, os, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -1278,6 +1278,11 @@ def is_nonanswer(text):
 # different answer wearing the same words, and it needs its own check rather than a
 # better number.
 _NEGATORS = frozenset(_HYP_WORDS["negators"])
+# Mid-gap between the surgical negation deletions (0.821-0.977, must fire) and the
+# faithful rewordings of null hypotheses (0.492-0.697, must not) - the measured table
+# in _negation_differs's docstring. Character similarity, not token coverage: the two
+# families are inseparable on tokens (0.933 vs 1.000) and wide apart on characters.
+_NEG_DROP_SIMILARITY = 0.75
 
 
 def _negated(text):
@@ -1288,35 +1293,53 @@ def _negated(text):
 def _negation_differs(a, b):
     """Do these two hypotheses disagree about whether they assert the negative?
 
-    SYMMETRIC, and that is a reversal of the previous release. v1.10.1 made this fire one
-    way - only a verdict ADDING a negation - to stop a faithful positive rewording of a
-    registered null hypothesis being marked post-hoc. Audited 2026-09-15, that reasoning
-    had the costs backwards:
+    Direction-aware since 2026-09-15, and the direction is measured, not asserted.
+    This check's history is five reversals, each correcting the previous one:
 
-      * the "false accusation" it was protecting against cost only the LABEL. The verdict
-        still stamped `preRegistered: true`, via the text path, at coverage 0.933. It lost
-        the certainty wording, not the stamp.
+      v1.10.0  symmetric   - falsely accused the null hypothesis: 2 of 4 registered
+               hypotheses in runs/v10 carry a negator ("No meaningful difference...
+               adherence, NOT metabolic superiority"), so a faithful positive
+               rewording of H1 came back mismatch=True.
+      v1.10.1  ADD-only    - closed the false accusation, opened the mirror: deleting
+               a registered negation keeps an IDENTICAL token set ("not" is a
+               stopword, "do" is two characters), so "no effect" registered was
+               adjudicated as its opposite at overlap 1.000 and stamped a survivor.
+      v1.11.0  symmetric   - closed the mirror, re-accused the null. Its cost
+               analysis was right that a false accusation costs the label while a
+               mirror costs the stamp - but its proposed guard ("fire only above the
+               coverage bar") was measured on the WRONG AXIS: token coverage, where
+               the faithful v10 rewording scores 0.933 and cannot be separated from
+               the surgical deletion's 1.000.
+      this    ADD fires categorically; DROP fires only on near-identity. The two
+               families separate cleanly on CHARACTER similarity, which token
+               measures cannot see:
 
-      * the direction it left open cost the STAMP. A verdict that deletes the registered
-        negation and keeps every content word - "do not reduce" registered, "reduce"
-        adjudicated - has an IDENTICAL token set, because `not` is a stopword and `do` is
-        two characters. Overlap 1.000. A registered NULL hypothesis could be adjudicated
-        as its exact opposite and stamped a prediction that survived, which is the single
-        most flattering flip available and the precise failure this stamp exists to stop.
+                 surgical negation deletion (must fire):  0.821 - 0.977
+                 faithful rewordings of nulls (must not): 0.492 - 0.697
 
-    Across every archived run only 8 verdict/registered pairs carry a number and NONE
-    differ in negation, so neither shape is observed: this is a decision about which
-    unobserved failure to accept. The repo's policy, written above _same_hypothesis, is
-    that a false "pre-registered" is the failure to prevent and a false "post-hoc" only
-    understates. Symmetric follows from that, and the suggested alternative - fire only
-    above the coverage bar - was measured and re-breaks the v10 case at 0.933.
+               The bar sits at 0.75, mid-gap with margin both sides. A verdict that
+               ADDS a negation its hypothesis lacks is never a rewording - fire. A
+               verdict that DROPS one while remaining near-identical is the surgical
+               opposite - fire. A verdict that drops one while genuinely rewording
+               ("produce statistically similar fat loss" for "No meaningful
+               difference") is the v1.10.1 case falling to the text path, which
+               stamps it by coverage as before - losing nothing it had, and no
+               longer accused of not stating a hypothesis it does state.
 
-    A positive restatement of a null with no negator ("produce statistically similar fat
-    loss" for "No meaningful difference") is therefore marked post-hoc. That is a real
-    cost, it is the understating direction, and `preRegisteredBy` names it as a polarity
-    difference so a reader can see which one it was.
+    Terse residual, named rather than papered: on very short strings the ratio
+    compresses (a ~20-character pair cannot reach far above the bar), so a surgical
+    delete on a two-word hypothesis may pass - consistent with the terse-verdict
+    hole _hyp_mismatch already documents: below the token floor the number is
+    believed, and preRegisteredBy says which path stamped it.
     """
-    return _negated(a) != _negated(b)
+    va, ra = _negated(a), _negated(b)
+    if va == ra:
+        return False
+    if va and not ra:
+        return True  # the verdict ADDS a negation: never a rewording, always a flip
+    # The verdict DROPS a registered negation: fire only on the surgical deletion,
+    # not on a faithful compact rewording of a null - see the measured table above.
+    return difflib.SequenceMatcher(None, _hyp_key(a), _hyp_key(b)).ratio() >= _NEG_DROP_SIMILARITY
 
 
 def _hyp_mismatch(verdict_text, registered_text):

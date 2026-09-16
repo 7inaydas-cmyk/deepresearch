@@ -1,787 +1,796 @@
 {
-  "$comment": [
-    "Behavioural conformance for the pure decision logic, executed by BOTH runtimes, and",
-    "the good/bad references every gate must prove before a run starts.",
-    "",
-    "Why this file exists: tests/test_parity.py proves a marker STRING exists in each",
-    "build. That catches a feature nobody ported; it cannot catch a feature ported",
-    "WRONGLY, and it once passed a row whose JS marker was a comment describing the",
-    "mechanism. Every drift this repo has recorded was in logic of exactly this shape: a",
-    "pure function over plain data. So both runtimes are asked the same questions here and",
-    "must return the same answers.",
-    "",
-    "`instruments` says what each function IS. A `gate` accepts or rejects, so it carries",
-    "both a `good` reference it must accept and a `bad` one it must catch, and the",
-    "structural rule below is enforced on it. A `transform` maps input to output with no",
-    "verdict, so good/bad does not apply and only the answers are checked.",
-    "",
-    "THE STRUCTURAL RULE: every gate must have at least one `good` case and at least one",
-    "`bad` case, and in each runtime the bad references must produce at least one answer",
-    "no good reference produces. A gate whose bad references all answer the same as its",
-    "good ones has not been shown to reject anything, and a check that cannot fail is",
-    "indistinguishable from no check. This is the rule the parity markers failed for",
-    "years, and the rule catchRate failed by counting a partial as a catch.",
-    "",
-    "It runs at preflight, before any API call, not only in CI: a deployed copy with a",
-    "broken gate refuses to start rather than producing a report nobody can check.",
-    "",
-    "A case may carry `out_by_runtime` instead of `out` when the two builds legitimately",
-    "answer differently because the PLATFORM differs - URL parsing is the real instance.",
-    "That is not an escape hatch for drift: it pins both answers, so either one moving is",
-    "a failure, and `why` must say what makes the difference correct.",
-    "",
-    "`python_cases` holds gates the JS build genuinely does not have, each with the reason,",
-    "the same way tests/test_parity.py keeps PYTHON_ONLY honest."
+ "$comment": [
+  "Behavioural conformance for the pure decision logic, executed by BOTH runtimes, and",
+  "the good/bad references every gate must prove before a run starts.",
+  "",
+  "Why this file exists: tests/test_parity.py proves a marker STRING exists in each",
+  "build. That catches a feature nobody ported; it cannot catch a feature ported",
+  "WRONGLY, and it once passed a row whose JS marker was a comment describing the",
+  "mechanism. Every drift this repo has recorded was in logic of exactly this shape: a",
+  "pure function over plain data. So both runtimes are asked the same questions here and",
+  "must return the same answers.",
+  "",
+  "`instruments` says what each function IS. A `gate` accepts or rejects, so it carries",
+  "both a `good` reference it must accept and a `bad` one it must catch, and the",
+  "structural rule below is enforced on it. A `transform` maps input to output with no",
+  "verdict, so good/bad does not apply and only the answers are checked.",
+  "",
+  "THE STRUCTURAL RULE: every gate must have at least one `good` case and at least one",
+  "`bad` case, and in each runtime the bad references must produce at least one answer",
+  "no good reference produces. A gate whose bad references all answer the same as its",
+  "good ones has not been shown to reject anything, and a check that cannot fail is",
+  "indistinguishable from no check. This is the rule the parity markers failed for",
+  "years, and the rule catchRate failed by counting a partial as a catch.",
+  "",
+  "It runs at preflight, before any API call, not only in CI: a deployed copy with a",
+  "broken gate refuses to start rather than producing a report nobody can check.",
+  "",
+  "A case may carry `out_by_runtime` instead of `out` when the two builds legitimately",
+  "answer differently because the PLATFORM differs - URL parsing is the real instance.",
+  "That is not an escape hatch for drift: it pins both answers, so either one moving is",
+  "a failure, and `why` must say what makes the difference correct.",
+  "",
+  "`python_cases` holds gates the JS build genuinely does not have, each with the reason,",
+  "the same way tests/test_parity.py keeps PYTHON_ONLY honest."
+ ],
+ "instruments": {
+  "webtext": "transform",
+  "tier_of": "transform",
+  "as_list": "transform",
+  "host_ambiguous": "gate",
+  "same_hypothesis": "gate",
+  "shape_problems": "gate",
+  "quote_span": "gate",
+  "is_prose": "gate",
+  "looks_challenged": "gate",
+  "calibration_verdict": "gate",
+  "evidence_base": "gate",
+  "is_nonanswer": "gate",
+  "hyp_mismatch": "gate"
+ },
+ "cases": {
+  "webtext": [
+   {
+    "in": [
+     "xxxxxxxxxxxxxxxxxxxx",
+     5
+    ],
+    "out": "xxxxx…",
+    "why": "a cap TRUNCATES. The JS helper took one parameter for months while seven call sites passed a length, so JavaScript discarded it in silence and shipped untruncated model text into prompts the Python twin bounded"
+   },
+   {
+    "in": [
+     "short",
+     100
+    ],
+    "out": "short",
+    "why": "a string under the cap is returned whole, with no ellipsis"
+   },
+   {
+    "in": [
+     "short",
+     null
+    ],
+    "out": "short",
+    "why": "no cap means no truncation"
+   },
+   {
+    "in": [
+     null,
+     null
+    ],
+    "out": "",
+    "why": "null becomes an empty string, not the text 'null' - String(null) in JS gives 'null' and would have put that word in a prompt"
+   },
+   {
+    "in": [
+     "a\tb\nc",
+     null
+    ],
+    "out": "a b c",
+    "why": "tabs and newlines collapse, so a model cannot forge prompt structure with whitespace"
+   }
   ],
-  "instruments": {
-    "webtext": "transform",
-    "tier_of": "transform",
-    "as_list": "transform",
-    "host_ambiguous": "gate",
-    "same_hypothesis": "gate",
-    "shape_problems": "gate",
-    "quote_span": "gate",
-    "is_prose": "gate",
-    "looks_challenged": "gate",
-    "calibration_verdict": "gate",
-    "evidence_base": "gate",
-    "is_nonanswer": "gate",
-    "hyp_mismatch": "gate"
-  },
-  "cases": {
-    "webtext": [
-      {
-        "in": [
-          "xxxxxxxxxxxxxxxxxxxx",
-          5
-        ],
-        "out": "xxxxx…",
-        "why": "a cap TRUNCATES. The JS helper took one parameter for months while seven call sites passed a length, so JavaScript discarded it in silence and shipped untruncated model text into prompts the Python twin bounded"
-      },
-      {
-        "in": [
-          "short",
-          100
-        ],
-        "out": "short",
-        "why": "a string under the cap is returned whole, with no ellipsis"
-      },
-      {
-        "in": [
-          "short",
-          null
-        ],
-        "out": "short",
-        "why": "no cap means no truncation"
-      },
-      {
-        "in": [
-          null,
-          null
-        ],
-        "out": "",
-        "why": "null becomes an empty string, not the text 'null' - String(null) in JS gives 'null' and would have put that word in a prompt"
-      },
-      {
-        "in": [
-          "a\tb\nc",
-          null
-        ],
-        "out": "a b c",
-        "why": "tabs and newlines collapse, so a model cannot forge prompt structure with whitespace"
-      }
+  "tier_of": [
+   {
+    "in": [
+     "https://arxiv.org/abs/1"
     ],
-    "tier_of": [
-      {
-        "in": [
-          "https://arxiv.org/abs/1"
-        ],
-        "out": "T1",
-        "why": "a preprint server is primary"
-      },
-      {
-        "in": [
-          "https://www.nature.com/x"
-        ],
-        "out": "T2",
-        "why": "www. is stripped before the host rule runs"
-      },
-      {
-        "in": [
-          "https://researchgate.net/p"
-        ],
-        "out": "T4",
-        "why": "the ORIGINAL drift: T4 discovery-only in Python, T3 citable in JS, while the marker row for tierOf passed the whole time"
-      },
-      {
-        "in": [
-          "https://listverse.com/top-10"
-        ],
-        "out": "T5",
-        "why": "excluded-grade content farm - JS had no T5 host list at all"
-      },
-      {
-        "in": [
-          "https://doi.org/10.1/x"
-        ],
-        "out": "T?",
-        "why": "a resolver is not a publisher: provenance is unverified until it is followed"
-      },
-      {
-        "in": [
-          "https://somerandomblog.xyz/p"
-        ],
-        "out": "T3",
-        "why": "an unclassified host defaults to the practitioner tier, never to excluded"
-      },
-      {
-        "in": [
-          "https://nature.com@evil.xyz/x"
-        ],
-        "out": "T3",
-        "why": "userinfo before @ is NOT the host - grading this T2 would let any URL borrow a trusted domain's tier"
-      }
+    "out": "T1",
+    "why": "a preprint server is primary"
+   },
+   {
+    "in": [
+     "https://www.nature.com/x"
     ],
-    "as_list": [
-      {
-        "in": [
-          "[\"a\",\"b\"]"
-        ],
-        "out": [
-          "a",
-          "b"
-        ],
-        "why": "a double-encoded array is recovered, not discarded - it arrived as a JSON string holding the items"
-      },
-      {
-        "in": [
-          "<item>a</item><item>b</item>"
-        ],
-        "out": [
-          "a",
-          "b"
-        ],
-        "why": "and so is a tag-wrapped one"
-      },
-      {
-        "in": [
-          [
-            "a",
-            "b"
-          ]
-        ],
-        "out": [
-          "a",
-          "b"
-        ],
-        "why": "a real array passes through untouched"
-      },
-      {
-        "in": [
-          null
-        ],
-        "out": [],
-        "why": "a missing field is an empty list, never a crash"
-      }
+    "out": "T2",
+    "why": "www. is stripped before the host rule runs"
+   },
+   {
+    "in": [
+     "https://researchgate.net/p"
     ],
-    "host_ambiguous": [
-      {
-        "in": [
-          "https://www.nature.com/x"
-        ],
-        "out": false,
-        "why": "an ordinary URL is not ambiguous",
-        "ref": "good"
-      },
-      {
-        "in": [
-          "https://a@b@nature.com/x"
-        ],
-        "out": false,
-        "why": "and neither is ordinary userinfo: both parsers read nature.com",
-        "ref": "good"
-      },
-      {
-        "in": [
-          "https://[::1]/x"
-        ],
-        "out": true,
-        "why": "an IPv6 literal IS ambiguous in both builds - the host regex stops at the first colon and reads '[' while the standard parser reads '[::1]'. Found by probing THIS gate for a reference it actually catches, which is the point of the rule",
-        "ref": "bad"
-      }
+    "out": "T4",
+    "why": "the ORIGINAL drift: T4 discovery-only in Python, T3 citable in JS, while the marker row for tierOf passed the whole time"
+   },
+   {
+    "in": [
+     "https://listverse.com/top-10"
     ],
-    "same_hypothesis": [
-      {
-        "in": [
-          "H1: Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive",
-          "Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive"
-        ],
-        "out": true,
-        "why": "an 'H1:' relabelling still matches the hypothesis it adjudicates",
-        "ref": "good"
-      },
-      {
-        "in": [
-          "Minimum wage increases reduce employment, and the reduction persists for at least a decade after passage",
-          "Minimum wage increases reduce employment"
-        ],
-        "out": false,
-        "why": "a post-hoc SUPERSET is not pre-registered: it contains the registered text and all its content words, which is why min()-denominator overlap scored it 1.0",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          "output is unstable",
-          "output is stable"
-        ],
-        "out": false,
-        "why": "two OPPOSITE terse hypotheses are not the same one - the character fallback both builds used scored this pair 1.000 and 0.941",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          "something nobody ever registered anywhere",
-          "Nudges remain broadly effective across behavioural domains"
-        ],
-        "out": false,
-        "why": "an invented hypothesis does not match, or the stamp means nothing",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          "",
-          "Nudges remain broadly effective"
-        ],
-        "out": false,
-        "why": "an empty side never matches, so a missing hypothesis is never called pre-registered",
-        "ref": "bad"
-      }
+    "out": "T5",
+    "why": "excluded-grade content farm - JS had no T5 host list at all"
+   },
+   {
+    "in": [
+     "https://doi.org/10.1/x"
     ],
-    "shape_problems": [
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "s"
-            ],
-            "properties": {
-              "s": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "s": ""
-          }
-        ],
-        "out": 0,
-        "why": "an EMPTY string passes: an auditor that legitimately found no quote must be able to say so",
-        "ref": "good"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "n"
-            ],
-            "properties": {
-              "n": {
-                "type": "integer"
-              }
-            }
-          },
-          {
-            "n": 3.0
-          }
-        ],
-        "out": 0,
-        "why": "an integral float is accepted: JSON has no int/float distinction, so 3.0 and 3 are the same value",
-        "ref": "good"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "s"
-            ],
-            "properties": {
-              "s": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "s": 123
-          }
-        ],
-        "out": 1,
-        "why": "a declared string rejects a number - `required` only ever meant key-present, which hollowed out the locatedQuote fix in both builds",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "s"
-            ],
-            "properties": {
-              "s": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "s": true
-          }
-        ],
-        "out": 1,
-        "why": "and a boolean",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "s"
-            ],
-            "properties": {
-              "s": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "s": [
-              "t"
-            ]
-          }
-        ],
-        "out": 1,
-        "why": "and an array",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "n"
-            ],
-            "properties": {
-              "n": {
-                "type": "integer"
-              }
-            }
-          },
-          {
-            "n": "5"
-          }
-        ],
-        "out": 1,
-        "why": "ADR-0001: the seam retries rather than coerces, and int('5') was the one leaf violating it",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "n"
-            ],
-            "properties": {
-              "n": {
-                "type": "integer"
-              }
-            }
-          },
-          {
-            "n": 3.7
-          }
-        ],
-        "out": 1,
-        "why": "a fractional float is data loss - truncating it landed a coverage row in the wrong sub-question bucket",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "n"
-            ],
-            "properties": {
-              "n": {
-                "type": "integer"
-              }
-            }
-          },
-          {
-            "n": true
-          }
-        ],
-        "out": 1,
-        "why": "a bool is not an integer, even though Python says isinstance(True, int)",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "b"
-            ],
-            "properties": {
-              "b": {
-                "type": "boolean"
-              }
-            }
-          },
-          {
-            "b": "true"
-          }
-        ],
-        "out": 1,
-        "why": "and the string 'true' is not a boolean",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          {
-            "type": "object",
-            "required": [
-              "s"
-            ],
-            "properties": {
-              "s": {
-                "type": "string"
-              }
-            }
-          },
-          {}
-        ],
-        "out": 1,
-        "why": "a missing required key is still a problem - this is what `required` always did mean",
-        "ref": "bad"
-      }
+    "out": "T?",
+    "why": "a resolver is not a publisher: provenance is unverified until it is followed"
+   },
+   {
+    "in": [
+     "https://somerandomblog.xyz/p"
     ],
-    "is_nonanswer": [
-      {
-        "in": [
-          "The conclusion rests almost entirely on two crossover RCTs whose participants were recruited from a single university, and selection into those trials plausibly correlates with the outcome measured. If baseline brain creatine is the real moderator, the pooled estimate is an average over two different populations and means little for either."
-        ],
-        "out": false,
-        "ref": "good",
-        "why": "a real steelman is an answer and is left alone"
-      },
-      {
-        "in": [
-          "Selection bias is the live risk here: see the coverage gaps above for which sub-questions went unanswered, and note that the two largest trials shared an author team."
-        ],
-        "out": false,
-        "ref": "good",
-        "why": "and so is an argument that happens to CITE another section mid-sentence - the check is anchored at both ends so it catches a field that is ONLY a pointer, never one that refers to something while also arguing"
-      },
-      {
-        "in": [
-          "See strongestArgumentAgainst field above (duplicate not needed)."
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "the verbatim string from runs/calibration-2026-09-06.json. Five of 21 recorded runs published a strongestArgumentAgainst pointing at itself, and in none of them does the argument exist anywhere else in the report - a 24% silent-content rate on the one field whose job is to argue against the answer"
-      },
-      {
-        "in": [
-          "See strongestArgumentAgainst field above (also populated in dedicated field)."
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "and the variant from the live run of 2026-09-15, which also invented a sibling key `strongestArgumentAgainst_unused` holding an empty string"
-      },
-      {
-        "in": [
-          ""
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "an empty mandatory field is a non-answer too - `required` only ever meant key-present"
-      },
-      {
-        "in": [
-          "N/A"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "and so is a refusal token"
-      },
-      {
-        "in": [
-          "See above for the coverage gaps; the deeper risk is that both trials shared an author team, so the pooled estimate may be one lab counted twice."
-        ],
-        "out": false,
-        "ref": "good",
-        "why": "a GENUINE argument that opens by citing another section. The first version paired the pointer with a length test and replaced this with 'NOT PRODUCED' - the check deleting real evidence, which is worse than letting a padded pointer through"
-      },
-      {
-        "in": [
-          "See strongestArgumentAgainst field above (duplicate not needed). This note is retained for completeness and does not itself contain the argument. This note is retained for completeness and does not itself contain the argument."
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged so it counts toward neither half of the structural rule. It pins the NAMED LIMIT: a pointer followed by enough filler passes, because no lexical rule separates filler from argument - the same limit already recorded for the hypothesis matcher. Expected False records what the code does, not what would be correct. If a future change catches it, this case fails and the limit is closed"
-      }
+    "out": "T3",
+    "why": "an unclassified host defaults to the practitioner tier, never to excluded"
+   },
+   {
+    "in": [
+     "https://nature.com@evil.xyz/x"
     ],
-    "evidence_base": [
-      {
-        "in": [
-          [
-            {
-              "tier": "T2",
-              "claims": 3
-            }
-          ]
-        ],
-        "out": 1,
-        "why": "a citable source that produced a claim counts",
-        "ref": "good"
-      },
-      {
-        "in": [
-          [
-            {
-              "tier": "T2",
-              "claims": 0
-            }
-          ]
-        ],
-        "out": 0,
-        "why": "a fetched-but-silent source does NOT - the thinness gate counted paywalled shells that yielded nothing",
-        "ref": "bad"
-      }
+    "out": "T3",
+    "why": "userinfo before @ is NOT the host - grading this T2 would let any URL borrow a trusted domain's tier"
+   }
+  ],
+  "as_list": [
+   {
+    "in": [
+     "[\"a\",\"b\"]"
     ],
-    "hyp_mismatch": [
-      {
-        "in": [
-          "H1: Minimum wage rises modestly lower teen employment over the first two years",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": false,
-        "why": "a genuine rewording naming the right number is still believed: this overrules on SUBJECT, never on wording",
-        "ref": "good"
-      },
-      {
-        "in": [
-          "Minimum wage increases reduce teen employment only among part-time workers",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "the round-2 SUPERSET, back through the number path. A verdict that swaps the registered scope for a different one scores 0.545 and, at the first bar of 0.40, was stamped preRegistered: true with preRegisteredBy: hypothesisNumber - certainty, for a different claim about the same subject. The gate certified while this adjacent attack walked past it, which is the vacuity the structural rule exists to catch"
-      },
-      {
-        "in": [
-          "Minimum wage increases reduce teen employment",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": false,
-        "ref": "good",
-        "why": "the SUBSET, which is the case hypothesisNumber exists for at all: a verdict that drops a qualifier has every one of its words inside the registered hypothesis, so it scores 1.000 and the number is believed. Raising the bar must never cost this"
-      },
-      {
-        "in": [
-          "The minimum wage increase caused a decade-long employment decline across all age groups",
-          "Minimum wage increases reduce teen employment modestly in the first two years"
-        ],
-        "out": true,
-        "why": "a verdict whose text adjudicates something never registered is caught whatever number it declares - hypothesisNumber was authoritative with nothing examined",
-        "ref": "bad"
-      },
-      {
-        "in": [
-          "Minimum wage increases do not reduce teen employment",
-          "Minimum wage increases reduce teen employment"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "a flat NEGATION - the opposite hypothesis. Content-token overlap is 1.000 because 'not' is a stopword and 'do' is two characters, so every threshold passes it and the opposite claim was stamped preRegistered: true with the certainty label. Third time a similarity measure here has been blind to a negation: the character bag scored 'output is stable' against 'output is unstable' at 1.000, SequenceMatcher 0.941, and the token measure that replaced both scores this at 1.000. Polarity is categorical and is checked before any coverage"
-      },
-      {
-        "in": [
-          "Minimum wage increases have no effect on teen employment",
-          "Minimum wage increases reduce teen employment"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "and a negation phrased as an absence, not a 'not'"
-      },
-      {
-        "in": [
-          "Minimum wage increases eliminate teen employment",
-          "Minimum wage increases reduce teen employment"
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged. It pins a NAMED LIMIT: an intensity change scores 0.833 and passes, as does a reversed causal direction at 0.714. No lexical rule catches either, which is why preRegisteredBy now says 'subject, scope and polarity checked - not that the claim is identical' rather than reading as certainty. Expected False records what the code does, not what would be correct"
-      },
-      {
-        "in": [
-          "H1: Under matched calorie deficits, IF and CCR produce statistically similar fat loss; the difference is adherence rather than metabolic superiority",
-          "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "REVERSED 2026-09-15, deliberately, and this case records the reversal rather than hiding it. It previously expected False: a faithful positive rewording of a registered NULL hypothesis must not be marked post-hoc. That policy was set to stop a 'false accusation' - and the accusation cost only the LABEL, because the verdict still stamped preRegistered: true via the text path at coverage 0.933. Meanwhile the direction it left open cost the STAMP: deleting a registered negation while keeping every content word gives an IDENTICAL token set (`not` is a stopword, `do` is two characters), overlap 1.000, so a registered null could be adjudicated as its exact opposite and stamped a surviving prediction. Across every archived run only 8 verdict/registered pairs carry a number and NONE differ in negation, so this is a choice between two unobserved failures - and the policy written above _same_hypothesis says a false 'pre-registered' is the one to prevent while a false 'post-hoc' only understates. A positive restatement of a null is therefore marked post-hoc, which is a real cost, taken knowingly, in the understating direction"
-      },
-      {
-        "in": [
-          "Minimum wage increases raise teen employment",
-          "Minimum wage increases reduce teen employment"
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged. A NAMED LIMIT: an antonym flip carries no negator word, so it covers 0.833 and passes. That is a genuine polarity flip the check does not catch, which is why preRegisteredBy says 'added negation checked - NOT polarity'. Expected False records what the code does, not what would be correct"
-      },
-      {
-        "in": [
-          "Teen employment reductions cause minimum wage increases",
-          "Minimum wage increases reduce teen employment"
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged. The other NAMED LIMIT: a reversed causal direction covers 0.714 and passes. A review noted this case existed only inside another case's prose rather than as its own pinned pair, so here it is"
-      },
-      {
-        "in": [
-          "Minimum wage increases are not unlikely to reduce teen employment",
-          "Minimum wage increases are not likely to reduce teen employment"
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged. A NAMED LIMIT, and the sneakiest instance of it: BOTH sides carry a negator, so the added-negation check correctly does not fire, and the flip lives in 'unlikely' against 'likely' - an antonym inside a negation. Coverage 0.857, passes. The negation check LOOKS like it should catch this one, which is exactly why it is pinned rather than left to a reader's assumption"
-      },
-      {
-        "in": [
-          "not larger",
-          "not smaller"
-        ],
-        "out": false,
-        "why": "NOT a reference, deliberately untagged. The terse hole and an antonym flip at once: one content token after stopwords, so the _HYP_MIN_TOKENS guard returns before any coverage is scored. Two known limits stacked, pinned so a change to either shows up here"
-      },
-      {
-        "in": [
-          "Minimum wage increases reduce teen employment",
-          "Minimum wage increases do not reduce teen employment"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "THE MINIMAL-DELETE MIRROR. The verdict deletes the registered negation and keeps every content word, so the token sets are identical and overlap is 1.000 - `not` is a stopword and `do` is two characters. The one-directional check of v1.10.1 did not fire (nothing was ADDED) and the text path was blind by the same 1.000, so a registered hypothesis could be adjudicated as its exact opposite and stamped a prediction that survived"
-      },
-      {
-        "in": [
-          "The intervention has an effect on employment",
-          "The intervention has no effect on employment"
-        ],
-        "out": true,
-        "ref": "bad",
-        "why": "and the same flip from a registered NULL, which is the flattering direction: 'no effect' registered, 'an effect' claimed. This is the shape the whole pre-registration stamp exists to make impossible"
+    "out": [
+     "a",
+     "b"
+    ],
+    "why": "a double-encoded array is recovered, not discarded - it arrived as a JSON string holding the items"
+   },
+   {
+    "in": [
+     "<item>a</item><item>b</item>"
+    ],
+    "out": [
+     "a",
+     "b"
+    ],
+    "why": "and so is a tag-wrapped one"
+   },
+   {
+    "in": [
+     [
+      "a",
+      "b"
+     ]
+    ],
+    "out": [
+     "a",
+     "b"
+    ],
+    "why": "a real array passes through untouched"
+   },
+   {
+    "in": [
+     null
+    ],
+    "out": [],
+    "why": "a missing field is an empty list, never a crash"
+   }
+  ],
+  "host_ambiguous": [
+   {
+    "in": [
+     "https://www.nature.com/x"
+    ],
+    "out": false,
+    "why": "an ordinary URL is not ambiguous",
+    "ref": "good"
+   },
+   {
+    "in": [
+     "https://a@b@nature.com/x"
+    ],
+    "out": false,
+    "why": "and neither is ordinary userinfo: both parsers read nature.com",
+    "ref": "good"
+   },
+   {
+    "in": [
+     "https://[::1]/x"
+    ],
+    "out": true,
+    "why": "an IPv6 literal IS ambiguous in both builds - the host regex stops at the first colon and reads '[' while the standard parser reads '[::1]'. Found by probing THIS gate for a reference it actually catches, which is the point of the rule",
+    "ref": "bad"
+   }
+  ],
+  "same_hypothesis": [
+   {
+    "in": [
+     "H1: Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive",
+     "Nudges remain broadly effective: bias-corrected effect sizes are attenuated but still meaningfully positive"
+    ],
+    "out": true,
+    "why": "an 'H1:' relabelling still matches the hypothesis it adjudicates",
+    "ref": "good"
+   },
+   {
+    "in": [
+     "Minimum wage increases reduce employment, and the reduction persists for at least a decade after passage",
+     "Minimum wage increases reduce employment"
+    ],
+    "out": false,
+    "why": "a post-hoc SUPERSET is not pre-registered: it contains the registered text and all its content words, which is why min()-denominator overlap scored it 1.0",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     "output is unstable",
+     "output is stable"
+    ],
+    "out": false,
+    "why": "two OPPOSITE terse hypotheses are not the same one - the character fallback both builds used scored this pair 1.000 and 0.941",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     "something nobody ever registered anywhere",
+     "Nudges remain broadly effective across behavioural domains"
+    ],
+    "out": false,
+    "why": "an invented hypothesis does not match, or the stamp means nothing",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     "",
+     "Nudges remain broadly effective"
+    ],
+    "out": false,
+    "why": "an empty side never matches, so a missing hypothesis is never called pre-registered",
+    "ref": "bad"
+   }
+  ],
+  "shape_problems": [
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "s"
+      ],
+      "properties": {
+       "s": {
+        "type": "string"
+       }
       }
-    ]
-  },
-  "python_cases": {
-    "quote_span": {
-      "why_python_only": "Locating a quote needs the exact page text the extractor was shown, and in the JS build that text never reaches the orchestrator - its extract subagent calls the runtime's WebFetch itself and returns only the claim.",
-      "cases": [
-        {
-          "in": [
-            "The trial found that profits rose 3 percent in the treated arm, a result the authors attribute to scheduling effects rather than headcount, and the effect persisted at 12 months.",
-            "profits rose 3 percent in the treated arm"
-          ],
-          "out": "located",
-          "why": "a quote that is on the page is found",
-          "ref": "good"
-        },
-        {
-          "in": [
-            "The trial found that profits rose 3 percent in the treated arm, a result the authors attribute to scheduling effects rather than headcount, and the effect persisted at 12 months.",
-            "profits fell 9 percent in the control arm"
-          ],
-          "out": "not-found",
-          "why": "and one that is not is NOT laundered into a citation - the first version of this check was exact-match-or-nothing and called a real quote not-found, which manufactures fabrication",
-          "ref": "bad"
-        }
+     },
+     {
+      "s": ""
+     }
+    ],
+    "out": 0,
+    "why": "an EMPTY string passes: an auditor that legitimately found no quote must be able to say so",
+    "ref": "good"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "n"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       }
+      }
+     },
+     {
+      "n": 3.0
+     }
+    ],
+    "out": 0,
+    "why": "an integral float is accepted: JSON has no int/float distinction, so 3.0 and 3 are the same value",
+    "ref": "good"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "s"
+      ],
+      "properties": {
+       "s": {
+        "type": "string"
+       }
+      }
+     },
+     {
+      "s": 123
+     }
+    ],
+    "out": 1,
+    "why": "a declared string rejects a number - `required` only ever meant key-present, which hollowed out the locatedQuote fix in both builds",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "s"
+      ],
+      "properties": {
+       "s": {
+        "type": "string"
+       }
+      }
+     },
+     {
+      "s": true
+     }
+    ],
+    "out": 1,
+    "why": "and a boolean",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "s"
+      ],
+      "properties": {
+       "s": {
+        "type": "string"
+       }
+      }
+     },
+     {
+      "s": [
+       "t"
       ]
+     }
+    ],
+    "out": 1,
+    "why": "and an array",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "n"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       }
+      }
+     },
+     {
+      "n": "5"
+     }
+    ],
+    "out": 1,
+    "why": "ADR-0001: the seam retries rather than coerces, and int('5') was the one leaf violating it",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "n"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       }
+      }
+     },
+     {
+      "n": 3.7
+     }
+    ],
+    "out": 1,
+    "why": "a fractional float is data loss - truncating it landed a coverage row in the wrong sub-question bucket",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "n"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       }
+      }
+     },
+     {
+      "n": true
+     }
+    ],
+    "out": 1,
+    "why": "a bool is not an integer, even though Python says isinstance(True, int)",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "b"
+      ],
+      "properties": {
+       "b": {
+        "type": "boolean"
+       }
+      }
+     },
+     {
+      "b": "true"
+     }
+    ],
+    "out": 1,
+    "why": "and the string 'true' is not a boolean",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     {
+      "type": "object",
+      "required": [
+       "s"
+      ],
+      "properties": {
+       "s": {
+        "type": "string"
+       }
+      }
+     },
+     {}
+    ],
+    "out": 1,
+    "why": "a missing required key is still a problem - this is what `required` always did mean",
+    "ref": "bad"
+   }
+  ],
+  "is_nonanswer": [
+   {
+    "in": [
+     "The conclusion rests almost entirely on two crossover RCTs whose participants were recruited from a single university, and selection into those trials plausibly correlates with the outcome measured. If baseline brain creatine is the real moderator, the pooled estimate is an average over two different populations and means little for either."
+    ],
+    "out": false,
+    "ref": "good",
+    "why": "a real steelman is an answer and is left alone"
+   },
+   {
+    "in": [
+     "Selection bias is the live risk here: see the coverage gaps above for which sub-questions went unanswered, and note that the two largest trials shared an author team."
+    ],
+    "out": false,
+    "ref": "good",
+    "why": "and so is an argument that happens to CITE another section mid-sentence - the check is anchored at both ends so it catches a field that is ONLY a pointer, never one that refers to something while also arguing"
+   },
+   {
+    "in": [
+     "See strongestArgumentAgainst field above (duplicate not needed)."
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "the verbatim string from runs/calibration-2026-09-06.json. Five of 21 recorded runs published a strongestArgumentAgainst pointing at itself, and in none of them does the argument exist anywhere else in the report - a 24% silent-content rate on the one field whose job is to argue against the answer"
+   },
+   {
+    "in": [
+     "See strongestArgumentAgainst field above (also populated in dedicated field)."
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "and the variant from the live run of 2026-09-15, which also invented a sibling key `strongestArgumentAgainst_unused` holding an empty string"
+   },
+   {
+    "in": [
+     ""
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "an empty mandatory field is a non-answer too - `required` only ever meant key-present"
+   },
+   {
+    "in": [
+     "N/A"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "and so is a refusal token"
+   },
+   {
+    "in": [
+     "See above for the coverage gaps; the deeper risk is that both trials shared an author team, so the pooled estimate may be one lab counted twice."
+    ],
+    "out": false,
+    "ref": "good",
+    "why": "a GENUINE argument that opens by citing another section. The first version paired the pointer with a length test and replaced this with 'NOT PRODUCED' - the check deleting real evidence, which is worse than letting a padded pointer through"
+   },
+   {
+    "in": [
+     "See strongestArgumentAgainst field above (duplicate not needed). This note is retained for completeness and does not itself contain the argument. This note is retained for completeness and does not itself contain the argument."
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged so it counts toward neither half of the structural rule. It pins the NAMED LIMIT: a pointer followed by enough filler passes, because no lexical rule separates filler from argument - the same limit already recorded for the hypothesis matcher. Expected False records what the code does, not what would be correct. If a future change catches it, this case fails and the limit is closed"
+   }
+  ],
+  "evidence_base": [
+   {
+    "in": [
+     [
+      {
+       "tier": "T2",
+       "claims": 3
+      }
+     ]
+    ],
+    "out": 1,
+    "why": "a citable source that produced a claim counts",
+    "ref": "good"
+   },
+   {
+    "in": [
+     [
+      {
+       "tier": "T2",
+       "claims": 0
+      }
+     ]
+    ],
+    "out": 0,
+    "why": "a fetched-but-silent source does NOT - the thinness gate counted paywalled shells that yielded nothing",
+    "ref": "bad"
+   }
+  ],
+  "hyp_mismatch": [
+   {
+    "in": [
+     "H1: Minimum wage rises modestly lower teen employment over the first two years",
+     "Minimum wage increases reduce teen employment modestly in the first two years"
+    ],
+    "out": false,
+    "why": "a genuine rewording naming the right number is still believed: this overrules on SUBJECT, never on wording",
+    "ref": "good"
+   },
+   {
+    "in": [
+     "Minimum wage increases reduce teen employment only among part-time workers",
+     "Minimum wage increases reduce teen employment modestly in the first two years"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "the round-2 SUPERSET, back through the number path. A verdict that swaps the registered scope for a different one scores 0.545 and, at the first bar of 0.40, was stamped preRegistered: true with preRegisteredBy: hypothesisNumber - certainty, for a different claim about the same subject. The gate certified while this adjacent attack walked past it, which is the vacuity the structural rule exists to catch"
+   },
+   {
+    "in": [
+     "Minimum wage increases reduce teen employment",
+     "Minimum wage increases reduce teen employment modestly in the first two years"
+    ],
+    "out": false,
+    "ref": "good",
+    "why": "the SUBSET, which is the case hypothesisNumber exists for at all: a verdict that drops a qualifier has every one of its words inside the registered hypothesis, so it scores 1.000 and the number is believed. Raising the bar must never cost this"
+   },
+   {
+    "in": [
+     "The minimum wage increase caused a decade-long employment decline across all age groups",
+     "Minimum wage increases reduce teen employment modestly in the first two years"
+    ],
+    "out": true,
+    "why": "a verdict whose text adjudicates something never registered is caught whatever number it declares - hypothesisNumber was authoritative with nothing examined",
+    "ref": "bad"
+   },
+   {
+    "in": [
+     "Minimum wage increases do not reduce teen employment",
+     "Minimum wage increases reduce teen employment"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "a flat NEGATION - the opposite hypothesis. Content-token overlap is 1.000 because 'not' is a stopword and 'do' is two characters, so every threshold passes it and the opposite claim was stamped preRegistered: true with the certainty label. Third time a similarity measure here has been blind to a negation: the character bag scored 'output is stable' against 'output is unstable' at 1.000, SequenceMatcher 0.941, and the token measure that replaced both scores this at 1.000. Polarity is categorical and is checked before any coverage"
+   },
+   {
+    "in": [
+     "Minimum wage increases have no effect on teen employment",
+     "Minimum wage increases reduce teen employment"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "and a negation phrased as an absence, not a 'not'"
+   },
+   {
+    "in": [
+     "Minimum wage increases eliminate teen employment",
+     "Minimum wage increases reduce teen employment"
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged. It pins a NAMED LIMIT: an intensity change scores 0.833 and passes, as does a reversed causal direction at 0.714. No lexical rule catches either, which is why preRegisteredBy now says 'subject, scope and polarity checked - not that the claim is identical' rather than reading as certainty. Expected False records what the code does, not what would be correct"
+   },
+   {
+    "in": [
+     "H1: Under matched calorie deficits, IF and CCR produce statistically similar fat loss; the difference is adherence rather than metabolic superiority",
+     "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
+    ],
+    "out": true,
+    "ref": null,
+    "why": "NOT a reference, deliberately untagged. A NAMED LIMIT, and this case's fifth reversal is its last: v1.10.1 protected it, v1.11.0 killed it, and the direction-aware fix cannot save it either - because it is genuinely inseparable from the attack. This rewording swaps 'not metabolic superiority' for the synonymous 'rather than metabolic superiority', scoring 0.855 on character similarity - INSIDE the surgical-deletion band (0.821-0.977) that must fire: a verdict that deletes 'no' and keeps everything else is the mirror attack at 0.928-0.977, and no lexical bar separates a synonymous contrastive from a surgical deletion. Moving the bar above 0.855 would re-open the mirror for short hypotheses, whose token overlap is a perfect 1.000 in the coverage check below - the exact v1.11 bug. What it costs, corrected after measurement: the STAMP. v1.11 gated BOTH the number and text paths with the same symmetric check - its own docstring claimed this shape kept its stamp via the text path, which was false in its shipped code - so this verdict is marked post-hoc in both. That is the understating direction the repo's policy explicitly chooses, and it is stated as the stamp, not softened to a label. Expected True records what the code does and why nothing better is available; the compact-rewording case beside this one is the good reference that proves the fix works where separation exists"
+   },
+   {
+    "in": [
+     "Minimum wage increases raise teen employment",
+     "Minimum wage increases reduce teen employment"
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged. A NAMED LIMIT: an antonym flip carries no negator word, so it covers 0.833 and passes. That is a genuine polarity flip the check does not catch, which is why preRegisteredBy says 'added negation checked - NOT polarity'. Expected False records what the code does, not what would be correct"
+   },
+   {
+    "in": [
+     "Teen employment reductions cause minimum wage increases",
+     "Minimum wage increases reduce teen employment"
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged. The other NAMED LIMIT: a reversed causal direction covers 0.714 and passes. A review noted this case existed only inside another case's prose rather than as its own pinned pair, so here it is"
+   },
+   {
+    "in": [
+     "Minimum wage increases are not unlikely to reduce teen employment",
+     "Minimum wage increases are not likely to reduce teen employment"
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged. A NAMED LIMIT, and the sneakiest instance of it: BOTH sides carry a negator, so the added-negation check correctly does not fire, and the flip lives in 'unlikely' against 'likely' - an antonym inside a negation. Coverage 0.857, passes. The negation check LOOKS like it should catch this one, which is exactly why it is pinned rather than left to a reader's assumption"
+   },
+   {
+    "in": [
+     "not larger",
+     "not smaller"
+    ],
+    "out": false,
+    "why": "NOT a reference, deliberately untagged. The terse hole and an antonym flip at once: one content token after stopwords, so the _HYP_MIN_TOKENS guard returns before any coverage is scored. Two known limits stacked, pinned so a change to either shows up here"
+   },
+   {
+    "in": [
+     "Minimum wage increases reduce teen employment",
+     "Minimum wage increases do not reduce teen employment"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "THE MINIMAL-DELETE MIRROR. The verdict deletes the registered negation and keeps every content word, so the token sets are identical and overlap is 1.000 - `not` is a stopword and `do` is two characters. The one-directional check of v1.10.1 did not fire (nothing was ADDED) and the text path was blind by the same 1.000, so a registered hypothesis could be adjudicated as its exact opposite and stamped a prediction that survived"
+   },
+   {
+    "in": [
+     "The intervention has an effect on employment",
+     "The intervention has no effect on employment"
+    ],
+    "out": true,
+    "ref": "bad",
+    "why": "and the same flip from a registered NULL, which is the flattering direction: 'no effect' registered, 'an effect' claimed. This is the shape the whole pre-registration stamp exists to make impossible"
+   },
+   {
+    "in": [
+     "IF and CCR produce statistically similar fat loss under matched calorie deficits",
+     "No meaningful difference: under matched calorie deficits, IF and CCR produce statistically similar fat loss, and the difference is adherence, not metabolic superiority"
+    ],
+    "out": false,
+    "ref": "good",
+    "why": "The GOOD reference for the direction-aware rule: a COMPACT rewording of a registered null drops the negation-bearing framing along with real content (character similarity 0.479-0.697), which is what separates it from a surgical deletion (0.821-0.977). The ADD direction still fires categorically, and the DROP direction fires on near-identity - so this faithful rewording keeps its number-path stamp while the pinned surgical deletions stay killed. The v1.10.1 false accusation is closed without re-opening the v1.11.0 mirror, on the only axis where the two families separate at all"
+   }
+  ]
+ },
+ "python_cases": {
+  "quote_span": {
+   "why_python_only": "Locating a quote needs the exact page text the extractor was shown, and in the JS build that text never reaches the orchestrator - its extract subagent calls the runtime's WebFetch itself and returns only the claim.",
+   "cases": [
+    {
+     "in": [
+      "The trial found that profits rose 3 percent in the treated arm, a result the authors attribute to scheduling effects rather than headcount, and the effect persisted at 12 months.",
+      "profits rose 3 percent in the treated arm"
+     ],
+     "out": "located",
+     "why": "a quote that is on the page is found",
+     "ref": "good"
     },
-    "is_prose": {
-      "why_python_only": "The Python build parses PDF bytes itself, so it can measure whether the result is readable prose. The JS build never sees bytes.",
-      "cases": [
-        {
-          "in": [
-            "The study found that participants who used standing desks reported less discomfort over the twelve week period, although the authors note that the effect was concentrated among those who had previously reported back pain, and that the sample was drawn from a single office in one city, which limits how far the result can reasonably be generalised to other workplaces."
-          ],
-          "out": true,
-          "ref": "good",
-          "why": "real English prose passes both signals"
-        },
-        {
-          "in": [
-            "Cette etude montre que les participants ayant utilise des bureaux debout ont signale moins de gene pendant la periode de douze semaines, bien que les auteurs notent que cet effet etait concentre parmi ceux qui avaient deja signale des douleurs dorsales, et que echantillon provenait un seul bureau dans une seule ville, ce qui limite la portee du resultat pour autres lieux de travail."
-          ],
-          "out": true,
-          "ref": "good",
-          "why": "and so does a NON-ENGLISH paper - high letter ratio, zero English stopwords. This is the good reference the 'BOTH signals must fail' rule exists to protect, and the first bad reference written for this gate was a navigation wordlist, which is readable text and correctly passed. Writing the reference is what revealed that this gate detects binary wearing a text costume, not boilerplate"
-        },
-        {
-          "in": [
-            "a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b"
-          ],
-          "out": false,
-          "ref": "bad",
-          "why": "a PDF with a broken ToUnicode map is caught: 43% letters, 0.0 stopwords per 1000 chars, past the 40-word floor so it is the RATIO rule doing the work. digamoo.free.fr/neumark1994.pdf sailed through the old guard and the model returned four fluent, entirely invented quotes from it"
-        }
-      ]
-    },
-    "looks_challenged": {
-      "why_python_only": "search.py exists because the CLI has no WebSearch tool to borrow; the JS build uses the runtime's.",
-      "cases": [
-        {
-          "in": [
-            "<html><body><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p></body></html>"
-          ],
-          "out": false,
-          "why": "an ordinary results page is not an interstitial",
-          "ref": "good"
-        },
-        {
-          "in": [
-            "<html><title>Just a moment...</title><body><h1>Verify you are human</h1><p>Our systems have detected unusual traffic from your computer network.</p></body></html>"
-          ],
-          "out": true,
-          "why": "a challenge page is caught - and these markers were unreachable for a one-anchor interstitial while a comment promised they decided",
-          "ref": "bad"
-        }
-      ]
-    },
-    "calibration_verdict": {
-      "why_python_only": "calibration.py is the Python build's; the JS build reports its own kappa inline.",
-      "cases": [
-        {
-          "in": [
-            0.85,
-            40
-          ],
-          "out": "calibrated",
-          "why": "a powered, high-agreement run is calibrated",
-          "ref": "good"
-        },
-        {
-          "in": [
-            1.0,
-            10
-          ],
-          "out": "underpowered",
-          "why": "and kappa=1.0 at n=10 is NOT - that verdict was the whole complaint, and the gate may only ever be tightened",
-          "ref": "bad"
-        }
-      ]
+    {
+     "in": [
+      "The trial found that profits rose 3 percent in the treated arm, a result the authors attribute to scheduling effects rather than headcount, and the effect persisted at 12 months.",
+      "profits fell 9 percent in the control arm"
+     ],
+     "out": "not-found",
+     "why": "and one that is not is NOT laundered into a citation - the first version of this check was exact-match-or-nothing and called a real quote not-found, which manufactures fabrication",
+     "ref": "bad"
     }
+   ]
+  },
+  "is_prose": {
+   "why_python_only": "The Python build parses PDF bytes itself, so it can measure whether the result is readable prose. The JS build never sees bytes.",
+   "cases": [
+    {
+     "in": [
+      "The study found that participants who used standing desks reported less discomfort over the twelve week period, although the authors note that the effect was concentrated among those who had previously reported back pain, and that the sample was drawn from a single office in one city, which limits how far the result can reasonably be generalised to other workplaces."
+     ],
+     "out": true,
+     "ref": "good",
+     "why": "real English prose passes both signals"
+    },
+    {
+     "in": [
+      "Cette etude montre que les participants ayant utilise des bureaux debout ont signale moins de gene pendant la periode de douze semaines, bien que les auteurs notent que cet effet etait concentre parmi ceux qui avaient deja signale des douleurs dorsales, et que echantillon provenait un seul bureau dans une seule ville, ce qui limite la portee du resultat pour autres lieux de travail."
+     ],
+     "out": true,
+     "ref": "good",
+     "why": "and so does a NON-ENGLISH paper - high letter ratio, zero English stopwords. This is the good reference the 'BOTH signals must fail' rule exists to protect, and the first bad reference written for this gate was a navigation wordlist, which is readable text and correctly passed. Writing the reference is what revealed that this gate detects binary wearing a text costume, not boilerplate"
+    },
+    {
+     "in": [
+      "a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b a\u0001\u0002\u0003\u0004b"
+     ],
+     "out": false,
+     "ref": "bad",
+     "why": "a PDF with a broken ToUnicode map is caught: 43% letters, 0.0 stopwords per 1000 chars, past the 40-word floor so it is the RATIO rule doing the work. digamoo.free.fr/neumark1994.pdf sailed through the old guard and the model returned four fluent, entirely invented quotes from it"
+    }
+   ]
+  },
+  "looks_challenged": {
+   "why_python_only": "search.py exists because the CLI has no WebSearch tool to borrow; the JS build uses the runtime's.",
+   "cases": [
+    {
+     "in": [
+      "<html><body><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p><p>an ordinary page of search results about web servers. </p></body></html>"
+     ],
+     "out": false,
+     "why": "an ordinary results page is not an interstitial",
+     "ref": "good"
+    },
+    {
+     "in": [
+      "<html><title>Just a moment...</title><body><h1>Verify you are human</h1><p>Our systems have detected unusual traffic from your computer network.</p></body></html>"
+     ],
+     "out": true,
+     "why": "a challenge page is caught - and these markers were unreachable for a one-anchor interstitial while a comment promised they decided",
+     "ref": "bad"
+    }
+   ]
+  },
+  "calibration_verdict": {
+   "why_python_only": "calibration.py is the Python build's; the JS build reports its own kappa inline.",
+   "cases": [
+    {
+     "in": [
+      0.85,
+      40
+     ],
+     "out": "calibrated",
+     "why": "a powered, high-agreement run is calibrated",
+     "ref": "good"
+    },
+    {
+     "in": [
+      1.0,
+      10
+     ],
+     "out": "underpowered",
+     "why": "and kappa=1.0 at n=10 is NOT - that verdict was the whole complaint, and the gate may only ever be tightened",
+     "ref": "bad"
+    }
+   ]
   }
+ }
 }
