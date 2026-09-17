@@ -78,6 +78,7 @@ def _adapter():
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "_extract_json":       lambda text: dr._extract_json(text),
         "frontmatter_version": lambda content: _fm_via_tempfile(content),
+        "_firecrawl_markdown": lambda payload: dr._search._firecrawl_markdown(payload),
         "evidence_base":       lambda rows: dr._evidence_base(rows)["citableSources"],
         "is_nonanswer":        lambda text: dr.is_nonanswer(text),
     }

@@ -9,7 +9,7 @@ description: >
   API key beyond the Claude subscription. Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.14.0
+version: 1.14.1
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]
@@ -58,7 +58,10 @@ cd /opt/data/deepresearch-repo && DR_SEARXNG_URL=http://searxng:8080 python3 -m 
 ```
 
 `DR_SEARXNG_URL=http://searxng:8080` is what keeps this a web research tool rather than
-a literature search. Without it, DuckDuckGo and Mojeek challenge this host, every
+a literature search. Optionally add `DR_FIRECRAWL_URL=http://firecrawl:3002` on the
+same command: JS-heavy pages then come back as rendered markdown instead of parsed
+shells (any firecrawl failure falls back to the normal fetch ladder - see
+contrib/firecrawl/README.md; the instance is on the same docker network). Without it, DuckDuckGo and Mojeek challenge this host, every
 general-web backend returns zero, and the run quietly becomes scholarly-only while still
 reading as complete (#8). Verified reachable from this container on 2026-09-06. If the
 container is not running, `curl -s -m 5 http://searxng:8080/ >/dev/null` fails fast —

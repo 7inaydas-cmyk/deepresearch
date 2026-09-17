@@ -2817,12 +2817,28 @@ try:
        "a configured firecrawl serves its markdown first, and via names it")
     os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fc_down.server_address[1]
     _t2, _m2 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
-    ok(_m2.get("via") == "http",
-       "success:false from firecrawl falls back to the stdlib ladder - the run never depends on it")
+    ok(_m2.get("via") == "http" and "firecrawlFailed" in _m2,
+       "success:false from firecrawl falls back to the stdlib ladder AND names the failure "
+       "(firecrawlFailed) - a configured-but-dead instance leaves a trace, never silence")
     os.environ.pop("DR_FIRECRAWL_URL", None)
-    _t3, _m3 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
-    ok(_m3.get("via") == "http",
-       "unconfigured (the CI default) never attempts a firecrawl call at all")
+    # The honest form of the zero-calls claim: a COUNTING stub would see any attempt.
+    # via=='http' alone passes even if a call was made and failed - the review caught
+    # that overclaim, so count connections instead of inferring them.
+    class _FirecrawlCounter(_ProbeJSON):
+        hits = [0]
+        def do_POST(self):
+            self.hits[0] += 1
+            self.do_GET()
+    _fc_counter = _serve(_FirecrawlCounter)
+    try:
+        os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fc_counter.server_address[1]
+        os.environ.pop("DR_FIRECRAWL_URL", None)  # unconfigured: the counter must stay at 0
+        _t3, _m3 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
+        ok(_m3.get("via") == "http" and _FirecrawlCounter.hits[0] == 0,
+           "unconfigured (the CI default) makes ZERO firecrawl connections - counted, not inferred")
+    finally:
+        os.environ.pop("DR_FIRECRAWL_URL", None)
+        _fc_counter.shutdown()
 finally:
     os.environ.pop("DR_FIRECRAWL_URL", None)
     _fc_ok.shutdown(); _fc_down.shutdown(); _plain.shutdown()

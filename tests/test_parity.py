@@ -107,6 +107,11 @@ SHARED = {
 # Deliberately not shared. Each entry must say WHY, so this list cannot become a
 # dumping ground for "we forgot to port it".
 PYTHON_ONLY = {
+    "rendered-read fetch layer":
+        "Firecrawl rendering is a local service seam (DR_FIRECRAWL_URL, "
+        "opt-in, stdlib fallback ladder); the JS build's fetch is the Claude "
+        "Code runtime's WebFetch, which already renders - porting a second "
+        "renderer onto it would double the mechanism its runtime provides.",
     "contract persisted beside report":
         "The Workflow runtime has no filesystem, so the JS build cannot write "
         "<out>.contract.json. Its report carries the same scopeContract with provenance, "

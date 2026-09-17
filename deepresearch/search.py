@@ -855,17 +855,33 @@ def _try_wayback(url, cap, why):
         return None, None
 
 
-def _firecrawl(url: str, cap: int):
-    """One scrape through Firecrawl when DR_FIRECRAWL_URL names one.
+def _firecrawl_markdown(data) -> str | None:
+    """The markdown a /v1/scrape payload is worth, or None when it is worth
+    nothing. Pure: plain data in, plain data out, so its references live in
+    contract/conformance.json like every other decision of this shape."""
+    if not isinstance(data, dict) or not data.get("success"):
+        return None
+    md = ((data.get("data") or {}).get("markdown") or "")
+    return md if md.strip() else None
 
-    Self-hosted (docker compose, default port 3002, unauthenticated with
+
+def _try_firecrawl(url: str, cap: int):
+    """One best-effort scrape through Firecrawl when DR_FIRECRAWL_URL names one.
+
+    Self-hosted (docker compose, port 3002, unauthenticated with
     USE_DB_AUTHENTICATION=false) or remote - DR_FIRECRAWL_KEY adds a Bearer
-    header for the hosted API. Returns (None, None) on ANY failure - timeout,
-    non-200, success:false, empty or non-prose markdown - so the caller's
-    stdlib ladder proceeds untouched: firecrawl is an enhancement, never a
-    dependency, and an unconfigured or dead instance must cost one failed
-    request, not the run. The point is JS-heavy pages: the stdlib path reads
-    them as empty shells, and nothing downstream can tell a shell from a block.
+    header for the hosted API. There is NO code default: unset means fully off
+    and zero network attempts. On ANY failure - timeout, non-200,
+    success:false, empty or non-prose markdown - returns (None, why) so the
+    caller's stdlib ladder proceeds with the failure NAMED, never silent:
+    firecrawl is an enhancement, never a dependency. The point is JS-heavy
+    pages: the stdlib path reads them as empty shells, and nothing downstream
+    can tell a shell from a block.
+
+    20s, not the 60 it first shipped with: the timeout is paid PER UNIQUE URL
+    (and again on the audit's fresh re-fetch), so a black-holed instance must
+    cost about what _try_wayback's 10+30s ladder costs, not twice that.
+    Measured scrapes: 2-20s; a page slower than this belongs to the ladder.
     """
     base = os.environ.get("DR_FIRECRAWL_URL", "").rstrip("/")
     if not base:
@@ -877,17 +893,17 @@ def _firecrawl(url: str, cap: int):
     body = json.dumps({"url": url, "formats": ["markdown"], "waitFor": 2}).encode()
     req = urllib.request.Request(base + "/v1/scrape", data=body, method="POST", headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=20) as r:
             data = json.loads(r.read().decode("utf-8", "replace"))
-        md = ((data.get("data") or {}).get("markdown") or "")
-        if not data.get("success") or not md.strip():
-            return None, None
-        ok, _why, sig = is_prose(md)
-        if not ok:
-            return None, None
-        return md[:cap], {"via": "firecrawl", **sig}
-    except Exception:
-        return None, None
+    except Exception as e:
+        return None, "firecrawl %s: %s" % (type(e).__name__, e)
+    md = _firecrawl_markdown(data)
+    if md is None:
+        return None, "firecrawl answered with nothing usable"
+    ok, _why, sig = is_prose(md)
+    if not ok:
+        return None, "firecrawl markdown failed the prose gate: " + _why
+    return md[:cap], {"via": "firecrawl", **sig}
 
 
 def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
@@ -897,16 +913,20 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
     resolver is not fetchable — see the module docstring. With DR_FIRECRAWL_URL
     set, non-DOI fetches try Firecrawl FIRST (rendered markdown beats a parsed
     shell) and fall back to the stdlib ladder on any failure; `via` says which
-    served, so stats.fetchVia and the citation audit both stay honest.
+    served, so stats.fetchVia and the citation audit both stay honest. A DOI
+    whose Crossref record missed does NOT go to the scraper - a resolver URL is
+    not page content, and the ladder below already owns that case.
     """
     doi = doi_of(url)
     if doi:
         text, meta = crossref_record(doi)
         if text:
             return text[:cap], {"via": "crossref-api", **(meta or {})}
-    fc_text, fc_meta = _firecrawl(url, cap)
-    if fc_text:
-        return fc_text, fc_meta
+    fc_text = fc_meta = None
+    if not doi_in_url(url):
+        fc_text, fc_meta = _try_firecrawl(url, cap)
+        if fc_text:
+            return fc_text, fc_meta
     try:
         raw, ctype = _get_bytes(url, timeout=30)
         if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
@@ -921,7 +941,8 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
                     return wt, wm
                 return "", {"via": "pdf-unreadable", "error": why, **sig}
             return text[:cap], {"via": "pdf", **sig}
-        return _readable(_decode(raw))[:cap], {"via": "http"}
+        return _readable(_decode(raw))[:cap], dict({"via": "http"},
+                **({"firecrawlFailed": fc_meta} if fc_meta else {}))
     except Exception as e:
         # Blocked or broken. If the URL carries a DOI, the abstract is still reachable
         # through Crossref - an abstract is not the full text, and `via` says so, so the

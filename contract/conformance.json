@@ -49,7 +49,8 @@
   "is_nonanswer": "gate",
   "hyp_mismatch": "gate",
   "_extract_json": "gate",
-  "frontmatter_version": "gate"
+  "frontmatter_version": "gate",
+  "_firecrawl_markdown": "gate"
  },
  "cases": {
   "webtext": [
@@ -878,6 +879,68 @@
      "out": null,
      "ref": "bad",
      "why": "an absent file reads as None and never raises - three launch surfaces call this on every run"
+    }
+   ]
+  },
+  "_firecrawl_markdown": {
+   "why_python_only": "The rendered-read seam is Python-side: the JS build's fetch is the Claude Code runtime's WebFetch, which renders natively and never sees a /v1/scrape payload.",
+   "cases": [
+    {
+     "in": [
+      {
+       "success": true,
+       "data": {
+        "markdown": "# Page\n\nbody text"
+       }
+      }
+     ],
+     "out": "# Page\n\nbody text",
+     "ref": "good",
+     "why": "a successful payload's markdown is returned verbatim"
+    },
+    {
+     "in": [
+      {
+       "success": true,
+       "data": {
+        "markdown": "   "
+       }
+      }
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "blank markdown is nothing, not empty-string evidence"
+    },
+    {
+     "in": [
+      {
+       "success": false,
+       "error": "scrape failed"
+      }
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "success:false carries no page, whatever else it says"
+    },
+    {
+     "in": [
+      {
+       "data": {
+        "markdown": "text"
+       }
+      }
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "a payload without the success flag is not an answer"
+    },
+    {
+     "in": [
+      "not even a dict"
+     ],
+     "out": null,
+     "ref": "bad",
+     "why": "garbage input reads as nothing rather than raising at the seam"
     }
    ]
   }
