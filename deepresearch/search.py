@@ -855,17 +855,58 @@ def _try_wayback(url, cap, why):
         return None, None
 
 
+def _firecrawl(url: str, cap: int):
+    """One scrape through Firecrawl when DR_FIRECRAWL_URL names one.
+
+    Self-hosted (docker compose, default port 3002, unauthenticated with
+    USE_DB_AUTHENTICATION=false) or remote - DR_FIRECRAWL_KEY adds a Bearer
+    header for the hosted API. Returns (None, None) on ANY failure - timeout,
+    non-200, success:false, empty or non-prose markdown - so the caller's
+    stdlib ladder proceeds untouched: firecrawl is an enhancement, never a
+    dependency, and an unconfigured or dead instance must cost one failed
+    request, not the run. The point is JS-heavy pages: the stdlib path reads
+    them as empty shells, and nothing downstream can tell a shell from a block.
+    """
+    base = os.environ.get("DR_FIRECRAWL_URL", "").rstrip("/")
+    if not base:
+        return None, None
+    headers = {"Content-Type": "application/json"}
+    key = os.environ.get("DR_FIRECRAWL_KEY", "").strip()
+    if key:
+        headers["Authorization"] = "Bearer " + key
+    body = json.dumps({"url": url, "formats": ["markdown"], "waitFor": 2}).encode()
+    req = urllib.request.Request(base + "/v1/scrape", data=body, method="POST", headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            data = json.loads(r.read().decode("utf-8", "replace"))
+        md = ((data.get("data") or {}).get("markdown") or "")
+        if not data.get("success") or not md.strip():
+            return None, None
+        ok, _why, sig = is_prose(md)
+        if not ok:
+            return None, None
+        return md[:cap], {"via": "firecrawl", **sig}
+    except Exception:
+        return None, None
+
+
 def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
     """Return ``(text, meta)`` for a URL.
 
     DOIs are routed to the Crossref API rather than to the resolver, because the
-    resolver is not fetchable — see the module docstring.
+    resolver is not fetchable — see the module docstring. With DR_FIRECRAWL_URL
+    set, non-DOI fetches try Firecrawl FIRST (rendered markdown beats a parsed
+    shell) and fall back to the stdlib ladder on any failure; `via` says which
+    served, so stats.fetchVia and the citation audit both stay honest.
     """
     doi = doi_of(url)
     if doi:
         text, meta = crossref_record(doi)
         if text:
             return text[:cap], {"via": "crossref-api", **(meta or {})}
+    fc_text, fc_meta = _firecrawl(url, cap)
+    if fc_text:
+        return fc_text, fc_meta
     try:
         raw, ctype = _get_bytes(url, timeout=30)
         if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():

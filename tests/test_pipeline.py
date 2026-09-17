@@ -19,6 +19,11 @@ import deepresearch as dr_pkg                  # noqa: E402
 
 # The pipeline harness replaces dr.web_fetch with a stub and does not put it back, so
 # anything wanting the REAL one has to hold a reference from before that happens.
+# Firecrawl is opt-in by env and must stay OUT of this suite: a developer shell with
+# DR_FIRECRAWL_URL exported would route the offline fetch tests at a live instance.
+os.environ.pop("DR_FIRECRAWL_URL", None)
+os.environ.pop("DR_FIRECRAWL_KEY", None)
+
 _REAL_WEB_FETCH = dr.web_fetch
 # The pipeline harness replaces dr.agent with a fixture stub and never restores it; the session-transport retry test at the foot of this file needs the real one.
 _REAL_AGENT = dr.agent
@@ -2777,6 +2782,50 @@ with _tmp3.TemporaryDirectory() as _cd:
         dr.load_contract(_cf); ok(False, "a string needsGeneralWeb must be rejected")
     except dr.ContractError:
         ok(True, "a string needsGeneralWeb is rejected at intake, before any model call")
+
+# Firecrawl fetch: an enhancement, never a dependency. The adapter must serve
+# rendered markdown when the endpoint answers, and disappear without a trace (the
+# stdlib ladder serves, via says "http") when it is unconfigured, broken, or lying.
+class _FirecrawlOK(_ProbeJSON):
+    # Long enough to clear the prose gate's fragment floor: a real rendered page is
+    # hundreds of words, and a 30-word stub is (correctly) rejected as a fragment.
+    body = (b'{"success": true, "data": {"markdown": "# Rendered Page\\n\\n'
+            b'This is the rendered body that a headless browser actually saw when it '
+            b'executed the page scripts and waited for the content to hydrate. The '
+            b'standard library reader would have seen an empty application shell here, '
+            b'with a loading spinner and no substance behind it. A rendered read pulls '
+            b'the real article text, the tables that were built by client side code, '
+            b'and the footnotes that only appear after hydration completes properly. '
+            b'The extraction pipeline downstream receives actual paragraphs of source '
+            b'material instead of an empty shell that would silently starve every '
+            b'claim and every verification lens of the evidence they were promised '
+            b'when the source was selected for fetching during the wave."}}')
+    def do_POST(self):
+        # /v1/scrape is a POST; a GET-only stub answers 501 and the adapter correctly
+        # falls through - the stub was wrong, not the adapter.
+        self.do_GET()
+class _FirecrawlDown(_ProbeJSON):
+    body = b'{"success": false, "error": "scrape failed"}'
+    def do_POST(self):
+        self.do_GET()
+
+_fc_ok, _fc_down, _plain = _serve(_FirecrawlOK), _serve(_FirecrawlDown), _serve(_ProbeJSON)
+try:
+    os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fc_ok.server_address[1]
+    _t, _m = searchmod.fetch("https://example.com/js-heavy", cap=14000)
+    ok(_m.get("via") == "firecrawl" and "rendered body" in _t,
+       "a configured firecrawl serves its markdown first, and via names it")
+    os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fc_down.server_address[1]
+    _t2, _m2 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
+    ok(_m2.get("via") == "http",
+       "success:false from firecrawl falls back to the stdlib ladder - the run never depends on it")
+    os.environ.pop("DR_FIRECRAWL_URL", None)
+    _t3, _m3 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
+    ok(_m3.get("via") == "http",
+       "unconfigured (the CI default) never attempts a firecrawl call at all")
+finally:
+    os.environ.pop("DR_FIRECRAWL_URL", None)
+    _fc_ok.shutdown(); _fc_down.shutdown(); _plain.shutdown()
 
 # EFFECT, not source shape: drive a whole stubbed run with the general web dead and
 # scholarly backends answering. The first version of the banner NameError'd on this
