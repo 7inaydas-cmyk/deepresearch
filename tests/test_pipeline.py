@@ -2921,6 +2921,19 @@ ok(_a_bad.get("demotedBySurvivingPanel", 0) >= 2,
 _r_none = run(cfg={"force_partial": 1, "no_restate": 1})
 ok(True, "fixture note: no_restate leaves partials undemotable when the restatement call fails")
 
+# Serialization: restatedFrom must SURVIVE the report, not just exist in memory. The
+# standard-depth verification run (2026-09-20) found restatedToSupported=5 in
+# citationAudit with zero restatedFrom anywhere in the JSON - both serializers
+# (citation_rows, quoteAudit) dropped the field the engine sets.
+_r_ser = run(cfg={"force_partial": 1})
+_qa = [r for r in (_r_ser.get("quoteAudit") or []) if r.get("restatedFrom")]
+_cd = [r for r in (_r_ser.get("citationDetail") or []) if r.get("restatedFrom")]
+ok(len(_qa) == 1 and len(_cd) == 1,
+   "a restated claim carries restatedFrom into BOTH quoteAudit and citationDetail "
+   "(quote=%d, citation=%d rows)" % (len(_qa), len(_cd)))
+ok(_qa and "WEAKENED" in _qa[0]["claim"] and "CLAIM-2" in _qa[0]["restatedFrom"],
+   "the row shows the weakened text as the claim and the overstated original as restatedFrom")
+
 # post-verification coverage: the gap analyst's stale "answered" cannot survive kills
 ok("post_verify_coverage(" in _ENG and "post-verification" in _ENG,
    "the coverage table is reconciled against panel+audit kills before synthesis, and says so")

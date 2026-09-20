@@ -1561,7 +1561,13 @@ def citation_rows(fact_by):
              # The auditor's own verbatim pull from the page, and whether the engine
              # could find it there. Both were computed and thrown away until now.
              "locatedQuote": webtext(f.get("locatedQuote", ""), 400),
-             "locatedQuoteOnPage": (f.get("locatedQuoteCheck") or {}).get("status")}
+             "locatedQuoteOnPage": (f.get("locatedQuoteCheck") or {}).get("status"),
+             # restatedFrom: the ORIGINAL overstated wording a partial verdict
+             # weakened. The engine sets it in memory; both serializers dropped
+             # it, so a reader saw restatedToSupported=5 and could not see what
+             # changed (found by the standard-depth verification run 2026-09-20).
+             **({"restatedFrom": webtext(f["restatedFrom"], 300)}
+                if f.get("restatedFrom") else {})}
             for f in fact_by.values()]
 
 
@@ -3503,7 +3509,9 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                           "quote": webtext(c.get("quote", ""), 600),
                           "onPage": (c.get("quoteCheck") or {}).get("status"),
                           "foundFraction": (c.get("quoteCheck") or {}).get("foundFraction"),
-                          "offset": (c.get("quoteCheck") or {}).get("offset")}
+                          "offset": (c.get("quoteCheck") or {}).get("offset"),
+                          **({"restatedFrom": webtext(c["restatedFrom"], 300)}
+                             if c.get("restatedFrom") else {})}
                          for c in confirmed]
     out["rescue"] = rescue
     out["calibration"] = calibration
