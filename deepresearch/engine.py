@@ -73,6 +73,15 @@ with open(os.path.normpath(_DEPTHS_FILE), encoding="utf-8") as _df:
 # makes the adversarial filter inert. Cut claim COUNT for a cheaper tier, never
 # lens diversity.
 REFUTATIONS_REQUIRED = 2
+
+# One seam for the page window, 2026-09-20. The audit's fresh re-fetch read 12000
+# chars while the sweep fetched 14000 and the extractor prompt showed 13000 - so
+# evidence living in the last 1000-2000 characters was invisible to the only stage
+# that can demote a survivor: the panel was told "quote located" while the auditor
+# structurally could not find it (reproduced: a quote at offset 12500 checks located
+# at cap 14000 and not-found at cap 12000). One fetch size, one view size, everywhere.
+PAGE_CAP = 14000    # how much of a page is fetched (sweep AND the audit's re-fetch)
+PAGE_VIEW = 13000   # how much of that any prompt is shown (extractor AND auditor)
 RESCUE_MAX_SUBQ, RESCUE_FETCH = 4, 8
 MAX_CONCURRENCY = int(os.environ.get("DR_CONCURRENCY", "8"))
 # The default model belongs to the SELECTED provider (claude-sonnet-5, glm-5.3, ...);
@@ -897,6 +906,11 @@ S_GAP = {
                            "reason": {"type": "string"}, "lens": {"type": "string"}}}},
     },
 }
+S_RESTATE = {
+    "type": "object", "required": ["claim"],
+    "properties": {"claim": {"type": "string"}},
+}
+
 S_VERDICT = {
     "type": "object", "required": ["refuted", "evidence", "confidence"],
     "properties": {"refuted": {"type": "boolean"}, "evidence": {"type": "string"},
@@ -1124,7 +1138,7 @@ def p_extract(q, subqs, url, title, text):
         "## Source Extractor\n\nResearch question: \"" + q + "\"\n\n"
         "Sub-questions this research must answer:\n" + ql + "\n\n"
         "**URL:** " + webtext(url, 300) + "\n**Title:** " + webtext(title, 200) + "\n\n"
-        "## Page content\n" + WEB_NOTE + webtext(text, 13000) + "\n\n"
+        "## Page content\n" + WEB_NOTE + webtext(text, PAGE_VIEW) + "\n\n"
         "## Task\n"
         "1. Rate source quality: primary (original research/institution/official doc/source code), secondary "
         "(reporting on primary work), blog, forum, or unreliable. Rate a vendor page or press release honestly.\n"
@@ -1633,7 +1647,7 @@ def p_fact(claim, url, text, provenance_note=""):
         "## Statement\n" + WEB_NOTE + "\"" + webtext(claim, 800) + "\"\n\n"
         "## Cited URL\n" + webtext(url, 300) + "\n"
         + (provenance_note or "") + "\n"
-        "## Page content as fetched now\n" + (webtext(text, 12000) if text.strip() else "(FETCH RETURNED NOTHING)") + "\n\n"
+        "## Page content as fetched now\n" + (webtext(text, PAGE_VIEW) if text.strip() else "(FETCH RETURNED NOTHING)") + "\n\n"
         "## Task\nFind text supporting the statement; quote it VERBATIM in locatedQuote. Then rule:\n"
         "- **supported** - the page states this, or entails it with no interpretive leap.\n"
         "- **partial** - related and pointing this way, but the statement adds scope, certainty or specificity the page "
@@ -1682,6 +1696,29 @@ def _plan_flaws_check(provenance):
     else:
         out += "   - Nothing in the framing was model-drafted, so there is no drafted premise to test.\n"
     return out
+
+
+def p_restate(claim, url, verdict):
+    """Restate-or-drop (2026-09-20): the audit's PARTIAL verdict means the statement
+    adds scope, certainty or specificity the page does not carry. The repo's own
+    injected-defect measurement - a tenfold inflated number, an invented consensus
+    statement, a claim widened to every adult on earth, all returned partial and all
+    would have been published - made this the pipeline's dominant overstatement leak.
+    The restated claim is re-audited; still-partial means demote."""
+    return (
+        "## Claim Restatement - weaken to what the page supports\n\n"
+        "The blind citation audit judged this claim PARTIAL against the page it cites:\n\n"
+        "Claim: \"" + webtext(claim, 800) + "\"\n"
+        "Cited page: " + webtext(url, 250) + "\n"
+        "Auditor's reasoning: " + webtext(verdict.get("reasoning", ""), 600) + "\n"
+        "The auditor's verbatim quote from that page: \"" +
+        webtext(verdict.get("locatedQuote", ""), 700) + "\"\n\n"
+        "Rewrite the claim so the quote FULLY supports it: keep the part the page carries, drop the "
+        "added scope, certainty or specificity. Never introduce a fact, number, name or date that is "
+        "not already in the quote or the claim. If the supported core is thinner than the claim, the "
+        "thinner claim is the correct answer - this restatement will be re-audited against the same "
+        "page, and a claim that still overstates will be dropped. Return only the rewritten claim in "
+        "the field `claim`.")
 
 
 def p_critic(k, total, q, subqs, persps, confirmed, summary, findings, provenance=None):
@@ -1826,6 +1863,34 @@ def _evidence_base(rows):
                  "evidence about the retrieval path and has twice exposed a real bug; "
                  "discarding it would hide exactly the signal worth having."),
     }
+
+
+def _run_limits(T, all_claims_n, verified_n):
+    """The disclosure keys EVERY exit must carry (2026-09-20): a quick-depth reader
+    was told nothing that the demotion layer never ran; a Mode A reader was told
+    nothing that one window played every role; a capped-pool reader was told the
+    unchecked share only when it crossed 50%. All three travel with the report now."""
+    out = {}
+    if not T.get("audit"):
+        out["citationAuditOff"] = (
+            "This depth ran NO blind citation audit: no claim here was re-checked against "
+            "its cited page, and the report must not read as vetted. Use standard depth "
+            "or above when the checking matters.")
+    if _providers.current_scheme() == "stdio":
+        out["singleRater"] = (
+            "Mode A (stdio): one driving window played every role - extractor, every "
+            "verification lens, the citation auditor, synthesis and critic - in one "
+            "conversation. Lens independence and audit blindness are NOT guaranteed "
+            "here; what did run in code was the schema shaping, the kill tally and the "
+            "citation arithmetic.")
+    if all_claims_n:
+        unchecked = all_claims_n - verified_n
+        out["evidenceChecked"] = (
+            "%d of %d extracted claims were verified (%d unchecked, ranked out of the "
+            "panel budget by importance then tier). Unchecked is not refuted - see "
+            "evidenceBase before reading silence as absence."
+            % (verified_n, all_claims_n, unchecked))
+    return out
 
 
 def _honest_limits(extra=None, evidence=None):
@@ -2255,16 +2320,51 @@ def citable_only(claims):
     return keep, dropped
 
 
+def post_verify_coverage(coverage, survivors):
+    """Pure: the gap analyst's pre-verification table, reconciled against what
+    survived the panel and the audit. A sub-question is answered only if a
+    surviving claim still maps to it; one whose claims were all killed is
+    marked killed-in-verification rather than keeping the analyst's old
+    "answered" - the stale table let reports claim coverage the filter removed
+    (found 2026-09-20)."""
+    out = []
+    live_idx = set()
+    for c in survivors or []:
+        try:
+            i = int(c.get("subQuestionIndex", 0) or 0)
+        except Exception:
+            i = 0
+        if i:
+            live_idx.add(i)
+    for row in coverage or []:
+        r = dict(row)
+        try:
+            idx = int(r.get("subQuestionIndex", 0) or 0)
+        except Exception:
+            idx = 0
+        if idx and idx not in live_idx and r.get("status") == "answered":
+            r["status"] = "killed-in-verification"
+            r["note"] = ((r.get("note") + " | " if r.get("note") else "") +
+                         "claims mapping here died in the panel or audit")
+        out.append(r)
+    return out
+
+
 def coverage_balanced(claims, cap, n_subq):
     """Round-robin by sub-question so one topic cannot eat the whole verify budget."""
     groups = {}
     for c in claims:
         groups.setdefault(sq_key(c, n_subq), []).append(c)
     for arr in groups.values():
-        # Deterministic tier first: it is a pure function of the host, where
-        # `importance` and `sourceQuality` are the extractor grading its own work.
-        arr.sort(key=lambda c: (TIER_RANK.get(c.get("tier"), 3),
-                                IMP.get(c.get("importance"), 3),
+        # Importance first, tier as tiebreaker (reversed 2026-09-20). Tier-first
+        # verified pleasant SOURCES before load-bearing claims: a "tangential" T1
+        # always entered the capped pool before a "central" T3, so the panel's
+        # budget went where the conclusion was not. Both keys grade themselves
+        # (tier is a pure function of the host; importance is the extractor's
+        # own rating) - but a central claim from a middling host can overturn
+        # the answer, and a tangential one never will.
+        arr.sort(key=lambda c: (IMP.get(c.get("importance"), 3),
+                                TIER_RANK.get(c.get("tier"), 3),
                                 QUAL.get(c.get("sourceQuality"), 5)))
     keys = sorted(groups, key=lambda k: (TIER_RANK.get(groups[k][0].get("tier"), 3),
                                          IMP.get(groups[k][0].get("importance"), 3),
@@ -2377,6 +2477,37 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped, needs_gener
     return srcs
 
 
+def demotion_set(fact_rows):
+    """Pure: the (claim, url) pairs the citation audit removes from the confirmed
+    pool - importable so a hand-orchestrated run applies the same rule the engine
+    does. `unsupported` always demotes. A `partial` demotes ONLY after a
+    restatement was re-audited and still failed (restate.verdict partial or
+    unsupported): the weakened claim not surviving the same page means the page
+    does not carry even the reduced version. A partial with no re-audit verdict
+    - restatement call failed - is NOT demotable: no deterministic verdict, no
+    kill."""
+    bad = set()
+    for f in fact_rows:
+        if f.get("support") == "unsupported":
+            bad.add((f["claim"], f.get("url")))
+        elif f.get("support") == "partial" and \
+                (f.get("restate") or {}).get("verdict") in ("partial", "unsupported"):
+            bad.add((f["claim"], f.get("url")))
+    return bad
+
+
+def tally_verdicts(verdicts, required, n_lenses):
+    """Pure: the panel's arithmetic, importable so a hand-orchestrated run applies
+    the SAME rule the engine does (a Mode B window used to hand-count while
+    believing it had followed code). Three outcomes stay distinct so infra
+    failure never reads as "refuted": too-few-verdicts is UNVERIFIED, never a
+    kill. Returns (refuted_count, errored_count, survives, is_refuted)."""
+    refuted = sum(1 for v in verdicts if v.get("refuted"))
+    errored = n_lenses - len(verdicts)
+    survives = len(verdicts) >= required and refuted < required
+    return refuted, errored, survives, refuted >= required
+
+
 def run_panel(q, claims, lenses):
     """Adversarial panel. Each claim judged by N DIFFERENT lenses, all concurrent."""
     jobs = []
@@ -2394,10 +2525,21 @@ def run_panel(q, claims, lenses):
             # was silent - starving the only lens whose job is finding counter-evidence.
             hits = web_search(webtext(c["claim"], 220), n=5, junk_filter=False)
             if hits:
+                # 2026-09-20: fetch the top counter hit. Judging from five 240-char
+                # snippets made this lens decorative - with the 2-of-3 rule a kill
+                # needed BOTH other lenses, an effective 2-of-2 with no redundancy.
+                # One fetched page (cached, capped, same fetch ladder as everything
+                # else) turns it into a real reader of real counter-evidence.
+                page_b = ""
+                ptext = web_fetch(hits[0]["url"], cap=8000)
+                if len(ptext or "") > 400:
+                    page_b = ("\n## Counter-source page (fetched)\n" + webtext(hits[0]["url"], 140) +
+                              "\n" + WEB_NOTE + webtext(ptext, 6000) + "\n\n")
                 counter_block = ("## Search results for counter-evidence\n" + WEB_NOTE +
                                  "\n".join("- %s | %s | %s" % (webtext(h["title"], 110),
                                                               webtext(h["url"], 140),
-                                                              webtext(h["snippet"], 240)) for h in hits) + "\n\n")
+                                                              webtext(h["snippet"], 240)) for h in hits) +
+                                 "\n\n" + page_b)
             else:
                 counter_block = "## Search results for counter-evidence\n(search returned nothing - absence of results is NOT evidence the claim is false)\n\n"
         # Only the provenance lens is told. Its whole job is whether the source can carry
@@ -2429,11 +2571,8 @@ def run_panel(q, claims, lenses):
     voted = []
     for c in claims:
         valid = [v for v in by_claim.get(id(c), []) if v]
-        refuted = sum(1 for v in valid if v.get("refuted"))
-        errored = len(lenses) - len(valid)
-        # Three outcomes kept distinct so infra failure never reads as "refuted".
-        survives = len(valid) >= REFUTATIONS_REQUIRED and refuted < REFUTATIONS_REQUIRED
-        is_ref = refuted >= REFUTATIONS_REQUIRED
+        refuted, errored, survives, is_ref = tally_verdicts(valid, REFUTATIONS_REQUIRED,
+                                                           len(lenses))
         killed_by = "+".join(v["lens"] for v in valid if v.get("refuted"))
         d = dict(c, verdicts=valid, refutedVotes=refuted, erroredVotes=errored,
                  survives=survives, isRefuted=is_ref, killedBy=killed_by)
@@ -2663,6 +2802,9 @@ def deepresearch(question, depth="standard", contract=None):
                 # exposed this produced 13 confident sources of Crossref filler
                 # for a job-discovery question and said nothing.
                 searchDegraded=_general_web_dead(),
+                # Mode A honesty (2026-09-20): one rater played every role. The skill
+                # no longer calls this mode independent; the report must not either.
+                singleRater=(_providers.current_scheme() == "stdio"),
                 perspectives=[{"label": p.get("label"), "lens": p.get("lens"), "query": p.get("query")}
                               for p in persps])
     src_rows = lambda: [{"url": webtext(s["url"], 300), "quality": s["sourceQuality"],
@@ -2685,6 +2827,9 @@ def deepresearch(question, depth="standard", contract=None):
                  claimsDroppedBeforeVerify=dropped_pre,
                  claimsExcludedNonCitable=len(non_citable),
                  searchHealth=search_health(),
+                 generalWebOkRate=(lambda a, k: round(k / a, 3) if a else None)(
+                     sum((search_health().get(n) or {}).get("attempts", 0) for n in GENERAL_WEB),
+                     sum((search_health().get(n) or {}).get("ok", 0) for n in GENERAL_WEB)),
                  sourceTiers=_tier_census(sources),
                  killsByLens=dict(globals().get("KILLS_BY_LENS") or {}),
                  fetchVia=_via_census(sources),
@@ -2718,7 +2863,8 @@ def deepresearch(question, depth="standard", contract=None):
     # honestLimits itself was shipped on 2 of 6 exits once, and the caveat that mattered
     # most was missing from the exit it mattered most on.
     def honest_limits(extra=None):
-        return _honest_limits(extra, evidence=_evidence_base(src_rows()))
+        return _honest_limits({**_run_limits(T, len(all_claims), len(ranked)), **(extra or {})},
+                           evidence=_evidence_base(src_rows()))
 
     if not ranked:
         h = search_health()
@@ -2923,7 +3069,7 @@ def deepresearch(question, depth="standard", contract=None):
         def audit(c):
             # fresh=True: a genuine second read of the page. Served from cache this was
             # not an independent check at all - it re-read the extractor's own artifact.
-            text = web_fetch(c["sourceUrl"], cap=12000, fresh=True)
+            text = web_fetch(c["sourceUrl"], cap=PAGE_CAP, fresh=True)
             reachable, why, note = read_provenance(c["sourceUrl"], text)
             if not reachable:
                 # Answer in code. Measured 2026-09-08: asked about an empty page the
@@ -2950,6 +3096,38 @@ def deepresearch(question, depth="standard", contract=None):
             f["locatedQuoteCheck"] = quote_span(text, lq) if lq.strip() else {
                 "status": "unverifiable", "offset": None, "foundFraction": None,
                 "why": "the auditor returned no locatedQuote"}
+            # Restate-or-drop, panel survivors only: a partial verdict on an
+            # already-killed claim changes nothing, and every restatement is a
+            # model call that must be spent where the report is affected.
+            if f.get("support") == "partial" and c.get("survives"):
+                r = agent(p_restate(c["claim"], c["sourceUrl"], f), S_RESTATE,
+                          label="restate:" + (host_of(c["sourceUrl"]) or "?"), max_tokens=800)
+                new_claim = ((r or {}).get("claim") or "").strip()
+                if new_claim and new_claim != c["claim"]:
+                    f2 = agent(p_fact(new_claim, c["sourceUrl"], text, note), S_FACT,
+                               label="cite2:" + (host_of(c["sourceUrl"]) or "?"), max_tokens=1200)
+                    if f2:
+                        lq2 = f2.get("locatedQuote") or ""
+                        f2["locatedQuoteCheck"] = quote_span(text, lq2) if lq2.strip() else {
+                            "status": "unverifiable", "offset": None, "foundFraction": None,
+                            "why": "the re-audit returned no locatedQuote"}
+                        if f2.get("support") == "supported":
+                            # The weakened claim is what the page carries: swap it
+                            # into the pool, original preserved on the row.
+                            return dict(claim=new_claim, url=c["sourceUrl"],
+                                        survivedPanel=True, **f2,
+                                        restatedFrom=c["claim"],
+                                        restate={"attempted": True, "verdict": "supported",
+                                                 "from": c["claim"], "to": new_claim})
+                        return dict(claim=c["claim"], url=c["sourceUrl"],
+                                    survivedPanel=c["survives"], **f,
+                                    restate={"attempted": True, "verdict": f2.get("support"),
+                                             "to": new_claim})
+                    return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"],
+                                **f, restate={"attempted": True, "verdict": "no-reaudit",
+                                              "to": new_claim})
+                # No usable restatement (call failed or echoed the claim): plain
+                # partial, no re-audit verdict, not demotable.
             return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f)
         _audit_out = pmap(audit, voted)
         fact_rows = [f for f in _audit_out if f]
@@ -3006,7 +3184,7 @@ def deepresearch(question, depth="standard", contract=None):
         # Key on (claim, sourceUrl): identical claim text extracted from two
         # different URLs is two different citations, and keying on the text alone
         # let one audit verdict silently govern both.
-        bad = {(f["claim"], f.get("url")) for f in fact_rows if f["support"] == "unsupported"}
+        bad = demotion_set(fact_rows)
         demoted = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) in bad]
         if demoted:
             confirmed = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) not in bad]
@@ -3016,6 +3194,23 @@ def deepresearch(question, depth="standard", contract=None):
             log("AUDIT DEMOTED %d claim(s): the panel passed them but the cited page does not support them"
                 % len(demoted))
         fact_metrics["demotedBySurvivingPanel"] = len(demoted)
+        # Restate-or-drop bookkeeping: a successfully restated claim swaps into the
+        # confirmed pool weakened to what the page supports, its original preserved
+        # in restatedFrom so the report can show what changed.
+        restated = 0
+        for f in fact_rows:
+            if f.get("restatedFrom") and f.get("support") == "supported":
+                for c in confirmed:
+                    if c["claim"] == f["restatedFrom"] and c.get("sourceUrl") == f.get("url"):
+                        c["restatedFrom"] = f["restatedFrom"]
+                        c["claim"] = f["claim"]
+                        c["quote"] = f.get("locatedQuote") or c.get("quote", "")
+                        restated += 1
+                        break
+        fact_metrics["restatedToSupported"] = restated
+        if restated:
+            log("AUDIT RESTATED %d claim(s): weakened to what the cited page supports "
+                "(originals preserved in restatedFrom)" % restated)
         if not confirmed:
             return dict(base, summary="Every claim that survived the adversarial panel was then demoted by the blind "
                                       "citation audit: the arguments held, but the cited pages do not support them. "
@@ -3041,7 +3236,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # Same wrapper as the run function's, for the same reason: the evidence-base
     # signal must not reach some exits and not others.
     def honest_limits(extra=None):
-        return _honest_limits(extra, evidence=_evidence_base(src_rows()))
+        return _honest_limits({**_run_limits(T, len(all_claims), len(voted)), **(extra or {})},
+                               evidence=_evidence_base(src_rows()))
 
     blocks = []
     for i, c in enumerate(confirmed):
@@ -3082,8 +3278,13 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                  "analyst. The sub-questions above may or may not have been answered - "
                  "check the findings, not this table.\n")
     elif coverage:
+        # Reconciled POST-verification (2026-09-20). The raw table is the gap
+        # analyst's snapshot from before the panel ran; rendered verbatim it let a
+        # sub-question whose claims were all killed still reach synthesis as
+        # "answered" - coverage the filter had already removed.
+        reconciled = post_verify_coverage(coverage, confirmed)
         rows = []
-        for c in coverage:
+        for c in reconciled:
             try:
                 idx = int(c.get("subQuestionIndex", 0))
             except Exception:
@@ -3091,7 +3292,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             name = subqs[idx - 1] if 1 <= idx <= len(subqs) else "?"
             rows.append("- [%s] %s%s" % (c.get("status"), webtext(name, 200),
                                          (" - " + webtext(c.get("note", ""), 200)) if c.get("note") else ""))
-        cov_b = "\n## Coverage checklist status\n" + "\n".join(rows) + "\n"
+        cov_b = "\n## Coverage checklist status (post-verification)\n" + "\n".join(rows) + "\n"
     kill_b = ("\n## Refuted claims (report these for transparency)\n" +
               "\n".join("- \"%s\" - killed by %s (%s)" % (webtext(c["claim"], 300), c["killedBy"],
                                                           webtext(c["sourceUrl"], 160)) for c in killed) + "\n") if killed else ""
@@ -3132,7 +3333,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
           "The sample was ranked by source tier first, but a claim the extractor rated 'tangential' "
           "is invisible here even if it would have overturned the answer. "
           "State this in answerFirst, not only in caveats.\n\n"
-          % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_PCT >= 50 else "") +
+          % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_N > 0 else "") +
         (("## Hypotheses to adjudicate\n"
           "These were written BEFORE any evidence was gathered, each with the finding that "
           "would eliminate it. Return a verdict for EVERY one in hypothesisVerdicts, and\n"
@@ -3494,16 +3695,28 @@ EXIT_OK, EXIT_FAIL, EXIT_AUTH, EXIT_DEGRADED, EXIT_CONTRACT = 0, 1, 2, 3, 4
 GENERAL_WEB = ("searxng", "ddg-html", "ddg-lite", "mojeek")
 
 
+def _gw_dead_from_health(h):
+    """Pure: the general web is degraded when it was tried and answered under a
+    fifth of its attempts. The all-or-nothing test this replaced keyed on
+    CUMULATIVE result counts, so one early success permanently muted every
+    degradation surface while 39 of 40 later searches fell through to scholarly
+    filler (reproduced 2026-09-20). Rate over the per-attempt statuses the
+    search module already keeps: `ok` counts as answering, challenged/junk/fail
+    do not, whatever a lone early result accumulated."""
+    att = sum((h.get(n) or {}).get("attempts", 0) for n in GENERAL_WEB)
+    ok = sum((h.get(n) or {}).get("ok", 0) for n in GENERAL_WEB)
+    return att > 0 and ok / att < 0.2
+
+
 def _general_web_dead():
-    """True when every general-web backend was tried this run and produced
-    nothing. The chain then falls through to Wikipedia/Crossref, which ANSWER
-    any query with scholarly noise (measured 2026-09-16: "Recruitee job board
-    careers page" -> six DOI book chapters over HTTP 200), so a report built in
-    this state looks sourced while having seen none of the web the question
-    was about. Every surface that can carry it must - see searchDegraded."""
-    h = search_health()
-    tried = any((h.get(n) or {}).get("attempts", 0) > 0 for n in GENERAL_WEB)
-    return tried and all((h.get(n) or {}).get("results", 0) == 0 for n in GENERAL_WEB)
+    """True when the general web was tried this run and answered under a fifth
+    of its attempts. The chain then falls through to Wikipedia/Crossref, which
+    ANSWER any query with scholarly noise (measured 2026-09-16: "Recruitee job
+    board careers page" -> six DOI book chapters over HTTP 200), so a report
+    built in this state looks sourced while having seen little of the web the
+    question was about. Every surface that can carry it must - see
+    searchDegraded."""
+    return _gw_dead_from_health(search_health())
 
 
 def _frontmatter_version(path):

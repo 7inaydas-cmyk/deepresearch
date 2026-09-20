@@ -105,14 +105,21 @@ Rules of the loop:
 - Answer as the subagent, not as yourself: the prompt carries the identity block,
   the schema, and the task. Real content, real hedges, no meta-commentary.
 - Phases are the engine's: you will see framing, plan, extraction (page text is IN
-  the prompt - the engine fetched it), gap analysis, lens verdicts, the blind audit
-  (claim + URL only - never invent the quote you were never shown), synthesis, and
-  the critic. The report lands at `$DR_RUN_DIR/report.json` with the same fields the
-  CLI produces, `stats.transport: "stdio"`.
+  the prompt - the engine fetched it), gap analysis, lens verdicts, the blind audit,
+  restate-or-drop, synthesis, and the critic. The report lands at
+  `$DR_RUN_DIR/report.json` with the same fields the CLI produces,
+  `stats.transport: "stdio"`.
 
-Use Mode A unless python cannot run at all. Mode B below (hand-orchestrated
-subagents) remains for windows that prefer agent-driven fan-out - it is the same
-pipeline, and its protocol is where Mode A's prompts come from.
+**What Mode A does NOT give you (say this to the reader, don't bury it):** one
+window - you - plays every role: extractor, all three verification lenses, the
+citation auditor, synthesis and the critic, in ONE conversation. Lens independence
+and audit blindness are NOT guaranteed here; a later role remembers what an earlier
+role composed. What does still run in code is the schema shaping, the kill tally,
+the citation arithmetic and the ranking. The report carries `singleRater: true` and
+an `honestLimits.singleRater` note saying exactly this - do not strip them. Choose
+Mode A for the engine's code-level guarantees at minimal moving parts; choose Mode B
+when rater independence matters, because its subagents genuinely do not share a
+context. Mode B is also where Mode A's prompts come from.
 
 ## Mode B - the phases (hand-orchestrated)
 
@@ -161,11 +168,14 @@ depth's `max_verify`. Then **three lens subagents in parallel** (support, counte
 provenance), each given ALL claims with prompts rendered by `p_verify` (the counter
 lens runs its own contradiction-hunting WebSearch), each returning `{"verdicts": [...]}`
 — one `S_VERDICT` per claim, validated with the array wrapper above. The lenses never
-see each other. Apply the kill rule in code, not by hand-counting: **2 of 3
-refutations kill** (`REFUTATIONS_REQUIRED`); too-few-verdicts is UNVERIFIED, never
-killed; a claim the counter lens refutes must name `counterSource`. A lens verdict
-that never arrived is not a pass — default to refuted when genuinely uncertain, per
-the repo's instruction.
+see each other. Apply the kill rule IN CODE - it is importable, so do not hand-count:
+`python3 -c "from deepresearch.engine import tally_verdicts; ..."` over each claim's
+verdict list gives `(refuted, errored, survives, is_refuted)` with the engine's own
+2-of-3 arithmetic; too-few-verdicts is UNVERIFIED, never killed; a claim the counter
+lens refutes must name `counterSource`. A lens verdict that never arrived is not a
+pass — default to refuted when genuinely uncertain, per the repo's instruction. (A
+window used to hand-count while believing it had followed code - both rules now have
+importable functions with conformance references.)
 
 **6. Rescue** — any sub-question with zero survivors gets one targeted primary-source
 re-search (extractor subagent), re-verified by the same three lenses.
@@ -173,8 +183,25 @@ re-search (extractor subagent), re-verified by the same three lenses.
 **7. Blind citation audit** (two subagents in parallel, ~half the pool each): for each
 claim send ONLY the claim text and URL (never the quote) with the repo's `p_fact`
 prompt; the auditor fetches the page itself and rules supported/partial/unsupported/
-unreachable. Only `unsupported` demotes. `unreachable` ≠ `unsupported` — an unread
-page is an infrastructure limit, not a finding.
+unreachable. Two disciplines the engine treats as load-bearing:
+- **The pool is every claim that entered the panel** (`voted`, killed claims
+  included, rescue claims included) - not survivors only. Auditing only what the
+  lenses already cleared measured 100% on three consecutive live runs: a rubber
+  stamp, not an audit.
+- **An auditor call that returned nothing is not a citation that failed** - count it
+  as `auditErrors`, exclude it from the accuracy denominator, and REPORT it.
+  Dropping it silently makes citationAccuracy improve under degradation.
+
+`unsupported` demotes. A `partial` on a SURVIVING claim is not kept as-is and not
+silently dropped: **restate-or-drop** - one subagent rewrites the claim to what the
+auditor's `locatedQuote` actually supports (the repo's `p_restate` prompt), the
+restated claim is re-audited with `p_fact`, and the re-audit verdict decides:
+supported → the weakened claim replaces the original (`restatedFrom` preserves it);
+partial or unsupported again → demote, exactly like `unsupported`. Apply the
+demotion set in code: `python3 -c "from deepresearch.engine import demotion_set"`
+carries the engine's rule (plain `partial` with no re-audit verdict does NOT demote -
+no deterministic verdict, no kill). `unreachable` ≠ `unsupported` — an unread page is
+an infrastructure limit, not a finding.
 
 **8. Synthesis** (one subagent): confirmed claims only, the repo's synthesis rules —
 answerFirst, hingeNumber, baseRate, strongestArgumentAgainst (mandatory, real — never

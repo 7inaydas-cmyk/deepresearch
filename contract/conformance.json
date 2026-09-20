@@ -50,7 +50,10 @@
   "hyp_mismatch": "gate",
   "_extract_json": "gate",
   "frontmatter_version": "gate",
-  "_firecrawl_markdown": "gate"
+  "_firecrawl_markdown": "gate",
+  "tally_verdicts": "gate",
+  "demotion_set": "gate",
+  "_gw_dead_from_health": "gate"
  },
  "cases": {
   "webtext": [
@@ -941,6 +944,243 @@
      "out": null,
      "ref": "bad",
      "why": "garbage input reads as nothing rather than raising at the seam"
+    }
+   ]
+  },
+  "tally_verdicts": {
+   "why_python_only": "The panel runs only in the Python engine; this gate is also what a Mode B hand-orchestrator imports to apply the engine's kill rule instead of hand-counting while believing it followed code.",
+   "cases": [
+    {
+     "in": [
+      [
+       {
+        "refuted": true
+       },
+       {
+        "refuted": true
+       },
+       {
+        "refuted": false
+       }
+      ],
+      2,
+      3
+     ],
+     "out": [
+      2,
+      0,
+      false,
+      true
+     ],
+     "ref": "bad",
+     "why": "2 refutations of 3 lenses kill the claim"
+    },
+    {
+     "in": [
+      [
+       {
+        "refuted": true
+       },
+       {
+        "refuted": false
+       },
+       {
+        "refuted": false
+       }
+      ],
+      2,
+      3
+     ],
+     "out": [
+      1,
+      0,
+      true,
+      false
+     ],
+     "ref": "good",
+     "why": "1 refutation is under the bar: the claim survives"
+    },
+    {
+     "in": [
+      [
+       {
+        "refuted": true
+       }
+      ],
+      2,
+      3
+     ],
+     "out": [
+      1,
+      2,
+      false,
+      false
+     ],
+     "ref": "bad",
+     "why": "too-few-verdicts is UNVERIFIED, never a kill - infra failure must not read as refuted"
+    },
+    {
+     "in": [
+      [],
+      2,
+      3
+     ],
+     "out": [
+      0,
+      3,
+      false,
+      false
+     ],
+     "ref": "bad",
+     "why": "zero verdicts is fully unverified"
+    }
+   ]
+  },
+  "demotion_set": {
+   "why_python_only": "The citation audit's demotion rule, importable so a hand-orchestrated run removes exactly what the engine removes.",
+   "cases": [
+    {
+     "in": [
+      [
+       {
+        "claim": "a",
+        "url": "u1",
+        "support": "unsupported"
+       }
+      ]
+     ],
+     "out": [
+      [
+       "a",
+       "u1"
+      ]
+     ],
+     "ref": "good",
+     "why": "unsupported always demotes"
+    },
+    {
+     "in": [
+      [
+       {
+        "claim": "b",
+        "url": "u2",
+        "support": "partial"
+       }
+      ]
+     ],
+     "out": [],
+     "ref": "good",
+     "why": "a plain partial (no re-audit verdict) stays - no deterministic verdict, no kill"
+    },
+    {
+     "in": [
+      [
+       {
+        "claim": "c",
+        "url": "u3",
+        "support": "partial",
+        "restate": {
+         "verdict": "partial"
+        }
+       }
+      ]
+     ],
+     "out": [
+      [
+       "c",
+       "u3"
+      ]
+     ],
+     "ref": "bad",
+     "why": "a restatement that came back partial again demotes: the page does not carry even the weakened claim"
+    },
+    {
+     "in": [
+      [
+       {
+        "claim": "d",
+        "url": "u4",
+        "support": "partial",
+        "restate": {
+         "verdict": "supported"
+        }
+       }
+      ]
+     ],
+     "out": [],
+     "ref": "good",
+     "why": "a successful restatement keeps the (now weakened) claim"
+    },
+    {
+     "in": [
+      [
+       {
+        "claim": "e",
+        "url": "u5",
+        "support": "partial",
+        "restate": {
+         "verdict": "no-reaudit"
+        }
+       }
+      ]
+     ],
+     "out": [],
+     "ref": "good",
+     "why": "a restatement whose re-audit call failed has no verdict and does not demote"
+    }
+   ]
+  },
+  "_gw_dead_from_health": {
+   "why_python_only": "Reads the Python search module's per-attempt health shape (ok/fail/challenged/junk counts) that no other build keeps.",
+   "cases": [
+    {
+     "in": [
+      {
+       "searxng": {
+        "attempts": 40,
+        "ok": 1,
+        "fail": 39
+       }
+      }
+     ],
+     "out": true,
+     "ref": "bad",
+     "why": "1 ok of 40 attempts (2.5%) is degraded - the measured state that shipped confident filler silently"
+    },
+    {
+     "in": [
+      {
+       "searxng": {
+        "attempts": 40,
+        "ok": 20,
+        "fail": 20
+       }
+      }
+     ],
+     "out": false,
+     "ref": "good",
+     "why": "half the attempts answering is not degradation"
+    },
+    {
+     "in": [
+      {}
+     ],
+     "out": false,
+     "ref": "good",
+     "why": "nothing tried, nothing lied about"
+    },
+    {
+     "in": [
+      {
+       "wikipedia": {
+        "attempts": 9,
+        "ok": 9
+       }
+      }
+     ],
+     "out": false,
+     "ref": "good",
+     "why": "scholarly backends do not count toward the general-web rate"
     }
    ]
   }

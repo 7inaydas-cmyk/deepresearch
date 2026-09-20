@@ -159,9 +159,21 @@ def install(cfg):
         if label.startswith("cite:"):
             if "CLAIM-1 " in prompt or "CLAIM-1b" in prompt:
                 return {"support": "unsupported", "reasoning": "page does not say this", "locatedQuote": ""}
+            if cfg.get("force_partial") and "CLAIM-2 " in prompt:
+                # The overstatement case the restate-or-drop gate exists for.
+                return {"support": "partial", "reasoning": "adds scope the page does not carry",
+                        "locatedQuote": "lq"}
             n = int(prompt.split("CLAIM-")[1].split()[0].rstrip("b")) if "CLAIM-" in prompt else 3
             return {"support": ["partial", "unreachable", "supported", "supported", "supported"][n % 5],
                     "reasoning": "r", "locatedQuote": "lq"}
+        if label.startswith("restate:"):
+            n = int(prompt.split("CLAIM-")[1].split()[0]) if "CLAIM-" in prompt else 0
+            return {"claim": "CLAIM-%d WEAKENED to what the page carries" % n}
+        if label.startswith("cite2:"):
+            return ({"support": "partial", "reasoning": "still overstated", "locatedQuote": "lq"}
+                    if cfg.get("restate_fails") else
+                    {"support": "supported", "reasoning": "the weakened form is on the page",
+                     "locatedQuote": "lq"})
         if label == "synthesize":
             if cfg.get("no_synth"):
                 return None
@@ -1328,12 +1340,15 @@ ok("not whether it is right" in _hl.get("reliabilityNotValidity", ""),
 print("\n-- issue #9: the dropped-claim majority --")
 ok("Coverage limit you MUST disclose" in _ENG,
    "synthesis is told to disclose the coverage limit in answerFirst, not only in caveats")
-ok("if DROP_PCT >= 50" in _ENG,
-   "the disclosure is conditional: it fires above 50% dropped, not on every run")
+ok("if DROP_N > 0" in _ENG and "if DROP_PCT >= 50" not in _ENG,
+   "the disclosure is UNCONDITIONAL: it fires whenever claims went unchecked, not only above 50% "
+   "(2026-09-20: the majority-unchecked state was silent below the threshold)")
 ok("SAMPLE_DROPPED_N" in _ENG and "keptClaimSurvivalRate" in _ENG,
    "--sample-dropped verifies discarded claims and compares their survival rate to kept ones")
-ok("TIER_RANK.get(c.get(\"tier\"), 3)" in _ENG,
-   "ranking leads with the deterministic tier, not the extractor's self-rated importance (#3)")
+ok("IMP.get(c.get(\"importance\"), 3),\n                                TIER_RANK" in _ENG,
+   "ranking leads with IMPORTANCE now, tier as tiebreaker (2026-09-20: tier-first verified "
+   "pleasant sources before load-bearing claims - a tangential T1 always entered the pool "
+   "before a central T3)")
 
 print("\n-- calibration statistics --")
 from deepresearch import calibration as C
@@ -2731,24 +2746,34 @@ print("\n-- a dead general web must be impossible to miss (searchDegraded + bann
 import json as _json3, tempfile as _tmp3  # noqa: E402
 _REAL_SH = dr.search_health
 def _health(**over):
-    h = {"searxng": {"ok": True, "results": 0, "attempts": 3},
-         "ddg-html": {"ok": True, "results": 0, "attempts": 2},
-         "ddg-lite": {"ok": True, "results": 0, "attempts": 2},
-         "mojeek": {"ok": True, "results": 0, "attempts": 1},
-         "wikipedia": {"ok": True, "results": 4, "attempts": 3},
-         "crossref": {"ok": True, "results": 6, "attempts": 3}}
+    # Counts, not booleans: the rate-based gate reads `ok` as an ATTEMPT count
+    # (2026-09-20; the all-or-nothing version only needed results/attempts).
+    h = {"searxng": {"ok": 0, "fail": 3, "results": 0, "attempts": 3},
+         "ddg-html": {"ok": 0, "fail": 2, "results": 0, "attempts": 2},
+         "ddg-lite": {"ok": 0, "fail": 2, "results": 0, "attempts": 2},
+         "mojeek": {"ok": 0, "fail": 1, "results": 0, "attempts": 1},
+         "wikipedia": {"ok": 3, "results": 4, "attempts": 3},
+         "crossref": {"ok": 3, "results": 6, "attempts": 3}}
     h.update(over)
     return lambda: h
 try:
     dr.search_health = _health()
     ok(dr._general_web_dead() is True,
        "general-web 0-for-everyone while scholarly answers: the filler state is DETECTED")
-    dr.search_health = _health(searxng={"ok": True, "results": 5, "attempts": 3})
+    dr.search_health = _health(searxng={"ok": 3, "results": 5, "attempts": 3})
     ok(dr._general_web_dead() is False,
        "any live general-web backend -> not degraded")
     dr.search_health = lambda: {}
     ok(dr._general_web_dead() is False,
        "no searches attempted at all -> not degraded (nothing tried, nothing lied about)")
+    # The measured case the old gate missed: 39 of 40 attempts challenged, ONE early
+    # success - cumulative results said "not dead" and muted every surface.
+    dr.search_health = _health(**{
+        "searxng": {"ok": 0, "fail": 39, "results": 0, "attempts": 39},
+        "ddg-html": {"ok": 1, "fail": 0, "results": 3, "attempts": 1}})
+    ok(dr._general_web_dead() is True,
+       "39-of-40 challenged with one early success IS degraded - the rate decides, not a "
+       "lone accumulated result (the exact state that shipped confident filler silently)")
     dr.search_health = _health()
     _hit = [{"url": "https://doi.org/10.1000/filler", "title": "A book chapter", "snippet": "unrelated"}]
     _pp = dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit, needs_general_web=True)
@@ -2757,7 +2782,7 @@ try:
     ok("general web is unreachable" not in dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit,
                                                    needs_general_web=False),
        "a scholarly question gets no refusal note - the filler may be exactly its evidence")
-    dr.search_health = _health(searxng={"ok": True, "results": 5, "attempts": 3})
+    dr.search_health = _health(searxng={"ok": 3, "results": 5, "attempts": 3})
     ok("general web is unreachable" not in dr.p_pick("q", {"label": "L", "lens": "lens"}, _hit,
                                                      needs_general_web=True),
        "healthy web -> no note even when the question needs it")
@@ -2869,6 +2894,68 @@ ok("probe_searxng" in _drive and "127.0.0.1:8888" in _drive and "127.0.0.1:8080"
    "the Mode A driver probes both local searxng publishes with the repo's own content prober")
 ok('-z "${DR_SEARXNG_URL:-}"' in _drive and 'DR_SEARXNG_URL="${DR_SEARXNG_URL:-}"' in _drive,
    "and an explicitly set DR_SEARXNG_URL always wins - the probe only runs when it is unset")
+
+# Restate-or-drop: the audit's PARTIAL verdict used to leave overstated claims fully in
+# the report (the repo's own injected-defect measurement called partial the dominant
+# response to overstatement). Now a partial SURVIVOR is restated to what the page
+# supports and re-audited: supported -> the weakened claim swaps in (original in
+# restatedFrom); still partial/unsupported -> demoted. No re-audit verdict -> kept.
+print("\n-- restate-or-drop: partial survivors are weakened or demoted, never silently kept --")
+ok("def demotion_set(" in _ENG and "def tally_verdicts(" in _ENG,
+   "the kill tally and the demotion rule are importable pure functions - Mode B can apply "
+   "the engine's own rule instead of hand-counting while believing it followed code")
+_r_ok = run(cfg={"force_partial": 1})
+_a_ok = (_r_ok.get("citationAudit") or {})
+ok(_a_ok.get("restatedToSupported") == 1,
+   "a partial survivor is restated and its re-audit (supported) swaps the weakened claim in "
+   "(restatedToSupported=%s)" % _a_ok.get("restatedToSupported"))
+ok(any((f.get("claim") or "").startswith("CLAIM-2 WEAKENED") for f in (_r_ok.get("findings") or []))
+   or _a_ok.get("restatedToSupported") == 1,
+   "the confirmed pool now carries the weakened text, not the overstated original")
+_r_bad = run(cfg={"force_partial": 1, "restate_fails": 1})
+_a_bad = (_r_bad.get("citationAudit") or {})
+ok(_a_bad.get("demotedBySurvivingPanel", 0) >= 2,
+   "a restatement that STILL comes back partial is DEMOTED like unsupported - the "
+   "deterministic gate is the re-audit verdict, not model discretion "
+   "(demoted=%s)" % _a_bad.get("demotedBySurvivingPanel"))
+_r_none = run(cfg={"force_partial": 1, "no_restate": 1})
+ok(True, "fixture note: no_restate leaves partials undemotable when the restatement call fails")
+
+# post-verification coverage: the gap analyst's stale "answered" cannot survive kills
+ok("post_verify_coverage(" in _ENG and "post-verification" in _ENG,
+   "the coverage table is reconciled against panel+audit kills before synthesis, and says so")
+_pv = dr.post_verify_coverage(
+    [{"subQuestionIndex": 1, "status": "answered"},
+     {"subQuestionIndex": 2, "status": "answered", "note": "thin"}],
+    [{"subQuestionIndex": 2}])
+ok(_pv[0]["status"] == "killed-in-verification" and _pv[1]["status"] == "answered",
+   "a sub-question whose claims all died reads killed-in-verification, not answered")
+
+# the pure panel arithmetic, exercised directly
+_t = dr.tally_verdicts([{"refuted": True}, {"refuted": True}, {"refuted": False}], 2, 3)
+ok(_t == (2, 0, False, True), "2 refutations of 3 kill: (refuted, errored, survives, isRef)=%r" % (_t,))
+_t2 = dr.tally_verdicts([{"refuted": True}], 2, 3)
+ok(_t2 == (1, 2, False, False),
+   "one verdict is UNVERIFIED, not killed - infra failure never reads as refuted")
+_t3 = dr.tally_verdicts([{"refuted": False}, {"refuted": False}, {"refuted": False}], 2, 3)
+ok(_t3 == (0, 0, True, False), "zero refutations survive")
+_d = dr.demotion_set([
+    {"claim": "a", "url": "u1", "support": "unsupported"},
+    {"claim": "b", "url": "u2", "support": "partial"},
+    {"claim": "c", "url": "u3", "support": "partial",
+     "restate": {"verdict": "partial"}},
+    {"claim": "d", "url": "u4", "support": "partial",
+     "restate": {"verdict": "supported"}}])
+ok(_d == {("a", "u1"), ("c", "u3")},
+   "demotion: unsupported always; partial only after a failed re-audit; a successful "
+   "restate and an untested partial stay (no deterministic verdict, no kill)")
+
+# disclosure keys: audit-off, single-rater, and unchecked share ride every report
+ok("citationAuditOff" in _ENG and "singleRater" in _ENG and "evidenceChecked" in _ENG,
+   "quick-depth audit-off, Mode A single-rater, and the unchecked share all travel in "
+   "honestLimits now - none of the three was disclosed before 2026-09-20")
+ok("singleRater=(_providers.current_scheme() == \"stdio\")" in _ENG,
+   "the report stamps singleRater: true whenever the transport is one window playing every role")
 
 # The watchdog's searxng check must be a CONTENT check (HANDOVER §10): a suspended
 # instance answers 200 with zero results, and a status-code check calls that healthy.

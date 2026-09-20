@@ -79,6 +79,9 @@ def _adapter():
         "_extract_json":       lambda text: dr._extract_json(text),
         "frontmatter_version": lambda content: _fm_via_tempfile(content),
         "_firecrawl_markdown": lambda payload: dr._search._firecrawl_markdown(payload),
+        "tally_verdicts":     lambda v, r, n: list(dr.tally_verdicts(v, r, n)),
+        "demotion_set":       lambda rows: [list(x) for x in sorted(dr.demotion_set(rows))],
+        "_gw_dead_from_health": lambda h: dr._gw_dead_from_health(h),
         "evidence_base":       lambda rows: dr._evidence_base(rows)["citableSources"],
         "is_nonanswer":        lambda text: dr.is_nonanswer(text),
     }
