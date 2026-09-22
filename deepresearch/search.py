@@ -906,27 +906,33 @@ def _try_firecrawl(url: str, cap: int):
     return md[:cap], {"via": "firecrawl", **sig}
 
 
-def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
-    """Return ``(text, meta)`` for a URL.
-
-    DOIs are routed to the Crossref API rather than to the resolver, because the
-    resolver is not fetchable — see the module docstring. With DR_FIRECRAWL_URL
-    set, non-DOI fetches try Firecrawl FIRST (rendered markdown beats a parsed
-    shell) and fall back to the stdlib ladder on any failure; `via` says which
-    served, so stats.fetchVia and the citation audit both stay honest. A DOI
-    whose Crossref record missed does NOT go to the scraper - a resolver URL is
-    not page content, and the ladder below already owns that case.
-    """
+def _via_crossref_api(url, cap, prev=None):
+    # A resolver URL is not page content: route the DOI to its record and never to
+    # the redirect. The miss reason is deliberately None - nothing below consumes
+    # it, and the firecrawlFailed fold in _via_direct must never see a
+    # non-firecrawl reason.
     doi = doi_of(url)
-    if doi:
-        text, meta = crossref_record(doi)
-        if text:
-            return text[:cap], {"via": "crossref-api", **(meta or {})}
-    fc_text = fc_meta = None
-    if not doi_in_url(url):
-        fc_text, fc_meta = _try_firecrawl(url, cap)
-        if fc_text:
-            return fc_text, fc_meta
+    if not doi:
+        return None, None
+    text, meta = crossref_record(doi)
+    if text:
+        return text[:cap], {"via": "crossref-api", **(meta or {})}
+    return None, None
+
+
+def _via_firecrawl(url, cap, prev=None):
+    # The BROAD any-DOI exclusion is a property of this entry, not of the walk:
+    # publishers put the DOI in their own paths, and none of them reach the
+    # scraper. The two DOI patterns' agreement on fragments and queries is pinned
+    # by tests above; touch them together or not at all.
+    if doi_in_url(url):
+        return None, None
+    # Env opt-in lives inside _try_firecrawl, at CALL time: unset means fully off
+    # and zero network attempts.
+    return _try_firecrawl(url, cap)
+
+
+def _via_direct(url, cap, prev=None):
     try:
         raw, ctype = _get_bytes(url, timeout=30)
         if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
@@ -939,30 +945,102 @@ def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
                 wt, wm = _try_wayback(url, cap, "pdf-unreadable: " + why)
                 if wt:
                     return wt, wm
+                # SERVES - a refusal is read provenance, not a fall-through: the walk
+                # must NOT carry an unreadable PDF on into the abstract contest.
                 return "", {"via": "pdf-unreadable", "error": why, **sig}
             return text[:cap], {"via": "pdf", **sig}
+        # The firecrawlFailed fold: a configured scraper that failed is disclosed
+        # HERE and only here - on the http success path. The identity guard (is,
+        # not name equality) makes a chain reorder a visible no-op of the
+        # disclosure, never a mislabel.
         return _readable(_decode(raw))[:cap], dict({"via": "http"},
-                **({"firecrawlFailed": fc_meta} if fc_meta else {}))
+                **({"firecrawlFailed": prev[1]} if prev and prev[0] is _via_firecrawl else {}))
     except Exception as e:
-        # Blocked or broken. If the URL carries a DOI, the abstract is still reachable
-        # through Crossref - an abstract is not the full text, and `via` says so, so the
-        # citation auditor and the tier rules can both tell the difference.
-        doi = doi_in_url(url)
-        if doi:
-            try:
-                text, meta = crossref_record(doi)
-                if text and text.strip():
-                    # An abstract is not the paper. If the archive holds the real page,
-                    # prefer it and say so; otherwise keep the abstract, labelled.
-                    wt, wm = _try_wayback(url, cap, "%s: %s" % (type(e).__name__, e))
-                    if wt and len(wt) > len(text) * 2:
-                        return wt, dict(wm, insteadOfAbstract=True)
-                    return text[:cap], {"via": "crossref-fallback", "abstractOnly": True,
-                                        "blockedBy": "%s: %s" % (type(e).__name__, e),
-                                        **(meta or {})}
-            except Exception:
-                pass
-        wt, wm = _try_wayback(url, cap, "%s: %s" % (type(e).__name__, e))
-        if wt:
-            return wt, wm
-        return "", {"via": "failed", "error": "%s: %s" % (type(e).__name__, e)}
+        # Blocked or broken - named, never silent: the type name prefixes the
+        # reason, so a fall-through from here always has something to say.
+        return None, "%s: %s" % (type(e).__name__, e)
+
+
+def _via_crossref_fallback(url, cap, prev=None):
+    # Blocked or broken. If the URL carries a DOI, the abstract is still reachable
+    # through Crossref - an abstract is not the full text, and `via` says so, so the
+    # citation auditor and the tier rules can both tell the difference.
+    doi = doi_in_url(url)
+    if not doi:
+        return None, None
+    try:
+        # duplicate call preserved: the ladder made it; fixing it changes network behavior
+        text, meta = crossref_record(doi)
+        if text and text.strip():
+            # An abstract is not the paper. If the archive holds the real page,
+            # prefer it and say so; otherwise keep the abstract, labelled.
+            wt, wm = _try_wayback(url, cap, prev[1] if prev else "")
+            if wt and len(wt) > len(text) * 2:
+                return wt, dict(wm, insteadOfAbstract=True)
+            return text[:cap], {"via": "crossref-fallback", "abstractOnly": True,
+                                "blockedBy": prev[1] if prev else "", **(meta or {})}
+    except Exception:
+        pass
+    return None, None
+
+
+def _via_wayback(url, cap, prev=None):
+    return _try_wayback(url, cap, prev[1] if prev else "")
+
+
+# The fetch seam is an ORDER of adapters, and the order is the semantics: unlike the
+# search backends above (BACKENDS / DEFAULT_CHAIN / _IMPL exist because callers pick
+# those by name), nothing ever selects among these - so a tuple, not a dict and not
+# contract data.
+#
+# The convention every entry honours - load-bearing; check any change against it:
+#   An attempt is `attempt(url, cap, prev=None)` and returns one of two shapes,
+#   never mixed:
+#   SERVE        (text, meta) - text is the page text (or "" for a NAMED refusal
+#                like pdf-unreadable); meta carries the read provenance. A serve
+#                ends the walk.
+#   FALL THROUGH (None, why) - why is a plain string naming the failure, or None
+#                when this attempt was not applicable (its guard declined) or has
+#                nothing to name. "" is NEVER a fall-through: an empty page is a
+#                serve (web_fetch's never-cache-empty rule and the citation audit's
+#                fresh-read fallback both read the text).
+#   `prev` is the pair (attempt, why) of the last NAMED fall-through, read by later
+#   entries to label their own meta with an earlier failure (the firecrawlFailed
+#   fold, blockedBy, liveFetchFailed) - carried through the argument, not through
+#   shared mutable state, so the engine's concurrent fetches stay safe.
+#
+# Two invariants the ordering itself carries:
+#   (a) _via_firecrawl must remain the IMMEDIATE predecessor of _via_direct, or the
+#       firecrawlFailed disclosure silently disappears; the fold's identity guard
+#       makes such a swap a visible no-op of the disclosure, never a mislabel.
+#   (b) the loop's tail reads prev[1] unguarded, safe only because _via_direct's
+#       fall-through reason is never empty and nothing after it falls through with
+#       a reason - a reorder that breaks this fails loudly (TypeError), intended.
+_FETCH_CHAIN = (
+    _via_crossref_api,       # resolver URLs -> the record, never the redirect (see the module docstring)
+    _via_firecrawl,          # opt-in rendered read; SKIPPED for any DOI-bearing URL
+    _via_direct,             # the stdlib read: one _get_bytes, PDF and HTML branches
+    _via_crossref_fallback,  # blocked with a DOI in the path -> the abstract, labelled
+    _via_wayback,            # the archived copy, when the live read failed
+)
+
+
+def fetch(url: str, cap: int = 14000) -> tuple[str, dict]:
+    """Return ``(text, meta)`` for a URL.
+
+    DOIs are routed to the Crossref API rather than to the resolver, because the
+    resolver is not fetchable — see the module docstring. With DR_FIRECRAWL_URL
+    set, non-DOI fetches try Firecrawl FIRST (rendered markdown beats a parsed
+    shell) and fall back to the stdlib ladder on any failure; `via` says which
+    served, so stats.fetchVia and the citation audit both stay honest. A DOI
+    whose Crossref record missed does NOT go to the scraper - a resolver URL is
+    not page content, and the ladder below already owns that case.
+    """
+    prev = None   # (attempt, why) of the last NAMED fall-through
+    for attempt in _FETCH_CHAIN:
+        text, meta = attempt(url, cap, prev)
+        if text is not None:
+            return text, meta
+        if meta:          # truthiness, NOT `is not None`: a (None, None) miss must
+            prev = (attempt, meta)   # never clobber the last named failure
+    return "", {"via": "failed", "error": prev[1]}

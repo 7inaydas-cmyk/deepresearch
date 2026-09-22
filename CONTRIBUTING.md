@@ -93,6 +93,40 @@ Two requirements:
    nothing downstream. OpenAlex's `landing_page_url` is usually just the DOI again; its
    `pdf_url` is often a real publisher page. Reach for the one that can actually be read.
 
+## Adding a fetch adapter
+
+Reading a page is a fixed order of adapters, not a registry: `_FETCH_CHAIN` in
+`deepresearch/search.py`. Unlike search backends, nothing selects a fetcher by name —
+the order is the semantics — so the chain is a tuple and stays one. An adapter is a
+module-level `attempt(url, cap, prev=None)` returning one of two shapes, never mixed:
+
+1. **Serve — `(text, meta)`.** `text` is the page text, or `""` for a *named* refusal
+   such as the unreadable-PDF one. A refusal is read provenance and serves; it must not
+   fall through, or unreadable PDFs would come back as abstracts. A serve ends the walk.
+2. **Fall through — `(None, why)`.** `why` is a plain string naming the failure, or
+   `None` when this adapter was not applicable or has nothing to name. `""` is never a
+   fall-through: an empty page is a serve.
+
+`prev` carries the pair (adapter, why) of the last *named* fall-through, so a later
+adapter can label its own meta with an earlier failure — `firecrawlFailed` is folded
+only when the direct http read succeeds, `blockedBy` and `liveFetchFailed` travel the
+same way, and nothing is shared mutable state.
+
+Two ordering invariants are load-bearing. Both are enforced by the code and pinned by
+effect tests, so a reorder fails loudly instead of drifting:
+
+- `_via_firecrawl` stays the **immediate predecessor** of `_via_direct`, or the
+  `firecrawlFailed` disclosure silently disappears — a visible no-op, never a mislabel.
+- The walk's tail reads `prev[1]` unguarded, true only while `_via_direct`'s
+  fall-through reason is never empty and nothing after it falls through with a reason.
+
+Every branch of every adapter has an effect test in `tests/test_pipeline.py` (the
+fetch-seam section at the foot of the file). Add yours in the same change: stub the
+seam your adapter calls (`crossref_record`, `_get_bytes`, `_try_wayback`, …), drive
+`searchmod.fetch`, and assert the `via` string and the meta keys. The prose gate is
+not a chain-wide wrapper — it gates PDF text, scraper markdown and archive text, and
+never direct HTML reads.
+
 ## Adding or changing a source tier, or a depth budget
 
 Edit `contract/tiers.json` or `contract/depths.json` — **not** the Python and not the

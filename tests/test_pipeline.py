@@ -2990,6 +2990,190 @@ with _tmp3.TemporaryDirectory() as _gd2:
        "watchdog wakes on a 200 whose body is not JSON - broken, not busy")
 _srv4.shutdown(); _srv5.shutdown()
 
+# ── the fetch seam: every adapter's branch, driven directly ─────────────────
+# Until now the fetch ladder was pinned by source greps and by the end-to-end
+# firecrawl tests above; each individual branch was reachable only by reading the
+# code. Each test here drives ONE branch of the fetch seam over searchmod.fetch
+# with the network stubbed at the module's own seams (crossref_record,
+# _try_firecrawl, _get_bytes, pdf_text, _try_wayback), so a reorder of the chain,
+# a lost meta key, or a serve that became a fall-through fails here by behavior.
+# Written against the pre-refactor ladder, green on it, and kept green through
+# the adapter-chain refactor: they are the no-drift net for the fetch seam.
+import urllib.error as _ue
+
+_real_xr, _real_gb = searchmod.crossref_record, searchmod._get_bytes
+_real_fc, _real_wb, _real_pdft = (searchmod._try_firecrawl, searchmod._try_wayback,
+                                  searchmod.pdf_text)
+try:
+    _fc_hits, _cr_hits = [], []
+    def _fc_probe(url, cap):
+        _fc_hits.append(url)
+        return None, None
+    def _cr_miss(doi):
+        _cr_hits.append(doi)
+        return None, None
+    def _html_read(url, timeout=30):
+        return (b"<html><body>plain readable body text sits here</body></html>",
+                "text/html; charset=utf-8")
+    def _blocked_read(url, timeout=30):
+        raise _ue.URLError("blocked")
+    def _wb_none(url, cap, why):
+        return None, None
+    _PNAS = "https://www.pnas.org/doi/10.1073/pnas.2200300119"  # DOI in the publisher path
+
+    # everything stubbed BEFORE the first fetch: no test here may reach the network
+    searchmod._try_firecrawl = _fc_probe
+    searchmod._get_bytes = _html_read
+
+    # 1. a resolver URL is served by its Crossref record; the scraper is never tried
+    searchmod.crossref_record = lambda doi: (" ".join(["finding"] * 50), {"journal": "J"})
+    os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:9"  # set: only the DOI exclusion keeps the scraper out
+    _t1, _m1 = searchmod.fetch("https://doi.org/10.1234/x", cap=200)
+    ok(_m1.get("via") == "crossref-api" and _m1.get("journal") == "J" and len(_t1) <= 200,
+       "a resolver URL is served by its Crossref record, capped, carrying the record's meta")
+    ok(_fc_hits == [], "and the scraper is never attempted for it, even fully configured")
+
+    # 2. resolver record missed: the direct read serves, with nothing to disclose
+    searchmod.crossref_record = _cr_miss
+    _t2, _m2 = searchmod.fetch("https://doi.org/10.1234/y")
+    ok(_m2.get("via") == "http" and "firecrawlFailed" not in _m2
+       and "plain readable body" in _t2 and _cr_hits == ["10.1234/y"],
+       "a resolver URL whose record missed reads DIRECT - a resolver is not page content, "
+       "so the scraper is skipped even on the miss")
+
+    # 3. the broad exclusion: a publisher URL with the DOI in its path skips the scraper too
+    _t3, _m3 = searchmod.fetch(_PNAS)
+    ok(_fc_hits == [] and _m3.get("via") == "http" and _cr_hits == ["10.1234/y"],
+       "a publisher URL carrying a DOI in its path skips the scraper as well - the broad "
+       "any-DOI exclusion, not just the resolver one, and crossref is not consulted for it")
+
+    # 4. a readable PDF is served with the prose gate's signals attached
+    _prose100 = ("the study confirms that the measured effect persisted through the "
+                 "follow up period and the result held in every year of the data ") * 5
+    searchmod._get_bytes = lambda url, timeout=30: (b"%PDF-1.4 not really", "application/pdf")
+    searchmod.pdf_text = lambda raw, cap: _prose100
+    _t4, _m4 = searchmod.fetch("https://example.org/paper.pdf")
+    ok(_m4.get("via") == "pdf" and _m4.get("pdfWords", 0) >= 40
+       and "letterRatio" in _m4 and "stopwordsPerKchar" in _m4,
+       "a readable PDF is served as pdf carrying pdfWords, letterRatio and stopwordsPerKchar")
+
+    # 5. an unreadable PDF is rescued by the archive, the refusal named in the provenance
+    searchmod.pdf_text = lambda raw, cap: "\x01" * 800
+    _wb_why = []
+    def _wb_serve(url, cap, why):
+        _wb_why.append(why)
+        return ("archived body text " * 50,
+                {"via": "wayback", "snapshotDate": "20250901", "liveFetchFailed": why,
+                 "archivedCopy": True, "snapshotUrl": "https://web.archive.org/snap"})
+    searchmod._try_wayback = _wb_serve
+    _t5, _m5 = searchmod.fetch("https://example.org/paper.pdf")
+    ok(_m5.get("via") == "wayback" and _m5.get("archivedCopy") is True
+       and _m5.get("liveFetchFailed", "").startswith("pdf-unreadable:"),
+       "an unreadable PDF is rescued by the archive, and the refusal it replaced is named "
+       "in the read provenance")
+    ok(_wb_why and _wb_why[0].startswith("pdf-unreadable:"),
+       "and the reason handed to the archive is the named refusal, not a bare exception")
+
+    # 6. a refused PDF with no snapshot SERVES the refusal - and never reaches the abstract
+    searchmod._try_wayback = _wb_none
+    _n6 = len(_cr_hits)
+    _t6, _m6 = searchmod.fetch(_PNAS)
+    ok(_t6 == "" and _m6.get("via") == "pdf-unreadable" and "error" in _m6
+       and "letterRatio" in _m6,
+       "a refused PDF with no archive serves the refusal itself - empty TEXT is a serve, "
+       "never a fall-through")
+    ok(len(_cr_hits) == _n6,
+       "and the refusal never reaches the abstract contest: crossref is not consulted for it")
+
+    # 7. a blocked publisher yields its abstract, labelled, naming what blocked it
+    searchmod._get_bytes = _blocked_read
+    searchmod.pdf_text = _real_pdft
+    searchmod.crossref_record = lambda doi: ("abstract only sentence " * 10, {"journal": "PNAS"})
+    _t7, _m7 = searchmod.fetch(_PNAS)
+    ok(_m7.get("via") == "crossref-fallback" and _m7.get("abstractOnly") is True
+       and _m7.get("blockedBy", "").startswith("URLError: "),
+       "a blocked publisher still yields its abstract - abstractOnly, with blockedBy "
+       "naming the failure that forced the substitution")
+
+    # 8. insteadOfAbstract: the archive wins only when it is clearly the fuller text
+    _abs8 = "abstract sentence " * 10                      # 180 chars
+    _wb_pair = lambda txt: (txt, {"via": "wayback", "liveFetchFailed": "URLError: blocked",
+                                  "archivedCopy": True})
+    searchmod.crossref_record = lambda doi: (_abs8, {"journal": "PNAS"})
+    searchmod._try_wayback = lambda url, cap, why: _wb_pair("archived full text passage " * 40)
+    _t8a, _m8a = searchmod.fetch(_PNAS)
+    ok(_m8a.get("via") == "wayback" and _m8a.get("insteadOfAbstract") is True
+       and _m8a.get("liveFetchFailed", "").startswith("URLError: "),
+       "an archive holding more than twice the abstract replaces it - insteadOfAbstract, "
+       "with the failure it replaced still named")
+    searchmod._try_wayback = lambda url, cap, why: _wb_pair("archived note " * 12)
+    _t8b, _m8b = searchmod.fetch(_PNAS)
+    ok(_m8b.get("via") == "crossref-fallback" and _m8b.get("abstractOnly") is True
+       and "insteadOfAbstract" not in _m8b,
+       "a thin archive does not displace the abstract - the abstract stays, labelled")
+
+    # 9. blocked with no DOI anywhere: the archive, else the honest failed terminal
+    searchmod.crossref_record = _cr_miss
+    searchmod._try_wayback = _wb_serve
+    _n9 = len(_cr_hits)
+    _t9a, _m9a = searchmod.fetch("https://example.org/blocked-page")
+    ok(_m9a.get("via") == "wayback" and len(_cr_hits) == _n9,
+       "a blocked page with no DOI goes to the archive WITHOUT consulting crossref - "
+       "there is no abstract to look for")
+    searchmod._try_wayback = _wb_none
+    _t9b, _m9b = searchmod.fetch("https://example.org/blocked-page")
+    ok(_t9b == "" and _m9b.get("via") == "failed"
+       and _m9b.get("error", "").startswith("URLError: "),
+       "and with no archive either the fetch fails honestly: empty text, via failed, "
+       "the exception named in the error")
+
+    # 10. the preserved wart: resolver miss + blocked consults the record exactly twice
+    _n10 = len(_cr_hits)
+    _t10, _m10 = searchmod.fetch("https://doi.org/10.1234/z")
+    ok(len(_cr_hits) - _n10 == 2 and _cr_hits[-2:] == ["10.1234/z", "10.1234/z"]
+       and _m10.get("via") == "failed",
+       "the record is consulted exactly TWICE on this path - the resolver miss, then the "
+       "blocked-DOI fallback. Preserved behavior: the old ladder made both calls, and "
+       "deduplicating them is a network-behavior change for another day")
+
+    # 11. the firecrawlFailed fold lives ONLY on the http success
+    searchmod._try_firecrawl = _real_fc          # the real opt-in read, env at call time
+    _skfc = _sock.socket(); _skfc.bind(("127.0.0.1", 0))
+    _fcdead = _skfc.getsockname()[1]; _skfc.close()
+    os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fcdead   # configured AND dead
+    searchmod._get_bytes = _blocked_read
+    searchmod.crossref_record = _cr_miss
+    searchmod._try_wayback = _wb_none
+    _t11a, _m11a = searchmod.fetch("https://example.org/blocked2")
+    ok(_m11a.get("via") == "failed" and "firecrawlFailed" not in _m11a,
+       "configured-and-dead scraper + a blocked direct read: the failed terminal names the "
+       "direct failure and carries NO firecrawlFailed - the fold lives only on the http success")
+    searchmod.crossref_record = lambda doi: ("abstract only sentence " * 10, {"journal": "PNAS"})
+    _t11b, _m11b = searchmod.fetch(_PNAS)
+    ok(_m11b.get("via") == "crossref-fallback" and "firecrawlFailed" not in _m11b,
+       "the same block rescued by an abstract discloses blockedBy, never firecrawlFailed")
+    searchmod.crossref_record = _cr_miss
+    searchmod._try_wayback = _wb_serve
+    _t11c, _m11c = searchmod.fetch("https://example.org/blocked3")
+    ok(_m11c.get("via") == "wayback" and "firecrawlFailed" not in _m11c,
+       "and the archived copy discloses liveFetchFailed, never firecrawlFailed")
+finally:
+    searchmod.crossref_record, searchmod._get_bytes = _real_xr, _real_gb
+    searchmod._try_firecrawl, searchmod._try_wayback, searchmod.pdf_text = (
+        _real_fc, _real_wb, _real_pdft)
+    os.environ.pop("DR_FIRECRAWL_URL", None)
+
+# 12. the via vocabulary is closed: a ninth producer must be a conscious update, because
+# engine's consumers (read_provenance, honestLimits, _via_census) dispatch on these.
+# One-directional on purpose: producers must be a known set, while pdf/http/firecrawl
+# are success states engine deliberately does not dispatch on.
+_via_seen = set(_re.findall(r'"via": "([a-z-]+)"',
+                            open(searchmod.__file__, encoding="utf-8").read()))
+ok(_via_seen == {"crossref-api", "firecrawl", "http", "pdf", "pdf-unreadable",
+                 "crossref-fallback", "wayback", "failed"},
+   "the via vocabulary is closed at eight known values; a ninth producer must fail here "
+   "until engine's consumers are consciously updated")
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)
 
