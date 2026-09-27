@@ -10,7 +10,7 @@ description: >
   Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.17.0
+version: 1.18.0
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]
@@ -255,6 +255,9 @@ Report these six things. Do not bury them.
    attribution.
 3. **`processCritique.untraceableCount` and `untraceableStatements`** - assertions in the
    summary that trace to no verified claim. These are orchestrator hallucinations.
+   `summaryAnnotated` is the summary with each flagged sentence the critic quoted verbatim
+   marked `[UNTRACEABLE: ...]` in place (`processCritique.markedInSummary` counts them);
+   a flag the critic paraphrased cannot be marked, so read the list as well.
    **Strike them from what you tell the user**, and say you struck them. Read these, not
    `processCritique.verdict`: three fabricated sentences were appended to a real summary and
    the critic named all three while returning `material-gaps` on the clean and the degraded

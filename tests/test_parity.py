@@ -109,6 +109,7 @@ SHARED = {
     "audit-off + unchecked limits": ('out["citationAuditOff"]', "citationAuditOff:"),
     "rescue pool is citable":    ("r_citable, r_excluded = citable_only(", "citableOnly(rescued.flatMap("),
     "demotion says why":         ('c["auditWhy"] = ', "auditWhy: auditWhy.get("),
+    "flags marked in summary":   ('out["summaryAnnotated"] = _annotated', "summaryAnnotated.slice(0, m.index) + '[UNTRACEABLE: '"),
     "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),

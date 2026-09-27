@@ -81,10 +81,12 @@ looks exactly like "the web has nothing" (measured 2026-09-16, a session restart
 in Mode B on that false verdict while the instance was alive the whole time).
 
 Page rendering (optional): `DR_FIRECRAWL_URL` points the fetch layer at a
-self-hosted Firecrawl. There is NO default - unset means fully off and zero
-network attempts. Set it to `http://127.0.0.1:3002` on the host or
-`http://firecrawl:3002` from inside the docker network (see
-contrib/firecrawl/README.md for the deployment recipe).
+self-hosted Firecrawl. The driver adopts a local instance at `127.0.0.1:3002` by
+itself when a real test scrape returns markdown (it says so, like SearXNG); an
+explicit `DR_FIRECRAWL_URL` always wins, and nothing answering means fully off.
+The engine itself has NO default - outside the driver, unset means zero network
+attempts. From inside the docker network the address is `http://firecrawl:3002`
+(see contrib/firecrawl/README.md for the deployment recipe).
 Pages are scraped to rendered markdown BEFORE the stdlib reader runs - the point
 is JS-heavy pages the stdlib reads as empty shells - and any Firecrawl failure
 falls back to the normal ladder, so it can never take a run down. `via:

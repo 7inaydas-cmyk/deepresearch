@@ -9,3 +9,13 @@ build/
 # Raw run logs ARE committed on purpose: they are the evidence behind every
 # percentage in the README. Ignore only scratch runs.
 runs/scratch-*
+
+# Research-run scratch that hand-driven runs wrote into the checkout: page dumps,
+# extractions, per-run output folders. 647 such files had piled up untracked by
+# 2026-09-27 (moved to ~/deepresearch-reports/scratch-2026-09-25). They belong
+# there, never in a commit. out/*.md at the top level stays tracked on purpose.
+/page*.txt
+/page-*.html
+/extract-*
+/out-*/
+/out/*/

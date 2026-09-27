@@ -390,6 +390,14 @@ def run_critic_probes(rep):
     out["criticsPerArm"] = n_critics
     out["failedCalls"] = failed_calls
     out["plantedText"] = [p["text"] for p in planted]
+    # The lists are a DISPLAY sample; the counts are the measurement. Only the cut lists
+    # were stored, so runs/probes-2026-09-06.json read "12 flagged in both arms" - the cap,
+    # not the critic - and whether the count separates a clean summary from a degraded
+    # one (issue #10) was unanswerable from the record (issue triage, 2026-09-27).
+    out["flaggedByDegradedArmCount"] = len(flagged)
+    out["flaggedByCleanArmCount"] = len(clean_flagged)
+    out["flaggedListsNote"] = ("flaggedByDegradedArm / flaggedByCleanArm show at most 12 "
+                               "statements each; the *Count fields are complete.")
     out["flaggedByDegradedArm"] = flagged[:12]
     out["flaggedByCleanArm"] = clean_flagged[:12]
     out["cleanArmFlagged"] = sorted({s for k, c in got if k == "clean"

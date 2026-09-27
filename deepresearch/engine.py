@@ -2742,9 +2742,11 @@ def deepresearch(question, depth="standard", contract=None):
     _t = _providers.select()
     log("Provider: %s | model: %s | credential: %s%s%s" % (
         _t["label"], MODEL, scheme,
-        "" if scheme == "api-key" else
+        # The revocation hint belongs to the OAuth credential FILE only. Under the session
+        # transport it told a `claude -p` run to set an API key it deliberately does not
+        # use (seen on the first live 1.17.0 run, 2026-09-27).
         " (a local login file; set %s to avoid a server-side revocation "
-        "taking a run down mid-flight)" % _t["key_env"],
+        "taking a run down mid-flight)" % _t["key_env"] if scheme == "oauth" else "",
         ("; endpoint is %s's (%s override) - model default follows the endpoint"
          % (_providers.spec(_t["endpoint_owner"])["label"], _t["base_url_env"])
          ) if _t.get("endpoint_owner") else ""))
@@ -3771,20 +3773,38 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         out["citationPartials"] = _partials
     _untraceable = uniq("untraceableStatements")
     _struck = []
+    # The sentences the critic flagged, as text that can be LOCATED in the summary.
+    # Prefer the verbatim field. Fall back to pulling a quoted fragment out of the
+    # prose description, which is all there was before and which never once matched:
+    # the critic quotes with ' and the old code split on ".
+    _cands = list(uniq("untraceableVerbatim"))
+    for _u in _untraceable:
+        for _q in ('"', "'", "\u201c", "\u2018"):
+            if _q in _u:
+                _parts = _u.split(_q)
+                if len(_parts) > 2:
+                    _cands.append(_parts[1])
+    # Under the default `flag` policy the summary stays as written and the flags sat in
+    # processCritique, where a reader of the summary never looks - the quality review's
+    # top gap (G1). Publish a copy of the ORIGINAL summary with every locatable flagged
+    # sentence marked in place. Same location rule as strike: exact through the webtext
+    # view, never fuzzy, so a marker never lands on text the critic did not object to.
+    _annotated, _marked = out.get("summary") or "", 0
+    for _frag in _cands:
+        _frag = (_frag or "").strip()
+        if len(_frag) <= 25:
+            continue
+        _m = webtext_pattern(_frag).search(_annotated)
+        if _m:
+            _annotated = (_annotated[:_m.start()] + "[UNTRACEABLE: " + _m.group(0) + "]"
+                          + _annotated[_m.end():])
+            _marked += 1
+    if _untraceable:
+        out["summaryAnnotated"] = _annotated
     if UNTRACEABLE_POLICY == "strike" and _untraceable:
         # Strike only sentences we can actually locate. A fuzzy match would delete
         # text the critic did not object to, which is worse than leaving it.
         _summary = out.get("summary") or ""
-        # Prefer the verbatim field. Fall back to pulling a quoted fragment out of the
-        # prose description, which is all there was before and which never once matched:
-        # the critic quotes with ' and the old code split on ".
-        _cands = list(uniq("untraceableVerbatim"))
-        for _u in _untraceable:
-            for _q in ('"', "'", "\u201c", "\u2018"):
-                if _q in _u:
-                    _parts = _u.split(_q)
-                    if len(_parts) > 2:
-                        _cands.append(_parts[1])
         for _frag in _cands:
             _frag = (_frag or "").strip()
             if not _frag or len(_frag) <= 25:
@@ -3807,6 +3827,12 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 "the critic's text does not appear verbatim in the summary. Reporting them "
                 "instead of deleting on a fuzzy match." % len(_untraceable))
     out["processCritique"] = {"untraceableCount": len(_untraceable),
+                              "markedInSummary": _marked,
+                              "markedInSummaryMeans": (
+                                  "how many flagged sentences were located verbatim and "
+                                  "marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the "
+                                  "critic paraphrased cannot be located, so it appears only "
+                                  "in untraceableStatements - read those too."),
                               "untraceableCountMeans": (
                                   "distinct flagged STRINGS across all critics, after "
                                   "normalising whitespace and case - not distinct problems. "
@@ -4190,6 +4216,10 @@ def main():
     # this bug already; it only worked because pkg_parent happened to be the repo root.
     if a.out:
         a.out = os.path.abspath(a.out)
+        # Before any work, not at the end: a missing directory crashed --bg on its log
+        # file with a traceback, and a foreground run only failed when it wrote the
+        # report - after the whole run, losing it (found live 2026-09-27).
+        os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     if a.contract:
         a.contract = os.path.abspath(a.contract)
     supplied = None

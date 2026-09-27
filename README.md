@@ -171,6 +171,7 @@ Beyond findings and citations, the report is a decision document:
 - **`citationPartials`** — claims the blind re-fetch rated `partial`. These are **kept**, so read them before quoting a number or an attribution.
 - **`processCritique.struckFromSummary`** — what `DR_UNTRACEABLE=strike` actually removed. Verified live 2026-09-08 at `struck: 2`, the first non-zero in this mechanism's history. The match runs through the same transformation the critic read the summary through; a plain substring test missed on any summary containing a quotation mark, which is why the policy once reported `untraceable: 9, struck: 0`.
 - **`processCritique.untraceableCount`** — read this, not `verdict`. The verdict was measured not to move when three fabricated sentences were added.
+- **`summaryAnnotated`** — the summary with every flagged sentence the critic quoted verbatim marked `[UNTRACEABLE: ...]` in place, under the default `flag` policy too, so a reader of the summary sees the flags where they apply. `processCritique.markedInSummary` counts them; a paraphrased flag cannot be located and stays only in `untraceableStatements`.
 
 ### Flags for measuring the tool itself
 

@@ -204,7 +204,7 @@ def install(cfg):
             if cfg.get("no_synth"):
                 return None
             return {"answerFirst": "The answer, first.", "hingeNumber": "d = -0.31",
-                    "baseRate": "none in evidence", "summary": "S",
+                    "baseRate": "none in evidence", "summary": cfg.get("summary", "S"),
                     "findings": [{"claim": "F1", "confidence": "high", "sources": ["u"], "evidence": "e",
                                   "sourceTier": "T1", "factInferenceAssumption": "fact"}],
                     "hypothesisVerdicts": [
@@ -230,6 +230,7 @@ def install(cfg):
                     "so the pooled estimate may be one population counted twice."}
         if label.startswith("critic:"):
             return {"untraceableStatements": ["u1"], "coverageGaps": ["g1"], "planFlaws": ["p1"],
+                    "untraceableVerbatim": cfg.get("critic_verbatim", []),
                     "verdict": "material-gaps" if label.endswith("2") else "minor-gaps", "rationale": "r"}
         return None
 
@@ -3606,6 +3607,79 @@ ok(searchmod._decode(b'<meta charset="utf-16"> plain page') == '<meta charset="u
 # The version-suffix strip ate an MDPI DOI whose own first character is a v.
 ok(searchmod.doi_in_url("https://www.mdpi.com/1999-4915/12/1/1/pdf/10.3390/v12010001.pdf")
    == "10.3390/v12010001", "an MDPI DOI keeps its leading v (a version suffix follows digits)")
+
+
+print("\n-- issue #10: the critic probe stores complete counts, not only a 12-item cut --")
+# runs/probes-2026-09-06.json read "12 flagged in both arms": both lists were cut to 12
+# before being stored, so the only number the record kept was the cap. Drive the probe
+# with a critic that flags 20 statements on the degraded arm and 15 on the clean one.
+_c10_agent = dr.agent
+def _c10(prompt, schema, label="", **k):
+    n = 20 if label.endswith("degraded") else 15
+    return {"untraceableStatements": ["%s statement %d" % (label, i) for i in range(n)],
+            "coverageGaps": [], "planFlaws": [], "verdict": "material-gaps", "rationale": "r"}
+dr.agent = _c10
+try:
+    _c10r = _PR.run_critic_probes({"question": "q", "depth": "quick",
+                                   "citationDetail": [{"claim": "Wages rose 5% in 2020.", "url": "u",
+                                                       "support": "supported"}],
+                                   "summary": "Wages rose 5% in 2020. Employment held.",
+                                   "findings": [{"claim": "Wages rose 5%"}]})
+finally:
+    dr.agent = _c10_agent
+ok(_c10r.get("flaggedByDegradedArmCount") == 20 and _c10r.get("flaggedByCleanArmCount") == 15
+   and len(_c10r.get("flaggedByDegradedArm") or []) == 12,
+   "the probe keeps the full flagged counts (20 vs 15) beside the 12-item display sample (%s)"
+   % {k: _c10r.get(k) for k in ("flaggedByDegradedArmCount", "flaggedByCleanArmCount")})
+
+
+print("\n-- G1: flagged sentences are marked IN the summary a reader reads --")
+# The default policy is `flag`: the summary stays as written and the critic's flags sat
+# only in processCritique, where a reader of the summary never looks - the quality
+# review's top-priority gap. summaryAnnotated marks each LOCATABLE flag in place.
+_g1_sum = ("Wages rose five percent in the treated counties. "
+           "Employment was flat across every group studied.")
+_g1 = run({"summary": _g1_sum,
+           "critic_verbatim": ["Employment was flat across every group studied."]})
+ok(_g1.get("summary") == _g1_sum,
+   "under the default flag policy the summary itself is untouched")
+ok("[UNTRACEABLE: Employment was flat across every group studied.]" in (_g1.get("summaryAnnotated") or "")
+   and "Wages rose five percent" in _g1.get("summaryAnnotated", ""),
+   "summaryAnnotated marks the flagged sentence in place and keeps the rest")
+ok(_g1["processCritique"]["markedInSummary"] == 1,
+   "and says how many flags it could locate (a paraphrased flag cannot be marked)")
+
+
+print("\n-- --out into a directory that does not exist yet --")
+# Found on the first live run of 1.17.0: --bg died on its log file with a traceback, and
+# a foreground run would have failed only when writing the report - after the whole run.
+_od = os.path.join(_tmp.mkdtemp(), "not", "yet", "there", "r.json")
+_cli2 = _sp.run([sys.executable, "-c", """
+import sys; sys.path.insert(0, %r)
+from deepresearch import engine as E
+E.deepresearch = lambda q, d, contract=None: {"summary": "s", "stats": {}}
+E.instruments.verify = lambda: []
+sys.argv = ["deepresearch", "--question", "q?", "--out", %r]
+E.main()
+""" % (os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."), _od)],
+                capture_output=True, text=True, env=dict(os.environ, DR_TRANSPORT="http",
+                                                          ANTHROPIC_API_KEY="k"))
+ok(_cli2.returncode == 0 and os.path.isfile(_od),
+   "--out into a missing directory creates it up front and writes the report (rc=%d)" % _cli2.returncode)
+
+
+print("\n-- the credential hint names the right mechanism --")
+# First live 1.17.0 run: under the session transport (`claude -p`, no key by design) the
+# Provider line said "a local login file; set ANTHROPIC_API_KEY ...". That advice is for the
+# OAuth credential FILE only.
+def _prov_line(scheme):
+    install({})
+    dr.preflight = lambda: scheme
+    dr._stats.update(calls=0, errors=0, ratelimited=0, in_tok=0, out_tok=0)
+    dr.deepresearch("Q?", "quick")
+    return next((l for l in LOGS if l.startswith("Provider:")), "")
+ok("local login file" not in _prov_line("session"), "session transport: no API-key advice")
+ok("local login file" in _prov_line("oauth"), "the OAuth credential file still gets the revocation hint")
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

@@ -148,7 +148,7 @@ function makeAgent(cfg) {
     if (L === 'synthesize') {
       if (cfg.noSynth) return null
       return { answerFirst: 'The answer, stated first.', hingeNumber: '86% vs 81%', baseRate: 'none in evidence',
-               summary: 'Executive summary.',
+               summary: cfg.summary || 'Executive summary.',
                findings: [{ claim: 'Merged 1', confidence: 'high', sources: ['https://a.org/1'], evidence: 'ev',
                             vote: '3-0', citationCheck: 'supported', sourceTier: 'T1', factOrInference: 'fact' }],
                contradictions: ['synth contradiction'],
@@ -187,6 +187,7 @@ function makeAgent(cfg) {
     }
     if (L.startsWith('critic:')) return {
       untraceableStatements: ['stmt 2 untraceable'], coverageGaps: ['no non-English sources'], planFlaws: ['SQ2 leading'],
+      untraceableVerbatim: cfg.criticVerbatim || [],
       verdict: L.endsWith('2') ? 'material-gaps' : 'minor-gaps', rationale: 'because' }
 
     throw new Error('UNEXPECTED AGENT LABEL: ' + L)

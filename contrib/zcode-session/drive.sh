@@ -44,6 +44,24 @@ sys.exit(0 if (probe_searxng(sys.argv[1]) or 0) > 0 else 1)" "$c" 2>/dev/null); 
         fi
       done
     fi
+    # Firecrawl, same rule as SearXNG above: adopt a local instance only when a real
+    # scrape comes back with markdown (content, not status code), never when it merely
+    # listens. The owner decided on 2026-09-17 that every launch from this machine uses
+    # it; the env var still wins when set, and nothing answering means the stdlib ladder.
+    if [ -z "${DR_FIRECRAWL_URL:-}" ]; then
+      c=http://127.0.0.1:3002
+      if (cd "$REPO" && python3 -c "
+import json, sys, urllib.request
+sys.path.insert(0, '.')
+from deepresearch.search import _firecrawl_markdown
+req = urllib.request.Request(sys.argv[1] + '/v1/scrape', method='POST',
+    data=json.dumps({'url': 'https://example.com', 'formats': ['markdown']}).encode(),
+    headers={'Content-Type': 'application/json'})
+sys.exit(0 if _firecrawl_markdown(json.loads(urllib.request.urlopen(req, timeout=25).read().decode())) else 1)" "$c" 2>/dev/null); then
+        DR_FIRECRAWL_URL="$c"
+        echo "firecrawl: adopting $c (probed live: a scrape returned markdown)"
+      fi
+    fi
     mkdir -p "$RUN"
     rm -f "$RUN/req.out" "$RUN/ans.fifo" "$RUN/run.log" "$RUN/report.json" "$RUN/exit.code" \
           "$RUN/engine.pid" "$RUN/keeper.pid"
@@ -52,7 +70,7 @@ sys.exit(0 if (probe_searxng(sys.argv[1]) or 0) > 0 else 1)" "$c" 2>/dev/null); 
     # the fifo EOFs after the first reply and every later call reads nothing. It
     # lives exactly as long as the engine: it was `sleep 7200`, a hidden two-hour
     # deadline after which every remaining call read EOF (review 2026-09-27).
-    tail -f /dev/null > "$RUN/ans.fifo" &
+    tail -f /dev/null > "$RUN/ans.fifo" 2>/dev/null &
     KEEPER=$!
     echo "$KEEPER" > "$RUN/keeper.pid"
     # NOT the engine's own --bg: that re-exec redirects the child's stdout to a log,
@@ -61,12 +79,17 @@ sys.exit(0 if (probe_searxng(sys.argv[1]) or 0) > 0 else 1)" "$c" 2>/dev/null); 
     ( cd "$REPO" || exit 1
       rc=0
       DR_PROVIDER="${DR_PROVIDER:-glm}" DR_TRANSPORT=stdio \
-        DR_SEARXNG_URL="${DR_SEARXNG_URL:-}" \
+        DR_SEARXNG_URL="${DR_SEARXNG_URL:-}" DR_FIRECRAWL_URL="${DR_FIRECRAWL_URL:-}" \
         python3 -m deepresearch --question "$Q" --depth "$DEPTH" \
         --out "$RUN/report.json" \
         < "$RUN/ans.fifo" > "$RUN/req.out" 2> "$RUN/run.log" || rc=$?
       echo "$rc" > "$RUN/exit.code"
-      kill "$KEEPER" 2>/dev/null || true ) &
+      kill "$KEEPER" 2>/dev/null || true ) < /dev/null > /dev/null 2>&1 &
+    # ^ The wrapper runs several commands, so bash cannot exec python in its place, and
+    # an inherited stdout kept the CALLER's pipe open for the whole run: any tool that
+    # captures dr-launch's output hung until the research finished (found 2026-09-27;
+    # the one-command version before it did not). The engine's own streams are the
+    # fifo and the files above, so nothing is lost.
     echo "$!" > "$RUN/engine.pid"
     echo "launched: requests=$RUN/req.out log=$RUN/run.log report=$RUN/report.json"
     ;;

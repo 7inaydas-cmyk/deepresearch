@@ -539,6 +539,17 @@ import fs2 from 'node:fs'
   const syn = (prompts.find(p => p.label === 'synthesize') || {}).prompt || ''
   ok(/rescue pass's own cap/.test(syn), 'and synthesis is told which cap cut them')
 }
+{
+  // G1: under the default flag policy the flags sat only in processCritique, where a
+  // reader of the summary never looks. summaryAnnotated marks each locatable flag in place.
+  const sum = 'Wages rose five percent in the treated counties. Employment was flat across every group studied.'
+  const { out } = await run('R13 flagged sentences marked in the summary', { question: 'Q', depth: 'standard' },
+    { summary: sum, criticVerbatim: ['Employment was flat across every group studied.'] })
+  ok(out.summary === sum, 'under the default flag policy the summary itself is untouched')
+  ok((out.summaryAnnotated || '').includes('[UNTRACEABLE: Employment was flat across every group studied.]') &&
+     out.processCritique.markedInSummary === 1,
+     'summaryAnnotated marks the flagged sentence in place, and markedInSummary counts it')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

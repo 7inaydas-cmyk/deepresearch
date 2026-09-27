@@ -173,6 +173,9 @@ Report these five things. Do not bury them.
    Check this list before you quote a number or an attribution from the report.
 3. **`processCritique.untraceableCount` and `untraceableStatements`** — assertions in the
    summary that trace to no verified claim. These are orchestrator hallucinations.
+   `summaryAnnotated` is the summary with each flagged sentence the critic quoted verbatim
+   marked `[UNTRACEABLE: ...]` in place (`processCritique.markedInSummary` counts them);
+   a flag the critic paraphrased cannot be marked, so read the list as well.
    **Strike them from what you tell the user**, and say you struck them. Read these, not
    `processCritique.verdict`: three fabricated sentences were appended to a real summary
    and the critic named all three while returning `material-gaps` on the clean and the

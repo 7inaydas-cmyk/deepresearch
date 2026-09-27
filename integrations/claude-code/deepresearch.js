@@ -2041,15 +2041,31 @@ const planFlaws = [...new Set(critiques.flatMap(c => c.planFlaws || []))]
 // pulling a quoted fragment out of the prose description, trying the quote characters
 // the critic actually writes — the Python build matched only on " and therefore reported
 // `struck: 0` on every run it ever ran.
+const cands = [...untraceableVerbatim]
+for (const u of untraceable) {
+  for (const q of ['"', "'", '\u201c', '\u2018']) {
+    const parts = u.split(q)
+    if (parts.length > 2) cands.push(parts[1])
+  }
+}
+// Under the default `flag` policy the summary stays as written and the flags sat in
+// processCritique, where a reader of the summary never looks - the quality review's top
+// gap (G1). A copy of the ORIGINAL summary with every locatable flagged sentence marked
+// in place; the same exact-through-webText rule as strike, never fuzzy (2026-09-27).
+let summaryAnnotated = report.summary || ''
+let markedInSummary = 0
+for (const raw of cands) {
+  const frag = (raw || '').trim()
+  if (frag.length <= 25) continue
+  const m = webTextPattern(frag).exec(summaryAnnotated)
+  if (m) {
+    summaryAnnotated = summaryAnnotated.slice(0, m.index) + '[UNTRACEABLE: ' + m[0] + ']' +
+      summaryAnnotated.slice(m.index + m[0].length)
+    markedInSummary++
+  }
+}
 if (UNTRACEABLE_POLICY === 'strike' && untraceable.length) {
   let text = report.summary || ''
-  const cands = [...untraceableVerbatim]
-  for (const u of untraceable) {
-    for (const q of ['"', "'", '\u201c', '\u2018']) {
-      const parts = u.split(q)
-      if (parts.length > 2) cands.push(parts[1])
-    }
-  }
   for (const raw of cands) {
     const frag = (raw || '').trim()
     if (frag.length > 25) {
@@ -2140,7 +2156,10 @@ return {
   // invented attribution and the widened scope. Surface them in code.
   citationPartials: factRows.filter(f => f.support === 'partial')
     .map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || '') })),
+  ...(untraceable.length ? { summaryAnnotated } : {}),
   processCritique: { untraceableCount: untraceable.length,
+                     markedInSummary,
+                     markedInSummaryMeans: 'how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.',
                      readThisFirst: 'Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three — and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.',
                      verdict: critVerdict,
                      verdictNote: 'coarse tag, measured to be saturated at `material-gaps`; see readThisFirst',
