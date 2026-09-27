@@ -1,0 +1,276 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "deepresearch engine: one research run",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "pipeline",
+      "label": "Pipeline"
+    },
+    {
+      "id": "recovery",
+      "label": "Recovery"
+    },
+    {
+      "id": "exits",
+      "label": "Honest exits",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "collect",
+      "label": "Collect",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "verify",
+      "label": "Verify",
+      "fromCol": 3,
+      "toCol": 4,
+      "variant": "emphasis"
+    },
+    {
+      "id": "report",
+      "label": "Report",
+      "fromCol": 5,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "scope",
+    "gather",
+    "rank",
+    "panel",
+    "audit",
+    "synth"
+  ],
+  "nodes": [
+    {
+      "id": "scope",
+      "lane": "pipeline",
+      "col": 0,
+      "type": "frontend",
+      "label": "Scope",
+      "sublabel": "framing, then plan",
+      "width": 132
+    },
+    {
+      "id": "gather",
+      "lane": "pipeline",
+      "col": 1,
+      "type": "backend",
+      "label": "Gather",
+      "sublabel": "sweep + deepen waves",
+      "width": 132
+    },
+    {
+      "id": "rank",
+      "lane": "pipeline",
+      "col": 2,
+      "type": "backend",
+      "label": "Rank",
+      "sublabel": "citable, capped",
+      "width": 132
+    },
+    {
+      "id": "panel",
+      "lane": "pipeline",
+      "col": 3,
+      "type": "security",
+      "label": "3-lens panel",
+      "sublabel": "2 refutes kill",
+      "width": 132
+    },
+    {
+      "id": "audit",
+      "lane": "pipeline",
+      "col": 4,
+      "type": "security",
+      "label": "Blind audit",
+      "sublabel": "restate, demote or keep",
+      "width": 132
+    },
+    {
+      "id": "synth",
+      "lane": "pipeline",
+      "col": 5,
+      "type": "backend",
+      "label": "Synthesize",
+      "sublabel": "then critic",
+      "width": 132
+    },
+    {
+      "id": "rescue",
+      "lane": "recovery",
+      "col": 3,
+      "type": "messagebus",
+      "label": "Rescue",
+      "sublabel": "re-search, re-verify",
+      "width": 132
+    },
+    {
+      "id": "noplan",
+      "lane": "exits",
+      "col": 0,
+      "type": "external",
+      "label": "Plan unusable",
+      "sublabel": "error, exit 1",
+      "width": 132
+    },
+    {
+      "id": "noclaims",
+      "lane": "exits",
+      "col": 2,
+      "type": "external",
+      "label": "No claims",
+      "sublabel": "says why",
+      "width": 132
+    },
+    {
+      "id": "nosurvivor",
+      "lane": "exits",
+      "col": 4,
+      "type": "external",
+      "label": "Nothing survived",
+      "sublabel": "refuted, unverified, demoted",
+      "width": 132
+    },
+    {
+      "id": "nosynth",
+      "lane": "exits",
+      "col": 5,
+      "type": "external",
+      "label": "Synthesis failed",
+      "sublabel": "raw claims kept",
+      "width": 132
+    }
+  ],
+  "edges": [
+    {
+      "id": "scope-gather",
+      "from": "scope",
+      "to": "gather",
+      "variant": "emphasis",
+      "role": "main",
+      "route": "straight"
+    },
+    {
+      "id": "gather-rank",
+      "from": "gather",
+      "to": "rank",
+      "variant": "emphasis",
+      "role": "main"
+    },
+    {
+      "id": "rank-panel",
+      "from": "rank",
+      "to": "panel",
+      "variant": "emphasis",
+      "role": "main"
+    },
+    {
+      "id": "panel-audit",
+      "from": "panel",
+      "to": "audit",
+      "variant": "emphasis",
+      "role": "main"
+    },
+    {
+      "id": "audit-synth",
+      "from": "audit",
+      "to": "synth",
+      "variant": "emphasis",
+      "role": "main",
+      "route": "straight"
+    },
+    {
+      "id": "panel-rescue",
+      "from": "panel",
+      "to": "rescue",
+      "label": "sub-question wiped",
+      "role": "branch",
+      "variant": "dashed",
+      "fromSide": "bottom"
+    },
+    {
+      "id": "rescue-audit",
+      "from": "rescue",
+      "to": "audit",
+      "label": "rejoins",
+      "role": "branch",
+      "variant": "dashed"
+    },
+    {
+      "id": "scope-noplan",
+      "from": "scope",
+      "to": "noplan",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "bottom"
+    },
+    {
+      "id": "rank-noclaims",
+      "from": "rank",
+      "to": "noclaims",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "audit-nosurvivor",
+      "from": "audit",
+      "to": "nosurvivor",
+      "role": "error",
+      "variant": "security",
+      "label": "all demoted"
+    },
+    {
+      "id": "rescue-nosurvivor",
+      "from": "rescue",
+      "to": "nosurvivor",
+      "label": "still none",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "synth-nosynth",
+      "from": "synth",
+      "to": "nosynth",
+      "role": "error",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Collect",
+      "items": [
+        "Framing drafts whatever hypotheses and kill criteria the contract lacks, before any search",
+        "Sweeps search, pick, fetch and extract; gap analysis adds waves",
+        "Ranking keeps T1-T3 claims round-robin across sub-questions, importance first, up to the budget"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Verify",
+      "items": [
+        "Three different lenses: two refutations kill; fewer than two answers leave a claim unverified",
+        "At standard depth and up, a blind re-fetch audits every panel-voted claim, killed ones included",
+        "A partial survivor: a supported restatement replaces it, a failing one is demoted, none usable keeps it flagged"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Every exit reports",
+      "items": [
+        "Every exit after planning returns a report saying why it stopped; a rejected credential exits 2",
+        "Limits ride all of them; panel instruments ride every exit after the panel",
+        "Quick depth has no rescue, so an all-refuted quick run exits straight from the panel"
+      ]
+    }
+  ]
+}

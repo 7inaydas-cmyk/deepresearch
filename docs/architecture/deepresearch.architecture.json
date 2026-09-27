@@ -1,0 +1,366 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "deepresearch: three clients, one contract",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/7inaydas-cmyk/deepresearch",
+      "revision": "822e95e40ed1f20ec69b3887590d4123dc235e56"
+    }
+  },
+  "layout": {
+    "mode": "grid",
+    "cellW": 150,
+    "cellH": 60,
+    "gapX": 130,
+    "gapY": 56
+  },
+  "components": [
+    {
+      "id": "hermes",
+      "type": "frontend",
+      "label": "Hermes skill",
+      "sublabel": "CLI launch, --bg",
+      "row": 0,
+      "col": 0,
+      "sources": [
+        {
+          "path": "integrations/hermes/SKILL.md",
+          "line": 54,
+          "end_line": 58,
+          "label": "launch command"
+        },
+        {
+          "path": "contrib/hermes/sync-skill.sh",
+          "line": 119,
+          "end_line": 131,
+          "label": "real-file install"
+        }
+      ]
+    },
+    {
+      "id": "zcode",
+      "type": "frontend",
+      "label": "ZCode driver",
+      "sublabel": "drive.sh, Mode A",
+      "row": 1,
+      "col": 0,
+      "sources": [
+        {
+          "path": "contrib/zcode-session/drive.sh",
+          "line": 27,
+          "end_line": 95,
+          "label": "dr-launch"
+        },
+        {
+          "path": "integrations/zcode/SKILL.md",
+          "line": 65,
+          "end_line": 73,
+          "label": "Mode A"
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "engine.py + gates",
+      "sublabel": "pipeline, tiers, kappa",
+      "row": 1,
+      "col": 1,
+      "sources": [
+        {
+          "path": "deepresearch/engine.py",
+          "line": 2791,
+          "end_line": 2800,
+          "label": "deepresearch()"
+        },
+        {
+          "path": "deepresearch/tiers.py",
+          "line": 71,
+          "end_line": 107,
+          "label": "tier_of()"
+        },
+        {
+          "path": "deepresearch/instruments.py",
+          "line": 142,
+          "end_line": 150,
+          "label": "conformance verify()"
+        }
+      ]
+    },
+    {
+      "id": "seam",
+      "type": "security",
+      "label": "Model seam",
+      "sublabel": "agent() + providers.py",
+      "row": 1,
+      "col": 2,
+      "sources": [
+        {
+          "path": "deepresearch/engine.py",
+          "line": 687,
+          "end_line": 770,
+          "label": "agent(): HTTP POST"
+        },
+        {
+          "path": "deepresearch/engine.py",
+          "line": 613,
+          "end_line": 648,
+          "label": "stdio exchange"
+        },
+        {
+          "path": "deepresearch/providers.py",
+          "line": 135,
+          "end_line": 159,
+          "label": "run_harness(): spawn"
+        }
+      ]
+    },
+    {
+      "id": "search",
+      "type": "backend",
+      "label": "search.py",
+      "sublabel": "search + fetch chain",
+      "row": 0,
+      "col": 2,
+      "sources": [
+        {
+          "path": "deepresearch/search.py",
+          "line": 642,
+          "end_line": 650,
+          "label": "search()"
+        },
+        {
+          "path": "deepresearch/search.py",
+          "line": 1091,
+          "end_line": 1118,
+          "label": "fetch chain"
+        }
+      ]
+    },
+    {
+      "id": "contract",
+      "type": "database",
+      "label": "contract/*.json",
+      "sublabel": "shared facts",
+      "row": 2,
+      "col": 2,
+      "sources": [
+        {
+          "path": "contract/tiers.json",
+          "line": 1,
+          "end_line": 65,
+          "label": "source tiers"
+        },
+        {
+          "path": "contract/depths.json",
+          "line": 1,
+          "end_line": 37,
+          "label": "depth budgets"
+        },
+        {
+          "path": "contract/conformance.json",
+          "line": 1,
+          "end_line": 60,
+          "label": "gate references"
+        }
+      ]
+    },
+    {
+      "id": "jsbuild",
+      "type": "frontend",
+      "label": "Claude Code build",
+      "sublabel": "deepresearch.js",
+      "row": 3,
+      "col": 2,
+      "sources": [
+        {
+          "path": "integrations/claude-code/deepresearch.js",
+          "line": 315,
+          "end_line": 330,
+          "label": "agentChecked"
+        },
+        {
+          "path": "tools/sync_tiers.py",
+          "line": 37,
+          "end_line": 42,
+          "label": "generated blocks"
+        }
+      ]
+    },
+    {
+      "id": "models",
+      "type": "external",
+      "label": "Model runtimes",
+      "sublabel": "API, claude -p, hermes",
+      "row": 1,
+      "col": 3,
+      "sources": [
+        {
+          "path": "contract/providers.json",
+          "line": 1,
+          "end_line": 84,
+          "label": "endpoints + harnesses"
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "type": "external",
+      "label": "Keyless web",
+      "sublabel": "SearXNG, Crossref, Wayback",
+      "row": 0,
+      "col": 3,
+      "sources": [
+        {
+          "path": "deepresearch/search.py",
+          "line": 540,
+          "end_line": 560,
+          "label": "SearXNG backend"
+        },
+        {
+          "path": "deepresearch/search.py",
+          "line": 866,
+          "end_line": 880,
+          "label": "Wayback"
+        },
+        {
+          "path": "contrib/searxng/docker-compose.yml",
+          "line": 1,
+          "end_line": 21,
+          "label": "local SearXNG"
+        }
+      ]
+    },
+    {
+      "id": "ccruntime",
+      "type": "external",
+      "label": "Claude Code runtime",
+      "sublabel": "agents, WebSearch",
+      "row": 3,
+      "col": 3,
+      "sources": [
+        {
+          "path": "integrations/claude-code/deepresearch.js",
+          "line": 680,
+          "end_line": 693,
+          "label": "WebSearch / WebFetch"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Python engine (deepresearch/)",
+      "wraps": [
+        "engine",
+        "seam",
+        "search"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "hermes-launch",
+      "from": "hermes",
+      "to": "engine",
+      "label": "--bg",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "zcode-launch",
+      "from": "zcode",
+      "to": "engine",
+      "label": "launch, stdio",
+      "variant": "emphasis",
+      "labelDy": 18
+    },
+    {
+      "id": "engine-model",
+      "from": "engine",
+      "to": "seam",
+      "label": "model calls"
+    },
+    {
+      "id": "model-transport",
+      "from": "seam",
+      "to": "models",
+      "label": "http / spawn",
+      "variant": "security"
+    },
+    {
+      "id": "engine-search",
+      "from": "engine",
+      "to": "search",
+      "label": "search, fetch",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "search-web",
+      "from": "search",
+      "to": "web",
+      "label": "keyless"
+    },
+    {
+      "id": "engine-contract",
+      "from": "engine",
+      "to": "contract",
+      "label": "4 files"
+    },
+    {
+      "id": "seam-contract",
+      "from": "seam",
+      "to": "contract",
+      "label": "providers",
+      "labelDy": 24
+    },
+    {
+      "id": "contract-js",
+      "from": "contract",
+      "to": "jsbuild",
+      "label": "3 generated",
+      "variant": "dashed",
+      "labelDy": 24
+    },
+    {
+      "id": "js-runtime",
+      "from": "jsbuild",
+      "to": "ccruntime",
+      "label": "agent()"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Three clients",
+      "items": [
+        "Hermes runs the Python CLI detached (--bg) in its container",
+        "ZCode Mode A launches the engine and answers its stdio requests: the window is the model",
+        "Claude Code runs the JS twin inside its Workflow runtime, no Python"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "One pipeline",
+      "items": [
+        "Framing, plan, sweep, deepen, rank, 3-lens panel (2 refutes kill)",
+        "Rescue, blind citation audit with restate-or-drop, synthesis, critic",
+        "Every model call goes through engine.agent(): HTTP, a spawned harness, or stdio"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Shared contract",
+      "items": [
+        "The engine reads tiers, depths, hypothesis words and conformance; the seam reads providers",
+        "tools/sync_tiers.py generates JS copies of tiers, depths and hypothesis words",
+        "conformance.json asks both builds its 12 shared cases; 9 more are Python-only"
+      ]
+    }
+  ]
+}

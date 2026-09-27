@@ -19,3 +19,8 @@ runs/scratch-*
 /extract-*
 /out-*/
 /out/*/
+
+# Generated from the specs in docs/architecture/ by archify (see its README).
+/docs/architecture/*.html
+/docs/architecture/*.png
+/docs/architecture/*.visual-check.json
