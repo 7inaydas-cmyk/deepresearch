@@ -260,6 +260,28 @@ def _clean(s: str) -> str:
 
 
 # ── Backends ────────────────────────────────────────────────────────────────
+# Bot walls a PAGE read can hit: narrower than _CHALLENGE on purpose, because that pattern
+# is for search-result pages and matches ordinary prose ("blocked randomisation",
+# "anomaly"); here a false positive would throw away a real article.
+_INTERSTITIAL = re.compile(
+    r"checking your browser|captcha|verify (?:that )?you are (?:a )?human|are you a (?:human|robot)"
+    r"|just a moment\.\.\.|enable javascript and cookies|attention required|access denied"
+    r"|unusual traffic|request unsuccessful", re.I)
+
+
+def _is_interstitial(text: str) -> bool:
+    """Is this page text a bot wall rather than the page? Short AND interstitial wording.
+
+    Found on the first live 1.17.0 run (2026-09-27): PubMed Central answered the audit's
+    re-fetch with a 165-character "Checking your browser - reCAPTCHA" shell for 8 articles
+    the sweep had read fine minutes earlier. It was served as page text, the auditor
+    rightly said `unreachable` 16 times, and nothing in code noticed - so the fallbacks
+    built for a failed read (the archive, the audit's cached-read fallback) never ran.
+    """
+    t = text or ""
+    return len(t) < _CHALLENGE_MAX_BODY and bool(_INTERSTITIAL.search(t))
+
+
 def _looks_challenged(body: str) -> bool:
     """Does this body read like an interstitial rather than a page of results?
 
@@ -993,11 +1015,17 @@ def _via_direct(url, cap, prev=None):
                 # must NOT carry an unreadable PDF on into the abstract contest.
                 return "", {"via": "pdf-unreadable", "error": why, **sig}
             return text[:cap], {"via": "pdf", **sig}
+        text = _readable(_decode(raw, ctype))
+        # A bot wall answered 200 is a FAILED read, not a page: fall through so the
+        # archive can serve it, or the walk ends in an honest `failed` - which is also
+        # what lets the audit's fresh re-fetch fall back to the text the extractor read.
+        if _is_interstitial(text):
+            return None, "bot interstitial served instead of the page: %r" % text[:90]
         # The firecrawlFailed fold: a configured scraper that failed is disclosed
         # HERE and only here - on the http success path. The identity guard (is,
         # not name equality) makes a chain reorder a visible no-op of the
         # disclosure, never a mislabel.
-        return _readable(_decode(raw, ctype))[:cap], dict({"via": "http"},
+        return text[:cap], dict({"via": "http"},
                 **({"firecrawlFailed": prev[1]} if prev and prev[0] is _via_firecrawl else {}))
     except Exception as e:
         # Blocked or broken - named, never silent: the type name prefixes the

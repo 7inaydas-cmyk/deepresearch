@@ -1,0 +1,46 @@
+{
+ "decisionAtStake": "An employer, facilities or health-and-safety manager, or an individual worker must decide whether to buy sit-stand desks (often a few hundred US dollars or more per desk) as a health measure, and whether to buy the desk alone or with a behaviour-change programme. If the desks reduce sitting but show no measured health benefit, the purchase is a comfort or preference choice, not a health intervention. If they do not reduce sitting in a lasting way, the money is better spent elsewhere.",
+ "keyQuestion": "In controlled trials of office workers, do sit-stand desks (alone or as the main part of a workplace programme) reduce sitting time by at least 30 minutes per workday compared with usual desks, with the reduction still present at 3 to 12 months or later, and do they produce a statistically significant and clinically meaningful improvement in at least one pre-specified or replicated health outcome?",
+ "assumptions": [
+  "Population: adult office or desk-based workers, mostly in high-income countries, where almost all trials were done. Results may not apply to call centres, home workers, or low-income settings unless trials there exist.",
+  "Intervention: height-adjustable sit-stand desks or desk-top converters (electric or manual). Treadmill desks, cycling desks, and 'active workstations' are out of scope, except where a review pools them and the desk-only result cannot be separated. When this happens, we will say so.",
+  "Comparison: usual seated desks (usual practice or wait-list control). Studies without a control group (before-and-after only) are low-weight evidence and cannot decide the answer alone.",
+  "A 'meaningful' reduction in sitting is at least 30 minutes per workday, the same threshold used in the killCriteria below. Sitting time measured by a device worn on the body (for example activPAL or an accelerometer) counts for more than self-reported sitting, because self-report overstates change.",
+  "Time horizon: short term is less than 3 months, medium term is 3 to 12 months, and long term is more than 12 months. A reduction counts as 'sustained' only if it is present at 3 months or later.",
+  "A 'health outcome' is a measured physical or mental health result: blood pressure, blood glucose or insulin, blood lipids, weight or body fat, musculoskeletal pain or discomfort, or a validated score for mood, anxiety, or wellbeing. Productivity, absenteeism, job satisfaction, and 'energy' are not health outcomes here, but we can report them separately.",
+  "'Improves any measured health outcome' needs more than one significant p-value among many secondary outcomes. The improvement must be a pre-specified primary outcome, or be replicated in 2 or more independent randomized controlled trials, or be shown in a meta-analysis, and it must be large enough to matter clinically. This stops chance findings from multiple testing from deciding the answer.",
+  "Evidence cut-off is the present date (2026-09-27). Systematic reviews and meta-analyses (for example the Cochrane review on workplace interventions to reduce sitting and later updates) and large cluster randomized controlled trials (for example SMArT Work and SMART Work & Life) are the main evidence. Observational cohort studies are used only to check for possible harm from long periods of standing."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "Sitting reduction fades over time: device-measured randomized controlled trials show that the difference in workplace sitting falls below about 30 minutes per workday by 6 to 12 months (novelty wears off). This would move the answer toward H3.",
+  "Workers compensate: the reduction in sitting at work is balanced by more sitting outside work, so total daily sitting does not change.",
+  "The effect comes from the programme, not the desk: most of the reduction happens only in multi-part programmes (coaching, prompts, management support), and desks alone do little.",
+  "A replicated, clinically meaningful health benefit: 2 or more randomized controlled trials, or a meta-analysis at moderate or higher certainty, show a better result than usual desks for musculoskeletal pain (for example neck, shoulder, or low-back pain), blood pressure, blood glucose, or a validated mental-health score. This would move the answer from H2 to H1.",
+  "Health outcomes are null in large, well-powered trials: good-quality randomized controlled trials that measured cardiometabolic markers (blood pressure, glucose, lipids, weight) find no difference, and any significant results are single, unreplicated secondary outcomes. This supports H2.",
+  "Evidence of harm: studies link more standing to more varicose veins, circulatory problems when standing up, or low-back pain. Some recent large cohort studies suggest that standing is not protective for the heart and blood vessels. This would weaken any 'health improvement' conclusion.",
+  "Certainty ratings: GRADE ratings (a standard system that grades how certain the evidence is) in the most recent systematic reviews stay at low or very low because of small trials, no blinding, and risk of bias. Then even positive pooled effects must be reported as uncertain."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "H1 - Sit-stand desks reduce sitting AND improve health: they reduce device-measured sitting by 30 minutes or more per workday, the reduction is present at 3 months or later, AND at least one health outcome shows a statistically significant, clinically meaningful improvement that is replicated or pre-specified.",
+   "killCriterion": "Eliminated if no health outcome shows a significant, clinically meaningful improvement over usual desks that is replicated in 2 or more independent randomized controlled trials, or pooled in a meta-analysis at moderate or higher certainty, or is the pre-specified primary outcome of a well-powered trial. Also eliminated if the H3 kill condition fails, that is, if sitting is not reduced in a sustained way."
+  },
+  {
+   "hypothesis": "H2 - Sitting goes down but health does not measurably improve: sit-stand desks reduce sitting by 30 minutes or more per workday, the reduction is present at 3 months or later, but no health outcome meets the replicated, clinically meaningful threshold. Health effects are null, too small to matter, only single unreplicated secondary outcomes, or of very low certainty.",
+   "killCriterion": "Eliminated if a health outcome meets the H1 replication and clinical-meaning threshold. Also eliminated if pooled device-measured evidence shows the sitting reduction is less than 30 minutes per workday or is gone by 3 to 12 months."
+  },
+  {
+   "hypothesis": "H3 - No meaningful, lasting reduction in sitting: the desks do not reduce sitting by 30 minutes or more per workday in a sustained way. The reduction is small, happens only in the first weeks, is shown only by self-report or uncontrolled studies, or is cancelled out by more sitting outside work. Because of this, any health question is secondary.",
+   "killCriterion": "Eliminated if meta-analyses of controlled trials, or large device-measured cluster randomized controlled trials, show a reduction of 30 minutes or more per workday in workplace sitting compared with usual desks at 3 months or later, with no evidence that total daily sitting is fully cancelled out by more sitting outside work."
+  }
+ ],
+ "needsGeneralWeb": false,
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted",
+  "needsGeneralWeb": "drafted"
+ }
+}

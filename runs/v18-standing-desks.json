@@ -1,0 +1,1349 @@
+{
+ "question": "Do sit-stand desks reduce office workers' sitting time, and do they improve any measured health outcome?",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "We have the 2018 Cochrane pooled result: 100 min per workday at up to 3 months and 57 min at 3 to 12 months, from mixed measures. We have no pooled estimate from device-measured (activPAL or accelerometer) data only. We also have no meta-analysis published after 2018."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Cochrane shows the effect falling from 100 min to 57 min (only 2 studies) and has no data beyond 12 months. SMArT Work (desk plus programme) shows the effect growing to 83 min at 12 months. We have no device-measured data beyond 12 months, and no 12-month result from a second trial (for example Stand Up Victoria)."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "answered",
+   "note": "Cochrane 2018 (total sitting −82 min/day, 2 studies) and SMArT Work (total daily sitting −82 min/day at 12 months, device-measured) both show that workers did not make up the loss by sitting more outside work. The limit: this rests on few studies."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "We know the SMART Work & Life design (programme plus desk, programme alone, control), but we have not found its results. Separately, one 8-week desk-only trial (self-reported) found −80 min. We have no direct comparison between the two intervention arms."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "partial",
+   "note": "No outcome has yet been shown to be replicated. Cochrane 2016 found no effect on musculoskeletal symptoms, work performance or sick leave. SMArT Work improved only self-reported psychological and work outcomes. The cholesterol and HDL results each come from one small trial. We have no pooled GRADE-rated results for blood pressure, glucose, lipids, weight or pain from recent meta-analyses."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "We only have the general Cochrane statement (small samples, low to very low quality). We have no assessment of statistical power or pre-registration for the trials that measured cardiometabolic outcomes (for example Stand Up Victoria biomarkers). We have no data on contamination between arms."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "The UK Biobank standing study (standing not protective; more than 2 h/day linked to circulatory disease) is known only from the Sydney press release and the Guardian. We have not read the primary paper in the International Journal of Epidemiology. A small cross-sectional study found no link with varicose veins. We have no occupational-cohort evidence on standing and low-back or leg pain."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "partial",
+   "note": "We have only a retail price (£360 to £375 for a desk-top add-on). We have not found the SMArT Work trial-based economic evaluation (cost per participant, cost-effectiveness from the employer and NHS viewpoints)."
+  }
+ ],
+ "contradictions": [
+  "Durability. The Cochrane pooled effect falls from 100 min/workday (up to 3 months) to 57 min (3 to 12 months, 2 studies), which suggests the novelty wears off. SMArT Work's device-measured effect grows instead: −50.62 min/workday at 3 months, −64.40 at 6 months, −83.28 at 12 months. Likely reasons are that SMArT Work bundled the desk with a behaviour-change programme and measured sitting with a device, while Cochrane pools mixed designs and measures. None of these reasons is confirmed, so the conflict stays open.",
+  "Sitting reduction. SMArT Work and SMART Work and Life show large lasting cuts, but the independent SUFHA trial (39 Portuguese workers, 6 months) found no significant cut. SUFHA was small, so its null result is weak, but it is the only non-UK, non-Edwardson trial among the confirmed claims.",
+  "Varicose veins. UK Biobank links standing more than 2 h/day to more orthostatic circulatory disease, a group that includes varicose veins. The 2026 cross-sectional field study found no link between measured standing and varicose veins or reflux. The designs, outcome definitions and populations differ, and neither study measured sit-stand desk use.",
+  "Work performance. The gap analysis flagged Cochrane 2016 (no considerable effect on work performance) against SMArT Work (better self-reported job performance). Verification refuted the SMArT Work outcome claim, so this is not an established contradiction. Only the Cochrane side is confirmed.",
+  "Severity of standing harm. The gap analysis flagged the Guardian's 'standing desks may be bad for your health' framing against the University of Sydney release. Neither is a confirmed claim. The confirmed primary paper supports the narrower reading: no link to major cardiovascular disease, and an association only with orthostatic circulatory disease.",
+  "Durability: the 2018 Cochrane pooled effect falls from 100 min per workday (up to 3 months) to 57 min (3 to 12 months), which suggests the novelty wears off. SMArT Work's device-measured effect grows over time: −50.6 min at 3 months, −64.4 at 6 months, −83.3 at 12 months. Both can be true only if the behaviour-change programme (SMArT Work) prevents the decrease seen in trials that were mostly desk-only. No gathered source tests that.",
+  "Varicose veins: the UK Biobank cohort (reported by secondary sources and by the field-study authors) links more than 2 h/day of standing to a higher risk of chronic venous disease and varicose veins. The cross-sectional field study found no link between accelerometer-measured standing and varicose veins or venous reflux.",
+  "Work performance: the 2016 Cochrane review found no considerable effect of sit-stand desks on work performance. SMArT Work reported better self-reported job performance, work engagement and presenteeism. The difference may come from self-report compared with objective measures, or from desk alone compared with desk plus programme.",
+  "How serious the standing harm is: the Guardian headline says 'standing desks may be bad for your health' and mentions deep vein thrombosis. The University of Sydney release says the study did not measure standing-desk use and that the harm signal was limited to orthostatic circulatory problems, not heart disease."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "An employer, facilities or health-and-safety manager, or an individual worker must decide whether to buy sit-stand desks (often a few hundred US dollars or more per desk) as a health measure, and whether to buy the desk alone or with a behaviour-change programme. If the desks reduce sitting but show no measured health benefit, the purchase is a comfort or preference choice, not a health intervention. If they do not reduce sitting in a lasting way, the money is better spent elsewhere.",
+  "keyQuestion": "In controlled trials of office workers, do sit-stand desks (alone or as the main part of a workplace programme) reduce sitting time by at least 30 minutes per workday compared with usual desks, with the reduction still present at 3 to 12 months or later, and do they produce a statistically significant and clinically meaningful improvement in at least one pre-specified or replicated health outcome?",
+  "assumptions": [
+   "Population: adult office or desk-based workers, mostly in high-income countries, where almost all trials were done. Results may not apply to call centres, home workers, or low-income settings unless trials there exist.",
+   "Intervention: height-adjustable sit-stand desks or desk-top converters (electric or manual). Treadmill desks, cycling desks, and 'active workstations' are out of scope, except where a review pools them and the desk-only result cannot be separated. When this happens, we will say so.",
+   "Comparison: usual seated desks (usual practice or wait-list control). Studies without a control group (before-and-after only) are low-weight evidence and cannot decide the answer alone.",
+   "A 'meaningful' reduction in sitting is at least 30 minutes per workday, the same threshold used in the killCriteria below. Sitting time measured by a device worn on the body (for example activPAL or an accelerometer) counts for more than self-reported sitting, because self-report overstates change.",
+   "Time horizon: short term is less than 3 months, medium term is 3 to 12 months, and long term is more than 12 months. A reduction counts as 'sustained' only if it is present at 3 months or later.",
+   "A 'health outcome' is a measured physical or mental health result: blood pressure, blood glucose or insulin, blood lipids, weight or body fat, musculoskeletal pain or discomfort, or a validated score for mood, anxiety, or wellbeing. Productivity, absenteeism, job satisfaction, and 'energy' are not health outcomes here, but we can report them separately.",
+   "'Improves any measured health outcome' needs more than one significant p-value among many secondary outcomes. The improvement must be a pre-specified primary outcome, or be replicated in 2 or more independent randomized controlled trials, or be shown in a meta-analysis, and it must be large enough to matter clinically. This stops chance findings from multiple testing from deciding the answer.",
+   "Evidence cut-off is the present date (2026-09-27). Systematic reviews and meta-analyses (for example the Cochrane review on workplace interventions to reduce sitting and later updates) and large cluster randomized controlled trials (for example SMArT Work and SMART Work & Life) are the main evidence. Observational cohort studies are used only to check for possible harm from long periods of standing."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Sitting reduction fades over time: device-measured randomized controlled trials show that the difference in workplace sitting falls below about 30 minutes per workday by 6 to 12 months (novelty wears off). This would move the answer toward H3.",
+   "Workers compensate: the reduction in sitting at work is balanced by more sitting outside work, so total daily sitting does not change.",
+   "The effect comes from the programme, not the desk: most of the reduction happens only in multi-part programmes (coaching, prompts, management support), and desks alone do little.",
+   "A replicated, clinically meaningful health benefit: 2 or more randomized controlled trials, or a meta-analysis at moderate or higher certainty, show a better result than usual desks for musculoskeletal pain (for example neck, shoulder, or low-back pain), blood pressure, blood glucose, or a validated mental-health score. This would move the answer from H2 to H1.",
+   "Health outcomes are null in large, well-powered trials: good-quality randomized controlled trials that measured cardiometabolic markers (blood pressure, glucose, lipids, weight) find no difference, and any significant results are single, unreplicated secondary outcomes. This supports H2.",
+   "Evidence of harm: studies link more standing to more varicose veins, circulatory problems when standing up, or low-back pain. Some recent large cohort studies suggest that standing is not protective for the heart and blood vessels. This would weaken any 'health improvement' conclusion.",
+   "Certainty ratings: GRADE ratings (a standard system that grades how certain the evidence is) in the most recent systematic reviews stay at low or very low because of small trials, no blinding, and risk of bias. Then even positive pooled effects must be reported as uncertain."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "H1 - Sit-stand desks reduce sitting AND improve health: they reduce device-measured sitting by 30 minutes or more per workday, the reduction is present at 3 months or later, AND at least one health outcome shows a statistically significant, clinically meaningful improvement that is replicated or pre-specified.",
+    "killCriterion": "Eliminated if no health outcome shows a significant, clinically meaningful improvement over usual desks that is replicated in 2 or more independent randomized controlled trials, or pooled in a meta-analysis at moderate or higher certainty, or is the pre-specified primary outcome of a well-powered trial. Also eliminated if the H3 kill condition fails, that is, if sitting is not reduced in a sustained way."
+   },
+   {
+    "hypothesis": "H2 - Sitting goes down but health does not measurably improve: sit-stand desks reduce sitting by 30 minutes or more per workday, the reduction is present at 3 months or later, but no health outcome meets the replicated, clinically meaningful threshold. Health effects are null, too small to matter, only single unreplicated secondary outcomes, or of very low certainty.",
+    "killCriterion": "Eliminated if a health outcome meets the H1 replication and clinical-meaning threshold. Also eliminated if pooled device-measured evidence shows the sitting reduction is less than 30 minutes per workday or is gone by 3 to 12 months."
+   },
+   {
+    "hypothesis": "H3 - No meaningful, lasting reduction in sitting: the desks do not reduce sitting by 30 minutes or more per workday in a sustained way. The reduction is small, happens only in the first weeks, is shown only by self-report or uncontrolled studies, or is cancelled out by more sitting outside work. Because of this, any health question is secondary.",
+    "killCriterion": "Eliminated if meta-analyses of controlled trials, or large device-measured cluster randomized controlled trials, show a reduction of 30 minutes or more per workday in workplace sitting compared with usual desks at 3 months or later, with no evidence that total daily sitting is fully cancelled out by more sitting outside work."
+   }
+  ],
+  "needsGeneralWeb": false,
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted",
+   "needsGeneralWeb": "drafted"
+  }
+ },
+ "skillDrift": "deepresearch skill drift: repo doc integrations/hermes/SKILL.md is 1.18.0, engine is 1.17.0. Hermes serves these files verbatim, so its agents get the old instructions. Fix: sh contrib/hermes/sync-skill.sh (and bump the doc's version: if the engine moved first).",
+ "searchDegraded": false,
+ "singleRater": false,
+ "perspectives": [
+  {
+   "label": "Evidence synthesist",
+   "lens": "A systematic-review methodologist who trusts only pooled, risk-of-bias-graded evidence. They do not trust single trials, self-reported sitting, or effect sizes that do not have a stated follow-up time and a GRADE certainty rating.",
+   "query": "Cochrane review workplace interventions for reducing sitting at work sit-stand desk meta-analysis minutes per day update"
+  },
+  {
+   "label": "Trial-data constructor",
+   "lens": "A data auditor who builds the answer from the primary results tables of the large device-measured cluster randomized controlled trials and their trial registrations. They do not trust abstracts, press releases or review summaries, and they check registered primary outcomes against reported outcomes to find outcome switching.",
+   "query": "activPAL cluster randomised trial height-adjustable workstation 12 month sitting time results SMArT Work Stand Up Victoria SMART Work & Life"
+  },
+  {
+   "label": "Health-benefit steelman",
+   "lens": "An exercise physiologist who builds the strongest honest case that sit-stand desks improve health. They take mechanistic and short-term trials seriously (glucose after meals, blood pressure, back and neck pain, mood) and do not trust the idea that a null result from a long, diluted trial proves no effect.",
+   "query": "sit-stand desk randomized controlled trial significant improvement blood pressure postprandial glucose musculoskeletal pain office workers"
+  },
+  {
+   "label": "Counter-case skeptic",
+   "lens": "An epidemiologist who searches for the strongest reasons the desks fail or cause harm: more sitting outside work, harm from long standing, novelty effects, contamination, bias from self-reported data and industry funding. They do not trust intervention-period results that nobody measured after the trial ended.",
+   "query": "prolonged standing circulatory disease varicose veins risk UK Biobank standing desk compensation sitting outside work"
+  },
+  {
+   "label": "Occupational-health practitioner and regulator",
+   "lens": "A workplace health-and-safety officer or ergonomist who reads official guidance and real-world usage studies. They do not trust trial conditions that do not match a normal office, and they want to know if workers still use the standing function after one year and what regulators actually recommend.",
+   "query": "Safe Work Australia HSE guidance sedentary work sit-stand workstations evidence long-term usage office workers"
+  },
+  {
+   "label": "Cost analyst",
+   "lens": "A health economist or procurement manager who compares the cost of each desk and programme with the measured gains in sickness absence, presenteeism, productivity and quality-adjusted life years. They do not trust vendor ROI claims and claims based on projected rather than measured health gains.",
+   "query": "SMArT Work economic evaluation cost-effectiveness height-adjustable desk sickness absence productivity presenteeism"
+  }
+ ],
+ "summary": "Sit-stand desks reduce sitting time. The 2018 Cochrane review pooled 10 studies and found about 100 minutes less sitting per workday at follow-up of up to 3 months, but it graded the evidence low quality. At 3 to 12 months the pooled cut fell to 57 minutes per day, based on only 2 studies, and the review found no data beyond 12 months. Two device-measured UK cluster trials gave the desk together with a behaviour-change programme. In both, daily sitting was still about 64 to 82 minutes lower at 12 months. In one of them, the desk cut a further 41.7 minutes per day compared with the programme alone. Total daily sitting also fell by about 78 to 82 minutes per day, so workers did not make up for it by sitting more outside work. No measured health outcome has a confirmed, replicated benefit. The 2016 Cochrane review found no considerable effect on musculoskeletal symptoms, work performance or sick leave. A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group. The main UK trial was too small to test any outcome other than sitting. In a large UK cohort (UK Biobank), time spent standing was not linked to major cardiovascular disease. Standing more than 2 hours per day was linked to more orthostatic circulatory disease.",
+ "answerFirst": "Sit-stand desks do reduce sitting, but no health benefit has been shown. They cut sitting by roughly an hour a day, the cut still holds at 12 months in trials that give the desk with a support programme, and people do not make it up by sitting more outside work. But no measured health outcome has a confirmed, replicated improvement, and standing itself was not linked to heart disease or stroke risk. Coverage warning: 64 of 94 extracted claims (68%) were never verified because the verify budget ran out, and trials of blood pressure, glucose and blood lipids were not covered, so the 'no health benefit' half rests on absence of evidence from an incomplete search.",
+ "hingeNumber": {
+  "value": "41.7 min/day (95% confidence interval −56.3 to −27.0). This is the extra cut in daily sitting at 12 months from adding a height-adjustable desk to a behaviour-change programme, compared with the programme alone, in the SMART Work and Life trial.",
+  "why": "This is the only confirmed number that separates the desk from the coaching around it, in a large device-measured trial at 12 months. The 64 to 83 minute results from the two UK trials measure desk plus programme. Without this number, 'the desk reduces sitting' could really mean 'the programme reduces sitting'. The programme alone cut only 22.2 min/day.",
+  "sensitivity": "A 10-20% drop (to about 33-38 min/day) does not change the answer, because the figure stays above the 30-minute threshold. But the lower confidence limit (27 min/day) is just under 30, the figure is per day and not per workday, and it comes from a single trial. 'The desk alone adds a lasting 30+ minutes' is therefore likely but not secure. The health half of the answer rests on no single number. It rests on the absence of any replicated benefit, and one well-powered positive trial could overturn it.",
+  "source": "https://www.bmj.com/content/378/bmj-2021-069288"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1 - Sit-stand desks reduce sitting AND improve health: they cut device-measured sitting by 30 minutes or more per workday, the cut is present at 3 months or later, AND at least one health outcome shows a significant, clinically meaningful improvement that is replicated or pre-specified.",
+   "hypothesisNumber": 1,
+   "verdict": "killed",
+   "killCriterion": "Eliminated if no health outcome shows a significant, clinically meaningful improvement over usual desks that is replicated in 2 or more independent randomized controlled trials, pooled in a meta-analysis at moderate or higher certainty, or is the pre-specified primary outcome of a well-powered trial.",
+   "reasoning": "The sitting part holds, but the health part fails every route in the kill criterion. Meta-analysis: the 2016 Cochrane review found no considerable effect on musculoskeletal symptoms, work performance or sick leave [4], and the 2018 review graded most evidence low to very low quality [10], so no pooled health result reaches moderate certainty. Pre-specified primary outcome: the primary outcome of SMArT Work was sitting, not health [3], and the trial was too small to detect differences in other outcomes [25]. Replication: the one other trial that compared health outcomes against control (SUFHA) found no significant difference, except waist circumference, which favoured control [16]. That trial's 'may offer other health benefits' rests only on within-group changes [11]. This is a kill based on absence of evidence. 68% of extracted claims were never verified, and cardiometabolic trials were not covered, so a replicated benefit could exist outside this evidence set.",
+   "claimsCited": [
+    3,
+    4,
+    10,
+    11,
+    16,
+    25
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H2 - Sitting goes down but health does not measurably improve: sit-stand desks cut sitting by 30 minutes or more per workday, the cut is present at 3 months or later, but no health outcome meets the replicated, clinically meaningful threshold.",
+   "hypothesisNumber": 2,
+   "verdict": "surviving",
+   "killCriterion": "Eliminated if a health outcome meets the H1 replication and clinical-meaning threshold. Also eliminated if pooled device-measured evidence shows the sitting cut is less than 30 minutes per workday or is gone by 3 to 12 months.",
+   "reasoning": "Neither kill trigger fires. No health outcome meets the H1 threshold [4][16][25]. Sitting cuts stay above 30 minutes at 3 to 12 months. The Cochrane medium-term pooled effect is 57 min/day [1]. SMArT Work shows −83.28 min/workday at 12 months with a thigh-worn accelerometer [23] and −82.39 min/day daily sitting [17]. SMART Work and Life shows −63.7 min/day at 12 months [13], with the desk adding 41.7 min/day over the programme alone [20]. Total sitting fell too [2][24]. Three weak points remain. (1) No pooled device-measured estimate exists in the evidence, so the pooled part of the kill test cannot be run directly. (2) The Cochrane medium-term confidence interval reaches −15 min, below 30. (3) The long-term device-measured results come from desk-plus-programme trials by one research team. 'Surviving' does not mean proven: the 'no health effect' leg is absence of evidence from underpowered trials, not proof of no effect.",
+   "claimsCited": [
+    1,
+    2,
+    4,
+    13,
+    16,
+    17,
+    20,
+    23,
+    24,
+    25
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H3 - No meaningful, lasting reduction in sitting: the desks do not cut sitting by 30 minutes or more per workday in a sustained way. The cut is small, short-lived, self-report only, or cancelled out by more sitting outside work.",
+   "hypothesisNumber": 3,
+   "verdict": "killed",
+   "killCriterion": "Eliminated if meta-analyses of controlled trials, or large device-measured cluster randomized controlled trials, show a cut of 30 minutes or more per workday in workplace sitting compared with usual desks at 3 months or later, with no evidence that total daily sitting is fully cancelled out.",
+   "reasoning": "The kill criterion is met by both routes. Meta-analysis: Cochrane 2018 pooled −57 min/day at 3 to 12 months [1]. Large device-measured cluster trials: SMArT Work −83.28 min/workday at 12 months [23]; SMART Work and Life −63.7 min/day at 12 months in 756 workers [13]. No full cancelling out: total sitting fell by −82 min/day [2] and −78 min/day [9], and the SMArT Work daily cut matched the work-hours cut [17][24]. One partial point for H3 remains: the small SUFHA trial (39 workers, 6 months) found no significant sitting reduction [16], so the effect is not universal. The Cochrane medium-term estimate also rests on only 2 studies.",
+   "claimsCited": [
+    1,
+    2,
+    9,
+    13,
+    16,
+    17,
+    23,
+    24
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  }
+ ],
+ "strongestArgumentAgainst": "Against the sitting half: the lasting large cuts come from two trials by the same UK research team, in similar public-sector offices, with volunteers, where the desk was always bundled with a behaviour-change programme. Wearing a sitting monitor may itself change behaviour. The pooled medium-term estimate rests on only 2 studies, and its confidence interval reaches −15 min, below the 30-minute bar. The only independent non-UK trial (SUFHA) found no cut at all. The claim that a desk alone reduces sitting was refuted in verification. Most employers buy desks without a programme, and for that case the lasting effect is essentially untested, so 'sit-stand desks reduce sitting' may really mean 'a well-run programme that includes a desk reduces sitting in motivated volunteers'. Against the health half: calling the health effect null is too strong. SMArT Work was explicitly too small to detect anything except sitting. SUFHA had 39 people. Cardiometabolic trials were not covered, and 68% of claims were never verified. An hour less sitting a day may take years to show in hard outcomes, which no trial ran long enough to see. So the honest verdict on health may be 'unknown', not 'no benefit'. Positive results are also more likely to be published, which could inflate the sitting effect.",
+ "whatWouldChangeThisCall": [
+  "A meta-analysis of device-measured trials, or a large trial of a desk given without a programme, showing the 12-month cut is under 30 minutes per workday or gone. This would revive H3 for desks bought alone.",
+  "A well-powered randomised trial, or a meta-analysis at moderate or higher certainty, showing a clinically meaningful improvement in blood pressure, glucose, lipids, body fat or musculoskeletal pain against usual desks. This would revive H1.",
+  "Verification of the 64 unverified claims turning up a replicated health benefit, or a cardiometabolic null result from a well-powered trial. Either would firm up or overturn the health verdict.",
+  "A large independent (non-UK, different research team) cluster trial that fails to replicate the 12-month cut seen in SMArT Work and SMART Work and Life.",
+  "Publication of the SMArT Work economic evaluation, or prospective evidence that desk-driven standing raises venous or orthostatic disease. Either would change the employer decision, though not the sitting answer."
+ ],
+ "baseRate": "Absent. The evidence has no outside-view base rate, for example how often workplace interventions that change a behaviour marker such as sitting time go on to show replicated health benefits, or how often short-term activity gains last beyond a year. The nearest proxy is the Cochrane trajectory itself (100 min up to 3 months, 57 min at 3 to 12 months, no data beyond) and its grading of most evidence as low to very low quality. Both argue for caution about any success claim.",
+ "findings": [
+  {
+   "claim": "Given together with a behaviour-change programme, sit-stand desks still cut sitting by about 64 to 83 minutes per day at 12 months in two device-measured UK cluster randomised controlled trials.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.bmj.com/content/363/bmj.k3870",
+    "https://www.bmj.com/content/378/bmj-2021-069288",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/"
+   ],
+   "evidence": "SMArT Work (146 NHS office workers, 37 clusters, thigh-worn accelerometer): sitting at work was −83.28 min/workday against control at 12 months (95% confidence interval −116.57 to −49.98). Daily sitting was −59.32 min/day at 6 months and −82.39 min/day at 12 months, and sitting at work was −64.40 min/workday at 6 months. So in this trial the effect grew over time and did not fade. SMART Work and Life (756 council office workers, 78 clusters, accelerometer): daily sitting at 12 months was −63.7 min/day with programme plus desk and −22.2 min/day with the programme alone, both against usual practice. In SMArT Work the desk and the programme were given as one package. Limit: both trials come from the same UK research team (Edwardson et al.), in public-sector offices, so they are not fully independent replications. Confidence is medium, not high, because every claim here had a split 2-1 panel vote.",
+   "vote": "[23] 2-1, [17] 2-1, [13] 2-1, [6] 2-1",
+   "sourceTier": "T2 (BMJ primary trial reports); T1 for the protocol",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[13], [17], [23]: supported by the blind audit. [6] (protocol): unreachable, because PMC returned only a reCAPTCHA page. The verifier read it through other copies."
+  },
+  {
+   "claim": "No measured health outcome shows a confirmed, replicated improvement over usual desks in the verified evidence.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+    "https://evidence.nihr.ac.uk/alert/standing-desks-with-a-support-package-reduce-time-sitting-at-work/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/"
+   ],
+   "evidence": "The 2016 Cochrane review found that sit-stand desks had no considerable effect on work performance, musculoskeletal symptoms or sick leave. The SUFHA cluster trial (39 Portuguese office workers, 6 months) found no significant difference from control on any secondary outcome, except waist circumference, which favoured the control group. Its authors' 'may offer other health benefits' rests only on within-group changes (body fat −3.7%, discomfort −4.9, fatigue −2.2), not on differences from control. SMArT Work's pre-specified primary outcome was sitting, and NIHR states the trial was too small to reliably detect differences in any other outcome. So its null or mixed health results are not strong evidence of no effect. 'No replicated benefit' is an inference from absence: blood pressure, glucose, insulin and lipid trials were not covered by any confirmed claim.",
+   "vote": "[4] 3-0, [16] 2-1, [11] 2-1, [25] 2-1, [3] 3-0",
+   "sourceTier": "T1 (Cochrane, SUFHA, protocol); T3 for the NIHR commentary [25]",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "[16], [25]: supported. [4], [11], [3]: unreachable, because PMC returned only a reCAPTCHA page. The verifier confirmed them from the full text."
+  },
+  {
+   "claim": "Workers did not make up for the lost sitting by sitting more outside work: total daily sitting fell by about 78 to 82 minutes per day.",
+   "confidence": "high",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+    "https://link.springer.com/article/10.1186/s12889-018-6017-1",
+    "https://www.bmj.com/content/363/bmj.k3870"
+   ],
+   "evidence": "Cochrane 2018: total sitting (at work and outside work) −82 min/day against sit-desks (95% confidence interval −124 to −39, 2 studies). Cochrane 2016: −78 min (−125 to −31, 1 study) against no intervention. SMArT Work: the daily sitting cut (−82.39 min/day at 12 months) was similar to the work-hours cut, which suggests sitting outside work did not change. The numbers are facts; 'no compensation' is the inference drawn from them. The pooled total-sitting estimates rest on only 1 to 2 studies each.",
+   "vote": "[2] 3-0, [9] 3-0, [24] 3-0, [17] 2-1",
+   "sourceTier": "T1 (Cochrane); T2 (SMArT Work reports)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[24], [17]: supported. [2], [9]: unreachable, because PMC returned only a reCAPTCHA page. The verifiers confirmed the numbers from the abstracts."
+  },
+  {
+   "claim": "Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/"
+   ],
+   "evidence": "Cochrane 2018: sit-stand desks, alone or with information and counselling, cut workplace sitting by an average of 100 min/workday at up to 3 months (95% confidence interval −116 to −84, 10 studies, low quality). At 3 to 12 months the cut was 57 min/day (−99 to −15), from only 2 studies, and the review found no evidence beyond 12 months. Most evidence was low to very low quality, mainly because of weak study protocols and small samples, and the review called for larger cluster trials with longer follow-up. A 2016 protocol paper likewise noted that reviews rated the evidence low quality. An 8-week randomised trial found −80.2 min per 8-hour workday (−129.0 to −31.4). The gap-analysis notes describe it as desk-only and self-reported. The SUFHA trial (2024, 39 workers, 6 months, measured with an activPAL device) found no significant sitting difference against control, and its authors concluded the desks did not reduce sitting.",
+   "vote": "[0] 2-1, [1] 2-1, [10] 3-0, [18] 2-1, [22] 3-0, [16] 2-1, [11] 2-1",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[22], [18], [16]: supported. [0], [1], [10], [11]: unreachable, because PMC returned only a reCAPTCHA page. For [0], the extracted quote was only partly found on the page, so it is paraphrased here and not quoted directly. The numbers match the PubMed and Cochrane Library copies, as the verifier checked."
+  },
+  {
+   "claim": "The desk itself, not only the coaching, drives most of the lasting cut: adding a desk to the same programme cut daily sitting by a further 41.7 minutes per day at 12 months.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.bmj.com/content/378/bmj-2021-069288"
+   ],
+   "evidence": "SMART Work and Life: programme plus desk against programme alone, −41.7 min/day (95% confidence interval −56.3 to −27.0, P<0.001). The authors describe this as about threefold more effective. The programme alone gave −22.2 min/day against usual practice. No confirmed claim reports a 12-month result for a desk given with no programme at all, which is how many employers actually buy them.",
+   "vote": "[20] 2-1, [13] 2-1",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[20], [13]: supported by the blind audit."
+  },
+  {
+   "claim": "Standing itself is not shown to protect the heart, and long daily standing is linked to more orthostatic circulatory disease, although evidence on varicose veins conflicts.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12929726/"
+   ],
+   "evidence": "UK Biobank (device-measured, 83,013 adults): time spent standing was not associated with major cardiovascular disease (coronary heart disease, heart failure or stroke). Above 2 hours per day, each extra 30 minutes of standing was associated with a 0.11 (0.05 to 0.18) higher risk of orthostatic circulatory disease. This disease group includes orthostatic hypotension, varicose veins, chronic venous insufficiency and venous ulcers. A 2026 cross-sectional field study found no significant association between accelerometer-measured standing and varicose veins or venous reflux; age and family history were associated. All of this is observational, and none of it measures sit-stand desk use directly.",
+   "vote": "[19] 3-0, [12] 2-1, [5] 3-0",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[19]: supported. [12], [5]: unreachable, because PMC returned only a reCAPTCHA page. The verifiers confirmed them from the journal copy and the full text. These claims cite the primary UK Biobank paper, so the coverage note that the study was 'known only from the press release' is out of date."
+  },
+  {
+   "claim": "A desk-top sit-stand unit cost £360 to £375 at retail in 2015. The confirmed evidence does not show whether the desks are cost-effective.",
+   "confidence": "medium",
+   "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+    "https://link.springer.com/article/10.1186/s12889-015-2469-8",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/"
+   ],
+   "evidence": "The Ergotron WorkFit-A with Worksurface+ desk-top add-on had a manufacturer's suggested retail price of £360 (single monitor) or £375 (dual monitor). The PMC and Springer sources are two copies of the same paper, so they are not independent. The SMArT Work trial was designed to test cost-effectiveness as well as effectiveness, but no economic result was found or verified.",
+   "vote": "[14] 3-0, [21] 2-1, [7] 3-0",
+   "sourceTier": "T1/T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "[21]: supported. [14], [7]: unreachable, because PMC returned only a reCAPTCHA page."
+  }
+ ],
+ "caveats": "COVERAGE: 64 of 94 extracted claims (68%) were never verified because the verify budget ran out. The verify pool was ranked by importance and source tier, so a claim rated 'tangential' may have been missed even if it would have changed the answer. BLIND AUDIT GAP: 14 of 26 confirmed claims (all the PMC-hosted ones: [0]-[12], [14]) could not be blind-audited, because PMC returned a reCAPTCHA page. They rest on the 3-lens panel and the verifier's reading of other copies. For [0], the quote was only partly found on the page, so it is paraphrased. Many claims passed on split 2-1 votes. UNANSWERED: (1) cardiometabolic outcomes (blood pressure, glucose, insulin, lipids, body weight), for which no confirmed claim exists; (2) whether the trials that measured those outcomes were adequately powered or pre-registered; (3) the 12-month effect of a desk given with no programme; (4) any effect beyond 12 months; (5) the SMArT Work cost-effectiveness results. WEAK OR NARROW SOURCES: [25] is a T3 secondary commentary (NIHR Evidence), not a primary report. The two long-term device-measured trials come from one UK research team. The UK Biobank and varicose-vein findings are observational and do not measure desk use. No T4 or T5 sources were among the confirmed claims, so none had to be excluded. DROPPED BY THE SO-WHAT TEST: [8] (a 20-person feasibility protocol with no results) and [15] (a metadata-only record of the SMArT Work protocol). Neither changes the answer. REFUTED IN VERIFICATION: (a) the 2016 Cochrane claim that a desk alone cut sitting by 30 min to 2 h/workday (6 studies, 218 participants); (b) the 2016 Cochrane single-study 6-month cut of 56 min; (c) the SUFHA sub-sample within-group figures (44.0 min/day at 3 months, 26 min/day prolonged sitting at 6 months); (d) the claim that SMArT Work improved only self-reported work and psychological outcomes, with no difference in sickness absence. TIME-SENSITIVITY: the Cochrane reviews date from 2016 and 2018. SMART Work and Life (2022) and SUFHA (2024) came later, and a newer pooled review may exist that this run did not find.",
+ "openQuestions": [
+  "Does a sit-stand desk given with no behaviour-change programme still cut sitting by 30 minutes or more at 12 months and beyond?",
+  "Do adequately powered trials show any change in blood pressure, glucose, insulin, lipids or body weight from sit-stand desks?",
+  "What did the planned SMArT Work cost-effectiveness analysis find, from the employer and NHS points of view?",
+  "Does the extra standing from sit-stand desks raise venous or orthostatic circulatory disease risk, given the conflict between the UK Biobank cohort and the cross-sectional field study?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 85.7,
+  "citationAccuracySurvivorsOnly": 100.0,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 12,
+  "supported": 12,
+  "partial": 2,
+  "unsupported": 0,
+  "unreachable": 16,
+  "auditErrors": 0,
+  "scope": "30 of 30 verified claims were audited; 0 call(s) returned nothing after retries and are NOT in the denominator. The pool is every verified claim, not survivors only.",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0,
+  "restatedToSupported": 1
+ },
+ "citationDetail": [
+  {
+   "claim": "In the 2018 Cochrane review, sit-stand desks, alone or with information and counselling, reduced workplace sitting by a pooled average of 100 minutes per workday at short-term follow-up (up to 3 months) compared with sit-desks (95% CI −116 to −84, 10 studies). The evidence was graded low quality.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a reCAPTCHA 'Checking your browser' shell. It has no article text, so nothing on it can support or contradict the statement about the 2018 Cochrane review (100 minutes per workday, 95% CI −116 to −84, 10 studies, low-quality evidence). A working link shows the page exists, but not what it says.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "At medium-term follow-up (3 to 12 months), the pooled reduction in workplace sitting with sit-stand desks fell to 57 minutes per day (95% CI −99 to −15), based on only 2 studies. The review found no evidence at all for follow-up longer than that.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "unreachable",
+   "reasoning": "The fetch returned only a reCAPTCHA 'Checking your browser' page from pmc.ncbi.nlm.nih.gov. It has none of the article text, so I cannot confirm or refute the pooled 57 min/day figure, the 95% CI, the count of 2 studies, or the claim that there was no evidence beyond 12 months.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "Total sitting time (at work and outside work) also decreased with sit-stand desks compared with sit-desks: mean difference −82 minutes per day (95% CI −124 to −39), based on only 2 studies. This does not support full compensation by sitting more outside work.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "unreachable",
+   "reasoning": "The fetched text is only a reCAPTCHA 'Checking your browser' shell. It contains no article text, so nothing on it can support or contradict the statement about total sitting time (−82 min/day, 95% CI −124 to −39, 2 studies). The URL may be real, but the text we got cannot be checked.",
+   "locatedQuote": "Checking your browser before accessing pmc.ncbi.nlm.nih.gov ... Click here if you are not automatically redirected after 5 seconds.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The SMArT Work trial protocol pre-specified its primary outcome before the results were known: the reduction in sitting time, measured with the activPAL micro device at 12 months.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "support": "unreachable",
+   "reasoning": "The fetch did not return the article. It returned only a reCAPTCHA 'Checking your browser' page from pmc.ncbi.nlm.nih.gov, with no article text. Nothing on the page names the SMArT Work trial, a pre-specified primary outcome, sitting time, activPAL, or a 12-month time point. I cannot confirm or reject the statement from this content.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The 2016 Cochrane review found that sit-stand desks had no considerable effect on work performance, musculoskeletal symptoms or sick leave.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is a reCAPTCHA 'Checking your browser' interstitial page. It holds none of the article text, so the page cannot show whether the statement is true. The task says to judge only the fetched text, so this citation cannot be checked.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "In this cross-sectional field study, neither accelerometer-measured daily standing time nor long-term cumulative standing time was significantly associated with varicose veins or pathological venous reflux; age and family history were significantly associated.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12929726/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a reCAPTCHA browser-check page ('Checking your browser before accessing pmc.ncbi.nlm.nih.gov'). It has no article text. I cannot confirm or deny the statement from this content.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The SMArT Work cluster trial planned to randomise 238 desk-based NHS office workers to control or intervention clusters. The intervention arm received height-adjustable workstations together with supporting behaviour-change techniques, so the desk and the programme were given as one package and comp…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a reCAPTCHA browser-check page ('Checking your browser before accessing pmc.ncbi.nlm.nih.gov'). It has no article text, so there is nothing to confirm or deny the claims about the SMArT Work trial: the 238 NHS office workers, the cluster randomisation, or the height-adjustable workstations given with behaviour-change techniques.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The SMArT Work trial was designed to measure the cost-effectiveness of the intervention as well as its effectiveness.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a browser-check shell ('Checking your browser - reCAPTCHA ... Click here if you are not automatically redirected'). It has no article text, so I cannot check whether the page says the SMArT Work trial was designed to measure cost-effectiveness as well as effectiveness. A working link shows only that the page exists, not what it says.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The protocol plans to randomise only 20 participants to sit-stand desks for 3 months or to a waiting-list control. Sitting time will be measured with activPAL devices. This is a feasibility study, not a study built to find health effects.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a browser check (reCAPTCHA) screen from pmc.ncbi.nlm.nih.gov. It has none of the article text. Nothing on the page mentions a protocol, 20 participants, sit-stand desks, a 3-month period, a waiting-list control, activPAL devices, or a feasibility design, so the statement cannot be checked against this fetch.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The 2016 Cochrane review (searches to 2 June 2015) found that a sit-stand desk alone reduced workplace sitting by between 30 minutes and 2 hours per workday compared with no intervention. The follow-up was short term (up to 3 months). The evidence came from 6 studies with 218 participants and was gr…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is a bot-check page that says only 'Checking your browser - reCAPTCHA' and holds no article text. The page gives no Cochrane review content, so it has no figures for sitting time, study count, participant count, follow-up length, or evidence quality. With no article text, I cannot confirm or refute the statement.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "Only one study in the 2016 Cochrane review reported a 6-month result for sit-stand desks. It found a workplace sitting reduction of 56 minutes (95% CI -101 to -12) compared with no intervention, graded very low quality evidence.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is a reCAPTCHA 'Checking your browser' shell. It contains none of the article text, so there is nothing to check the statement against. The page may say this, but the text I was given cannot confirm or deny it.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "In one study, total sitting time at work and outside work together fell by 78 minutes (95% CI -125 to -31) with sit-stand desks compared with no intervention. This single-study result does not show full compensation outside work.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is a reCAPTCHA 'Checking your browser' page, not the article. It has no study text. Because of this, the statement cannot be checked against this page.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The review graded the evidence as low to very low quality for most interventions, mainly because of limitations in study protocols and small sample sizes. It called for larger cluster-RCTs with longer-term follow-up.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a reCAPTCHA browser-check shell ('Checking your browser before accessing pmc.ncbi.nlm.nih.gov'). It holds none of the article text, so there is nothing to check the statement against. The page may exist, but this fetch does not show what it says.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The authors concluded that the sit-stand desk intervention did not reduce sitting time. They still called it feasible and well received, and said it 'may offer other health benefits'. That claim rests only on within-group changes (body fat −3.7%, musculoskeletal discomfort −4.9, fatigue −2.2), not o…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "unreachable",
+   "reasoning": "The fetch did not return the article. It returned only a browser-check page ('Checking your browser - reCAPTCHA ... Click here if you are not automatically redirected after 5 seconds'). None of the article text is present, so I cannot check the statement against the page. The authors' conclusion, the 'may offer other health benefits' wording, the within-group figures (body fat −3.7%, discomfort −4…",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "In device-measured UK Biobank data, each extra 30 minutes per day of standing above 2 hours per day was associated with a 0.11 (95% CI 0.05 to 0.18) higher risk of orthostatic circulatory disease. This disease group includes orthostatic hypotension, varicose veins, chronic venous insufficiency and v…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+   "support": "unreachable",
+   "reasoning": "The fetched page is only a reCAPTCHA 'Checking your browser' interstitial from pmc.ncbi.nlm.nih.gov. It has no article text. Nothing in it supports or contradicts the statement about standing time, the 0.11 (95% CI 0.05 to 0.18) figure, or orthostatic circulatory disease. The page is a gate shell, so its contents could not be checked.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "In the SMART Work and Life three-arm cluster RCT (78 clusters, 756 UK council office workers), daily sitting time measured by accelerometer at 12 months was 22.2 min/day lower with the programme alone and 63.7 min/day lower with the programme plus a height-adjustable desk, compared with usual practi…",
+   "url": "https://www.bmj.com/content/378/bmj-2021-069288",
+   "support": "supported",
+   "reasoning": "The page is the BMJ 2022 SMART Work and Life trial report. It gives each detail in the statement: a three-arm cluster randomised controlled trial with 78 clusters and 756 desk-based employees of UK local government councils. The primary outcome was daily sitting time measured by accelerometer at 12 months. The control group was usual practice. At 12 months, daily sitting time was 22.2 min/day lowe…",
+   "locatedQuote": "Daily sitting time at 12 months was significantly lower in the intervention groups (SWAL −22.2 min/day, 95% confidence interval −38.8 to −5.7 min/day, P=0.003; SWAL plus desk −63.7 min/day, −80.1 to −47.4 min/day, P<0.001) compared with the control group.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The sit-stand workstation used in the trial (Ergotron WorkFit-A with Worksurface+) had a manufacturer's suggested retail price of £360 for the single-monitor model and £375 for the dual-monitor model.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+   "support": "unreachable",
+   "reasoning": "The page did not load. The fetch returned only a reCAPTCHA check screen ('Checking your browser before accessing pmc.ncbi.nlm.nih.gov'). It has no article text. The page does not mention the Ergotron WorkFit-A, the prices of £360 or £375, or the trial. Because the content is a bot-check shell, I cannot confirm or refute the statement.",
+   "locatedQuote": "",
+   "locatedQuoteOnPage": "unverifiable"
+  },
+  {
+   "claim": "The SMArT Work trial protocol was published in BMC Public Health in 2015. The page gives only metadata (no abstract), so it reports no trial results.",
+   "url": "https://doi.org/10.1186/s12889-015-2532-5",
+   "support": "supported",
+   "reasoning": "The page is the record for the SMArT Work trial protocol. Its title says 'protocol for the Stand More AT (SMArT) Work cluster randomised controlled trial', and it gives 'Journal: BMC Public Health' and 'Year: 2015'. The abstract field says Crossref holds no abstract and the record is metadata only. The page therefore shows no trial results. Both parts of the statement follow directly from the page…",
+   "locatedQuote": "protocol for the Stand More AT (SMArT) Work cluster randomised controlled trial Journal: BMC Public Health Year: 2015 Type: journal-article ... ## Abstract (Crossref holds no abstract for this record — metadata only.)",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "In the SUFHA cluster RCT (39 Portuguese office workers, 6 months, activPAL-measured sitting), the sit-stand desk group showed no statistically significant time-by-group difference versus control in the primary sitting-time outcome or in any secondary outcome, except waist circumference, which favore…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "supported",
+   "reasoning": "The abstract matches every part of the statement. It names the SUFHA trial as a cluster randomized controlled trial with 39 Portuguese office workers and a 6-month parallel-group design, with sitting time as the primary outcome measured by ActivPAL. It reports no significant time*group interaction for the primary or secondary outcomes, except waist circumference, which favored the control group (p…",
+   "locatedQuote": "39 Portuguese office workers were randomized into a 6-month parallel-group cluster RCT consisting by the implementation of sit-stand desks in the workplace. The primary outcome of sitting time was assessed using ActivPAL. ... No significant time*group interaction was found for the primary or secondary outcomes, apart from waist circumference favoring the control group ( Δ –1.81 cm, p interaction =…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "In a sub-sample of 11 intervention participants, the within-group reduction in sitting at 3 months was 44.0 min/day, but at 6 months the only significant within-group change in the full intervention group was a 26 min/day drop in prolonged sitting (bouts over 30 min). These are within-group changes,…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "partial",
+   "reasoning": "Most of the statement matches the abstract. It states the 3-month sub-sample (n = 11) had a significant within-group sitting reduction of –44.0 min/day. It also states that the full intervention group had a significant –26 min/day change in prolonged sitting (>30 min). It found no significant time*group interaction, which backs the point that these are within-group changes, not differences from th…",
+   "locatedQuote": "There were significant changes within the intervention group for sitting time (–44.0 min/day), prolonged sitting (>30 min) (–45.3 min/day) and standing time (51.7 min/day) at 3 months in the sub-sample and in prolonged sitting (>30 min) (–26 min/day) in the full intervention group ( p < 0.05). Changes were also observed within the intervention group for percent body fat ( Δ –3.7%) and ratings of q…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In SMArT Work, compared with the control group, daily sitting time went down by 59.32 min/day at 6 months and by 82.39 min/day at 12 months. At 6 months, sitting at work went down by 64.40 min/workday.",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "support": "supported",
+   "reasoning": "The abstract's Results section gives all three numbers. Daily sitting time, compared with control, went down by 59.32 min/day at 6 months and by 82.39 min/day at 12 months. Occupational sitting time (sitting at work) went down by 64.40 min/workday at 6 months. The statement repeats these figures, the direction of change and the time points with no added scope. 'Sitting at work' is a plain restatem…",
+   "locatedQuote": "Differences between groups (in favour of the intervention group compared with control) were observed for occupational sitting time at three months (−50.62 min/workday, −78.71 to −22.54, P<0.001) and six months (−64.40 min/workday, −97.31 to −31.50, P<0.001) and daily sitting time at six months (−59.32 min/day, −88.40 to −30.25, P<0.001) and 12 months (−82.39 min/day, −114.54 to −50.26, P=0.001).",
+   "locatedQuoteOnPage": "located",
+   "restatedFrom": "In SMArT Work, total daily sitting also went down, by 59.32 min/day at 6 months and 82.39 min/day at 12 months. This is similar in size to the drop at work, so workers did not make up for it by sitting more outside work."
+  },
+  {
+   "claim": "As of 2016, the authors state that reviews rated the evidence on sit-stand desks as low quality. They give three reasons: most studies were small, many used weak designs, and some were not randomised.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+   "support": "supported",
+   "reasoning": "The 2016 protocol paper (Pilot Feasibility Studies, July 2016) says that recent reviews [41, 67, 68] found the evidence on sit-stand desks to be low quality. It gives these reasons: most studies used small samples, and studies used low-quality designs, including the lack of randomisation. The statement matches this content. One small difference: the page gives lack of randomisation as an example o…",
+   "locatedQuote": "However, as concluded by recent reviews [ 41 , 67 , 68 ], the quality of the relevant evidence is low due to most studies’ reliance on small sample sizes and use of low-quality research designs, including the lack of randomisation.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In SMArT Work, only self-reported work and psychological outcomes improved against control: job performance, work engagement, occupational fatigue, presenteeism, daily anxiety and quality of life. Sickness absenteeism did not differ between groups.",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "support": "partial",
+   "reasoning": "The abstract supports the list of outcomes: job performance, work engagement, occupational fatigue, sickness presenteeism, daily anxiety and quality of life all differed in favour of the intervention group. It also says there was no difference for sickness absenteeism. The problem is the word 'only'. Read literally, it says nothing else improved. But the same abstract reports clear gains in object…",
+   "locatedQuote": "Group differences (in favour of the intervention group compared with control) were found for prolonged sitting time, standing time, job performance, work engagement, occupational fatigue, sickness presenteeism, daily anxiety, and quality of life. No differences were seen for sickness absenteeism.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In this cohort, time spent standing was not associated with the risk of major cardiovascular disease (coronary heart disease, heart failure or stroke).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+   "support": "supported",
+   "reasoning": "The page says outright that standing time was not linked to major cardiovascular disease risk in this UK Biobank group of 83,013 adults. It also defines major cardiovascular disease as coronary heart disease, heart failure and stroke. This matches the statement's wording and its list of conditions. The statement needs no extra interpretation to follow from the page.",
+   "locatedQuote": "Major CVD was defined as coronary heart disease, heart failure and stroke. ... Time spent standing was not associated with major CVD risk.",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "Adding a height-adjustable desk to the same behaviour-change programme reduced daily sitting by a further 41.7 min/day compared with the programme alone. The authors describe this as about threefold more effective.",
+   "url": "https://www.bmj.com/content/378/bmj-2021-069288",
+   "support": "supported",
+   "reasoning": "The page is the abstract of the BMJ 2022 SMART Work and Life trial. It says the programme plus a height-adjustable desk was more effective than the programme alone at changing sitting time, by −41.7 min/day (95% CI −56.3 to −27.0, P<0.001). This matches 'a further 41.7 min/day compared with the programme alone.' The Conclusions say the addition of a height-adjustable desk 'was found to be threefol…",
+   "locatedQuote": "The SWAL plus desk intervention was found to be more effective than SWAL at changing sitting time (−41.7 min/day, −56.3 to −27.0 min/day, P<0.001). ... Conclusions Both SWAL and SWAL plus desk were associated with a reduction in sitting time, although the addition of a height adjustable desk was found to be threefold more effective.",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "The sit-stand workstation in this trial was a desk-top add-on. Its manufacturer's suggested retail price was £360 for a single-monitor model and £375 for a dual-monitor model.",
+   "url": "https://link.springer.com/article/10.1186/s12889-015-2469-8",
+   "support": "supported",
+   "reasoning": "The page says each participant in the intervention group had a sit-stand workstation installed on their existing desk. This matches the statement that the workstation was a desk-top add-on. The page also gives the manufacturer's suggested retail prices: £360 for the single-monitor model and £375 for the dual-monitor model. Both parts of the statement match the text directly.",
+   "locatedQuote": "After baseline assessments, each participant had a sit-stand workstation installed on their existing workplace desk. A single (manufacturer’s suggested retail price £360) or dual (£375) monitor WorkFit-A with Worksurface + workstation was installed, dependent on the number of monitors the participant had.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In an 8-week randomised controlled trial of a sit-stand workstation, the intervention group reduced workplace sitting by 80.2 minutes per 8-hour workday compared with controls (95% CI −129.0 to −31.4).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+   "support": "supported",
+   "reasoning": "The abstract describes an 8-week, two-arm, individually randomised controlled trial. In it, office workers got a sit-stand workstation on their desk. The main outcome was sitting time at work. The abstract gives the result at 8 weeks, compared with the control group: sitting time went down by 80.2 min per 8-hour workday (95% CI −129.0 to −31.4). The number, the unit, the time point, the comparison…",
+   "locatedQuote": "Relative to the control group at 8 weeks, the intervention group had a beneficial decrease in sitting time (−80.2 min/8-h workday (95 % CI = −129.0, −31.4); p = 0.002)",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In the SMArT Work cluster RCT (146 NHS office workers, 37 clusters), the intervention group sat 83.28 fewer minutes per workday at work than the control group at 12 months. Sitting was measured with a thigh-worn accelerometer (95% CI −116.57 to −49.98).",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "support": "supported",
+   "reasoning": "The page supports every part of the statement. It is a cluster randomised controlled trial with 37 office clusters and 146 participants, all desk-based workers in an English NHS trust. The primary outcome was occupational sitting time, measured with a thigh-worn accelerometer. At 12 months the difference between groups favoured the intervention by −83.28 min/workday, with a 95% confidence interval…",
+   "locatedQuote": "Participants 37 office clusters (146 participants) of desk based workers: 19 clusters (77 participants) were randomised to the intervention and 18 (69 participants) to control. ... The primary outcome was occupational sitting time (thigh worn accelerometer). ... A significant difference between groups (in favour of the intervention group) was found in occupational sitting time at 12 months (−83.28…",
+   "locatedQuoteOnPage": "partial"
+  },
+  {
+   "claim": "In the SMArT Work cluster RCT, the reduction in daily sitting was similar to the reduction in sitting during work hours. This suggests that sitting outside work did not change: there was no compensation, and there was also no extra reduction outside work.",
+   "url": "https://link.springer.com/article/10.1186/s12889-018-6017-1",
+   "support": "supported",
+   "reasoning": "The page is the SMART Work & Life protocol. In its Background section it describes the earlier SMArT Work cluster RCT. It says the reduction in daily sitting was similar to the reduction during work hours, and that this suggested sitting outside work did not change. The statement adds 'no compensation, and no extra reduction outside work'. That is only a restatement of 'no changes': sitting outsid…",
+   "locatedQuote": "Although SMArT Work was successful in reducing sitting time at work et all follow up time points, results suggested that no changes in sitting outside of work were made as reductions seen for daily sitting time were similar to those observed during work hours [ 27 ].",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The SMArT Work trial (146 participants) was too small to reliably detect differences in any outcome other than sitting time. Its null or mixed results on other outcomes are therefore not strong evidence of no effect.",
+   "url": "https://evidence.nihr.ac.uk/alert/standing-desks-with-a-support-package-reduce-time-sitting-at-work/",
+   "support": "supported",
+   "reasoning": "The page directly supports the first sentence. It says the trial involved 146 NHS workers, and it says the study 'was also small and did not have power to detect reliable differences for outcomes other than time sitting.' The second sentence follows with no real interpretive leap. The page says no firm conclusions can be drawn about effects on musculoskeletal health, work performance or sickness a…",
+   "locatedQuote": "The study was also small and did not have power to detect reliable differences for outcomes other than time sitting.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "In the 2018 Cochrane review, sit-stand desks, alone or with information and counselling, reduced workplace sitting by a pooled average of 100 minutes per workday at short-term follow-up (up to 3 months) compared with sit-desks (95% CI −116 to −84, 10 studies). The evidence was graded low quality.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quote": "Interventions using sit‐stand desks, either alone or in combination with information and counselling, reduced sitting time at work on average by 100 minutes per workday at short‐term follow‐up (up to three months) compared to sit‐desks (95% CI −116 to −84, 10 studies, low‐quality evidence).",
+   "onPage": "partial",
+   "foundFraction": 0.846,
+   "offset": 5482
+  },
+  {
+   "claim": "At medium-term follow-up (3 to 12 months), the pooled reduction in workplace sitting with sit-stand desks fell to 57 minutes per day (95% CI −99 to −15), based on only 2 studies. The review found no evidence at all for follow-up longer than that.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quote": "The pooled effect of two studies showed sit‐stand desks reduced sitting time at medium‐term follow‐up (3 to 12 months) by an average of 57 minutes per day (95% CI −99 to −15) compared to sit‐desks.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5796
+  },
+  {
+   "claim": "Total sitting time (at work and outside work) also decreased with sit-stand desks compared with sit-desks: mean difference −82 minutes per day (95% CI −124 to −39), based on only 2 studies. This does not support full compensation by sitting more outside work.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quote": "Total sitting time (including sitting at and outside work) also decreased with sit‐stand desks compared to sit‐desks (mean difference (MD) −82 minutes/day, 95% CI −124 to −39, two studies)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5994
+  },
+  {
+   "claim": "The SMArT Work trial protocol pre-specified its primary outcome before the results were known: the reduction in sitting time, measured with the activPAL micro device at 12 months.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "quote": "The primary outcome is a reduction in sitting time, measured by the activPAL TM micro at 12 months.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7332
+  },
+  {
+   "claim": "The 2016 Cochrane review found that sit-stand desks had no considerable effect on work performance, musculoskeletal symptoms or sick leave.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "quote": "Sit‐stand desks did not have a considerable effect on work performance, musculoskeletal symptoms or sick leave.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6340
+  },
+  {
+   "claim": "In this cross-sectional field study, neither accelerometer-measured daily standing time nor long-term cumulative standing time was significantly associated with varicose veins or pathological venous reflux; age and family history were significantly associated.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12929726/",
+   "quote": "While neither daily nor long-term cumulative standing time were significantly associated with VV or reflux, age and family history were.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5263
+  },
+  {
+   "claim": "The SMArT Work cluster trial planned to randomise 238 desk-based NHS office workers to control or intervention clusters. The intervention arm received height-adjustable workstations together with supporting behaviour-change techniques, so the desk and the programme were given as one package and comp…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "quote": "Desk-based office workers ( n = 238) will be randomised to control or intervention clusters, with the intervention group receiving height-adjustable workstations and supporting techniques based on the feedback received from the development phase.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7011
+  },
+  {
+   "claim": "The SMArT Work trial was designed to measure the cost-effectiveness of the intervention as well as its effectiveness.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "quote": "the intervention delivery and evaluation phase to test effectiveness and cost-effectiveness of the intervention.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 12254
+  },
+  {
+   "claim": "The protocol plans to randomise only 20 participants to sit-stand desks for 3 months or to a waiting-list control. Sitting time will be measured with activPAL devices. This is a feasibility study, not a study built to find health effects.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+   "quote": "20 participants will be randomised to either the use of sit-stand desks at work for 3 months or a waiting list control group. Energy expenditure and sitting time, measured via Actiheart and activPAL monitors, respectively",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3900
+  },
+  {
+   "claim": "In one study, total sitting time at work and outside work together fell by 78 minutes (95% CI -125 to -31) with sit-stand desks compared with no intervention. This single-study result does not show full compensation outside work.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "quote": "Also total sitting time at work and outside work decreased with sit‐stand desks compared to no intervention (MD ‐78 minutes, 95% CI ‐125 to ‐31, one study)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5990
+  },
+  {
+   "claim": "The review graded the evidence as low to very low quality for most interventions, mainly because of limitations in study protocols and small sample sizes. It called for larger cluster-RCTs with longer-term follow-up.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quote": "The quality of evidence is low to very low for most interventions, mainly because of limitations in study protocols and small sample sizes. There is a need for larger cluster‐RCTs with longer‐term follow‐ups",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 9508
+  },
+  {
+   "claim": "The authors concluded that the sit-stand desk intervention did not reduce sitting time. They still called it feasible and well received, and said it 'may offer other health benefits'. That claim rests only on within-group changes (body fat −3.7%, musculoskeletal discomfort −4.9, fatigue −2.2), not o…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "quote": "CONCLUSION: Although not being effective for reducing sitting time, the implementation of sit-stand desks in the Portuguese workspace was shown to be feasible over the long term, received well by users, and may offer other health benefits.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4524
+  },
+  {
+   "claim": "In device-measured UK Biobank data, each extra 30 minutes per day of standing above 2 hours per day was associated with a 0.11 (95% CI 0.05 to 0.18) higher risk of orthostatic circulatory disease. This disease group includes orthostatic hypotension, varicose veins, chronic venous insufficiency and v…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+   "quote": "Standing more than 2 h/day was associated with an 0.11 (0.05, 0.18) higher risk for every additional 30 min/day.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5083
+  },
+  {
+   "claim": "In the SMART Work and Life three-arm cluster RCT (78 clusters, 756 UK council office workers), daily sitting time measured by accelerometer at 12 months was 22.2 min/day lower with the programme alone and 63.7 min/day lower with the programme plus a height-adjustable desk, compared with usual practi…",
+   "url": "https://www.bmj.com/content/378/bmj-2021-069288",
+   "quote": "Daily sitting time at 12 months was significantly lower in the intervention groups (SWAL −22.2 min/day, 95% confidence interval −38.8 to −5.7 min/day, P=0.003; SWAL plus desk −63.7 min/day, −80.1 to −47.4 min/day, P<0.001) compared with the control group.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4212
+  },
+  {
+   "claim": "The sit-stand workstation used in the trial (Ergotron WorkFit-A with Worksurface+) had a manufacturer's suggested retail price of £360 for the single-monitor model and £375 for the dual-monitor model.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+   "quote": "A single (manufacturer’s suggested retail price £360) or dual (£375) monitor WorkFit-A with Worksurface + workstation was installed",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 12295
+  },
+  {
+   "claim": "The SMArT Work trial protocol was published in BMC Public Health in 2015. The page gives only metadata (no abstract), so it reports no trial results.",
+   "url": "https://doi.org/10.1186/s12889-015-2532-5",
+   "quote": "Journal: BMC Public Health Year: 2015 Type: journal-article",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 204
+  },
+  {
+   "claim": "In the SUFHA cluster RCT (39 Portuguese office workers, 6 months, activPAL-measured sitting), the sit-stand desk group showed no statistically significant time-by-group difference versus control in the primary sitting-time outcome or in any secondary outcome, except waist circumference, which favore…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "quote": "No significant time*group interaction was found for the primary or secondary outcomes, apart from waist circumference favoring the control group ( Δ –1.81 cm, p interaction = 0.04).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 3771
+  },
+  {
+   "claim": "In SMArT Work, compared with the control group, daily sitting time went down by 59.32 min/day at 6 months and by 82.39 min/day at 12 months. At 6 months, sitting at work went down by 64.40 min/workday.",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "quote": "Differences between groups (in favour of the intervention group compared with control) were observed for occupational sitting time at three months (−50.62 min/workday, −78.71 to −22.54, P<0.001) and six months (−64.40 min/workday, −97.31 to −31.50, P<0.001) and daily sitting time at six months (−59.32 min/day, −88.40 to −30.25, P<0.001) and 12 months (−82.39 min/day, −114.54 to −50.26, P=0.001).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4746,
+   "restatedFrom": "In SMArT Work, total daily sitting also went down, by 59.32 min/day at 6 months and 82.39 min/day at 12 months. This is similar in size to the drop at work, so workers did not make up for it by sitting more outside work."
+  },
+  {
+   "claim": "As of 2016, the authors state that reviews rated the evidence on sit-stand desks as low quality. They give three reasons: most studies were small, many used weak designs, and some were not randomised.",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+   "quote": "as concluded by recent reviews [ 41 , 67 , 68 ], the quality of the relevant evidence is low due to most studies’ reliance on small sample sizes and use of low-quality research designs, including the lack of randomisation",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 9302
+  },
+  {
+   "claim": "In this cohort, time spent standing was not associated with the risk of major cardiovascular disease (coronary heart disease, heart failure or stroke).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+   "quote": "Time spent standing was not associated with major CVD risk.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 5393
+  },
+  {
+   "claim": "Adding a height-adjustable desk to the same behaviour-change programme reduced daily sitting by a further 41.7 min/day compared with the programme alone. The authors describe this as about threefold more effective.",
+   "url": "https://www.bmj.com/content/378/bmj-2021-069288",
+   "quote": "The SWAL plus desk intervention was found to be more effective than SWAL at changing sitting time (−41.7 min/day, −56.3 to −27.0 min/day, P<0.001).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4468
+  },
+  {
+   "claim": "The sit-stand workstation in this trial was a desk-top add-on. Its manufacturer's suggested retail price was £360 for a single-monitor model and £375 for a dual-monitor model.",
+   "url": "https://link.springer.com/article/10.1186/s12889-015-2469-8",
+   "quote": "A single (manufacturer’s suggested retail price £360) or dual (£375) monitor WorkFit-A with Worksurface + workstation was installed",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 10770
+  },
+  {
+   "claim": "In an 8-week randomised controlled trial of a sit-stand workstation, the intervention group reduced workplace sitting by 80.2 minutes per 8-hour workday compared with controls (95% CI −129.0 to −31.4).",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+   "quote": "Relative to the control group at 8 weeks, the intervention group had a beneficial decrease in sitting time (−80.2 min/8-h workday (95 % CI = −129.0, −31.4); p = 0.002)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4285
+  },
+  {
+   "claim": "In the SMArT Work cluster RCT (146 NHS office workers, 37 clusters), the intervention group sat 83.28 fewer minutes per workday at work than the control group at 12 months. Sitting was measured with a thigh-worn accelerometer (95% CI −116.57 to −49.98).",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "quote": "A significant difference between groups (in favour of the intervention group) was found in occupational sitting time at 12 months (−83.28 min/workday, 95% confidence interval −116.57 to −49.98, P=0.001).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4542
+  },
+  {
+   "claim": "In the SMArT Work cluster RCT, the reduction in daily sitting was similar to the reduction in sitting during work hours. This suggests that sitting outside work did not change: there was no compensation, and there was also no extra reduction outside work.",
+   "url": "https://link.springer.com/article/10.1186/s12889-018-6017-1",
+   "quote": "results suggested that no changes in sitting outside of work were made as reductions seen for daily sitting time were similar to those observed during work hours [ 27 ].",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 8680
+  },
+  {
+   "claim": "The SMArT Work trial (146 participants) was too small to reliably detect differences in any outcome other than sitting time. Its null or mixed results on other outcomes are therefore not strong evidence of no effect.",
+   "url": "https://evidence.nihr.ac.uk/alert/standing-desks-with-a-support-package-reduce-time-sitting-at-work/",
+   "quote": "The study was also small and did not have power to detect reliable differences for outcomes other than time sitting.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6008
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 20,
+   "floor": 5,
+   "thin": false,
+   "verdict": "20 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry. A partial panel SURVIVOR is restated to what the page carries and re-audited: a supported restatement replaces it (the original is kept in `restatedFrom`), and one that still fails is demoted like `unsupported`. A partial is KEPT only when no re-audited restatement came back (`restate.verdict` no-restatement or no-reaudit). Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "`searchDegraded` (top level) is true when the general web was tried and answered under a fifth of its attempts: the report then rests mostly on a scholarly slice (Wikipedia/Crossref), and its coverage gaps are a search artefact rather than evidence that nothing exists. stats.generalWebOkRate is that rate, and stats.searchHealth has the per-backend counts behind it.",
+  "evidenceChecked": "30 of 94 extracted claims were verified (64 unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence."
+ },
+ "citationPartials": [
+  {
+   "claim": "In a sub-sample of 11 intervention participants, the within-group reduction in sitting at 3 months was 44.0 min/day, but at 6 months the only significant within-group change in the full intervention group was a 26 min/day drop in prolonged sitting (bouts over 30 min). These are within-group changes,…",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "support": "partial",
+   "reasoning": "Most of the statement matches the abstract. It states the 3-month sub-sample (n = 11) had a significant within-group sitting reduction of –44.0 min/day. It also states that the full intervention group had a significant –26 min/day change in prolonged sitting (>30 min). It found no significant time*group interaction, which backs the point that these are within-group changes, not differences from th…",
+   "locatedQuote": "There were significant changes within the intervention group for sitting time (–44.0 min/day), prolonged sitting (>30 min) (–45.3 min/day) and standing time (51.7 min/day) at 3 months in the sub-sample and in prolonged sitting (>30 min) (–26 min/day) in the full intervention group ( p < 0.05). Changes were also observed within the intervention group for percent body fat ( Δ –3.7%) and ratings of q…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In SMArT Work, only self-reported work and psychological outcomes improved against control: job performance, work engagement, occupational fatigue, presenteeism, daily anxiety and quality of life. Sickness absenteeism did not differ between groups.",
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "support": "partial",
+   "reasoning": "The abstract supports the list of outcomes: job performance, work engagement, occupational fatigue, sickness presenteeism, daily anxiety and quality of life all differed in favour of the intervention group. It also says there was no difference for sickness absenteeism. The problem is the word 'only'. Read literally, it says nothing else improved. But the same abstract reports clear gains in object…",
+   "locatedQuote": "Group differences (in favour of the intervention group compared with control) were found for prolonged sitting time, standing time, job performance, work engagement, occupational fatigue, sickness presenteeism, daily anxiety, and quality of life. No differences were seen for sickness absenteeism.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "summaryAnnotated": "Sit-stand desks reduce sitting time. The 2018 Cochrane review pooled 10 studies and found about 100 minutes less sitting per workday at follow-up of up to 3 months, but it graded the evidence low quality. At 3 to 12 months the pooled cut fell to 57 minutes per day, based on only 2 studies, and the review found no data beyond 12 months. Two device-measured UK cluster trials gave the desk together with a behaviour-change programme. In both, daily sitting was still about 64 to 82 minutes lower at 12 months. In one of them, the desk cut a further 41.7 minutes per day compared with the programme alone. [UNTRACEABLE: Total daily sitting also fell by about 78 to 82 minutes per day, so workers did not make up for it by sitting more outside work.] [UNTRACEABLE: [UNTRACEABLE: No measured health outcome has a confirmed, replicated benefit.]] The 2016 Cochrane review found no considerable effect on musculoskeletal symptoms, work performance or sick leave. [UNTRACEABLE: A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.] [UNTRACEABLE: [UNTRACEABLE: The main UK trial was too small to test any outcome other than sitting.]] [UNTRACEABLE: In a large UK cohort (UK Biobank), time spent standing was not linked to major cardiovascular disease.] Standing more than 2 hours per day was linked to more orthostatic circulatory disease.",
+ "processCritique": {
+  "untraceableCount": 9,
+  "markedInSummary": 7,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.",
+   "A desk-top sit-stand unit cost £360 to £375 at retail in 2015.",
+   "In a large UK cohort (UK Biobank), time spent standing was not linked to major cardiovascular disease.",
+   "No measured health outcome has a confirmed, replicated benefit.",
+   "Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.",
+   "The main UK trial was too small to test any outcome other than sitting.",
+   "Total daily sitting also fell by about 78 to 82 minutes per day, so workers did not make up for it by sitting more outside work."
+  ],
+  "untraceableStatements": [
+   "Claim [19] says only 'In this cohort'. It does not name UK Biobank, and it says nothing about the cohort's size or country. Only claim [12] names UK Biobank. So 'large UK cohort (UK Biobank)' links [19] to [12]'s source without support in the pool. The link may be correct, but it cannot be traced.",
+   "Finding 4: the pool does not support 'shrinks ... over time' as a novelty effect. The 100-minute and 57-minute figures come from different sets of studies (10 studies and 2 studies), so comparing them cannot show decay within the same people. Claim [17] shows the opposite inside SMArT Work: 59 minutes less at 6 months and 82 minutes less at 12 months. Claim [16] does not say the trial was 'later' or 'independent'.",
+   "Finding 7: claims [14] and [21] give no year for the £360 to £375 price. 'In 2015' is inserted.",
+   "Summary: 'A 2024 Portuguese trial...' Claim [16] gives no year, so '2024' is an inserted fact. The sentence also leaves out that the same trial found no reduction in sitting time, its primary outcome.",
+   "Summary: 'No measured health outcome has a confirmed, replicated benefit.' Finding 2 says this holds only 'in the verified evidence', and the summary drops that hedge. The pool has no blood pressure, glucose, insulin, lipid or weight result from any trial. It also has no secondary-outcome results from SMArT Work or SMART Work and Life, and no health-outcome estimates from the 2018 Cochrane review. Claims [4], [16] and [25] do not support an unqualified statement about the whole literature. Evidence that was never retrieved is presented as evidence of no benefit.",
+   "Summary: 'The main UK trial was too small to test any outcome other than sitting.' Claim [25] is about SMArT Work, which had 146 participants. The pool also has the larger UK trial, SMART Work and Life, with 756 participants [13], so calling SMArT Work 'main' is an inserted description. The sentence suggests that UK trials could not test health outcomes, but the health results of the 756-person trial were never looked at. [25] also says 'reliably detect', not 'test'.",
+   "The summary drops a hedge and draws a conclusion the claims do not support. Claims [2] and [9] only say the result 'does not support / does not show FULL compensation'. The confidence intervals (−124 to −39 and −125 to −31) still allow some partial compensation. The total-sitting figure of −82 comes from only 2 studies, and the −78 from a single study that may be one of those 2. Claim [24] covers one trial only. The unqualified conclusion 'workers did not make up for it by sitting more outside work' goes beyond this evidence.",
+   "The summary drops the hedge 'in the verified evidence' that Finding 2 keeps. The claim pool has no trial result at all on blood pressure, fasting glucose or insulin, or blood lipids. Its only data on body weight or fat are within-group changes [11] and one waist result [16]. So this sentence states a fact about the world that rests on missing searches, not on evidence that there is no benefit. It also leaves out that the one adequately sized UK trial was underpowered for health outcomes [25], and that the 39-person Portuguese trial [16] was too small to show that anything had no effect.",
+   "The year '2024' appears in no claim; claim [16] gives no date. The sentence also changes 'no statistically significant time-by-group difference' into 'no difference'. This is a 39-person trial, so a non-significant result is not evidence of no difference. The sentence also hides that the same trial found no significant cut in its PRIMARY outcome, sitting time. That result bears directly on the summary's opening sentence."
+  ],
+  "coverageGaps": [
+   "A major primary source is missing: Stand Up Victoria (Australian cluster RCT, activPAL-measured, 12-month follow-up, with cardiometabolic biomarker outcomes). It is one of the largest device-measured trials. It is the obvious second independent trial for both sub-question 2 (durability) and sub-questions 5–6 (cardiometabolic nulls and power). The summary's framing of 'two device-measured UK cluster trials' reflects this retrieval gap.",
+   "No source from the occupational-health and regulator perspective reached the pool. There is no official guidance, for example the 2015 expert consensus statement on standing time or national health-and-safety guidance. There are also no real-world usage studies of whether desks are raised at all after installation.",
+   "Nobody checked whether the two 12-month UK trials are independent. SMArT Work and SMART Work and Life appear to come from the same research programme, so 'two trials' may not count as independent replication.",
+   "Q1 is not answered. There is no pooled estimate that uses only device-measured sitting. The 2018 Cochrane figure mixes self-reported and device-measured data. The 'later updates' the scoper named were never found, and nobody confirmed that none exist. No meta-analysis published after 2018 is in the pool.",
+   "Q2 beyond 12 months: no data. The only device-measured trajectories over time (6 months and 12 months) come from SMArT Work. The interim time points of SMART Work and Life were not retrieved.",
+   "Q4 'desk alone' is not answered. No trial in the pool has an arm that gets only the desk. SMART Work and Life adds the desk on top of a programme, so it shows the desk's effect with a programme, not without one.",
+   "Q5 and Q6 are mostly not answered. The pool has no cardiometabolic outcome data (blood pressure, fasting glucose or insulin, lipids, body weight or fat) from any randomized controlled trial. The primary results tables for secondary outcomes were never retrieved from the SMArT Work results paper, the SMART Work and Life results paper, Stand Up Victoria, or the 2018 Cochrane health-outcome analyses. Q6, whether null results were adequately powered, is answered only by [25], which covers only SMArT Work.",
+   "Q7 covers only venous and cardiovascular disease. Evidence that long standing causes low-back or leg pain (laboratory studies of prolonged standing, occupational cohorts) was never searched.",
+   "Q8 is not answered. The pool has only the retail price of the desk. The results of the SMArT Work economic evaluation (planned, per [7]) were never retrieved. There is no programme cost, no cost per quality-adjusted life year, and no sickness-absence or productivity valuation.",
+   "Sub-question 1 (device-measured-only pooled estimate) was never answered. Claim [0] pools 'sit-stand desks, alone or with information and counselling' and does not separate device-measured from self-reported sitting. No meta-analysis after 2018 was found, although the checklist asked for 'later updates'. So there is no answer to whether the device-measured-only pooled reduction is 30 minutes or more.",
+   "Sub-question 2 (durability) is only partly answered. No device-measured 3-month figure was retrieved for SMArT Work. No trial beyond 12 months was found. The 57-min medium-term figure comes from 2 studies and mixes measurement methods.",
+   "Sub-question 4 (desk alone vs programme) is only partly answered. The pool has no trial with a desk-only arm. SMART Work and Life compares programme+desk with programme alone, so the effect of the desk without any programme is unknown. Finding 5's statement that 'the desk itself ... drives most of the lasting cut' comes from one trial, and in that trial the desk was always given inside a programme.",
+   "Sub-question 5 (health outcomes): the cardiometabolic outcomes the checklist lists (blood pressure, fasting glucose and insulin, lipids, body weight and fat) are completely absent from the pool. The results table of the SMArT Work primary paper (Edwardson et al., BMJ 2018) was never retrieved. Its secondary outcomes (work engagement, presenteeism, occupational fatigue, quality of life, musculoskeletal pain, sickness absence) are missing. So neither positive nor null secondary results from the largest UK trial are available. The secondary outcomes of SMART Work and Life are also missing.",
+   "Sub-question 6 (were the null cardiometabolic results adequately powered) was answered only for SMArT Work [25]. No risk-of-bias, contamination or power assessment was retrieved for any trial that actually measured cardiometabolic outcomes.",
+   "Sub-question 7 (the premise): the pool has only two observational standing-exposure claims [12][19] and one cross-sectional varicose-vein study [5]. The health-benefit steelman found no experimental or mechanistic evidence, such as trials on blood glucose after meals, blood pressure, or replacing sitting with standing. There was also no evidence on low-back or leg pain from prolonged standing, which the checklist named.",
+   "Sub-question 8 (cost-effectiveness) was not answered. Only the protocol intent [7] and the retail price [14][21] were found. The published SMArT Work economic evaluation (cost per QALY, and savings through sickness absence and productivity) and any SMART Work and Life economic analysis were never retrieved.",
+   "The health-benefit steelman perspective contributed nothing to the pool. There are no short-term or mechanistic trials (after-meal glucose, blood pressure) and no meta-analysis of musculoskeletal pain or discomfort. The 'no benefit' conclusion was never tested against the strongest case for a benefit.",
+   "The occupational-health perspective produced no claims. The pool has no official health-and-safety or ergonomics guidance and no studies of real-world desk use or uptake outside trials."
+  ],
+  "planFlaws": [
+   "Q2 asks about novelty decay but does not require repeated measurements inside the same trial. The research therefore answered it by comparing pooled estimates from different study sets, and that comparison cannot show decay.",
+   "Q4 gives SMART Work and Life as an example of a desk-only design, but that trial has no desk-only arm. The example pointed the research at a design that cannot answer 'desk alone'.",
+   "Q5 sets the bar at replication in 2 or more independent randomized controlled trials, or pooled evidence at moderate or higher GRADE. In this field, Cochrane grades almost everything low or very low, so the bar almost guarantees a 'no'. The plan did not require retrieval of the actual trial outcome tables. The result is that 'no confirmed benefit' reflects the bar and the thin search, not the measured evidence. Q6 was meant to catch this but had no retrieval step to force it.",
+   "Sub-question 5 sets a high bar ('replicated in 2 or more independent RCTs or moderate+ GRADE'). But no step checks that cardiometabolic evidence was actually retrieved before the answer 'none meets the bar' is given. As a result, missing searches look like a negative finding.",
+   "The 30-minute threshold in Q1/Q2 has no stated link to any health outcome, so meeting it or missing it says nothing about Q5. The plan does not ask what size of sitting reduction would be expected to change a biomarker.",
+   "The scoper named specific UK trials in the sub-questions ('SMART Work & Life' in Q4, 'SMArT Work' in Q8, 'Cochrane' in Q1). This anchored retrieval on those trials. All six perspectives then share the same blind spot, and non-UK device-measured trials such as Stand Up Victoria were never found."
+  ],
+  "rationales": [
+   "The sitting-time half is mostly traceable and sound. The Cochrane 100-minute and 57-minute figures, the two 12-month UK trials, the extra 41.7 minutes from the desk, and the absence of full compensation all trace to claims. Two small issues: Finding 3 is marked [high] although it rests on low-quality pooled data from 2 studies plus one trial. The UK Biobank label on the cardiovascular result is inferred, because [19] only says 'this cohort'. The health-outcome half is the problem. The summary's …",
+   "Most numbers in the summary trace to claims. But the health-outcome half of the question rests on missing searches. The pool has no cardiometabolic trial result, no SMArT Work secondary-outcome results, and not Stand Up Victoria. The summary still states flatly that 'No measured health outcome has a confirmed, replicated benefit.' A reader would think the benefits were tested and failed, when in fact they were never retrieved. The summary also drops the 'full' hedge on compensation, adds a year …"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "The 2016 Cochrane review (searches to 2 June 2015) found that a sit-stand desk alone reduced workplace sitting by between 30 minutes and 2 hours per workday compared with no intervention. The follow-up was short term (up to 3 months). The evidence came from 6 studies with 218 participants and was graded very low quality. The review reports a range, not a single pooled minutes figure.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "why": "The quote supports the core finding word for word: a sit-stand desk alone, compared with no intervention, cut sitting at work by 30 minutes to 2 hours per workday, at up to 3 months of follow-up (6 studies, 218 participants, very low quality evidence). But the claim adds two things the quote does not license. (1) It states a search date, 'searches to 2 June 2015'. That date appears nowhere in the quote, and this lens refutes a claim that states a number the quote does not state. The year 2016 is…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote supports the core finding word for word: a sit-stand desk alone, compared with no intervention, cut sitting at work by 30 minutes to 2 hours per workday, at up to 3 months of follow-up (6 studies, 218 participants, very low quality evidence). But the claim adds two things the quote does not license. (1) It states a search date, 'searches to 2 June 2015'. That date appears nowhere in the quote, and this lens refutes a claim that states a number the quote does not state. The year 2016 is…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim copies the 2016 Cochrane review (CD010912.pub3, searches to 2 June 2015) correctly, but a later version of the same review replaces it. The 2016 page itself says: 'This article has been updated. See Workplace interventions for reducing sitting at work in volume 2018.' That 2018 update (CD010912.pub5, published 17 Dec 2018, searches to 9 August 2017) changes every key point the claim makes. (1) Quality: the 2018 version grades the evidence 'low-quality', not 'very low'. (2) No pooled fi…",
+     "counterSource": "Shrestha N, et al. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018 Dec 17;2018(12):CD010912. doi:10.1002/14651858.CD010912.pub5 — https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The claim quotes the 2016 review correctly, but that version is out of date. Cochrane replaced it with an update: Shrestha N, et al. 'Workplace interventions for reducing sitting at work', Cochrane Database Syst Rev 2018, CD010912.pub5, with searches to 9 August 2017. I found the update through the Europe PMC record for PMID 30556590. It changes the claim in three ways. (1) The update gives a single pooled figure: sit-stand desks cut workplace sitting by about 100 minutes per workday at short-te…",
+     "counterSource": "Shrestha N, Kukkonen-Harjula KT, Verbeek JH, Ijaz S, Hermans V, Pedisic Z. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018;12:CD010912 (doi:10.1002/14651858.CD010912.pub5; PMID 30556590), searches to 9 Aug 2017:…"
+    }
+   ],
+   "contradictedBy": [
+    "Shrestha N, et al. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018 Dec 17;2018(12):CD010912. doi:10.1002/14651858.CD010912.pub5 — https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+    "Shrestha N, Kukkonen-Harjula KT, Verbeek JH, Ijaz S, Hermans V, Pedisic Z. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018;12:CD010912 (doi:10.1002/14651858.CD010912.pub5; PMID 30556590), searches to 9 Aug 2017:…"
+   ]
+  },
+  {
+   "claim": "Only one study in the 2016 Cochrane review reported a 6-month result for sit-stand desks. It found a workplace sitting reduction of 56 minutes (95% CI -101 to -12) compared with no intervention, graded very low quality evidence.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "why": "The quote does not fully license the claim as written. The quote says only: One study found a reduction at six months' follow-up of -56 minutes (95% CI -101 to -12, very low quality evidence) compared to no intervention. The claim adds three things the quote does not say. (1) Exclusivity: the claim says ONLY one study in the 2016 Cochrane review reported a 6-month result. The quote says one study found a reduction at six months. It does not say that no other study reported a 6-month result. For …",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote does not fully license the claim as written. The quote says only: One study found a reduction at six months' follow-up of -56 minutes (95% CI -101 to -12, very low quality evidence) compared to no intervention. The claim adds three things the quote does not say. (1) Exclusivity: the claim says ONLY one study in the 2016 Cochrane review reported a 6-month result. The quote says one study found a reduction at six months. It does not say that no other study reported a 6-month result. For …"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The search results gave no counter-evidence. All five hits and the fetched page (only.in) are fashion or hardware shops for the word 'ONLY', so I ignored them. I did my own check. The 2016 abstract (Europe PMC, DOI 10.1002/14651858.CD010912.pub3, published 2016-03-17) contains the quote word for word. The -56 minutes (95% CI -101 to -12, very low quality, compared with no intervention) is listed under sit-stand desks. So the claim is true as a statement about that one 2016 version. But a newer v…",
+     "counterSource": "Shrestha N, et al. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev 2018; CD010912.pub4 (doi:10.1002/14651858.CD010912.pub4)"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The source is a real Cochrane systematic review. It is strong enough to carry a small, carefully hedged claim, and the quote matches the page. The problem is that it is out of date. PMC6486221 is the March 2016 version of Cochrane review CD010912 (Shrestha et al., pub3). Cochrane replaced it with an update in December 2018 (CD010912.pub4, Shrestha et al.). As I remember that update's abstract, it pooled 3 studies at medium-term follow-up (3 to 12 months) and found about -57 min/day (95% CI about…",
+     "counterSource": "Shrestha N, Kukkonen-Harjula KT, Verbeek JH, Ijaz S, Hermans V, Pedisic Z. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018 Dec 17;12:CD010912. doi:10.1002/14651858.CD010912.pub4 (PMID 30556590)"
+    }
+   ],
+   "contradictedBy": [
+    "Shrestha N, et al. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev 2018; CD010912.pub4 (doi:10.1002/14651858.CD010912.pub4)",
+    "Shrestha N, Kukkonen-Harjula KT, Verbeek JH, Ijaz S, Hermans V, Pedisic Z. Workplace interventions for reducing sitting at work. Cochrane Database Syst Rev. 2018 Dec 17;12:CD010912. doi:10.1002/14651858.CD010912.pub4 (PMID 30556590)"
+   ]
+  },
+  {
+   "claim": "In a sub-sample of 11 intervention participants, the within-group reduction in sitting at 3 months was 44.0 min/day, but at 6 months the only significant within-group change in the full intervention group was a 26 min/day drop in prolonged sitting (bouts over 30 min). These are within-group changes, not differences from the control group.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "why": "The quote does not support three parts of the claim. (1) The claim says the sub-sample had '11 intervention participants'. The quote gives no size for the sub-sample, so this number is not in the quote. (2) The claim places the full-group drop of 26 min/day in prolonged sitting 'at 6 months'. The quote names only one time point, '3 months', and it ties that time point to the sub-sample. It gives no time point for the full-group change and never says '6 months'. (3) The claim calls the 26 min/day…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote does not support three parts of the claim. (1) The claim says the sub-sample had '11 intervention participants'. The quote gives no size for the sub-sample, so this number is not in the quote. (2) The claim places the full-group drop of 26 min/day in prolonged sitting 'at 6 months'. The quote names only one time point, '3 months', and it ties that time point to the sub-sample. It gives no time point for the full-group change and never says '6 months'. (3) The claim calls the 26 min/day…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The web search for counter-evidence found nothing relevant. The results were a psychedelics Wikipedia page, a '2022 in science' page, and unrelated DOI figures. None of them address sit-stand desks. I fetched the cited paper itself (PMC11492196, the SUFHA cluster RCT, 19 intervention and 19 control participants). Most of the claim is correct: 11 participants formed the 3-month sub-sample, sitting fell by 44.0 min/day within that sub-sample, the full group was measured only at baseline and 6 mont…",
+     "counterSource": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/ (same paper, abstract Results: significant within-group 6-month changes in body fat %, quality of life, musculoskeletal discomfort, fatigue, need for recovery, p<0.05)"
+    }
+   ],
+   "contradictedBy": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/ (same paper, abstract Results: significant within-group 6-month changes in body fat %, quality of life, musculoskeletal discomfort, fatigue, need for recovery, p<0.05)"
+   ]
+  },
+  {
+   "claim": "In SMArT Work, only self-reported work and psychological outcomes improved against control: job performance, work engagement, occupational fatigue, presenteeism, daily anxiety and quality of life. Sickness absenteeism did not differ between groups.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://www.bmj.com/content/363/bmj.k3870",
+   "why": "The quote does not support the claim as worded, for three reasons. (1) The word 'only' conflicts with the quote. The quote lists 'prolonged sitting time, standing time' first among the outcomes that favored the intervention. The claim says 'only self-reported work and psychological outcomes improved' and silently leaves out the two sitting and standing outcomes. Those are behavioral outcomes, not work or psychological ones, so the claim's 'only' is wrong on the quote's own text. (2) The label 's…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote does not support the claim as worded, for three reasons. (1) The word 'only' conflicts with the quote. The quote lists 'prolonged sitting time, standing time' first among the outcomes that favored the intervention. The claim says 'only self-reported work and psychological outcomes improved' and silently leaves out the two sitting and standing outcomes. Those are behavioral outcomes, not work or psychological ones, so the claim's 'only' is wrong on the quote's own text. (2) The label 's…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim's word 'only' is wrong, and the trial's own paper shows it. The claim says only self-reported work and psychological outcomes improved against control. But the SMArT Work paper (Edwardson et al., BMJ 2018) reports that the intervention reduced daily sitting time. That was the trial's primary outcome, measured objectively with activPAL thigh-worn devices, not self-report. The reduction was about 83 minutes per day at 12 months. The supporting quote itself also lists 'prolonged sitting t…",
+     "counterSource": "https://www.bmj.com/content/363/bmj.k3870 (Edwardson et al. 2018, primary outcome: activPAL-measured daily sitting time reduced ~83 min/day at 12 months; abstract also lists prolonged sitting time and standing time among group differences)"
+    }
+   ],
+   "contradictedBy": [
+    "https://www.bmj.com/content/363/bmj.k3870 (Edwardson et al. 2018, primary outcome: activPAL-measured daily sitting time reduced ~83 min/day at 12 months; abstract also lists prolonged sitting time and standing time among group differences)"
+   ]
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quality": "primary",
+   "perspective": "Evidence synthesist",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://pubmed.ncbi.nlm.nih.gov/29926475/",
+   "quality": "unreliable",
+   "perspective": "Evidence synthesist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.sciencedirect.com/science/article/pii/S0033350624000787",
+   "quality": "unreliable",
+   "perspective": "Evidence synthesist",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6486221/",
+   "quality": "primary",
+   "perspective": "Evidence synthesist",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.bmj.com/content/363/bmj.k3870",
+   "quality": "primary",
+   "perspective": "Trial-data constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://www.ncbi.nlm.nih.gov/books/NBK595292/",
+   "quality": "unreliable",
+   "perspective": "Trial-data constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1186/s12889-015-2532-5",
+   "quality": "primary",
+   "perspective": "Trial-data constructor",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s12889-018-6017-1",
+   "quality": "primary",
+   "perspective": "Trial-data constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://vuir.vu.edu.au/38138/1/bmj.k3870.full.pdf",
+   "quality": "primary",
+   "perspective": "Trial-data constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "wayback"
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s12889-015-2469-8",
+   "quality": "primary",
+   "perspective": "Health-benefit steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://www.sciencedirect.com/science/article/abs/pii/S0031938421001232",
+   "quality": "primary",
+   "perspective": "Health-benefit steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/",
+   "quality": "primary",
+   "perspective": "Health-benefit steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://academic.oup.com/ije/article/53/6/dyae136/7822310",
+   "quality": "unreliable",
+   "perspective": "Counter-case skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12929726/",
+   "quality": "primary",
+   "perspective": "Counter-case skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.sydney.edu.au/news-opinion/news/2024/10/17/standing-more-may-not-reduce-cardiovascular-disease-risk--could-.html",
+   "quality": "secondary",
+   "perspective": "Counter-case skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.theguardian.com/society/2024/oct/16/standing-desks-may-be-bad-for-your-health-study-suggests",
+   "quality": "secondary",
+   "perspective": "Counter-case skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "http"
+  },
+  {
+   "url": "https://www.bmj.com/content/378/bmj-2021-069288",
+   "quality": "primary",
+   "perspective": "SMART Work & Life trial results",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://www.ovid.com/jnls/backletter/fulltext/10.1097/01.back.0000896748.09911.29~standing-desks-ineffective",
+   "quality": "unreliable",
+   "perspective": "SMART Work & Life trial results",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://evidence.nihr.ac.uk/alert/standing-desks-with-a-support-package-reduce-time-sitting-at-work/",
+   "quality": "secondary",
+   "perspective": "SMArT Work cost-effectiveness",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/",
+   "quality": "primary",
+   "perspective": "SMArT Work cost-effectiveness",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11481281/",
+   "quality": "primary",
+   "perspective": "UK Biobank standing paper (primary)",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.medrxiv.org/content/10.1101/2024.01.17.24301458v1",
+   "quality": "unreliable",
+   "perspective": "UK Biobank standing paper (primary)",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.nature.com/articles/s41598-026-38327-8.pdf",
+   "quality": "primary",
+   "perspective": "UK Biobank standing paper (primary)",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T2",
+   "via": "pdf"
+  },
+  {
+   "url": "https://www.bmj.com/content/387/bmj.q2285",
+   "quality": "secondary",
+   "perspective": "UK Biobank standing paper (primary)",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T2",
+   "via": "wayback"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "quality": "primary",
+   "perspective": "Recent meta-analysis: device-measured sitting and health outcomes",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653846/",
+   "quality": "primary",
+   "perspective": "Recent meta-analysis: device-measured sitting and health outcomes",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "provider": "claude",
+  "model": "claude-sonnet-5",
+  "transport": "session",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 94,
+  "urlDupes": 7,
+  "budgetDropped": 9,
+  "claimsDroppedBeforeVerify": 64,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 41,
+    "ok": 31,
+    "fail": 10,
+    "challenged": 9,
+    "junk": 1,
+    "results": 179
+   },
+   "ddg-html": {
+    "attempts": 13,
+    "ok": 0,
+    "fail": 13,
+    "challenged": 13,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 13,
+    "ok": 0,
+    "fail": 13,
+    "challenged": 13,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 13,
+    "ok": 0,
+    "fail": 13,
+    "challenged": 12,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 13,
+    "ok": 13,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 7
+   },
+   "crossref": {
+    "attempts": 13,
+    "ok": 13,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 74
+   }
+  },
+  "generalWebOkRate": 0.388,
+  "sourceTiers": {
+   "T1": 11,
+   "T2": 11,
+   "T3": 4
+  },
+  "killsByLens": {
+   "support": 4,
+   "counter": 4,
+   "provenance": 2
+  },
+  "fetchVia": {
+   "http": 17,
+   "failed": 2,
+   "crossref-api": 1,
+   "wayback": 5,
+   "pdf": 1
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 1,
+   "hits": 88,
+   "rate": 0.091
+  },
+  "agentCalls": 164,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 93,
+   "partial": 1,
+   "onPageRate": 0.989
+  },
+  "auditRefetch": {
+   "fresh": 29,
+   "fellBackToCache": 1
+  },
+  "pageFetchCache": {
+   "hits": 10,
+   "misses": 75,
+   "charsServedFromCache": 80000,
+   "hitRate": 0.118
+  },
+  "wallSeconds": 1068.4,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 26,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}

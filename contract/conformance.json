@@ -53,7 +53,8 @@
   "_firecrawl_markdown": "gate",
   "tally_verdicts": "gate",
   "demotion_set": "gate",
-  "_gw_dead_from_health": "gate"
+  "_gw_dead_from_health": "gate",
+  "is_interstitial": "gate"
  },
  "cases": {
   "webtext": [
@@ -1242,6 +1243,43 @@
      "out": false,
      "ref": "good",
      "why": "scholarly backends do not count toward the general-web rate"
+    }
+   ]
+  },
+  "is_interstitial": {
+   "why_python_only": "The CLI reads pages itself; the JS build's fetch is the runtime's WebFetch, and its subagents see the page, not the orchestrator.",
+   "cases": [
+    {
+     "in": [
+      "Checking your browser - reCAPTCHA Checking your browser before accessing pmc.ncbi.nlm.nih.gov ... Click here if you are not automatically redirected after 5 seconds."
+     ],
+     "out": true,
+     "ref": "bad",
+     "why": "the live 2026-09-27 run: PubMed Central served this 165-char shell to the audit's re-fetch for 8 articles, it was served as page text, and 16 of 30 citations read 'unreachable' with nothing in code noticing"
+    },
+    {
+     "in": [
+      "Just a moment... Enable JavaScript and cookies to continue"
+     ],
+     "out": true,
+     "ref": "bad",
+     "why": "a Cloudflare interstitial is not the page"
+    },
+    {
+     "in": [
+      "Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. Background: blocked randomisation was used across 14 practices, and the challenge of recruiting shift workers is discussed. "
+     ],
+     "out": false,
+     "ref": "good",
+     "why": "a real article that says 'blocked randomisation' and 'challenge' is not a bot wall - the search-page regex would have called it one, which is why this gate is narrower and length-bounded"
+    },
+    {
+     "in": [
+      "A short but genuine page: the trial enrolled 317 office workers across two NHS sites and measured sitting with activPAL monitors."
+     ],
+     "out": false,
+     "ref": "good",
+     "why": "short is not enough: a brief real page carries no interstitial wording"
     }
    ]
   }

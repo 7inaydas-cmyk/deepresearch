@@ -125,7 +125,10 @@ fetch-seam section at the foot of the file). Add yours in the same change: stub 
 seam your adapter calls (`crossref_record`, `_get_bytes`, `_try_wayback`, …), drive
 `searchmod.fetch`, and assert the `via` string and the meta keys. The prose gate is
 not a chain-wide wrapper — it gates PDF text, scraper markdown and archive text, and
-never direct HTML reads.
+never direct HTML reads. Direct HTML reads get one narrower check instead:
+`_is_interstitial` (a short page with bot-wall wording) turns a "Checking your browser"
+shell into a named fall-through, so the archive or an honest `failed` takes over — a
+live run once had 16 of 30 citation audits judge such a shell.
 
 ## Adding or changing a source tier, or a depth budget
 

@@ -3681,5 +3681,59 @@ def _prov_line(scheme):
 ok("local login file" not in _prov_line("session"), "session transport: no API-key advice")
 ok("local login file" in _prov_line("oauth"), "the OAuth credential file still gets the revocation hint")
 
+
+print("\n-- fetch seam: a bot interstitial is a FAILED read, never a page --")
+# The first live 1.17.0 run (2026-09-27): PubMed Central answered the citation audit's
+# re-fetch with a 165-char "Checking your browser - reCAPTCHA" shell for 8 articles the
+# sweep had read fine. _via_direct served it as page text (via http), the auditor rightly
+# said `unreachable` 16 times out of 30, and the fallbacks for a failed read never ran.
+_SHELL = (b"<html><head><title>Checking your browser - reCAPTCHA</title></head><body>Checking "
+          b"your browser before accessing pmc.ncbi.nlm.nih.gov ... Click here if you are not "
+          b"automatically redirected after 5 seconds.</body></html>")
+_REAL_LONG = ("<html><body>" + "Blocked randomisation was used and the captcha-free portal "
+              "logged every enrolment; the trial measured sitting with thigh monitors. " * 40
+              + "</body></html>").encode()
+_is_saved = (searchmod._get_bytes, searchmod._try_wayback, searchmod._try_firecrawl)
+_is_fc = os.environ.pop("DR_FIRECRAWL_URL", None)
+try:
+    searchmod._try_firecrawl = lambda url, cap: (None, None)
+    searchmod._get_bytes = lambda url, headers=None, timeout=30: (_SHELL, "text/html")
+    _is_why = []
+    def _is_wb(url, cap, why):
+        _is_why.append(why)
+        return ("archived article body " * 60,
+                {"via": "wayback", "snapshotDate": "20250901", "liveFetchFailed": why,
+                 "archivedCopy": True, "snapshotUrl": "https://web.archive.org/snap"})
+    searchmod._try_wayback = _is_wb
+    _it1, _im1 = searchmod.fetch("https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/")
+    ok(_im1.get("via") == "wayback" and "interstitial" in (_im1.get("liveFetchFailed") or ""),
+       "an interstitial falls through to the archive, which names what the live read hit (%s)"
+       % _im1.get("via"))
+    searchmod._try_wayback = lambda url, cap, why: (None, None)
+    _it2, _im2 = searchmod.fetch("https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/")
+    ok(_it2 == "" and _im2.get("via") == "failed" and "interstitial" in str(_im2.get("error")),
+       "with no archive the read FAILS honestly - never a 165-char shell served as the page")
+    searchmod._get_bytes = lambda url, headers=None, timeout=30: (_REAL_LONG, "text/html")
+    _it3, _im3 = searchmod.fetch("https://example.org/trial")
+    ok(_im3.get("via") == "http" and len(_it3) > 2000,
+       "a long real article that says 'blocked' and 'captcha' is still served: short AND "
+       "interstitial wording, never either alone")
+    # The consumer this unblocks: the audit's fresh re-fetch. A failed fresh read falls
+    # back to the text the extractor read (auditRefetch.fellBackToCache records it).
+    searchmod._get_bytes = lambda url, headers=None, timeout=30: (_SHELL, "text/html")
+    _u = "https://pmc.ncbi.nlm.nih.gov/articles/PMC4673711/"
+    with dr._page_lock:
+        dr._page_cache[_u] = (14000, "the article the extractor read " * 30)
+    _fb0 = dr._refetch_tally["fellBackToCache"]
+    _ra = _REAL_WEB_FETCH(_u, cap=14000, fresh=True)
+    ok(_ra.startswith("the article the extractor read")
+       and dr._refetch_tally["fellBackToCache"] == _fb0 + 1,
+       "the audit's re-fetch that hits a bot wall reads the extractor's copy, counted, "
+       "instead of judging a shell")
+finally:
+    searchmod._get_bytes, searchmod._try_wayback, searchmod._try_firecrawl = _is_saved
+    if _is_fc is not None:
+        os.environ["DR_FIRECRAWL_URL"] = _is_fc
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

@@ -1,0 +1,141 @@
+{
+ "report": "/tmp/claude-1000/-home-excelsior-Desktop-deepresearch/20dd6e81-fd8d-4a7b-8ad1-4dabcf04b102/scratchpad/live/standing-desks.json",
+ "question": "Do sit-stand desks reduce office workers' sitting time, and do they improve any measured health outcome?",
+ "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
+ "auditProbes": {
+  "n": 4,
+  "caughtStrict": 1,
+  "caughtAny": 4,
+  "catchRateStrict": 0.25,
+  "catchRate": 1.0,
+  "catchRateNote": "catchRateStrict is the headline: `unsupported` demotes a claim outright. Since restate-or-drop (2026-09-20) a `partial` survivor is rewritten to what the page carries and re-audited, so it no longer publishes as written - but whether the rewrite removed the injected defect is not measured here, so catchRate (partial counts as a catch) is an upper bound, not the headline.",
+  "falseNegatives": [],
+  "byMutation": {
+   "negated": {
+    "n": 1,
+    "caught": 1
+   },
+   "inflated-number": {
+    "n": 1,
+    "caught": 1
+   },
+   "fabricated-specificity": {
+    "n": 1,
+    "caught": 1
+   },
+   "scope-inflation": {
+    "n": 1,
+    "caught": 1
+   }
+  },
+  "reading": "the auditor MISSES defects it should catch: catchRateStrict is below 0.8, so the accuracy it reports on real runs is measuring agreement with the extractor, not citation support that actually blocks publication",
+  "measures": "detection of INJECTED defects, not validity of the pipeline as a whole",
+  "excludedUnreachable": 1,
+  "excludedFailedCalls": 0,
+  "excludedNote": "1 probe(s) hit a page that would not fetch. Those measure the fetcher, not the auditor, so they are excluded from the rate.",
+  "detail": [
+   {
+    "probe": "negated",
+    "verdict": "unsupported",
+    "original": "In the SMART Work and Life three-arm cluster RCT (78 clusters, 756 UK council office workers), daily sitting time measured by accelerometer at 12 months was 22.2 min/day lower with the programme alone",
+    "mutated": "It is NOT the case that in the SMART Work and Life three-arm cluster RCT (78 clusters, 756 UK council office workers), daily sitting time measured by accelerometer at 12 months was 22.2 min/day lower ",
+    "url": "https://www.bmj.com/content/378/bmj-2021-069288"
+   },
+   {
+    "probe": "inflated-number",
+    "verdict": "partial",
+    "original": "The SMArT Work trial protocol was published in BMC Public Health in 2015. The page gives only metadata (no abstract), so it reports no trial results.",
+    "mutated": "The SMArT Work trial protocol was published in BMC Public Health in 20150. The page gives only metadata (no abstract), so it reports no trial results.",
+    "url": "https://doi.org/10.1186/s12889-015-2532-5"
+   },
+   {
+    "probe": "unsupported-causation",
+    "verdict": "unreachable",
+    "original": "In the SUFHA cluster RCT (39 Portuguese office workers, 6 months, activPAL-measured sitting), the sit-stand desk group showed no statistically significant time-by-group difference versus control in th",
+    "mutated": "In the SUFHA cluster RCT (39 Portuguese office workers, 6 months, activPAL-measured sitting), the sit-stand desk group showed no statistically significant time-by-group difference versus control in th",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/"
+   },
+   {
+    "probe": "fabricated-specificity",
+    "verdict": "partial",
+    "original": "In SMArT Work, compared with the control group, daily sitting time went down by 59.32 min/day at 6 months and by 82.39 min/day at 12 months. At 6 months, sitting at work went down by 64.40 min/workday",
+    "mutated": "In SMArT Work, compared with the control group, daily sitting time went down by 59.32 min/day at 6 months and by 82.39 min/day at 12 months. At 6 months, sitting at work went down by 64.40 min/workday",
+    "url": "https://www.bmj.com/content/363/bmj.k3870"
+   },
+   {
+    "probe": "scope-inflation",
+    "verdict": "partial",
+    "original": "As of 2016, the authors state that reviews rated the evidence on sit-stand desks as low quality. They give three reasons: most studies were small, many used weak designs, and some were not randomised.",
+    "mutated": "As of 2016, the authors state that reviews rated the evidence on sit-stand desks as low quality. They give three reasons: most studies were small, many used weak designs, and some were not randomised,",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5154067/"
+   }
+  ]
+ },
+ "framingProbes": {
+  "reason": "this report had no supplied framing fields, so there is nothing to respect"
+ },
+ "criticProbes": {
+  "planted": 3,
+  "named": 3,
+  "detectionRate": 1.0,
+  "falsePositiveFloor": 0.0,
+  "floorNote": "detectionRate is only evidence if it is above falsePositiveFloor - the same scorer run against the critic's output on a summary with NOTHING planted. A floor of None means the control arm was not run, so the rate is uncontrolled and should not be published as detection.",
+  "missed": [],
+  "cleanVerdict": "material-gaps",
+  "degradedVerdict": "material-gaps",
+  "verdictMoved": false,
+  "reading": "the verdict did NOT move when three fabricated sentences were added — it is saturated, and cannot discriminate a good run from a bad one",
+  "criticsPerArm": 2,
+  "failedCalls": 0,
+  "plantedText": [
+   "These findings were independently confirmed by the Wellcome Trust review panel.",
+   "On balance the evidence points the other way, and the effect is most likely absent.",
+   "The pooled effect size across studies was 0.62 (95% CI 0.55-0.69)."
+  ],
+  "flaggedByDegradedArmCount": 22,
+  "flaggedByCleanArmCount": 21,
+  "flaggedListsNote": "flaggedByDegradedArm / flaggedByCleanArm show at most 12 statements each; the *Count fields are complete.",
+  "flaggedByDegradedArm": [
+   "A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.",
+   "A desk-top sit-stand unit cost £360 to £375 at retail in 2015.",
+   "Finding 3 has [high] confidence, which is too high. Its sources are claim [2] (2 studies pooled, in a review that graded its evidence low quality overall), claim [11] (a single study) and claim [28] (one trial of 146 people). Claims [2] and [11] say only that the data do 'not support/show FULL compensation', but the finding drops the word 'full'. The short-term workplace cut (100 min, [0]) is also larger than the total-sitting cut (82 min, [2]), which leaves room for partial compensation.",
+   "Finding 4 says 'one later independent trial found no cut at all'. Claim [18] reports only that the difference over time between groups was not statistically significant, in a 39-person trial. That is not the same as a cut of zero. Claim [19] reports a within-group drop of 44 min/day at 3 months in part of the intervention group. The word 'later' is also not supported, because no claim dates the trial.",
+   "Finding 4 says one 'later independent trial found no cut at all'. 'Later' and 'independent' are in no claim. 'No cut at all' drops two hedges: the result was only not statistically significant in 39 people [18], and within-group sitting fell by 44 min/day at 3 months [19].",
+   "Finding 7 says the unit cost £360 to £375 'in 2015'. Claims [16] and [25] give the list price but no year. The 2015 date belongs to the protocol publication [17], not to the price.",
+   "Finding 7: 'in 2015' is not in claims [16] or [25]. Those claims give the retail price with no date. The only 2015 date in the pool is the publication of the protocol ([17]).",
+   "On balance the evidence points the other way, and the effect is most likely absent.",
+   "Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.",
+   "Summary sentence 'independently confirmed by the Wellcome Trust review panel' is invented. No claim mentions the Wellcome Trust or any review panel.",
+   "Summary sentence 'pooled effect size across studies was 0.62 (95% CI 0.55-0.69)' is invented. No claim contains this number, a standardised effect size, or this confidence interval. It also does not match the pooled minute-based results in [0] and [1].",
+   "Summary sentence 'the evidence points the other way, and the effect is most likely absent' is not supported by any claim, and it contradicts the summary's own opening. Claims [0], [1], [15], [20] and [27] show that sitting time goes down. For health outcomes, claim [29] says the null results are 'not strong evidence of no effect'. So the claims support neither reading of 'the effect is most likely absent'."
+  ],
+  "flaggedByCleanArm": [
+   "A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.",
+   "A desk-top sit-stand unit cost £360 to £375 at retail in 2015.",
+   "Finding 3 has [high] confidence, but it rests on 2 pooled studies [2], 1 single study [11] (probably inside the same pooled set), and one trial [28]. The Cochrane review graded this evidence low quality [12]. The 'full compensation' hedge is also dropped. The high rating is not supported.",
+   "Finding 3 is rated [high]: 'Workers did not make up for the lost sitting by sitting more outside work: total daily sitting fell by about 78 to 82 minutes per day.' The certainty is inflated. It rests on 2 pooled studies ([2]), 1 single study ([11]) that probably overlaps with them, and one trial ([28]). All the review evidence is graded low or very low quality ([12]). The sources say 'no full compensation', not 'no compensation'.",
+   "Finding 4: 'Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.' 'Found no cut at all' overstates [18]. That trial found no statistically significant difference with only 39 participants. [19] reports a 44-minute within-group drop at 3 months in part of the intervention group. The words 'later' and 'independent' are not supported by any claim.",
+   "Finding 4: 'one later independent trial found no cut at all'. No claim supports 'later' or 'independent'. [18] reports no statistically significant difference between groups in 39 workers, and [19] reports that sitting did go down within the desk group (44 min/day at 3 months in a subsample, and a 26 min/day drop in prolonged sitting at 6 months). 'No cut at all' makes the result sound more certain than it is.",
+   "Finding 7: 'A desk-top sit-stand unit cost £360 to £375 at retail in 2015.' The year 2015 appears in no price claim ([16], [25]). It seems to be borrowed from the protocol's publication year ([17]), which is a different fact.",
+   "Finding 7: 'in 2015'. [16] and [25] give the retail price (MSRP) but no year. 2015 is the year the protocol was published ([17]), not a year given for the price.",
+   "No measured health outcome has a confirmed, replicated benefit.",
+   "Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.",
+   "Summary: 'A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.' No claim gives the year 2024; [18] gives no date. Claim [18] is cut off at 'which favore…', so 'favoured the control group' cannot be checked against the pool. The sentence also leaves out that the trial had only 39 participants. That size makes the null result weak, the same caveat [29] applies to SMArT Work, but here it is not applied.",
+   "Summary: 'A 2024 Portuguese trial...' No claim gives a year for the SUFHA trial, so '2024' was added. [18] says there was 'no statistically significant difference' in a trial of only 39 workers. The summary turns this into 'no difference', which drops the hedge for low statistical power. The end of [18] is cut off ('which favore…'), so the pool as shown does not confirm that waist circumference 'favoured the control group'."
+  ],
+  "cleanArmFlagged": [
+   "A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.",
+   "A desk-top sit-stand unit cost £360 to £375 at retail in 2015.",
+   "Finding 3 has [high] confidence, but it rests on 2 pooled studies [2], 1 single study [11] (probably inside the same pooled set), and one trial [28]. The Cochrane review graded this evidence low quality [12]. The 'full compensation' hedge is also dropped. The high rating is not supported.",
+   "Finding 3 is rated [high]: 'Workers did not make up for the lost sitting by sitting more outside work: total daily sitting fell by about 78 to 82 minutes per day.' The certainty is inflated. It rests on 2 pooled studies ([2]), 1 single study ([11]) that probably overlaps with them, and one trial ([28]). All the review evidence is graded low or very low quality ([12]). The sources say 'no full compensation', not 'no compensation'.",
+   "Finding 4: 'Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.' 'Found no cut at all' overstates [18]. That trial found no statistically significant difference with only 39 participants. [19] reports a 44-minute within-group drop at 3 months in part of the intervention group. The words 'later' and 'independent' are not supported by any claim.",
+   "Finding 4: 'one later independent trial found no cut at all'. No claim supports 'later' or 'independent'. [18] reports no statistically significant difference between groups in 39 workers, and [19] reports that sitting did go down within the desk group (44 min/day at 3 months in a subsample, and a 26 min/day drop in prolonged sitting at 6 months). 'No cut at all' makes the result sound more certain than it is.",
+   "Finding 7: 'A desk-top sit-stand unit cost £360 to £375 at retail in 2015.' The year 2015 appears in no price claim ([16], [25]). It seems to be borrowed from the protocol's publication year ([17]), which is a different fact.",
+   "Finding 7: 'in 2015'. [16] and [25] give the retail price (MSRP) but no year. 2015 is the year the protocol was published ([17]), not a year given for the price.",
+   "No measured health outcome has a confirmed, replicated benefit.",
+   "Pooled trials show a large short-term cut that shrinks and thins out over time, and one later independent trial found no cut at all.",
+   "Summary: 'A 2024 Portuguese trial found no difference from control on any secondary outcome except waist circumference, which favoured the control group.' No claim gives the year 2024; [18] gives no date. Claim [18] is cut off at 'which favore…', so 'favoured the control group' cannot be checked against the pool. The sentence also leaves out that the trial had only 39 participants. That size makes the null result weak, the same caveat [29] applies to SMArT Work, but here it is not applied.",
+   "Summary: 'A 2024 Portuguese trial...' No claim gives a year for the SUFHA trial, so '2024' was added. [18] says there was 'no statistically significant difference' in a trial of only 39 workers. The summary turns this into 'no difference', which drops the hedge for low statistical power. The end of [18] is cut off ('which favore…'), so the pool as shown does not confirm that waist circumference 'favoured the control group'."
+  ]
+ }
+}

@@ -168,11 +168,15 @@ def main():
     reports = [p for p in paths if isinstance(json.load(open(p, encoding="utf-8")), dict)]
     new = [row(p) for p in reports if os.path.basename(p).startswith(("v2-", "v3-"))]
     old = [row(p) for p in reports if not os.path.basename(p).startswith(("v2-", "v3-"))]
-    table(old, "SUPERSEDED: scholarly-only search, biased calibration sample, strike dead")
-    table(new, "CURRENT: SearXNG on, all fixes in")
+    # Headings say what the groups ARE. "SUPERSEDED: scholarly-only search, ... strike
+    # dead" was also stamped on every later single-purpose run (v4+, including the one
+    # where strike first fired), because only v2-/v3- names count as the comparison set
+    # the README's spreads come from. The grouping is unchanged, so no number moves.
+    table(old, "OTHER RECORDED RUNS: pre-SearXNG baselines, and later single-purpose runs (v4+)")
+    table(new, "COMPARISON SET (v2/v3): SearXNG on - the README's spreads come from these")
 
     print("\n== what actually moved ==")
-    for label, rows in (("superseded", old), ("current", new)):
+    for label, rows in (("other", old), ("v2/v3 set", new)):
         if not rows:
             continue
         gen = [r for r in rows if r["genWebResults"] > 0]
@@ -188,7 +192,7 @@ def main():
                   % (r["run"][:30], r["dropN"], r["dropSurv"], r["keptSurv"]))
     gates = [r["gate"] for r in new if r["gate"]]
     if gates:
-        print("  gate verdicts, current regime: %s" % ", ".join(gates))
+        print("  gate verdicts, v2/v3 set: %s" % ", ".join(gates))
     print("\n  Read the kill rate as 'how much was removed', never 'removal was correct'.")
     print("  The false-kill rate is still unmeasured - see issue #12.")
 
