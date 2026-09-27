@@ -48,7 +48,7 @@ jobs:
       - run: node tests/claude-code/conformance.mjs
 
   parity:
-    # The two runtimes share contract/tiers.json and nothing else, so parity is a
+    # The two runtimes share contract/*.json and no code, so parity is a
     # property nobody observes unless something checks. They have drifted three
     # times, silently, each time costing a hand-port of a feature nobody noticed
     # was missing. This is that something.

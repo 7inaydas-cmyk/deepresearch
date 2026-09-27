@@ -21,10 +21,13 @@ Nine phases. The first five gather; the last four try to destroy what was gather
              claim — the orchestrator inventing things is a separate failure from
              the retrievers being wrong.
 
-Search is keyless and costs nothing. The model is not: set ANTHROPIC_API_KEY
-(Anthropic) or ZAI_API_KEY (Z.ai GLM) - or, on Anthropic only, let it fall back to
-a Claude Code login already on the machine. DR_PROVIDER forces the choice;
-otherwise the set key variable decides it, and both set together is refused.
+Search is keyless and costs nothing. The model is not, and it is reached session-first
+(ADR-0005): a harness CLI on the machine (`claude -p`, `hermes -p glm -z`) powers every
+call with its own login and no key; DR_TRANSPORT=stdio makes the driving window the
+model; otherwise ANTHROPIC_API_KEY (Anthropic) or ZAI_API_KEY (Z.ai GLM) - or, on
+Anthropic only, a Claude Code login file - and DR_TRANSPORT=http forces that path.
+DR_PROVIDER forces the provider; otherwise the set key variable decides it, and both
+set together is refused.
 
 Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
@@ -1979,6 +1982,14 @@ def _run_limits(T, all_claims_n, verified_n):
             "conversation. Lens independence and audit blindness are NOT guaranteed "
             "here; what did run in code was the schema shaping, the kill tally and the "
             "citation arithmetic.")
+    if not HYPOTHESES:
+        # Every exit, not only the happy one: an early exit on a framing-less run said
+        # nothing about it (map review 2026-09-27). The happy path replaces this with
+        # its fuller text, which also describes hypothesisVerdicts.
+        out["noFramingContract"] = (
+            "The framing agent returned no hypotheses, so NOTHING here was pre-registered "
+            "and no hypothesis was adjudicated. Read this report as an ordinary literature "
+            "summary.")
     if all_claims_n:
         unchecked = all_claims_n - verified_n
         out["evidenceChecked"] = (
@@ -2413,9 +2424,11 @@ def sq_key(c, n_subq):
     return "sq%d" % i if 1 <= i <= n_subq else "(unassigned)"
 
 def citable_only(claims):
-    """Drop claims whose source tier is not citable (T5 content farms), and report
-    the exclusion rather than performing it silently. T4 aggregators stay in the
-    pool but are marked discovery-only for synthesis."""
+    """Drop claims whose source tier is not citable - T4 aggregators and T5 content
+    farms, per contract/tiers.json `citable` - and report the exclusion rather than
+    performing it silently. (This said T4 stayed in the pool; the contract has always
+    dropped it, which is why synthesis's T4 marker is a guard that never fires on a
+    verified claim.)"""
     keep, dropped = [], []
     for c in claims:
         if (c.get("tier") or "T3") in CITABLE:
@@ -2874,7 +2887,7 @@ def deepresearch(question, depth="standard", contract=None):
                     needs_general_web=bool(contract.get("needsGeneralWeb")))
 
     # Phase 4 - Deepen
-    coverage, contradictions = None, []
+    coverage, contradictions, coverage_not_scored = None, [], None
     for rnd in range(1, T["deepen"] + 1):
         digest = "\n".join(
             "- [%s] %s  <%s>" % (webtext(s["sourceQuality"]), webtext(c["claim"], 240), webtext(s["url"], 140))
@@ -2885,6 +2898,13 @@ def deepresearch(question, depth="standard", contract=None):
         gap = agent(p_gap(question, subqs, digest[:26000], n_follow, rnd, T["deepen"]),
                     S_GAP, label="gap:r%d" % rnd, max_tokens=3000)
         if not gap:
+            # Recorded, not only logged: a failed analyst left `coverage` null or stale
+            # and nothing in the report said so (map review 2026-09-27).
+            coverage_not_scored = (
+                "The gap analyst failed in deepening round %d of %d, so deepening stopped there "
+                "and %s. Check the findings against the sub-questions yourself."
+                % (rnd, T["deepen"], "the coverage table is from the round before it" if coverage
+                   else "the coverage checklist was never scored"))
             log("Deepen %d: analyst failed, stopping" % rnd); break
         coverage = gap["coverage"]
         contradictions += gap.get("contradictions", [])
@@ -2900,7 +2920,7 @@ def deepresearch(question, depth="standard", contract=None):
     all_claims = [c for s in sources for c in s["claims"]]
     citable, non_citable = citable_only(all_claims)
     if non_citable:
-        log("EXCLUDED %d claim(s) from non-citable sources (T5 content farms): %s"
+        log("EXCLUDED %d claim(s) from non-citable sources (T4 aggregators / T5 content farms): %s"
             % (len(non_citable), ", ".join(sorted({host_of(c.get("sourceUrl", "")) for c in non_citable})[:5])))
     ranked = coverage_balanced(citable, T["max_verify"], len(subqs))
     # Budget cuts only: the T5 exclusions above are claimsExcludedNonCitable, and
@@ -3007,8 +3027,11 @@ def deepresearch(question, depth="standard", contract=None):
     # after a rescue the early exits printed "4 of 8 extracted claims were verified"
     # beside claimsVerified: 8 (review 2026-09-27). The not-ranked exit verifies none.
     def honest_limits(extra=None, verified=0):
-        return _honest_limits({**_run_limits(T, len(all_claims), verified), **(extra or {})},
-                           evidence=_evidence_base(src_rows()))
+        return _honest_limits({**_run_limits(T, len(all_claims), verified),
+                               **({"coverageNotScored": coverage_not_scored}
+                                  if coverage_not_scored else {}),
+                               **(extra or {})},
+                              evidence=_evidence_base(src_rows()))
 
     if not ranked:
         h = search_health()
@@ -3030,6 +3053,14 @@ def deepresearch(question, depth="standard", contract=None):
             elif errs and not sources:
                 msg = ("AGENT FAILURE, not a research finding: %d model calls failed before any source "
                        "could be read. Check credentials and connectivity, then retry." % errs)
+            elif all_claims and not citable:
+                # Not "empty, paywalled or irrelevant": the claims exist, and every one
+                # came from a source the tier contract refuses to cite (map review
+                # 2026-09-27).
+                msg = ("%d claim(s) were extracted from %d source(s), but every one came from a "
+                       "non-citable source (a T4 aggregator or T5 content farm), so none can be "
+                       "verified or cited. Search for primary sources on this question."
+                       % (len(all_claims), len(sources)))
             else:
                 msg = ("No claims survived extraction. %d sources fetched, all empty, paywalled or "
                        "irrelevant." % len(sources))
@@ -3213,10 +3244,19 @@ def deepresearch(question, depth="standard", contract=None):
             globals()["KILLS_BY_LENS"] = kill_tally()
 
     if not confirmed:
-        msg = ("INFRASTRUCTURE FAILURE, not a research finding: every verifier panel failed. Retry."
-               if not killed else
-               "All %d claims were refuted by the %d-lens adversarial panel. Sources were weak or claims overstated. "
-               "Inconclusive - this is a real result, not an error." % (len(killed), len(lenses)))
+        # Three outcomes, as the JS twin has always had them. Two branches read a run of
+        # 3 kills and 7 unverified as "All 3 claims were refuted ... a real result, not
+        # an error" - a mostly failed run published as a finding (map review 2026-09-27).
+        if not killed:
+            msg = "INFRASTRUCTURE FAILURE, not a research finding: every verifier panel failed. Retry."
+        elif unver:
+            msg = ("%d claim(s) refuted on merit; %d could not be adjudicated because verifier "
+                   "calls failed. Nothing survived - inconclusive, and partly an infrastructure "
+                   "failure: retry before reading it as a finding." % (len(killed), len(unver)))
+        else:
+            msg = ("All %d claims were refuted by the %d-lens adversarial panel. Sources were weak or "
+                   "claims overstated. Inconclusive - this is a real result, not an error."
+                   % (len(killed), len(lenses)))
         return dict(base, summary=msg, findings=[], refuted=[to_ref(c) for c in killed],
                     unverified=[to_unv(c) for c in unver],
                     coverage=post_verify_coverage(coverage, confirmed) if coverage else coverage,
@@ -3414,19 +3454,24 @@ def deepresearch(question, depth="standard", contract=None):
                                 unverifiedCount=len(unver)))
     return _synthesize(question, depth, base, subqs, persps, confirmed, killed, unver, voted,
                        fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                       lenses, T, all_claims, calibration, dropped_sample)
+                       lenses, T, all_claims, calibration, dropped_sample,
+                       coverage_not_scored=coverage_not_scored)
 
 
 CONF = {"high": 0, "medium": 1, "low": 2}
 
 def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
-                lenses, T, all_claims, calibration=None, dropped_sample=None):
+                lenses, T, all_claims, calibration=None, dropped_sample=None,
+                coverage_not_scored=None):
     # Same wrapper as the run function's, for the same reason: the evidence-base
     # signal must not reach some exits and not others.
     def honest_limits(extra=None):
-        return _honest_limits({**_run_limits(T, len(all_claims), len(voted)), **(extra or {})},
-                               evidence=_evidence_base(src_rows()))
+        return _honest_limits({**_run_limits(T, len(all_claims), len(voted)),
+                               **({"coverageNotScored": coverage_not_scored}
+                                  if coverage_not_scored else {}),
+                               **(extra or {})},
+                              evidence=_evidence_base(src_rows()))
 
     blocks = []
     for i, c in enumerate(confirmed):
@@ -3470,6 +3515,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         cov_b = ("\n## Coverage checklist status\nNot scored: quick depth runs no gap "
                  "analyst. The sub-questions above may or may not have been answered - "
                  "check the findings, not this table.\n")
+    elif coverage_not_scored and not coverage:
+        cov_b = ("\n## Coverage checklist status\nNot scored: " + coverage_not_scored + "\n")
     elif coverage:
         # Reconciled POST-verification (2026-09-20). The raw table is the gap
         # analyst's snapshot from before the panel ran; rendered verbatim it let a
@@ -3856,6 +3903,14 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                 "the critic's text does not appear verbatim in the summary. Reporting them "
                 "instead of deleting on a fuzzy match." % len(_untraceable))
     out["processCritique"] = {"untraceableCount": len(_untraceable),
+                              # A failed critic step looked clean: every call failing gave
+                              # untraceableCount 0 and nothing saying no critic ran (map
+                              # review 2026-09-27).
+                              "criticsReturned": len(crits), "criticsRequested": T["critics"],
+                              **({"criticNotRun": (
+                                  "Every critic call failed, so the summary was NOT audited: "
+                                  "untraceableCount 0 means unchecked, not clean.")}
+                                 if not crits else {}),
                               "markedInSummary": _marked,
                               "markedInSummaryMeans": (
                                   "how many flagged sentences were located verbatim and "

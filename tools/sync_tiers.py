@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Regenerate the JS build's generated blocks from the files in contract/.
 
-Two blocks, two source files: the source-quality tier rules from contract/tiers.json,
-and the quick/standard/exhaustive depth budgets from contract/depths.json.
+Three blocks, three source files: the source-quality tier rules from
+contract/tiers.json, the quick/standard/exhaustive depth budgets from
+contract/depths.json, and the hypothesis stopwords and negators from
+contract/hypothesis-words.json.
 
 Why this exists: contract/tiers.json's own $comment claims both runtimes read it. The
 JS build could not - it runs inside the Claude Code Workflow runtime, which has no
@@ -124,7 +126,7 @@ def main() -> int:
               "contract/. Run `python3 tools/sync_tiers.py` and commit the result.")
         return 1
     open(JS_FILE, "w", encoding="utf-8").write(src)
-    print("synced: regenerated the tier and depth blocks in %s from contract/" % JS_FILE)
+    print("synced: regenerated the tier, depth and hypothesis-wordlist blocks in %s from contract/" % JS_FILE)
     return 0
 
 

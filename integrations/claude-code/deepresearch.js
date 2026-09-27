@@ -1235,6 +1235,9 @@ log('Wave 1: ' + allSources.length + ' sources, ' + allSources.reduce((n, s) => 
 
 // ═══ Phase 4: Deepen — gap analysis then follow-up waves ════════════════════
 let lastCoverage = null
+// Recorded, not only logged: a failed gap analyst left coverage null or stale and nothing
+// in the report said so (map review 2026-09-27; the Python twin records the same).
+let COVERAGE_NOT_SCORED = null
 const allContradictions = []
 for (let round = 1; round <= T.deepenRounds; round++) {
   phase('Deepen')
@@ -1260,7 +1263,13 @@ for (let round = 1; round <= T.deepenRounds; round++) {
     'If coverage is genuinely complete, return followUps: [] — do not invent busywork.\n\nStructured output only.',
     { label: 'gap-analysis:r' + round, phase: 'Deepen', schema: GAP_SCHEMA }
   )
-  if (!gap) { log('Deepen round ' + round + ': analyst failed, stopping deepening'); break }
+  if (!gap) {
+    COVERAGE_NOT_SCORED = 'The gap analyst failed in deepening round ' + round + ' of ' + T.deepenRounds +
+      ', so deepening stopped there and ' + (lastCoverage ? 'the coverage table is from the round before it'
+      : 'the coverage checklist was never scored') + '. Check the findings against the sub-questions yourself.'
+    log('Deepen round ' + round + ': analyst failed, stopping deepening')
+    break
+  }
   lastCoverage = gap.coverage
   if (gap.contradictions) allContradictions.push(...gap.contradictions)
 
@@ -1364,6 +1373,10 @@ const honestLimits = (extra, verified = 0) => ({
   // told nothing that no citation was re-checked, and the unchecked share of the
   // evidence travelled only when it crossed 50%.
   ...(T.factAudit ? {} : { citationAuditOff: 'This depth ran NO blind citation audit: no claim here was re-checked against its cited page, and the report must not read as vetted. Use standard depth or above when the checking matters.' }),
+  ...(COVERAGE_NOT_SCORED ? { coverageNotScored: COVERAGE_NOT_SCORED } : {}),
+  // Every exit, not only the final one (map review 2026-09-27); the final report replaces
+  // it with the fuller text that also describes hypothesisVerdicts.
+  ...(HYP.length ? {} : { noFramingContract: 'The framing agent returned no hypotheses, so NOTHING here was pre-registered and no hypothesis was adjudicated. Read this report as an ordinary literature summary.' }),
   ...(allClaims.length ? { evidenceChecked: verified + ' of ' + allClaims.length + ' extracted claims were verified (' + (allClaims.length - verified) + ' unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence.' } : {}),
   falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
   reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
@@ -1402,6 +1415,10 @@ if (rankedClaims.length === 0) {
     question: QUESTION, depth: DEPTH,
     summary: (allSources.length === 0
       ? 'AGENT FAILURE, not a research finding: no source was successfully read before the run ended — the model calls did not complete. Check credentials and connectivity, then retry. Do NOT report this as "no evidence exists". '
+      // Not "all empty/failed": the claims exist, and every one came from a source the
+      // tier contract refuses to cite (map review 2026-09-27).
+      : allClaims.length && !citableClaims.length
+        ? allClaims.length + ' claim(s) were extracted from ' + allSources.length + ' source(s), but every one came from a non-citable source (a T4 aggregator or T5 content farm), so none can be verified or cited. Search for primary sources on this question. '
       : 'No claims extracted. ' + allSources.length + ' sources fetched, all empty/failed. ')
       + dupes.length + ' URL dupes, ' + budgetDropped.length + ' budget-dropped.',
     scopeContract: CONTRACT,
@@ -1900,7 +1917,9 @@ const block = confirmed.map((c, i) => {
 }).join('\n')
 
 const COVERAGE = postVerifyCoverage(lastCoverage, confirmed)
-const coverageBlock = COVERAGE
+const coverageBlock = (!COVERAGE && COVERAGE_NOT_SCORED)
+  ? '\n## Coverage checklist status\nNot scored: ' + COVERAGE_NOT_SCORED + '\n'
+  : COVERAGE
   ? '\n## Coverage checklist status (post-verification)\n' + COVERAGE.map(c => '- [' + c.status + '] ' + webText(c.subQuestion) + (c.note ? ' — ' + webText(c.note) : '')).join('\n') + '\n'
   : ''
 const killedBlock = killed.length
@@ -2178,6 +2197,10 @@ return {
     .map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || '') })),
   ...(untraceable.length ? { summaryAnnotated } : {}),
   processCritique: { untraceableCount: untraceable.length,
+                     // A failed critic step looked clean: every call failing gave
+                     // untraceableCount 0 and nothing saying no critic ran (2026-09-27).
+                     criticsReturned: critiques.length, criticsRequested: T.critics,
+                     ...(critiques.length ? {} : { criticNotRun: 'Every critic call failed, so the summary was NOT audited: untraceableCount 0 means unchecked, not clean.' }),
                      markedInSummary,
                      markedInSummaryMeans: 'how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.',
                      readThisFirst: 'Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three — and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.',

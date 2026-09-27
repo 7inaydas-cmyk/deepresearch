@@ -561,6 +561,21 @@ import fs2 from 'node:fs'
   ok(out.processCritique.markedInSummary === 1 && (out.summaryAnnotated.match(/\[UNTRACEABLE:/g) || []).length === 1,
      'duplicate and substring flags mark the sentence once (' + out.summaryAnnotated + ')')
 }
+{
+  // Map review 2026-09-27: failed stages and early exits say what happened.
+  const cf = await run('R15 critic step fails', { question: 'Q', depth: 'standard' }, { criticFails: true })
+  ok(cf.out.processCritique.criticsReturned === 0 && cf.out.processCritique.criticNotRun,
+     'a failed critic step says the summary was NOT audited (criticsReturned 0)')
+  const { out, prompts } = await run('R16 gap analyst fails', { question: 'Q', depth: 'standard' }, { gapFails: true })
+  const syn = (prompts.find(p => p.label === 'synthesize') || {}).prompt || ''
+  ok(out.honestLimits.coverageNotScored && /Not scored: The gap analyst failed/.test(syn),
+     'a failed gap analyst is recorded in honestLimits and told to synthesis')
+  const fo = await run('R17 every claim non-citable', { question: 'Q', depth: 'standard' }, { farmOnly: true })
+  ok(/non-citable source/.test(fo.out.summary) && !/all empty/.test(fo.out.summary),
+     'all claims non-citable is its own reason (' + fo.out.summary.slice(0, 60) + ')')
+  const nf = await run('R18 framing-less early exit', { question: 'Q', depth: 'standard' }, { no_framing: true, emptyFetch: true })
+  ok(nf.out.honestLimits.noFramingContract, 'an early exit on a framing-less run carries noFramingContract too')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

@@ -72,6 +72,9 @@ def install(cfg):
             return (([{"url": "https://x.hubpages.com/rescue", "title": "farm", "snippet": "s"}]
                      if cfg.get("farm_hits") else [])
                     + [{"url": "https://primary-rescue.org/doc", "title": "primary", "snippet": "s"}])
+        if cfg.get("farm_only"):
+            return [{"url": "https://x%d.hubpages.com/p" % i, "title": "farm", "snippet": "s"}
+                    for i in range(n)]
         # The farm hit goes FIRST: the stub picker keeps the first four URLs.
         return (([{"url": "https://x.hubpages.com/%d" % (abs(hash(q)) % 999), "title": "farm",
                    "snippet": "s"}] if cfg.get("farm_hits") else [])
@@ -154,6 +157,8 @@ def install(cfg):
                  "subQuestionIndex": (n % 4) + 1},
                 {"claim": "CLAIM-%db detail" % n, "quote": "qb", "importance": "supporting",
                  "subQuestionIndex": ((n + 1) % 4) + 1}]}
+        if label.startswith("gap:") and cfg.get("gap_fails"):
+            return None
         if label.startswith("gap:"):
             return {"coverage": [{"subQuestionIndex": i + 1, "status": "partial"} for i in range(4)],
                     "contradictions": ["A vs B"],
@@ -164,6 +169,10 @@ def install(cfg):
                 return {"refuted": False, "evidence": "e", "confidence": "high"}
             if cfg.get("kill_all"):
                 return {"refuted": True, "evidence": "e", "confidence": "high"}
+            if cfg.get("half_unverified"):
+                # Odd claims: every lens call fails (unverified). Even: refuted on merit.
+                _hn = int(prompt.split("CLAIM-")[1].split()[0].rstrip("b")) if "CLAIM-" in prompt else 0
+                return None if _hn % 2 else {"refuted": True, "evidence": "e", "confidence": "high"}
             if cfg.get("one_refuter"):
                 # Every claim survives 2-1: the support lens refutes, the other two pass.
                 return {"refuted": label == "support", "evidence": "the losing lens's objection",
@@ -228,6 +237,8 @@ def install(cfg):
                     "The two crossover trials that carry this conclusion recruited from one "
                     "university, and selection into them plausibly tracks the outcome measured, "
                     "so the pooled estimate may be one population counted twice."}
+        if label.startswith("critic:") and cfg.get("critic_fails"):
+            return None
         if label.startswith("critic:"):
             return {"untraceableStatements": ["u1"], "coverageGaps": ["g1"], "planFlaws": ["p1"],
                     "untraceableVerbatim": cfg.get("critic_verbatim", []),
@@ -3759,6 +3770,34 @@ finally:
 ok(_ns["summary"] == "Wages rose five percent in the treated counties."
    and _ns["processCritique"]["struckFromSummary"] == ["Employment was flat across every group studied."],
    "strike removes the WHOLE flagged sentence, never a fragment of it first (%r)" % _ns["summary"])
+
+
+print("\n-- map review 2026-09-27: exits and failed stages say what happened --")
+# Nothing survived, but some claims were never adjudicated: two branches called this
+# "All 3 claims were refuted ... a real result, not an error". Quick depth: no rescue.
+_hu = run({"half_unverified": True}, depth="quick")
+ok("could not be adjudicated" in _hu.get("summary", "") and "real result" not in _hu.get("summary", ""),
+   "refuted + unverified reads as partly an infrastructure failure, not a finding (%r)"
+   % _hu.get("summary", "")[:80])
+# Every critic call failing gave untraceableCount 0 with nothing saying no critic ran.
+_cf = run({"critic_fails": True})
+ok(_cf["processCritique"]["criticsReturned"] == 0 and "criticNotRun" in _cf["processCritique"],
+   "a failed critic step says the summary was NOT audited (criticsReturned 0)")
+ok(run({})["processCritique"]["criticsReturned"] == dr.DEPTH_BUDGETS["standard"]["critics"],
+   "and a working one says how many critics returned")
+# A failed gap analyst skipped deepening and left coverage null, recorded nowhere.
+_gcap = []
+_gf = run({"gap_fails": True, "capture": _gcap})
+_gsyn = [pr for lb, pr in _gcap if lb == "synthesize"]
+ok("coverageNotScored" in _gf.get("honestLimits", {}) and _gsyn and "Not scored: The gap analyst failed" in _gsyn[0],
+   "a failed gap analyst is recorded in honestLimits and told to synthesis")
+# Every claim from a non-citable source read "all empty, paywalled or irrelevant".
+_fo = run({"farm_only": True})
+ok("non-citable source" in _fo.get("summary", "") and "paywalled" not in _fo.get("summary", ""),
+   "all claims non-citable is its own reason (%r)" % _fo.get("summary", "")[:70])
+# The early exits said nothing about a framing-less run.
+ok("noFramingContract" in (run({"no_framing": True, "empty_pages": True}).get("honestLimits") or {}),
+   "an early exit on a framing-less run carries noFramingContract too")
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

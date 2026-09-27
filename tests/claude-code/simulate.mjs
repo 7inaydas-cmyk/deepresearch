@@ -65,6 +65,7 @@ function makeAgent(cfg) {
 
     if (L.startsWith('search:')) {
       const p = L.slice(7)
+      if (cfg.farmOnly) return { results: [{ url: 'https://www.buzzfeed.com/' + p, title: 'farm ' + p, relevance: 'high' }] }
       const shared = { url: 'https://example.org/shared', title: 'Shared doc', relevance: 'high' }
       if (p === 'P0') return { results: [shared, { url: 'https://a.org/1', title: 'A1', relevance: 'high' }] }
       if (p === 'P1') return { results: [shared, { url: 'https://b.org/2', title: 'B2', relevance: 'medium' }] }
@@ -99,6 +100,7 @@ function makeAgent(cfg) {
       ]}
     }
 
+    if (L.startsWith('gap-analysis') && cfg.gapFails) return null
     if (L.startsWith('gap-analysis')) return {
       coverage: SQ.map((q, i) => ({ subQuestion: q, status: i === 0 ? 'answered' : i === 2 ? 'unanswered' : 'partial', note: 'n' })),
       contradictions: ['Source A says X, source B says not-X'],
@@ -185,6 +187,7 @@ function makeAgent(cfg) {
         'selection into them plausibly tracks the outcome measured, so the pooled estimate may be ' +
         'one population counted twice.' }
     }
+    if (L.startsWith('critic:') && cfg.criticFails) return null
     if (L.startsWith('critic:')) return {
       untraceableStatements: ['stmt 2 untraceable'], coverageGaps: ['no non-English sources'], planFlaws: ['SQ2 leading'],
       untraceableVerbatim: cfg.criticVerbatim || [],

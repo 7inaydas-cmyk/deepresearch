@@ -8,8 +8,10 @@ hand-porting a feature nobody noticed was missing:
   - the JS build's own test suite lived in a scratch directory, so nothing ran it
   - seven Python changes in one session landed with none of them in the JS build
 
-They share `contract/tiers.json` and nothing else, so parity is a property nobody
-observes unless something checks. This is that something.
+They share `contract/*.json` - tiers, depths and hypothesis words through generated
+blocks, conformance through both test runners - and nothing else: prompts and pipeline
+code are written twice, so parity is a property nobody observes unless something
+checks. This is that something.
 
 A feature is listed here by the marker string that proves it exists in each
 build. Markers are deliberately crude: the point is to notice absence, not to
