@@ -1,0 +1,48 @@
+{
+ "decisionAtStake": "Whether a reader, such as a policy analyst, a legislative staff member or a voter who is judging a proposal, should treat job loss as a first-order cost of a moderate minimum-wage increase or as a small side effect next to the pay gains. The answer also sets which elasticity number to use in a cost-benefit model, in the way the US Congressional Budget Office (CBO) does. If the reader is only curious and faces no policy, budget or advocacy choice, no action changes. The answer only settles an academic dispute.",
+ "keyQuestion": "For moderate US minimum-wage increases, where the minimum wage stays below about 60% of the local median wage, does the best available estimate of the employment elasticity for teens and low-wage workers fall near zero (at or above -0.05), in a small negative band (-0.05 to -0.2), or at a large negative value (-0.2 or lower), after publication bias is corrected for and study designs are weighted by credibility?",
+ "assumptions": [
+  "Geography: The core evidence is from the United States, because both the Card and Krueger tradition and the Neumark and Wascher tradition come from US data. Evidence from other countries, such as the UK National Living Wage, Germany's 2015 minimum wage and international meta-analyses, is a cross-check only. It is not the main basis for the answer.",
+  "Main metric: The employment elasticity is the percent change in employment of the affected group (teens, restaurant workers or low-wage workers) for a 1% increase in the minimum wage. The own-wage elasticity is a secondary metric that adjusts for how much the policy raises wages. It is the employment change divided by the wage change of the affected group. Both are reported, and the answer states which is which. Aggregate employment for all workers is out of scope.",
+  "'Moderate' means increases inside the historical US range, where the minimum wage is below about 0.6 of the local median wage. For very large increases, such as a $15 federal floor in low-wage regions, the evidence is outside the sample. The answer notes this and does not extrapolate.",
+  "Time horizon: The answer covers the short and medium run, from 1 to 5 years after an increase. Long-run channels, such as automation and firms that open or close, are named as a gap if the evidence is thin.",
+  "Employment means jobs or number of workers first. Effects on hours worked are reported separately, because some studies find cuts in hours but not in jobs.",
+  "The 'Card and Krueger tradition' includes the 1994 New Jersey fast-food case study, contiguous border-county designs such as Dube, Lester and Reich (2010), synthetic control studies, and the bunching estimator of Cengiz et al. (2019). The 'Neumark and Wascher tradition' includes state panel regressions with fixed effects, their 2000 study of the New Jersey payroll data, their critiques of local controls (Neumark, Salas and Wascher, 2014) and the 2022 Neumark and Shirley survey.",
+  "'Best estimate' means a central value with a range, taken from meta-analyses that correct for bias and from the most credible study designs. It is not the result of one favored study. The literature covered goes up to mid-2026."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "Publication-bias corrections, such as FAT-PET/PEESE tests or the Andrews and Kasy method, applied in Doucouliagos and Stanley (2009), Wolfson and Belman (2019) and later meta-analyses such as Dube and Zipperer (2024). If the corrected estimates do NOT move toward zero compared with the uncorrected averages, then publication bias does not explain the negative estimates, and the near-zero answer gets weaker.",
+  "A re-check of Neumark and Shirley (2022), which found that most US estimates are negative and that the estimates the authors themselves call most credible are more negative. If this finding holds under independent re-analysis, the answer moves toward the small or large negative bands.",
+  "Proof that the bunching and stacked-event designs of Cengiz et al. (2019) miss real job losses, for example through spillovers above the minimum wage, bad choice of control groups or too short a time window. This proof would weaken the strongest modern evidence for a near-zero effect.",
+  "Studies of high-bite increases, such as Seattle (Jardim et al., where hours fell), Germany in 2015 and large UK or US state increases. If these show clearly larger negative effects, the answer has to be split by bite. A single pooled number would then be misleading.",
+  "Evidence that the job losses show up only in hours, only after several years, or only through firms that do not open. In that case the short-run headcount elasticity would understate the true cost.",
+  "The dispute over the New Jersey case-study data: the Neumark and Wascher (2000) payroll data against the Card and Krueger (2000) Bureau of Labor Statistics data. This matters only if later evidence depends on which side is right."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "H1: The effect is near zero. For moderate increases, the best estimate of the teen or low-wage employment elasticity is -0.05 or higher, which includes zero and positive values. The negative estimates in the literature come mostly from publication bias and from poor control groups in two-way fixed-effects panel regressions.",
+   "killCriterion": "Meta-analyses that correct for publication bias AND the leading design-based studies (bunching, contiguous border counties, synthetic control) together give central estimates below -0.05, with confidence intervals that exclude zero. Or the bias corrections do not move the pooled estimate toward zero."
+  },
+  {
+   "hypothesis": "H2: A small but real negative effect. The best estimate is between -0.05 and -0.2. The own-wage elasticity is in the inelastic range, so the pay gains of workers who keep their jobs are much larger than the lost jobs.",
+   "killCriterion": "The confidence interval of the best bias-corrected, design-weighted estimate lies completely above -0.05 or completely below -0.2."
+  },
+  {
+   "hypothesis": "H3: A large negative effect. The best estimate is -0.2 or lower, which matches the upper end of the classic Neumark and Wascher range of -0.1 to -0.3. The near-zero results are artifacts of design choices, such as local controls that throw away useful variation.",
+   "killCriterion": "No meta-analysis that corrects for bias, and no well-identified study after 2010, has a central estimate of -0.2 or lower for moderate increases. Or the estimates at -0.2 or lower come only from high-bite cases outside the 'moderate' scope."
+  },
+  {
+   "hypothesis": "H4: The evidence cannot support one central estimate. Credible designs and bias corrections disagree so much, or the effect depends so strongly on bite, group and hours versus jobs, that the defensible range covers two or more of the H1 to H3 bands.",
+   "killCriterion": "The bias-corrected meta-analytic estimates and the leading design-based estimates from both traditions agree within one band (H1, H2 or H3), and their central values differ by no more than about 0.1."
+  }
+ ],
+ "needsGeneralWeb": false,
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted",
+  "needsGeneralWeb": "drafted"
+ }
+}

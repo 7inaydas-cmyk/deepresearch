@@ -1,0 +1,1466 @@
+{
+ "question": "Does raising the minimum wage reduce employment? Weigh the Card and Krueger tradition against Neumark and Wascher, address the publication-bias literature on this question specifically, and state what the current best estimate of the employment elasticity is.",
+ "depth": "standard",
+ "coverage": [
+  {
+   "subQuestionIndex": 1,
+   "status": "partial",
+   "note": "No central elasticity, confidence interval or correction method (FAT-PET, PEESE, WAAP or Andrews-Kasy) is gathered for any meta-analysis. Doucouliagos and Stanley 2009 is known only through the Chletsos and Giotis abstract, a secondhand source. Chletsos and Giotis say only 'small negative', with no number. Belman and Wolfson and the Dube and Zipperer own-wage-elasticity repository are missing, so none of these can be placed in a band."
+  },
+  {
+   "subQuestionIndex": 2,
+   "status": "partial",
+   "note": "Chletsos and Giotis find selection bias in the elasticity sample but none in the coefficient sample, and they find that study characteristics can flip the sign. Still missing: a funnel-plot description, how far the correction moves the estimate, and any reply to Doucouliagos and Stanley that attributes the asymmetry to real differences between studies."
+  },
+  {
+   "subQuestionIndex": 3,
+   "status": "partial",
+   "note": "Gathered: Cengiz et al. own-wage elasticity +0.41 (s.e. 0.43); Allegretto et al. synthetic control -0.04 and border counties -0.06 (the LASSO value is cut off). Missing: numbers for Card and Krueger 1994 and 2000 and for Dube, Lester and Reich 2010, and the preferred teen elasticity of Neumark, Salas and Wascher 2014. Without that last number the size of the gap (more or less than 0.1) cannot be computed."
+  },
+  {
+   "subQuestionIndex": 4,
+   "status": "partial",
+   "note": "Only the authors' own tally is gathered: 79.2% of preferred estimates are negative and 53.8% are negative and significant, with 64.5% and 32.3% for low-wage industries. There is no independent re-coding, no central elasticity for teens or low-wage workers, and no answer on whether the tallied estimates are minimum-wage elasticities or own-wage elasticities."
+  },
+  {
+   "subQuestionIndex": 5,
+   "status": "unanswered",
+   "note": "No gathered source reports a bias-corrected or well-identified post-2010 US estimate of -0.2 or lower. Candidates not yet searched: Neumark, Salas and Wascher 2014; Clemens and Wither 2019; Meer and West 2016. It is also untested whether such results depend on high-bite settings or on state-trend controls."
+  },
+  {
+   "subQuestionIndex": 6,
+   "status": "partial",
+   "note": "Gathered: the Cengiz et al. employment effect stays flat up to a Kaitz index of about 55%; Germany 2015 (10-14% of workers affected) shows no loss in regular jobs and minijob losses at about -0.1; Hungary shows small negative effects. Missing: Seattle (Jardim et al.), the UK National Living Wage, US $15 increases, and any direct estimate of a tipping point above 55-60%."
+  },
+  {
+   "subQuestionIndex": 7,
+   "status": "partial",
+   "note": "Gathered: Hungarian capital-labor substitution, German minijob hours losses, no US job loss after five years in Cengiz et al., and spillovers up to $3 above the minimum inside the bunching window. Missing: Meer and West 2016 (effects that grow over time) and Aaronson et al. 2018 (firm entry and exit)."
+  },
+  {
+   "subQuestionIndex": 8,
+   "status": "unanswered",
+   "note": "Nothing gathered on the central elasticity or range used by CBO 2019 and 2021, the UK Low Pay Commission, Dube's 2019 review for the UK Treasury, or the German Minimum Wage Commission."
+  }
+ ],
+ "contradictions": [
+  "Neumark and Shirley (2022) find a 'clear preponderance of negative estimates'. Doucouliagos and Stanley (2009, secondhand) find little or no negative effect after correcting for bias, and Dube finds close to zero for broad groups. These count different things: the sign of the raw estimates versus the size after correction. Both can be true if many estimates are small and negative. The gap analysis first framed this contradiction using Neumark and Shirley's 79.2%/53.8% tally, but that tally was REFUTED in verification and should not be used for it.",
+  "The gap analysis says Neumark and Shirley describe the teen evidence as the most negative; that statement is not itself a verified claim here. Allegretto et al. (2017), with 1979-2014 teen data, get -0.01 to -0.06 and say the negative results come from trends that already differed between states. At bottom this is a dispute about how to control for state trends, and it is not settled here. The claim that border counties are 'good controls' comes only from Allegretto et al.",
+  "Within one collection, the answer changes band depending on how you summarize it: median -0.13 (small negative), mean -0.25 (large negative), broad-group median +0.02 (near zero). The choice of summary does as much work as the data.",
+  "The gap analysis flagged that Chletsos and Giotis disagree with themselves: bias in the elasticity sample but none in the coefficient sample. The coefficient-sample claim was REFUTED, so this contradiction does not stand. Only the elasticity-sample finding (bias present, small negative effect after correction) is confirmed.",
+  "A claim built on the published (QJE) version of Cengiz et al. overreached compared with the working-paper version, which says the US increases studied reached only about 55% of the median wage. So this study says nothing about high-bite increases. Its 138-increases claim about losses that grow over time was also REFUTED.",
+  "Neumark and Shirley 2022 (NBER w28388 and ILR) report that 79.2% of preferred US estimates are negative and 53.8% are negative and significant. Doucouliagos and Stanley 2009, as quoted secondhand in the Chletsos and Giotis abstract, find 'little or no evidence of a negative effect' after correcting for selection. Both can be literally true, because a raw sign count of preferred estimates is what selective reporting would produce. But their conclusions about job loss cannot both stand unless someone shows whether the Neumark and Shirley preferred estimates survive a selection correction.",
+  "Neumark and Shirley say the negative evidence is strongest for teens and young adults. Allegretto, Dube, Reich and Zipperer 2017, using 1979-2014 teen data, get elasticities near zero (synthetic control -0.04, border counties -0.06) and attribute the negative parallel-trends estimates to trends that differed between states before the increases. The two traditions disagree on the teen effect, and the disagreement turns on whether state-trend controls are valid.",
+  "Chletsos and Giotis 2015 disagree with themselves on whether publication bias exists: they find selection in the elasticity meta-sample but none in the regression-coefficient meta-sample. So the premise of sub-question 2 holds or fails depending on the effect measure chosen.",
+  "The claim summarizing Cengiz et al. from the QJE page ('no evidence of job loss at higher minimum wage levels... bears on whether high-bite increases cause larger losses') overreaches next to the same paper's NBER version. The NBER version says the US increases studied only reached a Kaitz index of about 55%, below the level where significant job loss would be expected. The QJE-page claim should not be used as evidence about high-bite settings. The German 2015 minijob losses at about -0.1, in a setting that affected 10-14% of workers, are compatible with the NBER reading, not the QJE-page reading."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether a reader, such as a policy analyst, a legislative staff member or a voter who is judging a proposal, should treat job loss as a first-order cost of a moderate minimum-wage increase or as a small side effect next to the pay gains. The answer also sets which elasticity number to use in a cost-benefit model, in the way the US Congressional Budget Office (CBO) does. If the reader is only curious and faces no policy, budget or advocacy choice, no action changes. The answer only settles an academic dispute.",
+  "keyQuestion": "For moderate US minimum-wage increases, where the minimum wage stays below about 60% of the local median wage, does the best available estimate of the employment elasticity for teens and low-wage workers fall near zero (at or above -0.05), in a small negative band (-0.05 to -0.2), or at a large negative value (-0.2 or lower), after publication bias is corrected for and study designs are weighted by credibility?",
+  "assumptions": [
+   "Geography: The core evidence is from the United States, because both the Card and Krueger tradition and the Neumark and Wascher tradition come from US data. Evidence from other countries, such as the UK National Living Wage, Germany's 2015 minimum wage and international meta-analyses, is a cross-check only. It is not the main basis for the answer.",
+   "Main metric: The employment elasticity is the percent change in employment of the affected group (teens, restaurant workers or low-wage workers) for a 1% increase in the minimum wage. The own-wage elasticity is a secondary metric that adjusts for how much the policy raises wages. It is the employment change divided by the wage change of the affected group. Both are reported, and the answer states which is which. Aggregate employment for all workers is out of scope.",
+   "'Moderate' means increases inside the historical US range, where the minimum wage is below about 0.6 of the local median wage. For very large increases, such as a $15 federal floor in low-wage regions, the evidence is outside the sample. The answer notes this and does not extrapolate.",
+   "Time horizon: The answer covers the short and medium run, from 1 to 5 years after an increase. Long-run channels, such as automation and firms that open or close, are named as a gap if the evidence is thin.",
+   "Employment means jobs or number of workers first. Effects on hours worked are reported separately, because some studies find cuts in hours but not in jobs.",
+   "The 'Card and Krueger tradition' includes the 1994 New Jersey fast-food case study, contiguous border-county designs such as Dube, Lester and Reich (2010), synthetic control studies, and the bunching estimator of Cengiz et al. (2019). The 'Neumark and Wascher tradition' includes state panel regressions with fixed effects, their 2000 study of the New Jersey payroll data, their critiques of local controls (Neumark, Salas and Wascher, 2014) and the 2022 Neumark and Shirley survey.",
+   "'Best estimate' means a central value with a range, taken from meta-analyses that correct for bias and from the most credible study designs. It is not the result of one favored study. The literature covered goes up to mid-2026."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Publication-bias corrections, such as FAT-PET/PEESE tests or the Andrews and Kasy method, applied in Doucouliagos and Stanley (2009), Wolfson and Belman (2019) and later meta-analyses such as Dube and Zipperer (2024). If the corrected estimates do NOT move toward zero compared with the uncorrected averages, then publication bias does not explain the negative estimates, and the near-zero answer gets weaker.",
+   "A re-check of Neumark and Shirley (2022), which found that most US estimates are negative and that the estimates the authors themselves call most credible are more negative. If this finding holds under independent re-analysis, the answer moves toward the small or large negative bands.",
+   "Proof that the bunching and stacked-event designs of Cengiz et al. (2019) miss real job losses, for example through spillovers above the minimum wage, bad choice of control groups or too short a time window. This proof would weaken the strongest modern evidence for a near-zero effect.",
+   "Studies of high-bite increases, such as Seattle (Jardim et al., where hours fell), Germany in 2015 and large UK or US state increases. If these show clearly larger negative effects, the answer has to be split by bite. A single pooled number would then be misleading.",
+   "Evidence that the job losses show up only in hours, only after several years, or only through firms that do not open. In that case the short-run headcount elasticity would understate the true cost.",
+   "The dispute over the New Jersey case-study data: the Neumark and Wascher (2000) payroll data against the Card and Krueger (2000) Bureau of Labor Statistics data. This matters only if later evidence depends on which side is right."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "H1: The effect is near zero. For moderate increases, the best estimate of the teen or low-wage employment elasticity is -0.05 or higher, which includes zero and positive values. The negative estimates in the literature come mostly from publication bias and from poor control groups in two-way fixed-effects panel regressions.",
+    "killCriterion": "Meta-analyses that correct for publication bias AND the leading design-based studies (bunching, contiguous border counties, synthetic control) together give central estimates below -0.05, with confidence intervals that exclude zero. Or the bias corrections do not move the pooled estimate toward zero."
+   },
+   {
+    "hypothesis": "H2: A small but real negative effect. The best estimate is between -0.05 and -0.2. The own-wage elasticity is in the inelastic range, so the pay gains of workers who keep their jobs are much larger than the lost jobs.",
+    "killCriterion": "The confidence interval of the best bias-corrected, design-weighted estimate lies completely above -0.05 or completely below -0.2."
+   },
+   {
+    "hypothesis": "H3: A large negative effect. The best estimate is -0.2 or lower, which matches the upper end of the classic Neumark and Wascher range of -0.1 to -0.3. The near-zero results are artifacts of design choices, such as local controls that throw away useful variation.",
+    "killCriterion": "No meta-analysis that corrects for bias, and no well-identified study after 2010, has a central estimate of -0.2 or lower for moderate increases. Or the estimates at -0.2 or lower come only from high-bite cases outside the 'moderate' scope."
+   },
+   {
+    "hypothesis": "H4: The evidence cannot support one central estimate. Credible designs and bias corrections disagree so much, or the effect depends so strongly on bite, group and hours versus jobs, that the defensible range covers two or more of the H1 to H3 bands.",
+    "killCriterion": "The bias-corrected meta-analytic estimates and the leading design-based estimates from both traditions agree within one band (H1, H2 or H3), and their central values differ by no more than about 0.1."
+   }
+  ],
+  "needsGeneralWeb": false,
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted",
+   "needsGeneralWeb": "drafted"
+  }
+ },
+ "skillDrift": null,
+ "searchDegraded": false,
+ "singleRater": false,
+ "perspectives": [
+  {
+   "label": "Meta-analyst (constructor)",
+   "lens": "Quantitative research synthesist who builds the central estimate directly from the coded study-level estimates and standard errors. Distrusts any single study and any narrative review that counts votes instead of weighting by precision.",
+   "query": "minimum wage employment elasticity meta-analysis publication bias PEESE FAT-PET Doucouliagos Stanley Belman Wolfson corrected estimate"
+  },
+  {
+   "label": "Disemployment steelman",
+   "lens": "Economist in the Neumark and Wascher tradition who builds the strongest honest case that moderate increases cost real jobs. Distrusts border-county and bunching designs because they discard useful variation, and distrusts publication-bias corrections because they treat real heterogeneity as bias.",
+   "query": "Neumark Shirley 2022 myth or measurement minimum wage most credible estimates negative employment elasticity teens"
+  },
+  {
+   "label": "Identification skeptic",
+   "lens": "Applied econometrician who attacks the research designs on both sides: state-trend controls, choice of control regions, staggered-adoption bias in two-way fixed effects, missed spillovers in bunching, and the Card and Krueger survey data compared with payroll data. Trusts nobody's preferred specification.",
+   "query": "Cengiz Dube Lindner Zipperer bunching estimator critique spillovers minimum wage; Card Krueger payroll data Neumark Wascher 2000 reply"
+  },
+  {
+   "label": "Official forecaster",
+   "lens": "Budget or policy analyst who must commit to one elasticity number for a cost-benefit score. Distrusts academic debate that ends in 'it depends' and wants the number that official agencies actually adopted, with their stated reasons.",
+   "query": "CBO 2019 federal minimum wage employment effects elasticity teenagers central estimate range; Low Pay Commission Dube 2019 review bite median wage"
+  },
+  {
+   "label": "High-bite and international historian",
+   "lens": "Labor historian and comparative economist who looks at large, well-documented shocks outside the moderate US range: Germany 2015, the UK National Living Wage, Hungary 2001, Seattle, Puerto Rico. Distrusts evidence taken only from small US teen-employment increases.",
+   "query": "Germany 2015 minimum wage employment effects Dustmann Lindner Schonberg; Hungary 2001 Harasztosi Lindner; Seattle Jardim hours minimum wage"
+  },
+  {
+   "label": "Employer-margin investigator",
+   "lens": "Practitioner who looks at how firms actually adjust: hours, scheduling, prices, automation, firm entry and exit, and lagged job growth. Distrusts short-run headcount elasticities as a complete measure of cost.",
+   "query": "minimum wage effects hours establishment entry exit long run Meer West job growth Aaronson French Sorkin automation low-wage"
+  }
+ ],
+ "summary": "The evidence gathered here points to a small effect on jobs, not a large one. Across the 72 journal studies in the Dube and Zipperer collection, the median own-wage elasticity is -0.13 and the mean is -0.25. The 21 studies of broad groups of low-wage workers have a median of +0.02, and estimates published since 2010 tend to be closer to zero [11][13][17]. On the Card and Krueger side, Allegretto, Dube, Reich and Zipperer (2017) get teen employment elasticities of -0.01 to -0.06 when they use local or data-driven controls. They say the larger negative results come from trends that already differed between states before the increases [2][5][9][16]. Dube's 2019 review for the UK Treasury concludes that, for broad groups of workers, the employment impact is close to zero [1][8]. On the Neumark and Wascher side, Neumark and Shirley (2022) report a 'clear preponderance of negative estimates' in published US studies, but the verified part gives no central number [3][10]. Their headline tally (79.2% negative) failed verification. Both meta-analyses reached here find publication selection. After correction, one finds 'little or no' negative effect (Doucouliagos and Stanley 2009, known only through another paper's summary) and the other finds 'only a small negative effect' (Chletsos and Giotis 2015). Neither summary gives a number [4][12]. Where job loss does appear, it is in narrow, heavily affected groups or in hours: German minijobs (small jobs with a monthly earnings cap) fell with an elasticity of about -0.1 while regular jobs showed no effect, and UK evidence shows small cuts in hours [0][7][19].",
+ "answerFirst": "For moderate increases, a higher minimum wage cuts jobs by a small amount or not at all. The best single number found is a median own-wage elasticity of -0.13 across 72 journal studies; its authors read this as about 13% of the possible pay gain being lost to job cuts. Studies of broad low-wage groups sit near zero (median +0.02), teen studies with local controls give -0.01 to -0.06, and corrections for publication bias point to zero or a small negative effect but give no number. Caution: 41 of 71 extracted claims (58%) were never verified because of the verification budget, and the Neumark and Wascher side's large-effect studies were never searched, so a large effect (-0.2 or lower) is not ruled out.",
+ "hingeNumber": {
+  "value": "-0.13: the median own-wage elasticity of the 72 journal-published studies in the Dube and Zipperer collection.",
+  "why": "It is the only central number for the whole literature that was gathered and verified. The meta-analyses that correct for publication bias give no number, and the Neumark and Wascher side's verified material gives none either. This one value puts the answer in the 'small but real negative effect' band (-0.05 to -0.2).",
+  "sensitivity": "A 10-20% move (to between -0.10 and -0.16) keeps it in the same band, so the answer does not flip on a small change in the number. It does flip on which studies you count. The mean of the same 72 studies (-0.25) falls in the large-effect band, and the broad-group median (+0.02) falls in the near-zero band. So the call rests on the rule for choosing studies, which is the same thing the two traditions disagree about. The number is also not corrected for publication bias.",
+  "source": "Dube and Zipperer, NBER Working Paper 32925 (2024), Minimum Wage OWE Repository v1.0.0; https://www.nber.org/system/files/working_papers/w32925/w32925.pdf and https://ideas.repec.org/p/nbr/nberwo/32925.html"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1: The effect is near zero (best estimate -0.05 or higher). Most negative estimates come from publication bias and poor control groups.",
+   "hypothesisNumber": 1,
+   "verdict": "surviving",
+   "killCriterion": "Meta-analyses that correct for publication bias AND the leading design-based studies (bunching, contiguous border counties, synthetic control) together give central estimates below -0.05, with confidence intervals that exclude zero. Or the bias corrections do not move the pooled estimate toward zero…",
+   "reasoning": "Two of the three design-based teen estimates are inside the H1 band: LASSO -0.01 and synthetic control -0.04. The border-county estimate (-0.06) is just below it. The broad-group median is +0.02, and the Dube review calls the effect close to zero for broad groups. For the kill, corrected meta-analyses and design-based studies must both give values below -0.05 with confidence intervals that exclude zero. No confidence interval and no corrected number were gathered, so that is not met. Both meta-analyses say correction leaves 'little or no' or only 'small' negative effect, so correction does appear to move estimates toward zero, and the second part of the kill is not met either. Two results pull against H1 for the literature as a whole: the collection median (-0.13) and Chletsos and Giotis's small negative effect after correction. So H1 survives most clearly for broad groups and teen studies with local controls.",
+   "claimsCited": [
+    1,
+    2,
+    4,
+    8,
+    9,
+    12,
+    16,
+    17
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H2: A small but real negative effect (best estimate between -0.05 and -0.2). Workers who keep their jobs gain far more in pay than is lost in jobs.",
+   "hypothesisNumber": 2,
+   "verdict": "surviving",
+   "killCriterion": "The confidence interval of the best bias-corrected, design-weighted estimate lies completely above -0.05 or completely below -0.2.",
+   "reasoning": "Several gathered numbers fall in this band: the collection median of -0.13, the German minijob elasticity of about -0.1, and the border-county estimate of -0.06. Chletsos and Giotis's 'small negative effect' after correction also fits. The collection's authors read -0.13 as about 13% of possible pay gains lost to job cuts, which matches H2's claim that pay gains are much larger than job losses. The kill needs a confidence interval for a bias-corrected, design-weighted estimate. None was gathered, so the kill cannot be triggered. H2 survives, but it has not been shown to be true.",
+   "claimsCited": [
+    0,
+    4,
+    11,
+    13,
+    16,
+    24
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H3: A large negative effect (best estimate -0.2 or lower). Near-zero results are artifacts of design choices such as local controls.",
+   "hypothesisNumber": 3,
+   "verdict": "surviving",
+   "killCriterion": "No meta-analysis that corrects for bias, and no well-identified study after 2010, has a central estimate of -0.2 or lower for moderate increases. Or the estimates at -0.2 or lower come only from high-bite cases outside the 'moderate' scope.",
+   "reasoning": "This is the weakest of the surviving hypotheses. The only confirmed number at -0.2 or lower is the simple mean of the 72 journal studies (-0.25), and it is neither bias-corrected nor weighted toward the stronger designs. Every bias-corrected meta-analysis gathered reports little, none, or a small negative effect. Every post-2010 study gathered is above -0.2: Allegretto et al. at -0.01 to -0.06, German minijobs at about -0.1 with zero for regular jobs, Cengiz et al. with jobs unchanged, and Hungary with a small effect. That points toward the kill. But the kill criterion says no such study exists anywhere, and the most likely exceptions were never searched (Neumark, Salas and Wascher 2014; Clemens and Wither 2019; Meer and West 2016). Killing H3 because of studies nobody looked at would overstate the evidence. Neumark and Shirley's 'clear preponderance of negative estimates' holds up but gives no size.",
+   "claimsCited": [
+    2,
+    3,
+    4,
+    6,
+    7,
+    9,
+    11,
+    12,
+    16,
+    22
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H4: The evidence cannot support one central estimate. The defensible range covers two or more of the H1 to H3 bands.",
+   "hypothesisNumber": 4,
+   "verdict": "surviving",
+   "killCriterion": "The bias-corrected meta-analytic estimates and the leading design-based estimates from both traditions agree within one band (H1, H2 or H3), and their central values differ by no more than about 0.1.",
+   "reasoning": "The central values gathered cover more than one band. In H1: +0.02, -0.01, -0.04, and zero for German regular jobs. In H2: -0.06, -0.1, -0.13. The mean of -0.25 reaches H3. The gap between them is more than 0.1. Chletsos and Giotis report that study features such as data, model, measures and industry change even the sign of the estimate. The kill needs bias-corrected numbers and numbers from both traditions that agree, and neither was gathered, so the kill cannot be triggered. There is a limit on this, and it is my inference: the Card and Krueger side's own design estimates agree within 0.05 (-0.01 to -0.06). Much of H4's spread comes from comparing different groups and different kinds of elasticity, not from true conflict between equally good designs.",
+   "claimsCited": [
+    0,
+    2,
+    7,
+    9,
+    11,
+    16,
+    17,
+    18
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "Written after seeing the evidence, so it is a summary of findings, not a prediction that survived a test: the size of the effect depends on who is measured. It is close to zero for broad groups and regular jobs, and small and negative for narrow, heavily affected groups.",
+   "hypothesisNumber": 0,
+   "verdict": "surviving",
+   "reasoning": "Broad-group studies have a median of +0.02 and the Dube review says close to zero for broad groups. German regular jobs show no effect, while German minijobs fall with an elasticity of about -0.1. Neumark and Shirley find low-wage-industry studies 'less one-sided' (32.3% negative and significant). This pattern was put together from the evidence, so it gets no credit as a prediction.",
+   "claimsCited": [
+    0,
+    1,
+    7,
+    17,
+    23
+   ],
+   "preRegistered": false,
+   "preRegisteredBy": "hypothesisNumber (declared post-hoc by the synthesis step)"
+  }
+ ],
+ "strongestArgumentAgainst": "The near-zero reading may reflect which sources were gathered more than the literature itself. Dube is an author of the OWE collection, the UK review and the Allegretto et al. rebuttal, which together supply most of the near-zero numbers here. Not one numeric estimate from the Neumark and Wascher side was verified. Their overall tally was refuted, but their qualitative finding of a clear preponderance of negative estimates survived. Neumark, Salas and Wascher's core argument is that local and trend controls throw away useful variation and push estimates toward zero. The reply that border counties are 'good controls' is the replying authors' own claim, not tested here. The simple mean of the 72 journal studies is -0.25, inside the large-effect band. The median of -0.13 would understate the true effect if the best-identified studies are the negative ones. The bias corrections were reported only in words, never as numbers. My inference, not from a source: correction methods can themselves pull the estimate toward zero if the most precise studies share a design that leans toward zero. The research process itself carries a selection risk. Open government and working-paper sources were easy to fetch, and 58% of extracted claims were never verified. So the verified set may be a survivor sample that leans toward the near-zero camp, not a fair picture of the literature. Finally, the German minijob result shows that real moves into non-employment do happen for the most exposed workers. Near-zero averages for broad groups can hide real losses for narrow groups.",
+ "whatWouldChangeThisCall": [
+  "A meta-analysis corrected for publication bias (FAT-PET, PEESE, WAAP or Andrews-Kasy) that reports a central elasticity of -0.2 or lower, with a confidence interval that excludes -0.05. This would move the call toward H3.",
+  "Verified post-2010 estimates from Neumark, Salas and Wascher 2014, Clemens and Wither 2019, or Meer and West 2016 at -0.2 or lower, for increases below about 60% of the median wage.",
+  "An independent re-coding of the Neumark and Shirley 2022 sample showing that its most credible estimates imply a teen elasticity of -0.2 or lower.",
+  "Well-identified evidence of clear job losses from high-bite increases (Seattle, US state $15 minimums above about 60% of the local median wage). This would not overturn the answer for moderate increases, but it would limit that answer to low-bite increases.",
+  "A central elasticity used by CBO or the UK Low Pay Commission well outside -0.13 to 0, with a stated reason, or any of the 41 unverified claims that contradicts the collection's median."
+ ],
+ "baseRate": "No outside-view base rate is in the evidence. The closest thing is the spread of published estimates. The 72 journal studies have a median of -0.13 and a mean of -0.25; my inference is that a mean further below zero than the median points to a tail of large negative estimates. In studies of low-wage industries, 64.5% of preferred estimates are negative, but only 32.3% are negative and significant at the 10% level. My inference, not from a source: if the true effect were exactly zero and nothing were selected for publication, about half the estimates would be negative. So 64.5% points to either a small real negative effect or selective publication, and those are exactly the two readings the publication-bias literature argues about.",
+ "findings": [
+  {
+   "claim": "Best current estimate from this evidence: a small negative effect. For the published literature as a whole, the central own-wage elasticity is about -0.13. For broad groups of low-wage workers it is close to zero. For teens, in designs with local or data-driven controls, it is -0.01 to -0.06. This is NOT an estimate corrected for publication bias, because no corrected number was gathered.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+    "https://doi.org/10.1177/0019793917692788",
+    "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+    "https://ideas.repec.org/p/zbw/ifwedp/201558.html"
+   ],
+   "evidence": "Put together from the findings below: collection median -0.13 (72 studies), broad-group median +0.02 (21 studies), Allegretto et al. -0.01, -0.04 and -0.06, and the Dube review's 'close to zero' for broad groups. The bias-corrected meta-analyses say 'little or no' (Doucouliagos and Stanley 2009, secondhand) or 'small negative' (Chletsos and Giotis 2015). That fits this range but gives no number to confirm it. Assumption flagged: Allegretto et al. call their numbers 'employment elasticities' and do not say in the abstract what they are measured against. So they may not be on the same scale as the own-wage elasticities.",
+   "vote": "n/a (synthesis)",
+   "sourceTier": "T1-T3 inputs",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "Not audited as a single statement. Every input claim came back 'supported' in the blind audit."
+  },
+  {
+   "claim": "In the Dube and Zipperer collection of own-wage elasticities (OWE): the 72 journal studies have a median of -0.13 and a mean of -0.25. The 21 published studies of broad groups of low-wage workers (not narrow groups such as teens or restaurant workers) have a median of +0.02. Estimates published since 2010 tend to be closer to zero. The authors read -0.13 as about 13% of possible pay gains being lost to job cuts.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+    "https://ideas.repec.org/p/nbr/nberwo/32925.html"
+   ],
+   "evidence": "'Of the 72 studies published in academic journals, the median OWE is -0.13 and the mean OWE is -0.25.' 'When focusing on the 21 published studies that examine broad groups of low-wage workers... the median OWE is 0.02.' 'Estimates published since 2010 tend to be closer to zero.' '-0.13, which suggests that only around 13 percent of the potential earnings gains... are offset due to associated job losses.' Both URLs are the same working paper, so they are not independent. Dube, one of the compilers, is a party to the debate. The numbers are not corrected for publication bias.",
+   "vote": "3-0 ([11], [17]); 2-1 ([13], [24])",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on all four merged claims)"
+  },
+  {
+   "claim": "Allegretto, Dube, Reich and Zipperer (2017), replying to Neumark, Salas and Wascher (2014), use 1979-2014 US teen data and find small elasticities under three designs: LASSO trend correction -0.01, synthetic control -0.04 (with more weight on nearby states), and contiguous border counties -0.06. They say the job loss shown by a model that assumes parallel trends across states mostly comes from trends that already differed between states. So the negative estimate depends on how state trends are handled.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1177/0019793917692788"
+   ],
+   "evidence": "'A data-driven LASSO procedure that optimally corrects for state trends produces a small employment elasticity (–0.01).' 'Synthetic controls... generate an elasticity of −0.04.' 'A similar elasticity (−0.06) obtains from a design comparing contiguous border counties, which the authors show to be good controls.' 'The disemployment suggested by a model assuming parallel trends across U.S. states mostly reflects differential pre-existing trends.' All of this comes from one source and is the authors' own claim, including their claim that border counties are good controls.",
+   "vote": "3-0 on all four merged claims",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on [2], [5], [9], [16])"
+  },
+  {
+   "claim": "On publication bias: Doucouliagos and Stanley (2009), as summarized in another paper's abstract, found the 64 US studies they looked at 'contaminated by publication selection bias', with little or no evidence of a negative effect left after correction. Chletsos and Giotis (2015) looked at 45 journal studies from 2010-2014, found publication selection in the elasticity sample, and found only a small negative effect left after correction. They also found that study features (data, model, measures, industry) change the sign of the estimate. Neither summary gives a number or names the correction method.",
+   "confidence": "medium",
+   "sources": [
+    "https://ideas.repec.org/p/zbw/ifwedp/201558.html"
+   ],
+   "evidence": "'...literature is contaminated by publication selection bias, and once it is corrected, little or no evidence of a negative association between minimum wages and employment remains.' 'There is evidence of publication selection in the elasticities' meta-sample, but once it is corrected only a small negative effect remains.' 'Study characteristics related to the data, the model specifications, the minimum wage and employment measure used, and the industry concerned, diversify the sign.' The Doucouliagos and Stanley result is secondhand. A separate claim, that Chletsos and Giotis found NO bias in their regression-coefficient sample, was REFUTED in verification and is not used.",
+   "vote": "3-0 on all three merged claims",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on [4], [12], [18])"
+  },
+  {
+   "claim": "Neumark and Shirley (2022) aim to cover every published US study since the early 1990s that uses minimum wage differences between states or cities. They report 'a clear preponderance of negative estimates'. In most cases, the 'core estimates' were chosen from answers given by each study's own authors. Studies of low-wage industries are less one-sided: 64.5% of estimates are negative, but only 32.3% are negative and significant at the 10% level. The verified text gives no central elasticity.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1111/irel.12306",
+    "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf"
+   ],
+   "evidence": "'(i) there is a clear preponderance of negative estimates in the literature'. 'We assembled the entire set of published studies... in most cases relying on responses from the researchers who wrote these papers.' 'The evidence from studies of low-wage industries is less one-sided, with 64.5%... negative, but only 32.3% negative and significant at the 10% level or better.' Their overall tally (79.2% negative, 53.8% negative and significant) was REFUTED in verification (support, counter and provenance checks) and is not used. The source tier of the 2022 journal version is unknown (T?).",
+   "vote": "3-0 ([3], [23]); 2-1 ([10])",
+   "sourceTier": "T? (journal version) / T3 (NBER version)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on [3], [10], [23])"
+  },
+  {
+   "claim": "Dube's November 2019 independent review for HM Treasury concludes that the most recent evidence from the US, the UK and other developed countries shows a very muted employment effect, while low-paid workers' earnings rise significantly. For studies of broad groups of workers, it says the effect is close to zero. It gives no single elasticity in its executive summary. It says the best US state-level evidence shows small effects up to about 59% of the median wage, and county evidence shows the same up to 81% in lower-wage counties.",
+   "confidence": "medium",
+   "sources": [
+    "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+    "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+    "https://www.gov.uk/government/publications/impacts-of-minimum-wages-review-of-the-international-evidence",
+    "https://docslib.org/doc/5654877/impacts-of-minimum-wages-review-of-the-international-evidence"
+   ],
+   "evidence": "'Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of close to zero.' 'Across US states, the best evidence suggests that the employment effects are small up to around 59% of the median wage... even in lower wage counties where the minimum stood at up to 81%.' The four URLs are copies or landing pages of one report by one author, who is also a compiler of the collection above. So they are not independent. This also sets the scope: the evidence covers increases up to about 59-81% of the median wage.",
+   "vote": "2-1 ([1], [8], [14], [15], [20], [21])",
+   "sourceTier": "T1 (docslib copy T3)",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on all six merged claims)"
+  },
+  {
+   "claim": "Where losses appear, they are in narrow, heavily affected groups or in hours. After Germany's 2015 minimum wage, a region-level difference-in-differences study (comparing regions more and less affected, before and after) finds no effect on regular jobs. It finds a decline in minijobs, as workers moved both into regular jobs and out of work, with an elasticity of about -0.1 for minijobs. The UK Low Pay Commission's 2016 review, as reported by Dube, found little effect on employment but some evidence of small cuts in hours.",
+   "confidence": "medium",
+   "sources": [
+    "https://arxiv.org/html/2403.17206v2/",
+    "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+    "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf"
+   ],
+   "evidence": "'The results show no effects for regular jobs, but there is a noteworthy decline in minijobs, driven by transitions to regular employment and non-employment.' 'The transitions in non-employment imply a wage elasticity of employment of −0.1 for minijobs.' 'The LPC concluded that in general there was little effect on employment but found some evidence that the NMW had led to small reductions in hours.' The German paper is an arXiv preprint with no journal reference. A separate claim, that German minijobbers' hours fell, was REFUTED and is not used.",
+   "vote": "3-0 ([0], [19]); 2-1 ([7], [25])",
+   "sourceTier": "T1",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit on [0], [7], [19], [25])"
+  },
+  {
+   "claim": "In Cengiz et al. (2019), the total number of low-wage jobs stayed essentially unchanged over the five years after the minimum wage increases studied.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1093/qje/qjz014"
+   ],
+   "evidence": "'We find that the overall number of low-wage jobs remained essentially unchanged over the five years following the increase.' Two related claims did not hold up. The working-paper claim about 138 increases as 'evidence against job losses that grow over several years' was REFUTED. A claim that this paper speaks to high-bite increases was flagged as an overreach, because the increases studied reached only about 55% of the median wage (the Kaitz index).",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit)"
+  },
+  {
+   "claim": "For Hungary's minimum wage increase, Harasztosi and Lindner (2019) estimate that consumers paid about 75% of the cost and firm owners about 25%. This is one way employers absorbed the increase while employment losses stayed small.",
+   "confidence": "medium",
+   "sources": [
+    "https://www.aeaweb.org/articles/pdf/doi/10.1257/aer.20171445"
+   ],
+   "evidence": "'Around 75 percent of the minimum wage increase was paid by consumers and 25 percent by firm owners.' Per the verifier, the abstract also says 'employment elasticities are negative but small even four years after the reform'. The causal link ('helps explain') is a close reading of the abstract, not its exact words.",
+   "vote": "2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported (blind audit; the causal second sentence is closely supported, not stated word for word)"
+  }
+ ],
+ "caveats": "Unanswered questions: (1) No central elasticity, confidence interval, or correction method was gathered for any meta-analysis that corrects for publication bias, and Doucouliagos and Stanley 2009 is known only from another paper's abstract. (2) Nothing was gathered on the elasticity used by official forecasters: CBO (the US Congressional Budget Office) 2019 and 2021, the UK Low Pay Commission, or the German Minimum Wage Commission. (3) The most likely sources of a large negative estimate after 2010 were never searched: Neumark, Salas and Wascher 2014; Clemens and Wither 2019; Meer and West 2016. (4) There are no numbers for Card and Krueger 1994/2000, no funnel-plot description, and no independent re-coding of the Neumark and Shirley sample. Coverage limit: 41 of 71 extracted claims (58%) were never verified because of the verification budget. The pool was ranked by importance first and source tier second, so a claim rated 'tangential' could have overturned this answer. Refuted and dropped (not softened): four claims failed verification and are not used. They are: Chletsos and Giotis finding no bias in their coefficient sample; Cengiz et al.'s 138 increases as evidence against losses that grow over time; German minijobbers' hours falling; and Neumark and Shirley's 79.2%/53.8% negative tally. The coverage checklist mentions a Cengiz et al. own-wage elasticity of +0.41 (standard error 0.43). That is not a confirmed claim and is not used. Weak sources: the German study is a preprint with no journal reference. Neumark and Shirley 2022's source tier is unknown (T?). The OWE collection is a working paper. Dube is an author of the collection, the UK review and Allegretto et al., so much of the near-zero evidence comes from one side of the debate. No aggregator (T4) or excluded (T5) sources were present, so none were downgraded or dropped. All 26 blind citation audits came back 'supported', with no 'partial' or 'unsupported' results. Scale mismatch: some numbers are own-wage elasticities (jobs measured against the group's own pay), and some are 'employment elasticities' whose abstracts do not say what they are measured against. Do not compare them as if they were on one scale. Scope: most evidence covers minimum wages up to about 59% of the median wage (81% in some US counties) and says little about larger increases. Time-sensitivity: the OWE collection is updated regularly, and these figures are from its 2024 version 1.0.0. The UK review is from November 2019.",
+ "openQuestions": [
+  "What central number and confidence interval do the meta-analyses corrected for publication bias report, and does the correction move the estimate from about -0.13 toward zero?",
+  "Do post-2010 studies from the Neumark and Wascher side give -0.2 or lower for moderate increases, and do those results hold up under the state-trend controls Allegretto et al. use?",
+  "What central elasticity do official forecasters (CBO, UK Low Pay Commission, German Minimum Wage Commission) use, and does it match the -0.13 to 0 range?",
+  "Do job losses grow once the minimum wage goes above about 60% of the local median wage?"
+ ],
+ "citationAudit": {
+  "citationAccuracy": 96.7,
+  "citationAccuracySurvivorsOnly": 100.0,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 29,
+  "supported": 29,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 0,
+  "auditErrors": 0,
+  "scope": "30 of 30 verified claims were audited; 0 call(s) returned nothing after retries and are NOT in the denominator. The pool is every verified claim, not survivors only.",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0,
+  "restatedToSupported": 4
+ },
+ "citationDetail": [
+  {
+   "claim": "For Germany's 2015 national minimum wage, the authors state that minijob transitions into non-employment imply a wage elasticity of employment of about -0.1 for minijobs. This is a wage elasticity for one heavily affected subgroup, not for all workers.",
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "support": "supported",
+   "reasoning": "The abstract of this paper on Germany's 2015 national minimum wage says the moves from minijobs into non-employment imply a wage elasticity of employment of -0.1 for minijobs. The statement's first sentence says the same thing. The page does not say 'about', but that small hedge adds no new claim. The second sentence is a scope note: the figure applies to minijobs only, not to all workers. The pag…",
+   "locatedQuote": "Regarding employment, the results show no effects for regular jobs, but there is a noteworthy decline in minijobs, driven by transitions to regular employment and non-employment. The transitions in non-employment imply a wage elasticity of employment of − 0.1 -0.1 for minijobs.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Dube's 2019 review for the UK Treasury describes the employment impact found in studies of broad groups of workers as close to zero. In this summary it states this as a qualitative conclusion, not as a numeric elasticity with a range.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The executive summary of the November 2019 Dube review says this directly: 'Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of close to zero.' In that summary passage, the finding is a qualitative conclusion ('close to zero'). It gives no numeric elasticity or range. The document is Crown copyright, and enquiries go t…",
+   "locatedQuote": "Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of  close to zero.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Allegretto, Dube, Reich and Zipperer (2017) respond to Neumark, Salas and Wascher's (2014) critique of teen-employment studies. They report that a data-driven LASSO procedure that corrects for state trends gives an employment elasticity of -0.01.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "support": "supported",
+   "reasoning": "The abstract says that the authors (Allegretto, Dube, Reich, Zipperer, 2017, ILR Review) assess the critique by Neumark, Salas, and Wascher (2014) of minimum wage studies that found small effects on teen employment. It also says that a data-driven LASSO procedure that optimally corrects for state trends gives an employment elasticity of -0.01. Both parts of the statement match the page. 'Respond t…",
+   "locatedQuote": "The authors assess the critique by Neumark, Salas, and Wascher (2014) of minimum wage studies that found small effects on teen employment. ... A data-driven LASSO procedure that optimally corrects for state trends produces a small employment elasticity (–0.01).",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "Neumark and Shirley (2022) report that the published US studies they summarize show a clear preponderance of negative employment estimates. The abstract gives no numeric central elasticity, so the size of the effect cannot be checked from this page.",
+   "url": "https://doi.org/10.1111/irel.12306",
+   "support": "supported",
+   "reasoning": "The abstract says the authors gathered every published study that uses minimum wage differences between US states and localities. It then states that 'there is a clear preponderance of negative estimates in the literature.' The literature it describes is about the employment effects of minimum wages, so 'negative employment estimates' does not stretch the text. The statement's second sentence is a…",
+   "locatedQuote": "we assembled the entire set of published studies in this literature and identified the core estimates that support the conclusions from each study, in most cases relying on responses from the researchers who wrote these papers. Our key conclusions are as follows: (i) there is a clear preponderance of negative estimates in the literature",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Chletsos and Giotis (2015) ran a meta-analysis of 45 journal studies published from 2010 to 2014. They found publication selection in the elasticity meta-sample, and after correction only a small negative employment effect remains. The abstract gives no number and does not name the correction method…",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "support": "supported",
+   "reasoning": "The RePEc abstract supports each part of the statement. First, it says the authors used 'a meta-sample of 45 empirical studies published in academic journals in the 2010-2014 five-year period'. Second, it says there is 'evidence of publication selection in the elasticities' meta-sample, but once it is corrected only a small negative effect remains'. The effect is the minimum wage's effect on emplo…",
+   "locatedQuote": "In their analysis, the authors use a meta-sample of 45 empirical studies published in academic journals in the 2010-2014 five-year period, to investigate whether minimum wage research has been affected by Doucouliagos and Stanley's study. Their results indicate that there is evidence of publication selection in the elasticities' meta-sample, but once it is corrected only a small negative effect re…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In the Chletsos and Giotis (2015) meta-sample of regression coefficients (as opposed to elasticities), they found no publication selection bias, and the estimated real effect is again negative but small. This means the evidence of bias depends on which effect-size metric is used.",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "support": "supported",
+   "reasoning": "The page supports the statement. The abstract says that the coefficients' meta-sample shows no publication selection bias and a genuine effect that is 'again negative but small'. This matches the first sentence of the statement. The same abstract says the elasticities' meta-sample does show evidence of publication selection. So the second sentence, that the evidence of bias depends on the effect-s…",
+   "locatedQuote": "Their results indicate that there is evidence of publication selection in the elasticities' meta-sample, but once it is corrected only a small negative effect remains and, in the coefficients' meta-sample, publication selection bias is not found and the genuine effect is again negative but small.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Across 138 state-level minimum wage increases from 1979 to 2016, the overall number of low-wage jobs stayed essentially unchanged over the five years after each increase. This is evidence against job losses that grow over several years.",
+   "url": "https://www.nber.org/system/files/working_papers/w25434/w25434.pdf",
+   "support": "supported",
+   "reasoning": "The abstract directly supports the first sentence. It gives the same numbers: 138 state-level minimum wage changes between 1979 and 2016, and it says the overall number of low-wage jobs 'remained essentially unchanged over five years following the increase.' The page does not use the words 'evidence against job losses that grow over several years.' But that sentence follows directly from the findi…",
+   "locatedQuote": "we estimate the effect of the minimum wage on the frequency distribution of hourly wages using 138 prominent state-level minimum wage changes between 1979 and 2016. We find that the overall number of low-wage jobs remained essentially unchanged over five years following the increase.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Using data from 1979 to 2014, the authors say that most of the job loss shown by a model that assumes parallel trends across US states comes from trends that differed between states before the increases. This makes the negative estimate depend on how the model handles state trends.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "support": "supported",
+   "reasoning": "The abstract says the first sentence almost word for word: data from 1979 to 2014, and a model that assumes parallel trends across US states shows job loss that 'mostly reflects differential pre-existing trends'. 'Pre-existing' means the trends were there before the minimum wage increases, so 'before the increases' reads it correctly. The second sentence follows directly from the abstract. The par…",
+   "locatedQuote": "Data from 1979 to 2014 contradict NSW; the authors show that the disemployment suggested by a model assuming parallel trends across U.S. states mostly reflects differential pre-existing trends. A data-driven LASSO procedure that optimally corrects for state trends produces a small employment elasticity (–0.01).",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The authors estimate that consumers paid about 75 percent of the Hungarian minimum wage increase and firm owners paid about 25 percent. This helps explain why the employment losses stayed small.",
+   "url": "https://www.aeaweb.org/articles/pdf/doi/10.1257/aer.20171445",
+   "support": "supported",
+   "reasoning": "The abstract states the 75/25 split directly: 'around 75 percent of the minimum wage increase was paid by consumers and 25 percent by firm owners.' It also says employment effects were 'negative but small even four years after the reform.' The second sentence of the statement is a causal link. The abstract does not state it word for word. But the abstract supports it closely, because it says job l…",
+   "locatedQuote": "We show that employment elasticities are negative but small even four years after the reform; that around 75 percent of the minimum wage increase was paid by consumers and 25 percent by firm owners; that firms responded to the minimum wage by substituting labor with capital; and that disemployment effects were greater in industries where passing the wage costs to consumers is more difficult.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In a region-level difference-in-differences design using German Structure of Earnings Survey data from 2010, 2014 and 2018, the German minimum wage had no employment effect on regular jobs but reduced minijobs, with workers moving both to regular employment and to non-employment.",
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "support": "supported",
+   "reasoning": "The page supports every part of the statement. The abstract names the German Structure of Earnings Survey for 2010, 2014 and 2018. It finds no employment effect for regular jobs and a decline in minijobs, caused by moves to regular employment and to non-employment. The introduction confirms the region-level difference-in-differences design for employment. One small detail: the page uses a second d…",
+   "locatedQuote": "Using data from the German Structure of Earnings Survey in 2010, 2014, and 2018, we find empirical evidence that the minimum wage significantly reduces inequality in hourly and monthly wages. ... Regarding employment, the results show no effects for regular jobs, but there is a noteworthy decline in minijobs, driven by transitions to regular employment and non-employment.",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "Dube's November 2019 review for HM Treasury does not give a single number for the elasticity in its executive summary. It concludes that, for studies of broad groups of workers, the evidence suggests an employment impact close to zero.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The page is the November 2019 Dube review. It carries Crown copyright, and enquiries go to HM Treasury. The full executive summary (pages 2 to 5) is in the fetched text, and it gives no single elasticity number. Its only percentages describe the minimum wage level or how many workers it covers: 59% and 81% of the median wage, 17% of the workforce, and 60% to two-thirds of median earnings. None of …",
+   "locatedQuote": "Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of  close to zero.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In the same paper, a synthetic-control design gives an employment elasticity of -0.04. The synthetic controls put more weight on nearby states.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "support": "supported",
+   "reasoning": "The abstract says outright that synthetic controls place more weight on nearby states and give an elasticity of -0.04. The -0.04 is an employment elasticity. The paper is about teen employment, and the same abstract reports the LASSO result as an 'employment elasticity (–0.01)' before listing the other designs as 'similar' elasticities. 'In the same paper' fits, because the paper reports several d…",
+   "locatedQuote": "Synthetic controls do place more weight on nearby states—confirming the value of regional controls—and generate an elasticity of −0.04.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The sample in Neumark and Shirley (2022) is meant to cover every published study that uses minimum wage variation across US states or localities since the early 1990s. For each study, the 'core estimates' were chosen mostly from answers given by that study's own authors, not by independent re-coding…",
+   "url": "https://doi.org/10.1111/irel.12306",
+   "support": "supported",
+   "reasoning": "The abstract matches both parts of the statement. (1) Scope: the authors say they 'assembled the entire set of published studies in this literature'. They define that literature as the evidence 'using subnational minimum wage variation within the United States that has dominated the research landscape since the early 1990s'. 'Subnational' fairly means states or localities, and 'entire set of publi…",
+   "locatedQuote": "focusing on the evidence using subnational minimum wage variation within the United States that has dominated the research landscape since the early 1990s. To accomplish this, we assembled the entire set of published studies in this literature and identified the core estimates that support the conclusions from each study, in most cases relying on responses from the researchers who wrote these pape…",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Among the 72 journal-published studies in the Minimum Wage OWE Repository, the median own-wage elasticity (OWE) of employment is -0.13 and the mean OWE is -0.25.",
+   "url": "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+   "support": "supported",
+   "reasoning": "The page says this directly. It states that the Minimum Wage OWE Repository contains 72 studies published in academic journals. For those studies, it gives a median OWE of -0.13 and a mean OWE of -0.25. The statement says 'journal-published' and the page says 'published in academic journals'. These mean the same thing. So the statement adds no new scope and needs no interpretive leap.",
+   "locatedQuote": "Of the 72 studies published in academic journals, the median OWE is -0.13 and the mean OWE is -0.25.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "According to this abstract, Doucouliagos and Stanley (2009) meta-analysed 64 US studies. They found the literature contaminated by publication selection bias, and after correction little or no evidence of a negative effect of the minimum wage on employment remained.",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "support": "supported",
+   "reasoning": "The abstract on the page says almost the same thing as the statement. It says that Doucouliagos and Stanley (2009) did a meta-analysis of 64 US studies. It says the literature is contaminated by publication selection bias. It also says that after correction, little or no evidence of a negative link between minimum wages and employment remains. The statement uses 'effect' where the page uses 'assoc…",
+   "locatedQuote": "Doucouliagos and Stanley (Publication selection bias in minimum-wage research? A meta-regression analysis, 2009) conducted a meta-analysis of 64 US studies which showed that literature is contaminated by publication selection bias, and once it is corrected, little or no evidence of a negative association between minimum wages and employment remains.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Average working hours did not change after the German minimum wage was introduced, but minijobbers' hours fell notably. The authors link this fall to the €450 monthly earnings cap for minijobs, so it is a loss on the hours margin that a headcount study would not see.",
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "support": "supported",
+   "reasoning": "The page supports each part of the statement. (1) The abstract says that hours 'remain unchanged on average', and the introduction says 'we find no effect on either contractual or paid hours at the aggregate level.' (2) The abstract says 'minijobbers experience a notable reduction in working hours which can be linked to the specific institutional framework.' (3) The page ties that framework to the…",
+   "locatedQuote": "While various theoretical mechanisms suggest a reduction in working hours, these remain unchanged on average. However, minijobbers experience a notable reduction in working hours which can be linked to the specific institutional framework.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In the Dube and Zipperer collection, own-wage elasticity estimates published since 2010 tend to be closer to zero; the median estimate across the 72 studies published in academic journals is -0.13.",
+   "url": "https://ideas.repec.org/p/nbr/nberwo/32925.html",
+   "support": "supported",
+   "reasoning": "The abstract on this page states both parts of the claim. It says that Dube and Zipperer collected own-wage elasticity (OWE) estimates from 88 studies. It gives the median OWE estimate of the 72 studies published in academic journals as -0.13. It also says that estimates published since 2010 tend to be closer to zero. The statement uses the same numbers and the same scope, so no interpretive step …",
+   "locatedQuote": "We present a comprehensive set of OWE estimates from 88 studies and introduce an regularly updated repository of the estimates---https://economic.github.io/owe---an up-to-date snapshot of the existing literature for scholars and policymakers. We find that most studies to date suggest a fairly modest impact of minimum wages on jobs: the median OWE estimate of 72 studies published in academic journa…",
+   "locatedQuoteOnPage": "located",
+   "restatedFrom": "In the Dube and Zipperer collection, own-wage elasticity estimates published since 2010 are usually closer to zero than earlier ones. This is evidence against a typical post-2010 central elasticity of -0.2 or lower. The page does not break the result down by country or by the size of the increase."
+  },
+  {
+   "claim": "Dube's 2019 review for HM Treasury says the best evidence across US states shows small employment effects from minimum wages up to about 59% of the median wage. It also says county-level evidence shows the same result in lower-wage counties where the minimum reached 81% of the median.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The fetched page is Dube's November 2019 review. It is Crown copyright, and questions about it go to HM Treasury. In the executive summary, the page says two things. First, across US states the best evidence suggests employment effects are small up to around 59% of the median wage. Second, county-level evidence found the same result even in lower-wage counties where the minimum stood at up to 81% …",
+   "locatedQuote": "Across US  states, the best evidence suggests that  the employment effects are small up to  around 59 %   of the median wage. Evidence using sub - state county - level variation  found this to hold even in lower wage counties where the minimum stood at up to  81 %   of the median wage.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The UK government asked Arindrajit Dube to review the international evidence on minimum wages. His 2019 independent report concludes that the most recent research from the US, the UK and other developed countries shows a very muted employment effect, while low-paid workers' earnings rise significant…",
+   "url": "https://www.gov.uk/government/publications/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "support": "supported",
+   "reasoning": "The page supports the main claims. It says the government asked Professor Arindrajit Dube to consider the international evidence on the impacts of minimum wages. The page was published on 4 November 2019 and is labelled 'Independent report'. It says the report finds that the most up-to-date research from the US, the UK and other developed countries points to a very muted effect on employment, whil…",
+   "locatedQuote": "The government asked Professor Arindrajit Dube to consider international evidence on the impacts of minimum wages and the implications for UK policy. ... The report finds that, overall, the most up to date body of research from US, UK and other developed countries points to a very muted effect of minimum wages on employment, while significantly increasing the earnings of low paid workers.",
+   "locatedQuoteOnPage": "located-elided"
+  },
+  {
+   "claim": "A design that compares contiguous border counties gives an employment elasticity of -0.06. The authors say they show that border counties are good controls.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "support": "supported",
+   "reasoning": "The abstract says outright that a design comparing contiguous border counties gives an elasticity of -0.06. It also says the authors show these counties to be good controls. The statement adds nothing beyond the abstract. It only rewords the same two points.",
+   "locatedQuote": "A similar elasticity (−0.06) obtains from a design comparing contiguous border counties, which the authors show to be good controls.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Neumark and Shirley's tally uses one preferred estimate per study from published US studies that use variation between states or cities since 1992. In that tally, 79.2% of the employment elasticities are negative, 53.8% are negative and significant at the 10% level, and 46.2% are negative and signif…",
+   "url": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "support": "partial",
+   "reasoning": "The percentages match the page exactly: 79.2% negative, 53.8% negative and significant at the 10% level, and 46.2% negative and significant at the 5% level. The page also supports the scope. It covers published US studies from 1992 onward ('beginning with the New Minimum Wage Research in 1992') that use subnational minimum wage variation, and it uses 'core or preferred estimates' rather than every…",
+   "locatedQuote": "we  assembled the entire set of published studies in this literature,  beginning with the New Minimum Wage  Research in 1992. We identified the core or preferred  estimates that reflect the conclusions from each  study   of employment effects in the United States ... In our data, 79.2% of  the estimated employment elasticities are negative, 53.8% are negative and significant at  the 10% level or b…",
+   "locatedQuoteOnPage": "located-approx"
+  },
+  {
+   "claim": "The 21 published studies in the repository that examine broad groups of low-wage workers, not narrow subsets such as teens or restaurant workers, have a median OWE of 0.02.",
+   "url": "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+   "support": "supported",
+   "reasoning": "The page says this almost word for word. It is about Version 1.0.0 of the Minimum Wage OWE Repository. It states that, for the 21 published studies that look at broad groups of low-wage workers (not narrow subsets like teens or restaurant workers), the median OWE is 0.02. The statement adds no scope or certainty that the page does not have. The page gives this figure for version 1.0.0 only, and th…",
+   "locatedQuote": "When focusing on the 21 published studies that examine broad groups of low-wage workers, rather than narrow subsets like teens or restaurant workers, the median OWE is 0.02.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Chletsos and Giotis (2015) find that study characteristics related to the data, the model specifications, the minimum-wage and employment measures used, and the industry concerned diversify the sign of the estimated minimum-wage effect.",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "support": "supported",
+   "reasoning": "The page abstract says almost word for word what the statement says. It lists data, model specifications, the minimum-wage and employment measures, and the industry as study characteristics that 'diversify the sign of the minimum wage effect.' The authors are the same two people and the year (2015) matches. There are two small points. First, this page lists the authors as 'Giotis, Georgios & Chlet…",
+   "locatedQuote": "In addition, the authors find that study characteristics related to the data, the model specifications, the minimum wage and employment measure used, and the industry concerned, diversify the sign of the minimum wage effect.",
+   "locatedQuoteOnPage": "located",
+   "restatedFrom": "Chletsos and Giotis (2015) report that study characteristics (data, model specification, the minimum-wage and employment measures used, and the industry studied) change the sign of the estimated minimum-wage effect. This means some of the spread across studies comes from real design differences, not…"
+  },
+  {
+   "claim": "According to the review, the UK Low Pay Commission's 2016 evidence review found little overall employment effect from the National Minimum Wage. It did find some evidence of small reductions in hours.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The executive summary of this Dube (2019) review says the Low Pay Commission reviewed research on the National Minimum Wage in a 2016 report. It says the LPC concluded there was, in general, little effect on employment, but found some evidence of small reductions in hours. The statement says the same thing and adds no scope or certainty that the page does not carry. 'According to the review' fits,…",
+   "locatedQuote": "In the UK, research on the impact of the National Minimum Wage (NMW) was  reviewed extensively by a L ow Pay Commission (LPC) report in 2016. The LPC  concluded that in general there was little effect on employment but found some  evidence that the NMW had led to small reductions in hours.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "The review says the best US state-level evidence shows small employment effects for minimum wages up to about 59% of the median wage. It says county-level evidence shows the same result in lower-wage counties where the minimum was up to 81% of the local median.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The executive summary says this directly. It gives both numbers and ties each to the right level: 59% of the median wage for US states, and 81% of the median wage for lower-wage counties, using county-level data within states. The statement changes the wording in two small ways. First, it says the evidence 'shows' where the page says it 'suggests'. Second, it says 'local median' where the page say…",
+   "locatedQuote": "Across US  states, the best evidence suggests that  the employment effects are small up to  around 59 %   of the median wage. Evidence using sub - state county - level variation  found this to hold even in lower wage counties where the minimum stood at up to  81 %   of the median wage.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Dube's November 2019 review says that, especially for studies of broad groups of workers, the overall evidence base suggests an employment impact of close to zero.",
+   "url": "https://docslib.org/doc/5654877/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "support": "supported",
+   "reasoning": "The page is Dube's report 'Impacts of minimum wages: review of the international evidence', dated November 2019. In the executive summary it says, almost word for word, that for studies of broad groups of workers the overall evidence base suggests an employment impact of close to zero. The statement repeats this and adds nothing new about scope or certainty.",
+   "locatedQuote": "Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of close to zero.",
+   "locatedQuoteOnPage": "located",
+   "restatedFrom": "Dube's November 2019 review for HM Treasury finds that, for studies of broad groups of workers, the overall employment impact of minimum wages is close to zero. This page gives no single numerical elasticity or range."
+  },
+  {
+   "claim": "In this study, the total number of low-wage jobs stayed about the same during the five years after a minimum wage increase. This means the study found no clear job loss over that period.",
+   "url": "https://doi.org/10.1093/qje/qjz014",
+   "support": "supported",
+   "reasoning": "The abstract says this directly. It states that the overall number of low-wage jobs 'remained essentially unchanged over the five years following the increase', which matches 'stayed about the same during the five years'. The abstract also speaks of 'the lack of job loss', which supports the second sentence. It does report 'some evidence of reduced employment in tradeable sectors', but that is abo…",
+   "locatedQuote": "We find that the overall number of low-wage jobs remained essentially unchanged over the five years following the increase.",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "Studies of low-wage industries are less one-sided. In those studies, 64.5% of the preferred elasticities are negative, but only 32.3% are negative and significant at the 10% level.",
+   "url": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "support": "supported",
+   "reasoning": "The page states every part of the claim directly. In its list of key conclusions, it says that studies of low-wage industries are 'less one-sided'. It gives 64.5% of estimated employment elasticities as negative, and only 32.3% as negative and significant at the 10% level or better. The statement calls these 'preferred elasticities'. The page supports that wording, because it says its data is the …",
+   "locatedQuote": "The evidence from studies of low -wage industries is less one-sided, with 64.5% of the  estimated employment elasticities negative, but only 32.3% negative and significant at the  10% level or better",
+   "locatedQuoteOnPage": "located"
+  },
+  {
+   "claim": "In the Dube and Zipperer own-wage-elasticity collection, the median own-wage elasticity (OWE) of the 72 studies published in academic journals is -0.13. That value is between -0.05 and -0.2.",
+   "url": "https://ideas.repec.org/p/nbr/nberwo/32925.html",
+   "support": "supported",
+   "reasoning": "The abstract of the Dube and Zipperer paper (NBER Working Paper 32925) states that the median OWE of 72 studies published in academic journals is -0.13. The page describes this set as coming from their collection of OWE estimates from 88 studies, which matches 'the Dube and Zipperer own-wage-elasticity collection'. The second sentence is plain arithmetic: -0.13 lies between -0.05 and -0.2. No inte…",
+   "locatedQuote": "the median OWE estimate of 72 studies published in academic journals is -0.13",
+   "locatedQuoteOnPage": "located",
+   "restatedFrom": "In the Dube and Zipperer own-wage-elasticity collection, the median own-wage elasticity (OWE) of the 72 journal-published studies is -0.13. That value is between -0.05 and -0.2. It is a plain median of the published estimates. The page does not name a publication-bias correction method such as FAT-P…"
+  },
+  {
+   "claim": "The review reports that the UK Low Pay Commission's 2016 evidence review found little effect of the National Minimum Wage on employment, but some evidence of small reductions in hours.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "support": "supported",
+   "reasoning": "The page is the Dube review from November 2019. Its executive summary says the Low Pay Commission reviewed research on the National Minimum Wage in 2016. It says the Commission concluded there was generally little effect on employment. It also says the Commission found some evidence of small reductions in hours. This matches every part of the statement. The phrase 'in general' in the source maps t…",
+   "locatedQuote": "In the UK, research on the impact of the National Minimum Wage (NMW) was  reviewed extensively by a L ow Pay Commission (LPC) report in 2016. The LPC  concluded that in general there was little effect on employment but found some  evidence that the NMW had led to small reductions in hours.",
+   "locatedQuoteOnPage": "located"
+  }
+ ],
+ "quoteAudit": [
+  {
+   "claim": "For Germany's 2015 national minimum wage, the authors state that minijob transitions into non-employment imply a wage elasticity of employment of about -0.1 for minijobs. This is a wage elasticity for one heavily affected subgroup, not for all workers.",
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "quote": "The transitions in non-employment imply a wage elasticity of employment of − 0.1 -0.1 for minijobs.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2546
+  },
+  {
+   "claim": "Dube's 2019 review for the UK Treasury describes the employment impact found in studies of broad groups of workers as close to zero. In this summary it states this as a qualitative conclusion, not as a numeric elasticity with a range.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "Especially for the set of studies that consider broad  groups of workers, the overall evidence base suggests an employment impact of  close to zero.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7373
+  },
+  {
+   "claim": "Allegretto, Dube, Reich and Zipperer (2017) respond to Neumark, Salas and Wascher's (2014) critique of teen-employment studies. They report that a data-driven LASSO procedure that corrects for state trends gives an employment elasticity of -0.01.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "quote": "A data-driven LASSO procedure that optimally corrects for state trends produces a small employment elasticity (–0.01).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 568
+  },
+  {
+   "claim": "Neumark and Shirley (2022) report that the published US studies they summarize show a clear preponderance of negative employment estimates. The abstract gives no numeric central elasticity, so the size of the effect cannot be checked from this page.",
+   "url": "https://doi.org/10.1111/irel.12306",
+   "quote": "(i) there is a clear preponderance of negative estimates in the literature",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1425
+  },
+  {
+   "claim": "Chletsos and Giotis (2015) ran a meta-analysis of 45 journal studies published from 2010 to 2014. They found publication selection in the elasticity meta-sample, and after correction only a small negative employment effect remains. The abstract gives no number and does not name the correction method…",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "quote": "the authors use a meta-sample of 45 empirical studies published in academic journals in the 2010-2014 five-year period, to investigate whether minimum wage research has been affected by Doucouliagos and Stanley's study. Their results indicate that there is evidence of publication selection in the elasticities' meta-sample, but once it is corrected only a small negative effect remains",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1506
+  },
+  {
+   "claim": "Using data from 1979 to 2014, the authors say that most of the job loss shown by a model that assumes parallel trends across US states comes from trends that differed between states before the increases. This makes the negative estimate depend on how the model handles state trends.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "quote": "Data from 1979 to 2014 contradict NSW; the authors show that the disemployment suggested by a model assuming parallel trends across U.S. states mostly reflects differential pre-existing trends.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 374
+  },
+  {
+   "claim": "The authors estimate that consumers paid about 75 percent of the Hungarian minimum wage increase and firm owners paid about 25 percent. This helps explain why the employment losses stayed small.",
+   "url": "https://www.aeaweb.org/articles/pdf/doi/10.1257/aer.20171445",
+   "quote": "around 75 percent of the minimum wage increase was paid by consumers and 25 percent by firm owners",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 443
+  },
+  {
+   "claim": "In a region-level difference-in-differences design using German Structure of Earnings Survey data from 2010, 2014 and 2018, the German minimum wage had no employment effect on regular jobs but reduced minijobs, with workers moving both to regular employment and to non-employment.",
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "quote": "Regarding employment, the results show no effects for regular jobs, but there is a noteworthy decline in minijobs, driven by transitions to regular employment and non-employment.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2367
+  },
+  {
+   "claim": "Dube's November 2019 review for HM Treasury does not give a single number for the elasticity in its executive summary. It concludes that, for studies of broad groups of workers, the evidence suggests an employment impact close to zero.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "Especially for the set of studies that consider broad  groups of workers, the overall evidence base suggests an employment impact of  close to zero.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7373
+  },
+  {
+   "claim": "In the same paper, a synthetic-control design gives an employment elasticity of -0.04. The synthetic controls put more weight on nearby states.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "quote": "Synthetic controls do place more weight on nearby states—confirming the value of regional controls—and generate an elasticity of −0.04.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 830
+  },
+  {
+   "claim": "The sample in Neumark and Shirley (2022) is meant to cover every published study that uses minimum wage variation across US states or localities since the early 1990s. For each study, the 'core estimates' were chosen mostly from answers given by that study's own authors, not by independent re-coding…",
+   "url": "https://doi.org/10.1111/irel.12306",
+   "quote": "we assembled the entire set of published studies in this literature and identified the core estimates that support the conclusions from each study, in most cases relying on responses from the researchers who wrote these papers",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1161
+  },
+  {
+   "claim": "Among the 72 journal-published studies in the Minimum Wage OWE Repository, the median own-wage elasticity (OWE) of employment is -0.13 and the mean OWE is -0.25.",
+   "url": "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+   "quote": "Of the 72 studies published in academic journals, the median OWE is -0.13 and the mean OWE is -0.25.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1851
+  },
+  {
+   "claim": "According to this abstract, Doucouliagos and Stanley (2009) meta-analysed 64 US studies. They found the literature contaminated by publication selection bias, and after correction little or no evidence of a negative effect of the minimum wage on employment remained.",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "quote": "Doucouliagos and Stanley (Publication selection bias in minimum-wage research? A meta-regression analysis, 2009) conducted a meta-analysis of 64 US studies which showed that literature is contaminated by publication selection bias, and once it is corrected, little or no evidence of a negative association between minimum wages and employment remains.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 946
+  },
+  {
+   "claim": "In the Dube and Zipperer collection, own-wage elasticity estimates published since 2010 tend to be closer to zero; the median estimate across the 72 studies published in academic journals is -0.13.",
+   "url": "https://ideas.repec.org/p/nbr/nberwo/32925.html",
+   "quote": "We present a comprehensive set of OWE estimates from 88 studies and introduce an regularly updated repository of the estimates---https://economic.github.io/owe---an up-to-date snapshot of the existing literature for scholars and policymakers. We find that most studies to date suggest a fairly modest impact of minimum wages on jobs: the median OWE estimate of 72 studies published in academic journals is -0.13, which suggests that only around 13 percent of the potential earnings gains from minimum wage increases are offset due to associated job losses. Estimates published since 2010 tend to be c…",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 979,
+   "restatedFrom": "In the Dube and Zipperer collection, own-wage elasticity estimates published since 2010 are usually closer to zero than earlier ones. This is evidence against a typical post-2010 central elasticity of -0.2 or lower. The page does not break the result down by country or by the size of the increase."
+  },
+  {
+   "claim": "Dube's 2019 review for HM Treasury says the best evidence across US states shows small employment effects from minimum wages up to about 59% of the median wage. It also says county-level evidence shows the same result in lower-wage counties where the minimum reached 81% of the median.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "Across US  states, the best evidence suggests that  the employment effects are small up to  around 59 %   of the median wage. Evidence using sub - state county - level variation  found this to hold even in lower wage counties where the minimum stood at up to  81 %   of the median wage.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4676
+  },
+  {
+   "claim": "The UK government asked Arindrajit Dube to review the international evidence on minimum wages. His 2019 independent report concludes that the most recent research from the US, the UK and other developed countries shows a very muted employment effect, while low-paid workers' earnings rise significant…",
+   "url": "https://www.gov.uk/government/publications/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "quote": "The report finds that, overall, the most up to date body of research from US, UK and other developed countries points to a very muted effect of minimum wages on employment, while significantly increasing the earnings of low paid workers.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1847
+  },
+  {
+   "claim": "A design that compares contiguous border counties gives an employment elasticity of -0.06. The authors say they show that border counties are good controls.",
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "quote": "A similar elasticity (−0.06) obtains from a design comparing contiguous border counties, which the authors show to be good controls.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 966
+  },
+  {
+   "claim": "The 21 published studies in the repository that examine broad groups of low-wage workers, not narrow subsets such as teens or restaurant workers, have a median OWE of 0.02.",
+   "url": "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+   "quote": "When focusing on the 21 published studies that examine broad groups of low-wage workers, rather than narrow subsets like teens or restaurant workers, the median OWE is 0.02.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1952
+  },
+  {
+   "claim": "Chletsos and Giotis (2015) find that study characteristics related to the data, the model specifications, the minimum-wage and employment measures used, and the industry concerned diversify the sign of the estimated minimum-wage effect.",
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "quote": "In addition, the authors find that study characteristics related to the data, the model specifications, the minimum wage and employment measure used, and the industry concerned, diversify the sign of the minimum wage effect.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2024,
+   "restatedFrom": "Chletsos and Giotis (2015) report that study characteristics (data, model specification, the minimum-wage and employment measures used, and the industry studied) change the sign of the estimated minimum-wage effect. This means some of the spread across studies comes from real design differences, not…"
+  },
+  {
+   "claim": "According to the review, the UK Low Pay Commission's 2016 evidence review found little overall employment effect from the National Minimum Wage. It did find some evidence of small reductions in hours.",
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "The LPC  concluded that in general there was little effect on employment but found some  evidence that the NMW had led to small reductions in hours.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6062
+  },
+  {
+   "claim": "The review says the best US state-level evidence shows small employment effects for minimum wages up to about 59% of the median wage. It says county-level evidence shows the same result in lower-wage counties where the minimum was up to 81% of the local median.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "Across US  states, the best evidence suggests that  the employment effects are small up to  around 59 %   of the median wage. Evidence using sub - state county - level variation  found this to hold even in lower wage counties where the minimum stood at up to  81 %   of the median wage.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4676
+  },
+  {
+   "claim": "Dube's November 2019 review says that, especially for studies of broad groups of workers, the overall evidence base suggests an employment impact of close to zero.",
+   "url": "https://docslib.org/doc/5654877/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "quote": "Especially for the set of studies that consider broad groups of workers, the overall evidence base suggests an employment impact of close to zero.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7592,
+   "restatedFrom": "Dube's November 2019 review for HM Treasury finds that, for studies of broad groups of workers, the overall employment impact of minimum wages is close to zero. This page gives no single numerical elasticity or range."
+  },
+  {
+   "claim": "In this study, the total number of low-wage jobs stayed about the same during the five years after a minimum wage increase. This means the study found no clear job loss over that period.",
+   "url": "https://doi.org/10.1093/qje/qjz014",
+   "quote": "We find that the overall number of low-wage jobs remained essentially unchanged over the five years following the increase.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 798
+  },
+  {
+   "claim": "Studies of low-wage industries are less one-sided. In those studies, 64.5% of the preferred elasticities are negative, but only 32.3% are negative and significant at the 10% level.",
+   "url": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "quote": "The evidence from studies of low -wage industries is less one-sided, with 64.5% of the  estimated employment elasticities negative, but only 32.3% negative and significant at the  10% level or better",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6272
+  },
+  {
+   "claim": "In the Dube and Zipperer own-wage-elasticity collection, the median own-wage elasticity (OWE) of the 72 studies published in academic journals is -0.13. That value is between -0.05 and -0.2.",
+   "url": "https://ideas.repec.org/p/nbr/nberwo/32925.html",
+   "quote": "the median OWE estimate of 72 studies published in academic journals is -0.13",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1313,
+   "restatedFrom": "In the Dube and Zipperer own-wage-elasticity collection, the median own-wage elasticity (OWE) of the 72 journal-published studies is -0.13. That value is between -0.05 and -0.2. It is a plain median of the published estimates. The page does not name a publication-bias correction method such as FAT-P…"
+  },
+  {
+   "claim": "The review reports that the UK Low Pay Commission's 2016 evidence review found little effect of the National Minimum Wage on employment, but some evidence of small reductions in hours.",
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quote": "The LPC  concluded that in general there was little effect on employment but found some  evidence that the NMW had led to small reductions in hours.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 6062
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": {
+  "sampled": 30,
+  "survived": 29,
+  "survivalRate": 0.967,
+  "keptClaimSurvivalRate": 0.867,
+  "reading": "dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability"
+ },
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 15,
+   "floor": 5,
+   "thin": false,
+   "verdict": "15 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry. A partial panel SURVIVOR is restated to what the page carries and re-audited: a supported restatement replaces it (the original is kept in `restatedFrom`), and one that still fails is demoted like `unsupported`. A partial is KEPT only when no re-audited restatement came back (`restate.verdict` no-restatement or no-reaudit). Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "`searchDegraded` (top level) is true when the general web was tried and answered under a fifth of its attempts: the report then rests mostly on a scholarly slice (Wikipedia/Crossref), and its coverage gaps are a search artefact rather than evidence that nothing exists. stats.generalWebOkRate is that rate, and stats.searchHealth has the per-backend counts behind it.",
+  "evidenceChecked": "30 of 71 extracted claims were verified (41 unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence.",
+  "postHocHypotheses": "1 of 5 entries in `hypothesisVerdicts` adjudicate a hypothesis that was NOT registered before the search - the synthesis step wrote them after seeing the evidence. Each carries `preRegistered: false`. A hypothesis invented after the evidence and then judged against it is not a test of anything, and this tool's whole claim is that kill criteria are written first. Read those entries as a summary of what the evidence showed, never as a prediction that survived."
+ },
+ "citationPartials": [
+  {
+   "claim": "Neumark and Shirley's tally uses one preferred estimate per study from published US studies that use variation between states or cities since 1992. In that tally, 79.2% of the employment elasticities are negative, 53.8% are negative and significant at the 10% level, and 46.2% are negative and signif…",
+   "url": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "support": "partial",
+   "reasoning": "The percentages match the page exactly: 79.2% negative, 53.8% negative and significant at the 10% level, and 46.2% negative and significant at the 5% level. The page also supports the scope. It covers published US studies from 1992 onward ('beginning with the New Minimum Wage Research in 1992') that use subnational minimum wage variation, and it uses 'core or preferred estimates' rather than every…",
+   "locatedQuote": "we  assembled the entire set of published studies in this literature,  beginning with the New Minimum Wage  Research in 1992. We identified the core or preferred  estimates that reflect the conclusions from each  study   of employment effects in the United States ... In our data, 79.2% of  the estimated employment elasticities are negative, 53.8% are negative and significant at  the 10% level or b…",
+   "locatedQuoteOnPage": "located-approx"
+  }
+ ],
+ "summaryAnnotated": "The evidence gathered here points to a small effect on jobs, not a large one. Across the 72 journal studies in the Dube and Zipperer collection, the median own-wage elasticity is -0.13 and the mean is -0.25. The 21 studies of broad groups of low-wage workers have a median of +0.02, and estimates published since 2010 tend to be closer to zero [11][13][17]. On the Card and Krueger side, Allegretto, Dube, Reich and Zipperer (2017) get teen employment elasticities of -0.01 to -0.06 when they use local or data-driven controls. [UNTRACEABLE: They say the larger negative results come from trends that already differed between states before the increases [2][5][9][16].] Dube's 2019 review for the UK Treasury concludes that, for broad groups of workers, the employment impact is close to zero [1][8]. On the Neumark and Wascher side, Neumark and Shirley (2022) report a 'clear preponderance of negative estimates' in published US studies, but the verified part gives no central number [3][10]. [UNTRACEABLE: Their headline tally (79.2% negative) failed verification.] Both meta-analyses reached here find publication selection. [UNTRACEABLE: After correction, one finds 'little or no' negative effect (Doucouliagos and Stanley 2009, known only through another paper's summary) and the other finds 'only a small negative effect' (Chletsos and Giotis 2015).] Neither summary gives a number [4][12]. [UNTRACEABLE: Where job loss does appear, it is in narrow, heavily affected groups or in hours: German minijobs (small jobs with a monthly earnings cap) fell with an elasticity of about -0.1 while regular jobs showed no effect, and UK evidence shows small cuts in hours [0][7][19].]",
+ "processCritique": {
+  "untraceableCount": 17,
+  "criticsReturned": 2,
+  "criticsRequested": 2,
+  "markedInSummary": 4,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "After correction, one finds 'little or no' negative effect (Doucouliagos and Stanley 2009, known only through another paper's summary) and the other finds 'only a small negative effect' (Chletsos and Giotis 2015).",
+   "For Hungary's minimum wage increase, Harasztosi and Lindner (2019) estimate that consumers paid about 75% of the cost and firm owners about 25%.",
+   "For teens, in designs with local or data-driven controls, it is -0.01 to -0.06.",
+   "For the published literature as a whole, the central own-wage elasticity is about -0.13.",
+   "In Cengiz et al. (2019), the total number of low-wage jobs stayed essentially unchanged over the five years after the minimum wage increases studied.",
+   "It finds a decline in minijobs, as workers moved both into regular jobs and out of work, with an elasticity of about -0.1 for minijobs.",
+   "The authors read -0.13 as about 13% of possible pay gains being lo",
+   "The authors read -0.13 as about 13% of possible pay gains being lo…",
+   "Their headline tally (79.2% negative) failed verification.",
+   "They say the larger negative results come from trends that already differed between states before the increases [2][5][9][16].",
+   "Where job loss does appear, it is in narrow, heavily affected groups or in hours: German minijobs (small jobs with a monthly earnings cap) fell with an elasticity of about -0.1 while regular jobs showed no effect, and UK evidence shows small cuts in hours [0][7][19].",
+   "Where losses appear, they are in narrow, heavily affected groups or in hours."
+  ],
+  "untraceableStatements": [
+   "Finding 1: 'it' refers back to 'the central own-wage elasticity'. But -0.01 to -0.06 ([2][9][16]) are employment elasticities with respect to the minimum wage, not own-wage elasticities. The finding puts two different measures on one scale. The checklist (item 3) explicitly asked for a conversion to one elasticity, and it was not done.",
+   "Finding 1: 'the published literature as a whole' and 'central' overstate the source. Claims [11] and [24] give only the median of the 72 journal studies in the Dube and Zipperer repository, which authors on one side of the debate put together. The mean of that same set is -0.25, which is in the band at or below -0.2.",
+   "Finding 1: the teen numbers are labeled wrongly. Here 'it' means 'the central own-wage elasticity', but claims [2], [9] and [16] report employment elasticities with respect to the minimum wage (-0.01, -0.04, -0.06), not own-wage elasticities. The finding puts two different units side by side as if they were the same.",
+   "Finding 2: no claim contains the authors' reading of -0.13 as about 13% of the possible pay gains being lost.",
+   "Finding 2: no claim in the pool contains the reading of -0.13 as 'about 13% of possible pay gains being lost'.",
+   "Finding 7: the -0.1 minijob elasticity from [0] is given to the region-level difference-in-differences study in [7]. The pool does not show that [0] and [7] are the same study. Also, [0] measures moves into non-employment, not the total fall in minijobs.",
+   "Finding 7: the same overgeneralization as the summary. No claim says that losses appear ONLY in narrow groups or in hours.",
+   "Finding 8: claim [22] says 'In this study' and names no author. The pool does not name Cengiz et al. (2019) as the source.",
+   "Finding 8: claim [22] says only 'In this study'. It does not name Cengiz et al. (2019). The attribution is probably correct, but it was added and is not in the pool.",
+   "Finding 9: claim [6] says 'the authors' and names no one. The pool does not name Harasztosi and Lindner (2019) as the source.",
+   "Finding 9: claim [6] says only 'The authors'. It does not name Harasztosi and Lindner (2019). The attribution was added and is not in the pool.",
+   "Summary: 'Where job loss does appear, it is in narrow, heavily affected groups or in hours' is a general rule built from two examples. The pool does not support it: the same pool has a mean own-wage elasticity of -0.25 across 72 journal studies [11] and a 'clear preponderance of negative estimates' [3]. Claim [19] says 'some evidence of small reductions in hours', but the summary says 'UK evidence shows'. Claim [0] gives -0.1 for minijob moves INTO NON-EMPLOYMENT, and calls it a wage elasticity. It does not give an elasticity for the total fall in minijobs.",
+   "Summary: a hedge was dropped. Claim [5] says MOST of the job loss in ONE model (the one that assumes parallel trends across states) comes from trends that differed before the increases. The summary says 'the larger negative results come from' such trends, which drops 'most' and applies the point to negative results in general.",
+   "Summary: claim [12] says 'little or no EVIDENCE OF a negative effect'. The summary turns this into 'little or no negative effect', which changes 'no evidence of an effect' into 'evidence of no effect'. The words 'only a small negative effect' are in quotation marks, but they are not a quote: claim [4] is itself a paraphrase ('only a small negative employment effect remains'). The pool does not say that [12] is 'another paper's summary'. It says only 'according to this abstract'.",
+   "Summary: the '79.2% negative' figure is in no numbered claim. The summary brings an unverified number into the text while saying that the number failed verification, so the reader sees the number anyway.",
+   "Summary: the figure '79.2% negative' is in no claim in the pool. The sentence puts a number that failed verification in front of the reader, even though it calls the number unverified.",
+   "Summary: the sentence saying the larger negative results come from pre-existing state trends goes beyond claim [5]. Claim [5] says only that MOST of the job loss in ONE model (the one that assumes parallel trends across states) comes from pre-existing trends. The summary drops the 'most of' hedge and extends the point to all larger negative results. Also, the pool does not name the authors of [5] as Allegretto et al."
+  ],
+  "coverageGaps": [
+   "Card and Krueger itself is absent. The pool has no estimate from Card and Krueger (1994) or (2000), or from Neumark and Wascher's (2000) payroll-data reply. The user named these two traditions, but the report uses Allegretto et al. (2017) as 'the Card and Krueger side'. Dube, Lester and Reich (2010) is also absent.",
+   "Cengiz et al. (2019): the pool has no headline own-wage elasticity or employment elasticity, and nothing on spillovers to workers paid just above the minimum.",
+   "Item 1 (the core of the question): the pool has no publication-bias-corrected central elasticity and no confidence interval. It also names no correction method (FAT-PET, PEESE, WAAP, Andrews-Kasy). Belman and Wolfson (2014) was never reached. Doucouliagos and Stanley (2009) was reached only through an abstract. The primary meta-analysis papers and their results tables were never read.",
+   "Item 1: the pool has no bias-corrected central number from any meta-analysis. The research did not read the full Doucouliagos and Stanley (2009) paper, so no FAT-PET or PEESE estimate was gathered. It did not reach Belman and Wolfson (2014) or their 2019 update. No correction method is named for any study, and no one used the Dube and Zipperer dataset to calculate a corrected value, although the meta-analyst perspective was set up to do that.",
+   "Item 2: no source tested whether the funnel plot is one-sided or how far the correction moves the estimate. No source gave the dissenting side's reply, that the asymmetry comes from real differences between studies. Claim [18] (Chletsos and Giotis: study characteristics change the sign of the effect) bears on this question but was not used.",
+   "Item 2: the research did not test whether the funnel asymmetry comes from real differences between studies or from selective reporting. No reply to Doucouliagos and Stanley from the Neumark and Wascher side was gathered. Claim [18] (study characteristics change the sign of the estimate) bears on this directly, but neither the summary nor the findings use it.",
+   "Item 3: the pool has no claim from Card and Krueger 1994 or 2000, although the question names that tradition. There is also nothing from Dube, Lester and Reich 2010, no elasticity number from Cengiz et al., and no preferred estimate from Neumark, Salas and Wascher 2014. Nobody converted the estimates to one unit, so the test of whether the two sides differ by more than 0.1 was never done.",
+   "Item 4: Neumark and Shirley (2022) was never re-coded independently. The pool has no teen or low-wage central elasticity from that paper, and the question of whether its estimates are own-wage or minimum-wage elasticities was not answered. Its headline tally failed verification.",
+   "Item 5 was never answered: the pool has no search result for any well-identified study after 2010 with an elasticity of -0.2 or lower (for example, Clemens and Wither, or Meer and West).",
+   "Item 5: the research never searched for a well-identified US study after 2010 with an elasticity of -0.2 or lower (for example Meer and West 2016 or Clemens and Wither 2019). The answer is therefore missing, not 'none exist'.",
+   "Item 6: high-bite evidence is almost absent. Seattle (Jardim et al. 2017 and 2022), the UK National Living Wage, and recent $15 state increases are missing. The tipping point rests only on Dube's 59%/81% statement.",
+   "Item 6: there is no high-bite evidence for Seattle (Jardim et al. 2017 and 2022), the UK National Living Wage, Puerto Rico, or recent US increases to $15. The only support for the 60%-of-median threshold is Dube's own statements about 59% and 81% [14][20], which do not appear in the summary.",
+   "Item 7: Meer and West (2016), Aaronson et al. (2018), and the automation studies are missing. For job losses that headcount studies miss, the pool has only UK hours and Hungary incidence.",
+   "Item 7: nothing was gathered on Meer and West 2016 (effects that grow over time), Aaronson et al. 2018 (firms entering and leaving), automation, or the spillover problem in bunching designs. The only evidence on hours is the UK finding, and that is secondhand, through Dube's review.",
+   "Item 8: the pool has nothing from CBO 2019 or 2021 and nothing from the German Minimum Wage Commission. The UK Low Pay Commission appears only through Dube's summary. Official documents, the most direct source for 'the number agencies use', were never retrieved.",
+   "Item 8: the research gathered no CBO 2019 or 2021 report and no German Minimum Wage Commission report. It did not read the UK Low Pay Commission's own reports, only Dube's summary of them. The official-forecaster question was answered only with Dube's qualitative review, which gives no numeric range, so the H4 test was not done.",
+   "Source balance: about 17 of the 26 claims come from works that Dube wrote or co-wrote (the HM Treasury review, the repository, Allegretto et al. 2017, and Cengiz et al.). Many are duplicates ([1]/[8]/[15]/[21], [14]/[20], [19]/[25], [11]/[13]/[24]). The Neumark and Wascher side has only 3 claims, and none has a number. The weighing the user asked for is structurally one-sided.",
+   "Source type never used: the Dube and Zipperer repository dataset itself, which could have given a corrected or precision-weighted estimate. The meta-analyst perspective was meant to do exactly this.",
+   "Source types never searched: the original Card and Krueger and Neumark and Wascher papers, CBO documents, full meta-analysis papers (not only abstracts), the repository data itself, and any expert from the Neumark and Wascher side who criticizes the meta-analysis method.",
+   "The Neumark and Wascher side has no number at all. The pool has no elasticity from Neumark, Salas and Wascher (2014), no central value from Neumark and Shirley (2022), and no answer on whether their estimates are own-wage elasticities or minimum-wage elasticities (item 4). So the comparison of the two traditions (item 3) and the test of whether they differ by more than 0.1 could not be done.",
+   "The summary never states a best estimate of the employment elasticity, and the question asks for one directly. Finding 1 gives -0.13, but that is an own-wage elasticity that is NOT corrected for publication bias, and the summary opens with that number without saying it is uncorrected."
+  ],
+  "planFlaws": [
+   "All six perspectives depend on the same retrieval path: abstracts and landing pages. None required reading the results tables or official documents, which is where corrected elasticities and CBO numbers are. So every perspective shared one blind spot, and the central numeric question could not be answered by design.",
+   "Checklist item 1 lists the Dube and Zipperer own-wage-elasticity repository among the 'publication-bias-corrected meta-analyses'. It is an uncorrected collection of estimates. This framing let the report present an uncorrected median (-0.13) as the 'best current estimate'.",
+   "Item 1 of the scoper's checklist puts the Dube and Zipperer OWE repository among the 'central employment elasticities' and uses one set of bands (-0.05 and -0.2) for all of them. It never says whether the bands apply to elasticities with respect to the minimum wage or to own-wage elasticities. An OWE is usually several times larger in size than the minimum-wage elasticity for the same data. This is why the report compares an OWE of -0.13 with minimum-wage elasticities of -0.01 to -0.06, and why claim [24] puts -0.13 into a band that was probably meant for the other unit. Item 3's 0.1 threshold has the same problem.",
+   "The disemployment steelman perspective produced no number. The only evidence from the Neumark and Wascher side is one abstract [3][10][23]. The plan did not require a numeric estimate from each side before weighing them, so the result leans to one side because one side's numbers are missing, not because the evidence was weighed.",
+   "The hypothesis bands (at or above -0.05, between -0.05 and -0.2, at or below -0.2) do not say which elasticity they measure: employment with respect to the minimum wage, or own-wage. The two scales differ by roughly the wage pass-through factor, so one band can hold very different effects. The report then puts a -0.13 own-wage elasticity next to -0.01 to -0.06 minimum-wage elasticities as if they were comparable.",
+   "The perspective set did not guard against depending on one author. Of the 26 claims, 14 come from Dube's own work (the repository, ADRZ 2017, the 2019 review). The official-forecaster perspective settled on Dube's review for HM Treasury, which is an academic synthesis from the Card and Krueger side, not a scoring agency. No perspective had to get CBO or German Minimum Wage Commission documents.",
+   "The scoper gave no dedicated sub-question to the literal Card and Krueger versus Neumark and Wascher exchange (New Jersey and Pennsylvania, 1994 and 2000). It is only a sub-bullet, and the research dropped it without any signal."
+  ],
+  "rationales": [
+   "The question has three parts: weigh the Card and Krueger tradition against Neumark and Wascher, cover publication bias, and give a best elasticity. None of the three is answered on its own terms. The pool has no Card and Krueger estimate and no numeric Neumark and Wascher estimate. It has no bias-corrected number and no correction method. The 'best estimate' is an uncorrected median own-wage elasticity, which Finding 1 then conflates with minimum-wage elasticities. The summary also drops hedges …",
+   "The question asks for three things: weigh the Card and Krueger tradition against Neumark and Wascher, deal with publication bias, and give a best estimate. The report does none of the three well enough to act on. There are no original Card and Krueger papers and no number from the Neumark and Wascher side. On publication bias, it has only qualitative wording from two abstracts ('little or no', 'small'). The best estimate it offers (-0.13) is an own-wage elasticity that is not corrected for publi…"
+  ]
+ },
+ "refuted": [
+  {
+   "claim": "In the Chletsos and Giotis (2015) meta-sample of regression coefficients (as opposed to elasticities), they found no publication selection bias, and the estimated real effect is again negative but small. This means the evidence of bias depends on which effect-size metric is used.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "why": "The first sentence matches the quote: in the coefficients' meta-sample, no publication selection bias was found and the true effect is 'again negative but small'. The claim then adds two things the quote does not say. (1) 'As opposed to elasticities': the quote never mentions elasticities or any other meta-sample. The word 'again' suggests an earlier result, but it does not say which metric that result used. (2) 'This means the evidence of bias depends on which effect-size metric is used': this …",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The first sentence matches the quote: in the coefficients' meta-sample, no publication selection bias was found and the true effect is 'again negative but small'. The claim then adds two things the quote does not say. (1) 'As opposed to elasticities': the quote never mentions elasticities or any other meta-sample. The word 'again' suggests an earlier result, but it does not say which metric that result used. (2) 'This means the evidence of bias depends on which effect-size metric is used': this …"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The first sentence is correct. The full paper (Economics Discussion Paper 2015-58) says that in the coefficients' meta-sample the meta-regression intercepts are not statistically significant, so there is no evidence of publication selection. It also says the effect is 'negative and statistically significant in all columns', ranging from -0.017 to -0.083. The second sentence, 'This means the evidence of bias depends on which effect-size metric is used', goes further than the paper. The paper's ow…",
+     "counterSource": "https://www.econstor.eu/bitstream/10419/115362/1/834224135.pdf (Giotis & Chletsos 2015, sections 4-5: US elasticities vs European coefficients, linear vs double-log, 'smaller coefficients' meta-sample')"
+    }
+   ],
+   "contradictedBy": [
+    "https://www.econstor.eu/bitstream/10419/115362/1/834224135.pdf (Giotis & Chletsos 2015, sections 4-5: US elasticities vs European coefficients, linear vs double-log, 'smaller coefficients' meta-sample')"
+   ]
+  },
+  {
+   "claim": "Across 138 state-level minimum wage increases from 1979 to 2016, the overall number of low-wage jobs stayed essentially unchanged over the five years after each increase. This is evidence against job losses that grow over several years.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://www.nber.org/system/files/working_papers/w25434/w25434.pdf",
+   "why": "The quote does not support the claim as written, for three reasons. (1) Numbers not in the quote: the quote says only 'We find that the overall number of low-wage jobs remained essentially unchanged over five years following the increase.' It does not contain '138', 'state-level', or '1979 to 2016'. Those figures may be elsewhere in the Cengiz, Dube, Lindner and Zipperer abstract, but they are not in the quoted text. My lens says to refute when a claim states a number the quote does not state. (…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote does not support the claim as written, for three reasons. (1) Numbers not in the quote: the quote says only 'We find that the overall number of low-wage jobs remained essentially unchanged over five years following the increase.' It does not contain '138', 'state-level', or '1979 to 2016'. Those figures may be elsewhere in the Cengiz, Dube, Lindner and Zipperer abstract, but they are not in the quoted text. My lens says to refute when a claim states a number the quote does not state. (…"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The quote is genuine and matches the paper's abstract. But the claim states the finding as settled fact ('stayed essentially unchanged'), and it adds 'This is evidence against job losses that grow over several years.' A direct re-analysis by credible authors contradicts both parts. (1) David Neumark and Antonio Rodriguez-Lopez, 'Modern Difference-in-Differences, Same Old Answer: What Event-Study Estimates Really Tell Us About the Effects of Minimum Wages on Jobs' (CESifo Working Paper 12791), us…",
+     "counterSource": "Neumark & Rodriguez-Lopez, 'Modern Difference-in-Differences, Same Old Answer: What Event-Study Estimates Really Tell Us About the Effects of Minimum Wages on Jobs', CESifo WP 12791 (https://ideas.repec.org/p/ces/ceswps/_12791.html); also Meer & West…"
+    }
+   ],
+   "contradictedBy": [
+    "Neumark & Rodriguez-Lopez, 'Modern Difference-in-Differences, Same Old Answer: What Event-Study Estimates Really Tell Us About the Effects of Minimum Wages on Jobs', CESifo WP 12791 (https://ideas.repec.org/p/ces/ceswps/_12791.html); also Meer & West…"
+   ]
+  },
+  {
+   "claim": "Average working hours did not change after the German minimum wage was introduced, but minijobbers' hours fell notably. The authors link this fall to the €450 monthly earnings cap for minijobs, so it is a loss on the hours margin that a headcount study would not see.",
+   "killedBy": "support+counter",
+   "vote": "1-2",
+   "source": "https://arxiv.org/html/2403.17206v2/",
+   "why": "The quote does not support the claim as written. Three problems: (1) The claim names a number the quote does not give. It says the authors link the fall to 'the €450 monthly earnings cap for minijobs', but the quote only says the fall 'can be linked to the specific institutional framework'. The quote never mentions €450 or an earnings cap. That detail came from somewhere else and is written as if the quote says it. (2) The quote carries a hedge that the claim drops. The quote says the fall 'can …",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The quote does not support the claim as written. Three problems: (1) The claim names a number the quote does not give. It says the authors link the fall to 'the €450 monthly earnings cap for minijobs', but the quote only says the fall 'can be linked to the specific institutional framework'. The quote never mentions €450 or an earnings cap. That detail came from somewhere else and is written as if the quote says it. (2) The quote carries a hedge that the claim drops. The quote says the fall 'can …"
+    },
+    {
+     "lens": "counter",
+     "evidence": "The claim reads right on the minijob part. The paper is Bossler, Liang and Schank (2024), 'The Devil is in the Details: Heterogeneous Effects of the German Minimum Wage on Working Hours and Minijobs'. It does tie the fall in minijobbers' hours to the €450 monthly cap: minijobbers can work no more than 50.9 hours a month, and a job paid €350-€450 lost about 4 contractual hours a month. The problem is the first sentence. It says as a plain fact that 'Average working hours did not change after the …",
+     "counterSource": "'The Impact of the Minimum Wage on Working Hours', Jahrbücher für Nationalökonomie und Statistik 240(2-3):233 (2020), https://www.degruyterbrill.com/view/journals/jbnst/240/2-3/article-p233.xml ; also Bossler & Gerner (2020) and Ohlert (2022), as cit…"
+    }
+   ],
+   "contradictedBy": [
+    "'The Impact of the Minimum Wage on Working Hours', Jahrbücher für Nationalökonomie und Statistik 240(2-3):233 (2020), https://www.degruyterbrill.com/view/journals/jbnst/240/2-3/article-p233.xml ; also Bossler & Gerner (2020) and Ohlert (2022), as cit…"
+   ]
+  },
+  {
+   "claim": "Neumark and Shirley's tally uses one preferred estimate per study from published US studies that use variation between states or cities since 1992. In that tally, 79.2% of the employment elasticities are negative, 53.8% are negative and significant at the 10% level, and 46.2% are negative and significant at the 5% level.",
+   "killedBy": "support+counter+provenance",
+   "vote": "0-3",
+   "source": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "why": "The three percentages (79.2%, 53.8% at 10%, 46.2% at 5%) match the quote exactly. The problem is the first sentence of the claim, which describes how the sample was built: 'one preferred estimate per study', 'published', 'US', 'variation between states or cities', 'since 1992'. None of that is in the quote. The quote says only 'In our data'. So the claim adds a year (1992) and several scope limits that the quoted text does not state. Those details may be correct elsewhere in the Neumark and Shir…",
+   "refutedBy": [
+    {
+     "lens": "support",
+     "evidence": "The three percentages (79.2%, 53.8% at 10%, 46.2% at 5%) match the quote exactly. The problem is the first sentence of the claim, which describes how the sample was built: 'one preferred estimate per study', 'published', 'US', 'variation between states or cities', 'since 1992'. None of that is in the quote. The quote says only 'In our data'. So the claim adds a year (1992) and several scope limits that the quoted text does not state. Those details may be correct elsewhere in the Neumark and Shir…",
+     "counterSource": "The quoted text itself: 'In our data, 79.2% of the estimated employment elasticities are negative...' It contains no mention of one preferred estimate per study, published studies, the US, state or city variation, or 1992."
+    },
+    {
+     "lens": "counter",
+     "evidence": "The percentages are correct, but the claim gets the sample behind them wrong in two ways. The source paper itself shows this (NBER w28388, text p.12-13 and Table 3). (1) The claim says the tally uses 'one preferred estimate per study'. That is wrong. The figures 79.2% / 53.8% / 46.2% are Table 3 row '1: All' (Figure 1). That row pools all 130 preferred estimates, and the paper says 'We plot the preferred elasticity estimates from each study (there can be more than one)'. The paper does run a one…",
+     "counterSource": "Neumark & Shirley, NBER Working Paper 28388, Table 3 and Section V ('there can be more than one' estimate per study; 130 estimates; median-per-study row 75.7/48.6/40.0; federal-variation and case-study rows included in 'All') - https://www.nber.org/s…"
+    },
+    {
+     "lens": "provenance",
+     "evidence": "The source does not support the method the claim gives for these numbers. The claim says the tally uses 'one preferred estimate per study', but the 79.2% / 53.8% / 46.2% figures come from the pool of ALL preferred estimates, and one study can add more than one. Section III says: 'This led us to identify one or more estimates (generally a small number) from each paper. In some cases, multiple estimates were necessary.' Section V says: 'We plot the preferred elasticity estimates from each study (t…",
+     "counterSource": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf (same paper, Section III 'Our Approach' and Section V 'Is the evidence skewed by studies reporting multiple estimates?', Table 3)"
+    }
+   ],
+   "contradictedBy": [
+    "The quoted text itself: 'In our data, 79.2% of the estimated employment elasticities are negative...' It contains no mention of one preferred estimate per study, published studies, the US, state or city variation, or 1992.",
+    "Neumark & Shirley, NBER Working Paper 28388, Table 3 and Section V ('there can be more than one' estimate per study; 130 estimates; median-per-study row 75.7/48.6/40.0; federal-variation and case-study rows included in 'All') - https://www.nber.org/s…",
+    "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf (same paper, Section III 'Our Approach' and Section V 'Is the evidence skewed by studies reporting multiple estimates?', Table 3)"
+   ]
+  }
+ ],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://www.ctdol.state.ct.us/lweab/Doucougliagos%20&%20Stanley%20Publication%20Selection%20Bias%20in%20Min%20Wage%20Research-A%20Metaregression%20Analysis.pdf",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst (constructor)",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.nber.org/system/files/working_papers/w28388/w28388.pdf",
+   "quality": "primary",
+   "perspective": "Meta-analyst (constructor)",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://ideas.repec.org/p/zbw/ifwedp/201558.html",
+   "quality": "primary",
+   "perspective": "Meta-analyst (constructor)",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1111/irel.12306",
+   "quality": "primary",
+   "perspective": "Disemployment steelman",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.3386/w4679",
+   "quality": "unreliable",
+   "perspective": "Disemployment steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1515/9781400880874-007",
+   "quality": "unreliable",
+   "perspective": "Disemployment steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nber.org/system/files/working_papers/w25434/w25434.pdf",
+   "quality": "primary",
+   "perspective": "Identification skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://doi.org/10.1177/0019793917692788",
+   "quality": "primary",
+   "perspective": "Identification skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1093/qje/qjz014",
+   "quality": "primary",
+   "perspective": "Identification skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.3386/w4570",
+   "quality": "unreliable",
+   "perspective": "Identification skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://www.cbo.gov/system/files/2019-07/CBO-55410-MinimumWage2019.pdf",
+   "quality": "unreliable",
+   "perspective": "Official forecaster",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.cbo.gov/publication/57049",
+   "quality": "unreliable",
+   "perspective": "Official forecaster",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.cbo.gov/system/files/2019-12/55897-CBO-presentation.pdf",
+   "quality": "unreliable",
+   "perspective": "Official forecaster",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.aeaweb.org/articles/pdf/doi/10.1257/aer.20171445",
+   "quality": "primary",
+   "perspective": "Official forecaster",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://cepr.org/voxeu/columns/reallocation-effects-minimum-wage",
+   "quality": "unreliable",
+   "perspective": "High-bite and international historian",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3",
+   "via": "failed"
+  },
+  {
+   "url": "https://arxiv.org/html/2403.17206v2/",
+   "quality": "primary",
+   "perspective": "High-bite and international historian",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://www.cbo.gov/publication/55681",
+   "quality": "unreliable",
+   "perspective": "Official forecaster elasticities",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://cbo.gov/system/files/2019-11/55874-CBO-presentation.pdf",
+   "quality": "unreliable",
+   "perspective": "Official forecaster elasticities",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.govinfo.gov/app/details/GOVPUB-Y10-PURL-gpo122897",
+   "quality": "primary",
+   "perspective": "Official forecaster elasticities",
+   "wave": "w2",
+   "claims": 2,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://doi.org/10.1016/j.labeco.2024.102511",
+   "quality": "unreliable",
+   "perspective": "Official forecaster elasticities",
+   "wave": "w2",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://assets.publishing.service.gov.uk/media/5dc0312940f0b637a03ffa96/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quality": "primary",
+   "perspective": "Dube 2019 UK review and LPC",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "pdf"
+  },
+  {
+   "url": "https://assets.publishing.service.gov.uk/media/6960e4e656321405090869aa/impacts_of_minimum_wages_review_of_the_international_evidence_Arindrajit_Dube_web.pdf",
+   "quality": "primary",
+   "perspective": "Dube 2019 UK review and LPC",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "pdf"
+  },
+  {
+   "url": "https://www.gov.uk/government/publications/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "quality": "primary",
+   "perspective": "Dube 2019 UK review and LPC",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T1",
+   "via": "http"
+  },
+  {
+   "url": "https://docslib.org/doc/5654877/impacts-of-minimum-wages-review-of-the-international-evidence",
+   "quality": "primary",
+   "perspective": "Dube 2019 UK review and LPC",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://www.nber.org/system/files/working_papers/w32925/w32925.pdf",
+   "quality": "primary",
+   "perspective": "Dube-Zipperer OWE repository re-coding",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://ideas.repec.org/p/nbr/nberwo/32925.html",
+   "quality": "primary",
+   "perspective": "Dube-Zipperer OWE repository re-coding",
+   "wave": "w2",
+   "claims": 5,
+   "tier": "T3",
+   "via": "http"
+  }
+ ],
+ "stats": {
+  "depth": "standard",
+  "provider": "claude",
+  "model": "claude-sonnet-5",
+  "transport": "session",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 71,
+  "urlDupes": 2,
+  "budgetDropped": 13,
+  "claimsDroppedBeforeVerify": 41,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 71,
+    "ok": 69,
+    "fail": 2,
+    "challenged": 0,
+    "junk": 2,
+    "results": 355
+   },
+   "ddg-html": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 7,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 8,
+    "ok": 8,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 8
+   },
+   "crossref": {
+    "attempts": 7,
+    "ok": 6,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 41
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 2
+   },
+   "pubmed": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 1,
+    "ok": 0,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "hn": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   }
+  },
+  "generalWebOkRate": 0.726,
+  "sourceTiers": {
+   "T3": 9,
+   "T?": 4,
+   "T2": 3,
+   "T1": 10
+  },
+  "killsByLens": {
+   "support": 4,
+   "counter": 4,
+   "provenance": 1
+  },
+  "fetchVia": {
+   "failed": 7,
+   "pdf": 5,
+   "http": 7,
+   "crossref-api": 6,
+   "crossref-fallback": 1
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 0,
+   "hits": 87,
+   "rate": 0.0
+  },
+  "agentCalls": 254,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 71,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 30,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 15,
+   "misses": 101,
+   "charsServedFromCache": 65617,
+   "hitRate": 0.129
+  },
+  "wallSeconds": 1435.7,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 26,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}

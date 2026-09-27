@@ -832,6 +832,29 @@ wrong-pairing error, one round later, from the other side of the table.
 The conformance case that encoded the old policy was **reversed rather than deleted**, and
 carries the reasoning for the reversal.
 
+## The first dropped-claim sample under importance-first ranking, 2026-09-27 — `v18-minwage-sample30.json`
+
+Every earlier #9 sample predates the 2026-09-20 change that ranks claims by importance
+first and source tier second, and none was larger than 10. This one is n=30, on the same
+minimum-wage question as `v2-minimum-wage-employment` and `v3-minwage-fixed`, standard
+depth over `claude -p`: 26 sources, 71 claims, 30 verified, 41 dropped, 254 calls, 0
+errors, 24 min.
+
+| | survived the panel |
+|---|---|
+| dropped claims (30 of the 41, extraction order) | **29 of 30 (97%)** |
+| kept claims | 26 of 30 (87%) |
+
+Fisher's exact test, two-sided: p = 0.35. The same direction as the two earlier samples on
+this question (80% vs 63%, 90% vs 67%), and still not a difference the counts can separate
+from chance. It moves the README table from 5 of 9 to 6 of 10, inside the "no consistent
+signal" band. Both rates are panel survival before the audit, so they compare like with like.
+The ranking still is not shown to pick the claims that verify; #9 stays open.
+
+The report itself: a median own-wage elasticity of -0.13 across 72 journal studies as the
+hinge number, broad low-wage groups near zero, H1 (near zero) surviving; citation accuracy
+96.7% (29 supported, 1 partial, 0 unsupported).
+
 ## The files
 
 | Prefix | What it is |
@@ -842,4 +865,5 @@ carries the reasoning for the reversal.
 | `v4-*` | Current regime plus the per-URL page cache and the full token census. |
 | `calibration-*` | Panel reliability runs, superseded — the first two are the ones the gate amendment was written against. |
 | `*-BLOCKED-*` | A run that died on a server-side credential revocation. Kept because it is why `preflight()` exists. |
+| `v18-*` | Live 1.18.x runs over the session transport (`claude -p`), importance-first ranking. |
 | everything else | Superseded regime. See above. |

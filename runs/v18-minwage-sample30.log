@@ -1,0 +1,352 @@
+Provider: Anthropic | model: claude-sonnet-5 | credential: session
+Question: Does raising the minimum wage reduce employment? Weigh the Card and Krueger tradition against Neumark and Wasc
+Depth: standard (6 perspectives, 1 deepening round(s), 3-lens verify, citation audit ON)
+Key question: For moderate US minimum-wage increases, where the minimum wage stays below about 60% of the local me
+Assumptions stated: 7 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Meta-analyst (constructor) | Disemployment steelman | Identification skeptic | Official forecaster | High-bite and international historian | Employer-margin investigator
+  [w1] High-bite and international historian: 8 hits -> 3 picked
+  [w1] Meta-analyst (constructor): 8 hits -> 3 picked
+  [w1] Employer-margin investigator: 8 hits -> 4 picked
+  [w1] Disemployment steelman: 8 hits -> 4 picked
+  [w1] Identification skeptic: 8 hits -> 4 picked
+  [w1] Official forecaster: 7 hits -> 4 picked
+[w1] 16 sources, 39 claims
+Round 1: 8/8 sub-questions still open, 4 contradictions, 5 follow-ups
+  [w2] Dube-Zipperer OWE repository re-coding: 8 hits -> 3 picked
+  [w2] Dube 2019 UK review and LPC: 8 hits -> 4 picked
+  [w2] Official forecaster elasticities: 8 hits -> 4 picked
+  [w2] Strongly negative post-2010 US estimates: 8 hits -> 3 picked
+  [w2] Primary Doucouliagos-Stanley and Belman-Wolfson: 8 hits -> 5 picked
+[w2] 10 sources, 32 claims
+NOTE: 41 lower-ranked claims dropped before verification (cap 30) - NOT covered by this report
+Verify pool spans 8 of 8 sub-questions; 1 claim(s) map to no sub-question
+Total: 26 sources -> 71 claims -> verifying 30
+  OK          3-0  For Germany's 2015 national minimum wage, the authors state that minijob transitions into …
+  OK          2-1  Dube's 2019 review for the UK Treasury describes the employment impact found in studies of…
+  OK          3-0  Allegretto, Dube, Reich and Zipperer (2017) respond to Neumark, Salas and Wascher's (2014)…
+  OK          3-0  Neumark and Shirley (2022) report that the published US studies they summarize show a clea…
+  OK          3-0  Chletsos and Giotis (2015) ran a meta-analysis of 45 journal studies published from 2010 t…
+  KILLED[support+counter] 1-2  In the Chletsos and Giotis (2015) meta-sample of regression coefficients (as opposed to el…
+  KILLED[support+counter] 1-2  Across 138 state-level minimum wage increases from 1979 to 2016, the overall number of low…
+  OK          3-0  Using data from 1979 to 2014, the authors say that most of the job loss shown by a model t…
+  OK          2-1  The authors estimate that consumers paid about 75 percent of the Hungarian minimum wage in…
+  OK          2-1  In a region-level difference-in-differences design using German Structure of Earnings Surv…
+  OK          2-1  Dube's November 2019 review for HM Treasury does not give a single number for the elastici…
+  OK          3-0  In the same paper, a synthetic-control design gives an employment elasticity of -0.04. The…
+  OK          2-1  The sample in Neumark and Shirley (2022) is meant to cover every published study that uses…
+  OK          3-0  Among the 72 journal-published studies in the Minimum Wage OWE Repository, the median own-…
+  OK          3-0  According to this abstract, Doucouliagos and Stanley (2009) meta-analysed 64 US studies. T…
+  KILLED[support+counter] 1-2  Average working hours did not change after the German minimum wage was introduced, but min…
+  OK          2-1  In the Dube and Zipperer collection, own-wage elasticity estimates published since 2010 ar…
+  OK          2-1  Dube's 2019 review for HM Treasury says the best evidence across US states shows small emp…
+  OK          2-1  The UK government asked Arindrajit Dube to review the international evidence on minimum wa…
+  OK          3-0  A design that compares contiguous border counties gives an employment elasticity of -0.06.…
+  KILLED[support+counter+provenance] 0-3  Neumark and Shirley's tally uses one preferred estimate per study from published US studie…
+  OK          3-0  The 21 published studies in the repository that examine broad groups of low-wage workers, …
+  OK          3-0  Chletsos and Giotis (2015) report that study characteristics (data, model specification, t…
+  OK          3-0  According to the review, the UK Low Pay Commission's 2016 evidence review found little ove…
+  OK          2-1  The review says the best US state-level evidence shows small employment effects for minimu…
+  OK          2-1  Dube's November 2019 review for HM Treasury finds that, for studies of broad groups of wor…
+  OK          3-0  In this study, the total number of low-wage jobs stayed about the same during the five yea…
+  OK          3-0  Studies of low-wage industries are less one-sided. In those studies, 64.5% of the preferre…
+  OK          2-1  In the Dube and Zipperer own-wage-elasticity collection, the median own-wage elasticity (O…
+  OK          2-1  The review reports that the UK Low Pay Commission's 2016 evidence review found little effe…
+SAMPLING 30 dropped claims to measure what the cap discarded
+  KILLED[support+counter] 1-2  The authors do not use the usual meta-analysis method of taking every reported estimate. T…
+  OK          3-0  The authors report that the negative-effect evidence is stronger for teens and young adult…
+  OK          2-1  The authors say that they do not weight or judge studies by how reliable they are. Their s…
+  OK          3-0  Neumark and Shirley (2022) find that the negative-effect evidence is stronger for teens, y…
+  OK          3-0  Neumark and Shirley (2022) find that studies of directly affected workers point more stron…
+  OK          2-1  Neumark and Shirley (2022) find that studies of low-wage industries, the group that the Ca…
+  OK          3-0  Cengiz, Dube, Lindner and Zipperer's bunching estimate implies an employment elasticity wi…
+  OK          2-1  In the event-by-event analysis, the employment estimate does not change with the minimum-t…
+  OK          2-1  Wage spillovers reach up to $3 above the new minimum wage and make up about 40% of the tot…
+  OK          2-1  The overall result is a null, but the authors report some evidence of lower employment in …
+  OK          3-0  The authors say that the matching estimates Neumark, Salas and Wascher prefer mix treatmen…
+  OK          2-1  Cengiz, Dube, Lindner and Zipperer (2019) study 138 state-level minimum wage changes in th…
+  OK          3-0  The study found small wage spillovers at the bottom of the wage distribution. These spillo…
+  OK          3-0  The authors report no evidence of job loss at higher minimum wage levels. This result bear…
+  OK          2-1  The study found some evidence of fewer jobs in tradeable sectors. It also reports that lab…
+  OK          2-1  In Hungary's large, lasting minimum wage increase (the 2001 reform), firm-level employment…
+  OK          3-0  The job loss from the Hungarian increase did not grow into a large effect over a four-year…
+  OK          2-1  Hungarian firms responded to the minimum wage increase by replacing labor with capital. Th…
+  OK          2-1  Job losses from the Hungarian minimum wage were larger in industries where firms had more …
+  OK          2-1  The authors estimate that 104,000 minijobs disappeared because of the minimum wage. From a…
+  OK          2-1  The German minimum wage of €8.50, introduced on 1 January 2015, directly affected about 10…
+  OK          3-0  The Congressional Budget Office published a report titled 'The Effects on Employment and F…
+  OK          2-1  GovInfo says that it collected this CBO 2019 document from online sources and that the doc…
+  OK          3-0  The review says different estimation methods agree much more closely when they use only da…
+  OK          2-1  The review concludes that the evidence supports exploring a UK National Living Wage after …
+  OK          3-0  Research done for the review found that employment effects were also modest in the 7 US st…
+  OK          2-1  The review says the US studies disagree mostly because their methods handle state-specific…
+  OK          3-0  The Dube review says the muted employment effect also holds for the most recent ambitious …
+  OK          3-0  Based on the weight of the evidence, the Dube review recommends that the UK consider a Nat…
+  OK          2-1  The Dube review calls the evidence base still developing. It recommends that any higher mi…
+SAMPLING: 29/30 dropped claims survived (97%) vs 87% of kept claims
+Verify: 26 confirmed, 4 refuted, 0 unverified | kills by lens: {'support': 4, 'counter': 4, 'provenance': 1}
+  [quote] ellipsis fragments are in order but 1795 characters apart for 458 quoted - too far to be one passage; scoring by coverage instead
+Citation audit (full pool of 30): 29 supported, 1 partial, 0 UNSUPPORTED, 0 unreachable -> 96.7% (survivors-only, market-comparable: 100.0%)
+AUDIT RESTATED 4 claim(s): weakened to what the cited page supports (originals preserved in restatedFrom)
+Process critique: material-gaps | 17 untraceable, 21 coverage gaps, 7 plan flaws
+Report written to /tmp/claude-1000/-home-excelsior-Desktop-deepresearch/20dd6e81-fd8d-4a7b-8ad1-4dabcf04b102/scratchpad/live9/minwage-sample30.json
+Contract written to /tmp/claude-1000/-home-excelsior-Desktop-deepresearch/20dd6e81-fd8d-4a7b-8ad1-4dabcf04b102/scratchpad/live9/minwage-sample30.contract.json
+{
+ "summary": "The evidence gathered here points to a small effect on jobs, not a large one. Across the 72 journal studies in the Dube and Zipperer collection, the median own-wage elasticity is -0.13 and the mean is -0.25. The 21 studies of broad groups of low-wage workers have a median of +0.02, and estimates published since 2010 tend to be closer to zero [11][13][17]. On the Card and Krueger side, Allegretto, Dube, Reich and Zipperer (2017) get teen employment elasticities of -0.01 to -0.06 when they use local or data-driven controls. They say the larger negative results come from trends that already differed between states before the increases [2][5][9][16]. Dube's 2019 review for the UK Treasury concludes that, for broad groups of workers, the employment impact is close to zero [1][8]. On the Neumark and Wascher side, Neumark and Shirley (2022) report a 'clear preponderance of negative estimates' in published US studies, but the verified part gives no central number [3][10]. Their headline tally (79.2% negative) failed verification. Both meta-analyses reached here find publication selection. After correction, one finds 'little or no' negative effect (Doucouliagos and Stanley 2009, known only through another paper's summary) and the other finds 'only a small negative effect' (Chletsos and Giotis 2015). Neither summary gives a number [4][12]. Where job loss does appear, it is in narrow, heavily affected groups or in hours: German minijobs (small jobs with a monthly earnings cap) fell with an elasticity of about -0.1 while regular jobs showed no effect, and UK evidence shows small cuts in hours [0][7][19].",
+ "citationAudit": {
+  "citationAccuracy": 96.7,
+  "citationAccuracySurvivorsOnly": 100.0,
+  "survivorsOnlyNote": "measured the way commercial deep-research tools report citation accuracy - only claims that survived the adversarial panel, i.e. what would actually be published. citationAccuracy (no suffix) is the harsher number: the full verification pool, killed claims included, and is the one this project leads with.",
+  "effectiveCitations": 29,
+  "supported": 29,
+  "partial": 1,
+  "unsupported": 0,
+  "unreachable": 0,
+  "auditErrors": 0,
+  "scope": "30 of 30 verified claims were audited; 0 call(s) returned nothing after retries and are NOT in the denominator. The pool is every verified claim, not survivors only.",
+  "note": "Citation Accuracy = supported / (supported+partial+unsupported), by blind re-fetch. Unreachable excluded from the denominator.",
+  "demotedBySurvivingPanel": 0,
+  "restatedToSupported": 4
+ },
+ "processCritique": {
+  "untraceableCount": 17,
+  "criticsReturned": 2,
+  "criticsRequested": 2,
+  "markedInSummary": 4,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "After correction, one finds 'little or no' negative effect (Doucouliagos and Stanley 2009, known only through another paper's summary) and the other finds 'only a small negative effect' (Chletsos and Giotis 2015).",
+   "For Hungary's minimum wage increase, Harasztosi and Lindner (2019) estimate that consumers paid about 75% of the cost and firm owners about 25%.",
+   "For teens, in designs with local or data-driven controls, it is -0.01 to -0.06.",
+   "For the published literature as a whole, the central own-wage elasticity is about -0.13.",
+   "In Cengiz et al. (2019), the total number of low-wage jobs stayed essentially unchanged over the five years after the minimum wage increases studied.",
+   "It finds a decline in minijobs, as workers moved both into regular jobs and out of work, with an elasticity of about -0.1 for minijobs.",
+   "The authors read -0.13 as about 13% of possible pay gains being lo",
+   "The authors read -0.13 as about 13% of possible pay gains being lo…",
+   "Their headline tally (79.2% negative) failed verification.",
+   "They say the larger negative results come from trends that already differed between states before the increases [2][5][9][16].",
+   "Where job loss does appear, it is in narrow, heavily affected groups or in hours: German minijobs (small jobs with a monthly earnings cap) fell with an elasticity of about -0.1 while regular jobs showed no effect, and UK evidence shows small cuts in hours [0][7][19].",
+   "Where losses appear, they are in narrow, heavily affected groups or in hours."
+  ],
+  "untraceableStatements": [
+   "Finding 1: 'it' refers back to 'the central own-wage elasticity'. But -0.01 to -0.06 ([2][9][16]) are employment elasticities with respect to the minimum wage, not own-wage elasticities. The finding puts two different measures on one scale. The checklist (item 3) explicitly asked for a conversion to one elasticity, and it was not done.",
+   "Finding 1: 'the published literature as a whole' and 'central' overstate the source. Claims [11] and [24] give only the median of the 72 journal studies in the Dube and Zipperer repository, which authors on one side of the debate put together. The mean of that same set is -0.25, which is in the band at or below -0.2.",
+   "Finding 1: the teen numbers are labeled wrongly. Here 'it' means 'the central own-wage elasticity', but claims [2], [9] and [16] report employment elasticities with respect to the minimum wage (-0.01, -0.04, -0.06), not own-wage elasticities. The finding puts two different units side by side as if they were the same.",
+   "Finding 2: no claim contains the authors' reading of -0.13 as about 13% of the possible pay gains being lost.",
+   "Finding 2: no claim in the pool contains the reading of -0.13 as 'about 13% of possible pay gains being lost'.",
+   "Finding 7: the -0.1 minijob elasticity from [0] is given to the region-level difference-in-differences study in [7]. The pool does not show that [0] and [7] are the same study. Also, [0] measures moves into non-employment, not the total fall in minijobs.",
+   "Finding 7: the same overgeneralization as the summary. No claim says that losses appear ONLY in narrow groups or in hours.",
+   "Finding 8: claim [22] says 'In this study' and names no author. The pool does not name Cengiz et al. (2019) as the source.",
+   "Finding 8: claim [22] says only 'In this study'. It does not name Cengiz et al. (2019). The attribution is probably correct, but it was added and is not in the pool.",
+   "Finding 9: claim [6] says 'the authors' and names no one. The pool does not name Harasztosi and Lindner (2019) as the source.",
+   "Finding 9: claim [6] says only 'The authors'. It does not name Harasztosi and Lindner (2019). The attribution was added and is not in the pool.",
+   "Summary: 'Where job loss does appear, it is in narrow, heavily affected groups or in hours' is a general rule built from two examples. The pool does not support it: the same pool has a mean own-wage elasticity of -0.25 across 72 journal studies [11] and a 'clear preponderance of negative estimates' [3]. Claim [19] says 'some evidence of small reductions in hours', but the summary says 'UK evidence shows'. Claim [0] gives -0.1 for minijob moves INTO NON-EMPLOYMENT, and calls it a wage elasticity. It does not give an elasticity for the total fall in minijobs.",
+   "Summary: a hedge was dropped. Claim [5] says MOST of the job loss in ONE model (the one that assumes parallel trends across states) comes from trends that differed before the increases. The summary says 'the larger negative results come from' such trends, which drops 'most' and applies the point to negative results in general.",
+   "Summary: claim [12] says 'little or no EVIDENCE OF a negative effect'. The summary turns this into 'little or no negative effect', which changes 'no evidence of an effect' into 'evidence of no effect'. The words 'only a small negative effect' are in quotation marks, but they are not a quote: claim [4] is itself a paraphrase ('only a small negative employment effect remains'). The pool does not say that [12] is 'another paper's summary'. It says only 'according to this abstract'.",
+   "Summary: the '79.2% negative' figure is in no numbered claim. The summary brings an unverified number into the text while saying that the number failed verification, so the reader sees the number anyway.",
+   "Summary: the figure '79.2% negative' is in no claim in the pool. The sentence puts a number that failed verification in front of the reader, even though it calls the number unverified.",
+   "Summary: the sentence saying the larger negative results come from pre-existing state trends goes beyond claim [5]. Claim [5] says only that MOST of the job loss in ONE model (the one that assumes parallel trends across states) comes from pre-existing trends. The summary drops the 'most of' hedge and extends the point to all larger negative results. Also, the pool does not name the authors of [5] as Allegretto et al."
+  ],
+  "coverageGaps": [
+   "Card and Krueger itself is absent. The pool has no estimate from Card and Krueger (1994) or (2000), or from Neumark and Wascher's (2000) payroll-data reply. The user named these two traditions, but the report uses Allegretto et al. (2017) as 'the Card and Krueger side'. Dube, Lester and Reich (2010) is also absent.",
+   "Cengiz et al. (2019): the pool has no headline own-wage elasticity or employment elasticity, and nothing on spillovers to workers paid just above the minimum.",
+   "Item 1 (the core of the question): the pool has no publication-bias-corrected central elasticity and no confidence interval. It also names no correction method (FAT-PET, PEESE, WAAP, Andrews-Kasy). Belman and Wolfson (2014) was never reached. Doucouliagos and Stanley (2009) was reached only through an abstract. The primary meta-analysis papers and their results tables were never read.",
+   "Item 1: the pool has no bias-corrected central number from any meta-analysis. The research did not read the full Doucouliagos and Stanley (2009) paper, so no FAT-PET or PEESE estimate was gathered. It did not reach Belman and Wolfson (2014) or their 2019 update. No correction method is named for any study, and no one used the Dube and Zipperer dataset to calculate a corrected value, although the meta-analyst perspective was set up to do that.",
+   "Item 2: no source tested whether the funnel plot is one-sided or how far the correction moves the estimate. No source gave the dissenting side's reply, that the asymmetry comes from real differences between studies. Claim [18] (Chletsos and Giotis: study characteristics change the sign of the effect) bears on this question but was not used.",
+   "Item 2: the research did not test whether the funnel asymmetry comes from real differences between studies or from selective reporting. No reply to Doucouliagos and Stanley from the Neumark and Wascher side was gathered. Claim [18] (study characteristics change the sign of the estimate) bears on this directly, but neither the summary nor the findings use it.",
+   "Item 3: the pool has no claim from Card and Krueger 1994 or 2000, although the question names that tradition. There is also nothing from Dube, Lester and Reich 2010, no elasticity number from Cengiz et al., and no preferred estimate from Neumark, Salas and Wascher 2014. Nobody converted the estimates to one unit, so the test of whether the two sides differ by more than 0.1 was never done.",
+   "Item 4: Neumark and Shirley (2022) was never re-coded independently. The pool has no teen or low-wage central elasticity from that paper, and the question of whether its estimates are own-wage or minimum-wage elasticities was not answered. Its headline tally failed verification.",
+   "Item 5 was never answered: the pool has no search result for any well-identified study after 2010 with an elasticity of -0.2 or lower (for example, Clemens and Wither, or Meer and West).",
+   "Item 5: the research never searched for a well-identified US study after 2010 with an elasticity of -0.2 or lower (for example Meer and West 2016 or Clemens and Wither 2019). The answer is therefore missing, not 'none exist'.",
+   "Item 6: high-bite evidence is almost absent. Seattle (Jardim et al. 2017 and 2022), the UK National Living Wage, and recent $15 state increases are missing. The tipping point rests only on Dube's 59%/81% statement.",
+   "Item 6: there is no high-bite evidence for Seattle (Jardim et al. 2017 and 2022), the UK National Living Wage, Puerto Rico, or recent US increases to $15. The only support for the 60%-of-median threshold is Dube's own statements about 59% and 81% [14][20], which do not appear in the summary.",
+   "Item 7: Meer and West (2016), Aaronson et al. (2018), and the automation studies are missing. For job losses that headcount studies miss, the pool has only UK hours and Hungary incidence.",
+   "Item 7: nothing was gathered on Meer and West 2016 (effects that grow over time), Aaronson et al. 2018 (firms entering and leaving), automation, or the spillover problem in bunching designs. The only evidence on hours is the UK finding, and that is secondhand, through Dube's review.",
+   "Item 8: the pool has nothing from CBO 2019 or 2021 and nothing from the German Minimum Wage Commission. The UK Low Pay Commission appears only through Dube's summary. Official documents, the most direct source for 'the number agencies use', were never retrieved.",
+   "Item 8: the research gathered no CBO 2019 or 2021 report and no German Minimum Wage Commission report. It did not read the UK Low Pay Commission's own reports, only Dube's summary of them. The official-forecaster question was answered only with Dube's qualitative review, which gives no numeric range, so the H4 test was not done.",
+   "Source balance: about 17 of the 26 claims come from works that Dube wrote or co-wrote (the HM Treasury review, the repository, Allegretto et al. 2017, and Cengiz et al.). Many are duplicates ([1]/[8]/[15]/[21], [14]/[20], [19]/[25], [11]/[13]/[24]). The Neumark and Wascher side has only 3 claims, and none has a number. The weighing the user asked for is structurally one-sided.",
+   "Source type never used: the Dube and Zipperer repository dataset itself, which could have given a corrected or precision-weighted estimate. The meta-analyst perspective was meant to do exactly this.",
+   "Source types never searched: the original Card and Krueger and Neumark and Wascher papers, CBO documents, full meta-analysis papers (not only abstracts), the repository data itself, and any expert from the Neumark and Wascher side who criticizes the meta-analysis method.",
+   "The Neumark and Wascher side has no number at all. The pool has no elasticity from Neumark, Salas and Wascher (2014), no central value from Neumark and Shirley (2022), and no answer on whether their estimates are own-wage elasticities or minimum-wage elasticities (item 4). So the comparison of the two traditions (item 3) and the test of whether they differ by more than 0.1 could not be done.",
+   "The summary never states a best estimate of the employment elasticity, and the question asks for one directly. Finding 1 gives -0.13, but that is an own-wage elasticity that is NOT corrected for publication bias, and the summary opens with that number without saying it is uncorrected."
+  ],
+  "planFlaws": [
+   "All six perspectives depend on the same retrieval path: abstracts and landing pages. None required reading the results tables or official documents, which is where corrected elasticities and CBO numbers are. So every perspective shared one blind spot, and the central numeric question could not be answered by design.",
+   "Checklist item 1 lists the Dube and Zipperer own-wage-elasticity repository among the 'publication-bias-corrected meta-analyses'. It is an uncorrected collection of estimates. This framing let the report present an uncorrected median (-0.13) as the 'best current estimate'.",
+   "Item 1 of the scoper's checklist puts the Dube and Zipperer OWE repository among the 'central employment elasticities' and uses one set of bands (-0.05 and -0.2) for all of them. It never says whether the bands apply to elasticities with respect to the minimum wage or to own-wage elasticities. An OWE is usually several times larger in size than the minimum-wage elasticity for the same data. This is why the report compares an OWE of -0.13 with minimum-wage elasticities of -0.01 to -0.06, and why claim [24] puts -0.13 into a band that was probably meant for the other unit. Item 3's 0.1 threshold has the same problem.",
+   "The disemployment steelman perspective produced no number. The only evidence from the Neumark and Wascher side is one abstract [3][10][23]. The plan did not require a numeric estimate from each side before weighing them, so the result leans to one side because one side's numbers are missing, not because the evidence was weighed.",
+   "The hypothesis bands (at or above -0.05, between -0.05 and -0.2, at or below -0.2) do not say which elasticity they measure: employment with respect to the minimum wage, or own-wage. The two scales differ by roughly the wage pass-through factor, so one band can hold very different effects. The report then puts a -0.13 own-wage elasticity next to -0.01 to -0.06 minimum-wage elasticities as if they were comparable.",
+   "The perspective set did not guard against depending on one author. Of the 26 claims, 14 come from Dube's own work (the repository, ADRZ 2017, the 2019 review). The official-forecaster perspective settled on Dube's review for HM Treasury, which is an academic synthesis from the Card and Krueger side, not a scoring agency. No perspective had to get CBO or German Minimum Wage Commission documents.",
+   "The scoper gave no dedicated sub-question to the literal Card and Krueger versus Neumark and Wascher exchange (New Jersey and Pennsylvania, 1994 and 2000). It is only a sub-bullet, and the research dropped it without any signal."
+  ],
+  "rationales": [
+   "The question has three parts: weigh the Card and Krueger tradition against Neumark and Wascher, cover publication bias, and give a best elasticity. None of the three is answered on its own terms. The pool has no Card and Krueger estimate and no numeric Neumark and Wascher estimate. It has no bias-corrected number and no correction method. The 'best estimate' is an uncorrected median own-wage elasticity, which Finding 1 then conflates with minimum-wage elasticities. The summary also drops hedges …",
+   "The question asks for three things: weigh the Card and Krueger tradition against Neumark and Wascher, deal with publication bias, and give a best estimate. The report does none of the three well enough to act on. There are no original Card and Krueger papers and no number from the Neumark and Wascher side. On publication bias, it has only qualitative wording from two abstracts ('little or no', 'small'). The best estimate it offers (-0.13) is an own-wage elasticity that is not corrected for publi…"
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "standard",
+  "provider": "claude",
+  "model": "claude-sonnet-5",
+  "transport": "session",
+  "perspectives": 6,
+  "subQuestions": 8,
+  "sourcesFetched": 26,
+  "claimsExtracted": 71,
+  "urlDupes": 2,
+  "budgetDropped": 13,
+  "claimsDroppedBeforeVerify": 41,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 71,
+    "ok": 69,
+    "fail": 2,
+    "challenged": 0,
+    "junk": 2,
+    "results": 355
+   },
+   "ddg-html": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 8,
+    "ok": 0,
+    "fail": 8,
+    "challenged": 7,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 8,
+    "ok": 8,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 8
+   },
+   "crossref": {
+    "attempts": 7,
+    "ok": 6,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 41
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 2
+   },
+   "pubmed": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "arxiv": {
+    "attempts": 1,
+    "ok": 0,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "hn": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   }
+  },
+  "generalWebOkRate": 0.726,
+  "sourceTiers": {
+   "T3": 9,
+   "T?": 4,
+   "T2": 3,
+   "T1": 10
+  },
+  "killsByLens": {
+   "support": 4,
+   "counter": 4,
+   "provenance": 1
+  },
+  "fetchVia": {
+   "failed": 7,
+   "pdf": 5,
+   "http": 7,
+   "crossref-api": 6,
+   "crossref-fallback": 1
+  },
+  "pickStarvation": {
+   "calls": 11,
+   "starved": 0,
+   "hits": 87,
+   "rate": 0.0
+  },
+  "agentCalls": 254,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 71,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 30,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 15,
+   "misses": 101,
+   "charsServedFromCache": 65617,
+   "hitRate": 0.129
+  },
+  "wallSeconds": 1435.7,
+  "claimsVerified": 30,
+  "lensesPerClaim": 3,
+  "confirmed": 26,
+  "killed": 4,
+  "unverifiedCount": 0,
+  "afterSynthesis": 9
+ }
+}
