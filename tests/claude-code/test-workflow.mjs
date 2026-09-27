@@ -406,7 +406,8 @@ import fs2 from 'node:fs'
   // WEB_STRIP is built from \p{...} property escapes, meaningless without the 'u' flag.
   ok(/return new RegExp\(out, 'u'\)/.test(src),
      'the tolerant strike pattern is compiled in unicode mode, or its character classes are nonsense')
-  ok(/webTextPattern\(frag\)\.exec\(text\)/.test(src) && !/text\.includes\(frag\)/.test(src),
+  // The match now lives in flagSpans, the one locator annotate and strike share.
+  ok(/new RegExp\(webTextPattern\(frag\)\.source, 'gu'\)/.test(src) && !/text\.includes\(frag\)/.test(src),
      'the strike matches through webText, not with a plain includes() that misses on any summary containing a quotation mark')
   ok((src.match(/const toRefuted =/g) || []).length === 1,
      'exactly one toRefuted builder - the Python twin had TWO, and fixing one left the happy path on the old shape')
@@ -549,6 +550,16 @@ import fs2 from 'node:fs'
   ok((out.summaryAnnotated || '').includes('[UNTRACEABLE: Employment was flat across every group studied.]') &&
      out.processCritique.markedInSummary === 1,
      'summaryAnnotated marks the flagged sentence in place, and markedInSummary counts it')
+}
+{
+  // Review of 1.18.0: a duplicate or substring flag nested a second marker inside the
+  // first and counted one sentence twice. One locator (flagSpans) now serves both uses.
+  const sum = 'Wages rose five percent in the treated counties. Employment was flat across every group studied.'
+  const { out } = await run('R14 one flagged sentence is one marker', { question: 'Q', depth: 'standard' },
+    { summary: sum, criticVerbatim: ['Employment was flat across every group studied.',
+      'was flat across every group studied.', 'Employment was flat across every group studied.'] })
+  ok(out.processCritique.markedInSummary === 1 && (out.summaryAnnotated.match(/\[UNTRACEABLE:/g) || []).length === 1,
+     'duplicate and substring flags mark the sentence once (' + out.summaryAnnotated + ')')
 }
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')

@@ -3735,5 +3735,30 @@ finally:
     if _is_fc is not None:
         os.environ["DR_FIRECRAWL_URL"] = _is_fc
 
+
+print("\n-- one flagged sentence is ONE marker, however the critic repeated it --")
+# Review of 1.18.0 (2026-09-27): marking re-searched text that already held a marker, so
+# a duplicate flag, or one that was a substring of another, nested a second
+# [UNTRACEABLE: ...] inside the first and counted one sentence twice. Reproduced exactly
+# with these flags before the fix: markedInSummary 2, a marker inside a marker.
+_nm = run({"summary": _g1_sum,
+           "critic_verbatim": ["Employment was flat across every group studied.",
+                               "was flat across every group studied.",
+                               "Employment was flat across every group studied."]})
+ok(_nm["processCritique"]["markedInSummary"] == 1
+   and _nm["summaryAnnotated"].count("[UNTRACEABLE:") == 1,
+   "duplicate and substring flags mark the sentence once (%r)" % _nm.get("summaryAnnotated"))
+_ns_saved = dr.UNTRACEABLE_POLICY
+dr.UNTRACEABLE_POLICY = "strike"
+try:
+    _ns = run({"summary": _g1_sum,
+               "critic_verbatim": ["was flat across every group studied.",
+                                   "Employment was flat across every group studied."]})
+finally:
+    dr.UNTRACEABLE_POLICY = _ns_saved
+ok(_ns["summary"] == "Wages rose five percent in the treated counties."
+   and _ns["processCritique"]["struckFromSummary"] == ["Employment was flat across every group studied."],
+   "strike removes the WHOLE flagged sentence, never a fragment of it first (%r)" % _ns["summary"])
+
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

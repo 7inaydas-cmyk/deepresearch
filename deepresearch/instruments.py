@@ -76,6 +76,7 @@ def _adapter():
         "is_prose":            lambda text: _search.is_prose(text)[0],
         "looks_challenged":    lambda body: _search._looks_challenged(body),
         "is_interstitial":     lambda text: _search._is_interstitial(text),
+        "annotate_flags":      lambda summary, cands: list(dr.annotate_flags(summary, cands)),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "_extract_json":       lambda text: dr._extract_json(text),
         "frontmatter_version": lambda content: _fm_via_tempfile(content),

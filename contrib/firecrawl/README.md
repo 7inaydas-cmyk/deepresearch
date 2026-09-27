@@ -3,9 +3,13 @@
 The rendered-read layer: JS-heavy pages that the stdlib reader parses as empty
 shells come back as real markdown. Opt-in by env, never a dependency:
 
-- `DR_FIRECRAWL_URL` - the instance. NO default; unset means fully off.
-  `http://127.0.0.1:3002` from the host, `http://firecrawl:3002` from inside
-  the docker network.
+- `DR_FIRECRAWL_URL` - the instance. NO default in the engine; unset means fully
+  off. `http://127.0.0.1:3002` from the host, `http://firecrawl:3002` from inside
+  the docker network. One launcher differs, by the owner's decision (2026-09-17):
+  `contrib/zcode-session/drive.sh dr-launch`, with the variable unset, test-scrapes
+  `https://example.com` through `127.0.0.1:3002` once and adopts the instance only
+  if markdown comes back - so that launch makes one network attempt even when no
+  Firecrawl runs. A set variable always wins; the engine never probes.
 - `DR_FIRECRAWL_KEY` - only for a hosted instance; local mode needs nothing.
 
 ## Deployment (measured 2026-09-17)

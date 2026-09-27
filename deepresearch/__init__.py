@@ -18,5 +18,5 @@ if not _os.path.isdir(_os.path.join(_os.path.dirname(_os.path.dirname(_os.path.a
 from .engine import deepresearch, selftest, main  # noqa: F401,E402
 from . import search  # noqa: F401
 
-__version__ = "1.18.0"
+__version__ = "1.18.1"
 __all__ = ["deepresearch", "selftest", "search", "main"]

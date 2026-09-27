@@ -1073,6 +1073,43 @@ const demotionSet = rows => new Set(rows.filter(f => f.support === 'unsupported'
   (f.support === 'partial' && ['partial', 'unsupported'].includes((f.restate || {}).verdict)))
   .map(f => auditKey(f.claim, f.url)))
 
+// ── Where the critic's flagged sentences sit in the summary: ONE locator for both
+//    consumers (annotate and strike), pure and above the run so contract/conformance.json
+//    asks both builds the same questions. They were two loops that had drifted (review of
+//    1.18.0, 2026-09-27): marking re-searched text that already held a marker, so a
+//    duplicate or substring flag nested a second marker and counted one sentence twice.
+//    Longest flag first, identical flags once, a flag overlapping a located span skipped;
+//    exact through the webText view, never fuzzy; 25 characters or fewer is too short.
+const flagSpans = (summary, cands) => {
+  const text = String(summary || ''), spans = []
+  const frags = [...new Set(cands.map(c => String(c || '').trim()))].filter(f => f.length > 25)
+    .sort((a, b) => (b.length - a.length) || (a < b ? -1 : a > b ? 1 : 0))
+  for (const frag of frags) {
+    const re = new RegExp(webTextPattern(frag).source, 'gu')
+    for (let m = re.exec(text); m !== null; m = re.exec(text)) {
+      if (!m[0].length) { re.lastIndex++; continue }
+      const s = m.index, e = s + m[0].length
+      if (!spans.some(([a, b]) => s < b && a < e)) { spans.push([s, e, frag]); break }
+    }
+  }
+  return spans.sort((x, y) => x[0] - y[0])
+}
+// [summary with each located flag wrapped [UNTRACEABLE: ...], how many]
+const annotateFlags = (summary, cands) => {
+  const text = String(summary || ''), spans = flagSpans(text, cands)
+  let out = '', last = 0
+  for (const [s, e] of spans) { out += text.slice(last, s) + '[UNTRACEABLE: ' + text.slice(s, e) + ']'; last = e }
+  return [out + text.slice(last), spans.length]
+}
+// [summary with each located flag removed, the flags struck]; nothing located = unchanged
+const strikeFlags = (summary, cands) => {
+  const text = String(summary || ''), spans = flagSpans(text, cands)
+  if (!spans.length) return [text, []]
+  let out = '', last = 0
+  for (const [s, e] of spans) { out += text.slice(last, s); last = e }
+  return [(out + text.slice(last)).replace(/\s{2,}/g, ' ').trim(), spans.map(x => x[2])]
+}
+
 phase('Scope')
 log('Question: ' + QUESTION.slice(0, 90) + (QUESTION.length > 90 ? '…' : ''))
 log('Depth: ' + DEPTH + ' (' + T.perspectives + ' perspectives, ' + T.deepenRounds + ' deepening round(s), ' +
@@ -2050,31 +2087,14 @@ for (const u of untraceable) {
 }
 // Under the default `flag` policy the summary stays as written and the flags sat in
 // processCritique, where a reader of the summary never looks - the quality review's top
-// gap (G1). A copy of the ORIGINAL summary with every locatable flagged sentence marked
-// in place; the same exact-through-webText rule as strike, never fuzzy (2026-09-27).
-let summaryAnnotated = report.summary || ''
-let markedInSummary = 0
-for (const raw of cands) {
-  const frag = (raw || '').trim()
-  if (frag.length <= 25) continue
-  const m = webTextPattern(frag).exec(summaryAnnotated)
-  if (m) {
-    summaryAnnotated = summaryAnnotated.slice(0, m.index) + '[UNTRACEABLE: ' + m[0] + ']' +
-      summaryAnnotated.slice(m.index + m[0].length)
-    markedInSummary++
-  }
-}
+// gap (G1). A copy of the ORIGINAL summary (before any strike) with every locatable
+// flagged sentence marked in place; flagSpans serves this and strike alike.
+const [summaryAnnotated, markedInSummary] = annotateFlags(report.summary || '', cands)
 if (UNTRACEABLE_POLICY === 'strike' && untraceable.length) {
-  let text = report.summary || ''
-  for (const raw of cands) {
-    const frag = (raw || '').trim()
-    if (frag.length > 25) {
-      const m = webTextPattern(frag).exec(text)
-      if (m) { text = text.slice(0, m.index) + text.slice(m.index + m[0].length); struck.push(frag) }
-    }
-  }
+  const [text, gone] = strikeFlags(report.summary || '', cands)
+  struck.push(...gone)
   if (struck.length) {
-    report.summary = text.replace(/\s{2,}/g, ' ').trim()
+    report.summary = text
     log('STRUCK ' + struck.length + ' untraceable statement(s) from the summary (policy=strike)')
   } else {
     log('STRIKE MATCHED NOTHING: ' + untraceable.length + ' untraceable statement(s) flagged, 0 removable — the critic\'s text does not appear verbatim in the summary. Reporting them instead of deleting on a fuzzy match.')

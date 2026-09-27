@@ -54,7 +54,8 @@
   "tally_verdicts": "gate",
   "demotion_set": "gate",
   "_gw_dead_from_health": "gate",
-  "is_interstitial": "gate"
+  "is_interstitial": "gate",
+  "annotate_flags": "transform"
  },
  "cases": {
   "webtext": [
@@ -916,6 +917,88 @@
     "out": [],
     "ref": "good",
     "why": "a restatement whose re-audit call failed has no verdict and does not demote"
+   }
+  ],
+  "annotate_flags": [
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. [UNTRACEABLE: Employment was flat across every group studied.]",
+     1
+    ],
+    "why": "a flagged sentence is marked in place and the rest of the summary is untouched"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Employment was flat across every group studied.",
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. [UNTRACEABLE: Employment was flat across every group studied.]",
+     1
+    ],
+    "why": "the same flag twice is ONE marker: 1.18.0 re-searched text that already held a marker and nested a second one (review of 1.18.0, 2026-09-27)"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "was flat across every group studied.",
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. [UNTRACEABLE: Employment was flat across every group studied.]",
+     1
+    ],
+    "why": "a flag inside another is located already: longest first, overlaps skipped - 1.18.0 nested the substring and counted one sentence twice"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "flat across every group"
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     0
+    ],
+    "why": "25 characters or fewer is too short to locate safely: no marker"
+   },
+   {
+    "in": [
+     "He said \u201cemployment was flat across every group\u201d in 2020.",
+     [
+      "He said employment was flat across every group in 2020."
+     ]
+    ],
+    "out": [
+     "[UNTRACEABLE: He said \u201cemployment was flat across every group\u201d in 2020.]",
+     1
+    ],
+    "why": "located through the webtext view the critic read: quotation marks deleted there still sit in the raw summary"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Nothing like this sentence appears in the summary text."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     0
+    ],
+    "why": "a paraphrased flag is not located, never fuzzily"
    }
   ]
  },

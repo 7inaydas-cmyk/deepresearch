@@ -109,7 +109,10 @@ SHARED = {
     "audit-off + unchecked limits": ('out["citationAuditOff"]', "citationAuditOff:"),
     "rescue pool is citable":    ("r_citable, r_excluded = citable_only(", "citableOnly(rescued.flatMap("),
     "demotion says why":         ('c["auditWhy"] = ', "auditWhy: auditWhy.get("),
-    "flags marked in summary":   ('out["summaryAnnotated"] = _annotated', "summaryAnnotated.slice(0, m.index) + '[UNTRACEABLE: '"),
+    # One locator per build since 1.18.1; its answers are pinned in contract/conformance.json
+    # (annotate_flags), so these markers only prove the helpers exist and are used.
+    "flags marked in summary":   ("def annotate_flags(", "const annotateFlags = "),
+    "one flag locator":          ("def flag_spans(", "const flagSpans = "),
     "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),

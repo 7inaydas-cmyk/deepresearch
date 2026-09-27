@@ -194,6 +194,55 @@ def webtext_pattern(frag):
     return re.compile("".join(out))
 
 
+def flag_spans(summary, cands):
+    """Pure: where the critic's flagged sentences sit in the summary, as non-overlapping
+    (start, end, frag) spans in text order.
+
+    One locator for BOTH consumers (annotate and strike), because they were two loops
+    and had drifted (review of 1.18.0, 2026-09-27): marking re-searched text that
+    already held a marker, so a flag that was a duplicate of - or a substring of -
+    another located inside the first marker and nested a second one, counting one
+    sentence twice. Longest flag first, identical flags once, and a flag overlapping an
+    already-located span is skipped: the sentence around it is located already.
+    Located exactly through the webtext view (webtext_pattern), never fuzzily; flags of
+    25 characters or fewer are too short to locate safely.
+    """
+    spans = []
+    for frag in sorted({(c or "").strip() for c in cands}, key=lambda f: (-len(f), f)):
+        if len(frag) <= 25:
+            continue
+        for m in webtext_pattern(frag).finditer(summary or ""):
+            s, e = m.start(), m.end()
+            if e > s and not any(s < b and a < e for a, b, _ in spans):
+                spans.append((s, e, frag))
+                break
+    return sorted(spans)
+
+
+def annotate_flags(summary, cands):
+    """Pure: (summary with each located flag wrapped [UNTRACEABLE: ...], how many)."""
+    summary, out, last = summary or "", [], 0
+    spans = flag_spans(summary, cands)
+    for s, e, _ in spans:
+        out += [summary[last:s], "[UNTRACEABLE: ", summary[s:e], "]"]
+        last = e
+    return "".join(out) + summary[last:], len(spans)
+
+
+def strike_flags(summary, cands):
+    """Pure: (summary with each located flag removed, the flags struck). Nothing located
+    leaves the summary byte-identical."""
+    summary = summary or ""
+    spans = flag_spans(summary, cands)
+    if not spans:
+        return summary, []
+    out, last = [], 0
+    for s, e, _ in spans:
+        out.append(summary[last:s])
+        last = e
+    return re.sub(r"\s{2,}", " ", "".join(out) + summary[last:]).strip(), [f for _, _, f in spans]
+
+
 def norm_url(u):
     m = _URL_HOST.match(str(u))
     return (m.group(1) + m.group(2).rstrip("/")).lower() if m else str(u).lower()
@@ -3786,38 +3835,18 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                     _cands.append(_parts[1])
     # Under the default `flag` policy the summary stays as written and the flags sat in
     # processCritique, where a reader of the summary never looks - the quality review's
-    # top gap (G1). Publish a copy of the ORIGINAL summary with every locatable flagged
-    # sentence marked in place. Same location rule as strike: exact through the webtext
-    # view, never fuzzy, so a marker never lands on text the critic did not object to.
-    _annotated, _marked = out.get("summary") or "", 0
-    for _frag in _cands:
-        _frag = (_frag or "").strip()
-        if len(_frag) <= 25:
-            continue
-        _m = webtext_pattern(_frag).search(_annotated)
-        if _m:
-            _annotated = (_annotated[:_m.start()] + "[UNTRACEABLE: " + _m.group(0) + "]"
-                          + _annotated[_m.end():])
-            _marked += 1
+    # top gap (G1). Publish a copy of the ORIGINAL summary (before any strike) with
+    # every locatable flagged sentence marked in place. One locator, flag_spans, serves
+    # this and strike: exact through the webtext view, never fuzzy.
+    _annotated, _marked = annotate_flags(out.get("summary") or "", _cands)
     if _untraceable:
         out["summaryAnnotated"] = _annotated
     if UNTRACEABLE_POLICY == "strike" and _untraceable:
         # Strike only sentences we can actually locate. A fuzzy match would delete
         # text the critic did not object to, which is worse than leaving it.
-        _summary = out.get("summary") or ""
-        for _frag in _cands:
-            _frag = (_frag or "").strip()
-            if not _frag or len(_frag) <= 25:
-                continue
-            # Match through the same transformation the critic read the summary
-            # through. A plain `in` test fails on any summary containing a quotation
-            # mark, because webtext deleted those before the critic ever saw them.
-            _m = webtext_pattern(_frag).search(_summary)
-            if _m:
-                _summary = _summary[:_m.start()] + _summary[_m.end():]
-                _struck.append(_frag)
+        _summary, _struck = strike_flags(out.get("summary") or "", _cands)
         if _struck:
-            out["summary"] = re.sub(r"\s{2,}", " ", _summary).strip()
+            out["summary"] = _summary
             log("STRUCK %d untraceable statement(s) from the summary (DR_UNTRACEABLE=strike)"
                 % len(_struck))
         elif _untraceable:
@@ -3830,7 +3859,9 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                               "markedInSummary": _marked,
                               "markedInSummaryMeans": (
                                   "how many flagged sentences were located verbatim and "
-                                  "marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the "
+                                  "marked [UNTRACEABLE: ...] in summaryAnnotated, which is "
+                                  "the ORIGINAL summary - under DR_UNTRACEABLE=strike the "
+                                  "`summary` field has the same sentences removed. A flag the "
                                   "critic paraphrased cannot be located, so it appears only "
                                   "in untraceableStatements - read those too."),
                               "untraceableCountMeans": (
