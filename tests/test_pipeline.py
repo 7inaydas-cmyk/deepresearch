@@ -2333,6 +2333,9 @@ print("\n-- the provider seam: selection, transport facts, and honest errors --"
 import deepresearch.providers as _P   # noqa: E402
 import json as _pj  # noqa: E402
 
+_REAL_WHICH = _P.shutil.which
+
+
 def _with_env(env, fn):
     """Run fn under a mutated environment, restoring exactly what was there."""
     # Hermetic: clear EVERY selector input (DR_* and all provider keys), not just the
@@ -2352,10 +2355,20 @@ def _with_env(env, fn):
             _os.environ.pop(k, None)
         else:
             _os.environ[k] = v
+    # And no harness on PATH unless a test says so (_with_harness installs its own lie
+    # first). Clearing the env was not enough: inside the hermes container `hermes` IS
+    # on PATH, so the glm provider resolved to the session transport and the HTTP
+    # assertions crashed the suite there while it passed on the host (found by running
+    # the suite in the deployed container, 2026-09-27).
+    _patched = _P.shutil.which is _REAL_WHICH
+    if _patched:
+        _P.shutil.which = lambda c: None
     try:
         _P.reset()
         return fn()
     finally:
+        if _patched:
+            _P.shutil.which = _REAL_WHICH
         for k, v in _saved.items():
             if v is None:
                 _os.environ.pop(k, None)
