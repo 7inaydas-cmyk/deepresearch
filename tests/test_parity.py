@@ -64,7 +64,11 @@ SHARED = {
     "ambiguous-host refusal":    ("def host_is_ambiguous(", "const hostIsAmbiguous = "),
     "resolver handling":         ("RESOLVERS", "RESOLVERS"),
     "citable enforcement":       ("citable_only", "citableOnly"),
-    "tier-first ranking":        ("TIER_RANK.get", "tierRankOf"),
+    # Was "tier-first ranking" with markers that stayed green for a week after Python
+    # reversed to importance-first and JS did not (review 2026-09-27): a marker proves a
+    # token exists, not the ORDER of a sort key. The markers now name the lead key.
+    "importance-first ranking":  ("return (IMP.get(c.get(\"importance\"), 3), TIER_RANK",
+                                  "(rankIn(impRank, a.importance, 3) - rankIn(impRank, b.importance, 3)) ||"),
     "audit key (claim,url)":     ('fact_by.get((c["claim"]', "auditKey(c.claim"),
     "rescue pass":               ("RESCUE:", "RESCUE:"),
     "citation audit":            ("citationAccuracy", "citationAccuracy"),
@@ -95,7 +99,16 @@ SHARED = {
     "critique leads with count":  ("untraceableCount", "untraceableCount"),
     "count says what it counts": ("untraceableCountMeans", "untraceableCount"),
     "evidence-base label":       ("def _evidence_base(", "const evidenceBase = "),
-    "limits on EVERY exit":      ("def honest_limits(extra=None)", "const honestLimits = (extra)"),
+    "limits on EVERY exit":      ("def honest_limits(extra=None", "const honestLimits = (extra"),
+    # The quality fixes of 2026-09-20 landed in Python only and parity reported 0 drift,
+    # because none of them had a row (review 2026-09-27). Ported, and pinned here.
+    "restate-or-drop":           ("def p_restate(", "const RESTATE_PROMPT = "),
+    "shared demotion rule":      ("def demotion_set(", "const demotionSet = "),
+    "shared panel arithmetic":   ("def tally_verdicts(", "const tallyVerdicts = "),
+    "post-verify coverage":      ("def post_verify_coverage(", "const postVerifyCoverage = "),
+    "audit-off + unchecked limits": ('out["citationAuditOff"]', "citationAuditOff:"),
+    "rescue pool is citable":    ("r_citable, r_excluded = citable_only(", "citableOnly(rescued.flatMap("),
+    "demotion says why":         ('c["auditWhy"] = ', "auditWhy: auditWhy.get("),
     "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),
@@ -156,6 +169,11 @@ PYTHON_ONLY = {
         "prompt instruction. An instruction and a code path are not the same feature, and "
         "pairing them as a shared row is how four fixes were certified present in a build "
         "that did not have them.",
+    "counter lens reads a fetched page":
+        "Python fetches the top counter-evidence hit in code and puts the page in the "
+        "lens prompt (2026-09-20). The JS counter lens is a subagent holding WebFetch "
+        "itself, so the same rule travels as an instruction to read the page rather than "
+        "a snippet - and an instruction is not the twin of a mechanism.",
     "audit re-fetches the page, not the cache":
         "web_fetch(..., fresh=True) is a Python mechanism. The JS build's audit subagent "
         "calls the runtime's WebFetch itself, so the orchestrator has no cache to bypass "

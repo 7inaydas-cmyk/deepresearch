@@ -103,4 +103,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
-      - run: shellcheck install.sh
+      # Every shell script, not just the installer: the contrib drivers are what agents
+      # actually execute, and none of them was ever linted (review 2026-09-27).
+      - run: shellcheck install.sh contrib/*/*.sh

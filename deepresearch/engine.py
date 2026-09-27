@@ -93,8 +93,6 @@ try:
 except AuthError:
     MODEL = os.environ.get("DR_MODEL", "") or _providers.spec(_providers.names()[0])["default_model"]
 CALIBRATE_N = int(os.environ.get("DR_CALIBRATE", "0"))
-# Filled in at ranking time so synthesis can disclose the coverage limit.
-DROP_N = DROP_TOTAL = DROP_PCT = 0
 # Filled in at framing time. The whole point of writing kill criteria before
 # searching is that something later adjudicates them; nothing did until now.
 HYPOTHESES = []
@@ -576,14 +574,24 @@ def _stdio_exchange(prompt, schema):
         sys.stdout.flush()
         line = sys.stdin.readline()
         if not line.strip():
+            log("  [stdio] EOF or blank line on stdin for request %d - the driver is gone "
+                "or answered nothing" % rid)
             return None
+        # Each refusal names itself: agent() only reports "no usable JSON", which
+        # names the wrong failure when the reply was valid JSON for another id.
         try:
             ans = json.loads(line)
-            if ans.get("id") != rid or not isinstance(ans.get("reply"), dict):
-                return None
-            return ans["reply"]
-        except Exception:
+        except Exception as e:
+            log("  [stdio] reply to request %d is not JSON (%s): %.120r" % (rid, e, line))
             return None
+        if not isinstance(ans, dict) or ans.get("id") != rid:
+            log("  [stdio] reply id %r does not match request %d - refused"
+                % ((ans or {}).get("id") if isinstance(ans, dict) else None, rid))
+            return None
+        if not isinstance(ans.get("reply"), dict):
+            log("  [stdio] reply to request %d carries no reply object" % rid)
+            return None
+        return ans["reply"]
 
 
 def _session_prompt(t, prompt, schema):
@@ -660,6 +668,7 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
     # what was wrong with the last one.
     correction = ""
     for attempt in range(retries):
+        seen = ""  # the HTTP branch names the response blocks here
         try:
             if t.get("scheme") == "stdio":
                 got = _stdio_exchange(_session_prompt(t, prompt + correction, schema), schema)
@@ -701,6 +710,10 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                     _stats["calls"] += 1
                     _record_usage(out.get("usage") or {})
                 got, stop = None, out.get("stop_reason")
+                # Name what DID come back: this path once returned None silently, and a
+                # caller three phases later reported "synthesis failed" with nothing
+                # saying why. The blocks= detail was lost in the stdio refactor.
+                seen = " blocks=%s" % ([b.get("type") for b in (out.get("content") or [])] or "none")
                 for blk in out.get("content", []):
                     if blk.get("type") == "tool_use" and blk.get("name") == "StructuredOutput":
                         got = blk.get("input")
@@ -723,8 +736,8 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                     continue
                 with _stats_lock:
                     _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
-                log("  [%s] no usable JSON in the reply (stop_reason=%s); retrying with a "
-                    "correction (%d/%d)" % (label, stop, attempt + 1, retries))
+                log("  [%s] no usable JSON in the reply (stop_reason=%s%s); retrying with a "
+                    "correction (%d/%d)" % (label, stop, seen, attempt + 1, retries))
                 correction = (
                     "\n\n## YOUR PREVIOUS RESPONSE WAS REJECTED - READ THIS BEFORE RETRYING\n"
                     "You returned: no parseable JSON object.\n"
@@ -735,7 +748,8 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
                 time.sleep(delay); delay *= 2
                 continue
             if got is None:
-                log("  [%s] gave up after %d attempt(s): no usable JSON" % (label, retries))
+                log("  [%s] gave up after %d attempt(s): no usable JSON (stop_reason=%s%s)"
+                    % (label, retries, stop, seen))
                 with _stats_lock:
                     _stats["errors"] += 1
                 return None
@@ -743,6 +757,22 @@ def agent(prompt, schema, label="agent", model=None, max_tokens=4000, retries=5)
             if short and attempt < retries - 1:
                 with _stats_lock:
                     _stats["schemaShortfalls"] = _stats.get("schemaShortfalls", 0) + 1
+                if stop == "max_tokens":
+                    # This is the whole explanation, and it is not the model's judgement:
+                    # the response was CUT OFF, and a truncated tool call comes back with
+                    # EMPTY arrays rather than partial ones - which is why it looked like
+                    # "the model returned nothing" for so long. Measured 2026-09-06 on the
+                    # framing call at max_tokens=2500. Scolding a truncated response
+                    # achieves nothing; give it room. The stdio refactor moved growth
+                    # under `got is None` only, so a truncation that PARSED got the
+                    # corrective re-ask at the same budget five times (review 2026-09-27).
+                    body["max_tokens"] = min(16000, int(body["max_tokens"] * 2))
+                    data = json.dumps(body).encode()
+                    log("  [%s] response was TRUNCATED (%s), so its required fields came back "
+                        "empty: %s. Retrying with max_tokens=%d (%d/%d)"
+                        % (label, stop, ", ".join(short), body["max_tokens"], attempt + 1, retries))
+                    time.sleep(1.0)
+                    continue
                 log("  [%s] response violates its own schema: %s (stop_reason=%s); "
                     "retrying (%d/%d)"
                     % (label, ", ".join(short), stop, attempt + 1, retries))
@@ -1520,6 +1550,13 @@ def _hyp_mismatch(verdict_text, registered_text):
     return len(ta & tb) / max(1, len(ta)) < _HYP_MISMATCH_MAX
 
 
+def to_unv(c):
+    """An unverified claim: too few valid votes to adjudicate. Every exit after the
+    panel publishes these; only the happy path did, so the other three exits dropped
+    them without a word (review 2026-09-27)."""
+    return {"claim": webtext(c["claim"], 300), "erroredVotes": c["erroredVotes"]}
+
+
 def to_ref(c):
     """A killed claim, with EVERY reason it died and every source that contradicted it.
 
@@ -1534,7 +1571,11 @@ def to_ref(c):
     return {"claim": webtext(c["claim"], 400), "killedBy": c["killedBy"],
             "vote": "%d-%d" % (len(c["verdicts"]) - c["refutedVotes"], c["refutedVotes"]),
             "source": webtext(c["sourceUrl"], 250),
-            "why": webtext(refuters[0]["evidence"], 500) if refuters else "",
+            # A claim the AUDIT demoted has no refuting vote - the panel passed it - so
+            # `why` was "" and the audit's reason was dropped (review 2026-09-27).
+            # A 2-1 SURVIVOR that the audit then demoted has a refuter too - the losing
+            # lens - so the audit's reason must win whenever it exists.
+            "why": webtext(c.get("auditWhy") or (refuters[0]["evidence"] if refuters else ""), 500),
             "refutedBy": [{"lens": v.get("lens"),
                            "evidence": webtext(v.get("evidence", ""), 500),
                            **({"counterSource": webtext(v["counterSource"], 250)}
@@ -1892,8 +1933,9 @@ def _run_limits(T, all_claims_n, verified_n):
     if all_claims_n:
         unchecked = all_claims_n - verified_n
         out["evidenceChecked"] = (
-            "%d of %d extracted claims were verified (%d unchecked, ranked out of the "
-            "panel budget by importance then tier). Unchecked is not refuted - see "
+            "%d of %d extracted claims were verified (%d unchecked: ranked out of the "
+            "panel budget by importance then tier, or excluded as non-citable sources). "
+            "Unchecked is not refuted - see "
             "evidenceBase before reading silence as absence."
             % (verified_n, all_claims_n, unchecked))
     return out
@@ -1940,13 +1982,18 @@ def _honest_limits(extra=None, evidence=None):
             "the EVIDENCE regardless of whether the claim is true. `unverifiable` means "
             "the page was empty or the quote too short to judge, and is never evidence of "
             "fabrication. Measured over 30 real quotes on 2026-09-08: 93% located."),
+        # Key name kept for consumers; the text changed with restate-or-drop, which
+        # made "a partial does NOT remove the claim" false (review 2026-09-27).
         "partialCitationsAreKept": (
             "A `partial` citation verdict means the page points this way but the statement "
-            "adds scope, certainty or specificity the page does not carry - and it does NOT "
-            "remove the claim. Only `unsupported` does. Measured with injected defects: an "
-            "inflated number, an invented attribution and an inflated scope all came back "
-            "`partial`, so all three would have been published. Read `citationPartials` "
-            "before quoting a number or an attribution from this report."),
+            "adds scope, certainty or specificity the page does not carry. A partial panel "
+            "SURVIVOR is restated to what the page carries and re-audited: a supported "
+            "restatement replaces it (the original is kept in `restatedFrom`), and one that "
+            "still fails is demoted like `unsupported`. A partial is KEPT only when no "
+            "re-audited restatement came back (`restate.verdict` no-restatement or "
+            "no-reaudit). Measured with injected defects: an inflated number, an invented "
+            "attribution and an inflated scope all came back `partial`. Read "
+            "`citationPartials` before quoting a number or an attribution from this report."),
         "framingProvenance": (
             "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the "
             "model DRAFTED it. A drafted assumption and a supplied one look identical in the "
@@ -1969,11 +2016,14 @@ def _honest_limits(extra=None, evidence=None):
             "publisher blocked the fetch and only the abstract was available, and those "
             "sources carry `abstractOnly: true`. A claim verified against an abstract has "
             "been checked against a summary of the paper, not the paper."),
+        # The rule is rate-based since 2026-09-20 and the field is top-level; this text
+        # described the old all-or-nothing rule at a path that does not exist.
         "searchCoverage": (
-            "stats.searchDegraded is true when every general-web backend returned 0 results for the "
-            "whole run: the report then rests on a scholarly-only slice (Wikipedia/Crossref), and its "
-            "coverage gaps are a search artefact rather than evidence that nothing exists. "
-            "stats.searchHealth has the per-backend counts behind that verdict."),
+            "`searchDegraded` (top level) is true when the general web was tried and answered "
+            "under a fifth of its attempts: the report then rests mostly on a scholarly slice "
+            "(Wikipedia/Crossref), and its coverage gaps are a search artefact rather than "
+            "evidence that nothing exists. stats.generalWebOkRate is that rate, and "
+            "stats.searchHealth has the per-backend counts behind it."),
     }
     if extra:
         out.update(extra)
@@ -2356,6 +2406,13 @@ def post_verify_coverage(coverage, survivors):
     return out
 
 
+def _verify_rank(c):
+    """Importance first, source tier second, source quality third - one key for every
+    place the verify pool is ordered."""
+    return (IMP.get(c.get("importance"), 3), TIER_RANK.get(c.get("tier"), 3),
+            QUAL.get(c.get("sourceQuality"), 5))
+
+
 def coverage_balanced(claims, cap, n_subq):
     """Round-robin by sub-question so one topic cannot eat the whole verify budget."""
     groups = {}
@@ -2369,12 +2426,11 @@ def coverage_balanced(claims, cap, n_subq):
         # (tier is a pure function of the host; importance is the extractor's
         # own rating) - but a central claim from a middling host can overturn
         # the answer, and a tangential one never will.
-        arr.sort(key=lambda c: (IMP.get(c.get("importance"), 3),
-                                TIER_RANK.get(c.get("tier"), 3),
-                                QUAL.get(c.get("sourceQuality"), 5)))
-    keys = sorted(groups, key=lambda k: (TIER_RANK.get(groups[k][0].get("tier"), 3),
-                                         IMP.get(groups[k][0].get("importance"), 3),
-                                         QUAL.get(groups[k][0].get("sourceQuality"), 5)))
+        arr.sort(key=_verify_rank)
+    # The SAME key orders the groups. The reversal above changed only the sort inside a
+    # group, so across groups a tangential T1 still led a central T3, and at a tight cap
+    # the one slot went to the tangential claim (review 2026-09-27).
+    keys = sorted(groups, key=lambda k: _verify_rank(groups[k][0]))
     out, rnd = [], 0
     while len(out) < cap:
         added = False
@@ -2537,6 +2593,9 @@ def run_panel(q, claims, lenses):
                 # One fetched page (cached, capped, same fetch ladder as everything
                 # else) turns it into a real reader of real counter-evidence.
                 page_b = ""
+                # Deliberately below PAGE_CAP/PAGE_VIEW: that seam binds the CITED page
+                # (extractor and auditor must see the same window). This is a second,
+                # contextual page inside a lens prompt that already carries the claim.
                 ptext = web_fetch(hits[0]["url"], cap=8000)
                 if len(ptext or "") > 400:
                     page_b = ("\n## Counter-source page (fetched)\n" + webtext(hits[0]["url"], 140) +
@@ -2642,9 +2701,35 @@ def preflight():
     return _providers.transport()["scheme"]
 
 
+def _reset_run_state():
+    """Everything one run accumulates at module level, zeroed.
+
+    deepresearch() is a library function, and a second call in the same process
+    inherited the first run's state: HYPOTHESES survived a failed framing, so run 2's
+    synthesis adjudicated run 1's hypotheses and stamped them pre-registered;
+    killsByLens, the pick/quote/refetch tallies, the page cache and the search health
+    all carried over into run 2's report (review 2026-09-27). One CLI invocation is one
+    run, which is why nothing ever showed it.
+    """
+    global HYPOTHESES, KILLS_BY_LENS
+    HYPOTHESES, KILLS_BY_LENS = [], {}
+    _pick_tally.update(calls=0, starved=0, hits=0)
+    _refetch_tally.update(fresh=0, fellBackToCache=0)
+    _page_tally.update(hits=0, misses=0, charsServedFromCache=0)
+    _quote_tally.clear()
+    _fetch_meta.clear()
+    _page_cache.clear()
+    with _stats_lock:
+        _stats.update(calls=0, errors=0, ratelimited=0, in_tok=0, out_tok=0,
+                      cache_write_tok=0, cache_read_tok=0, usageUnrecorded={})
+        _stats.pop("schemaShortfalls", None)
+    _search.reset_health()
+
+
 def deepresearch(question, depth="standard", contract=None):
     """`contract`: supplied framing fields (any subset of FRAMING_FIELDS), already shaped
     by load_contract or an equivalent. Supplied fields win; the model drafts the rest."""
+    _reset_run_state()
     T = DEPTH_BUDGETS.get(depth) or DEPTH_BUDGETS["standard"]
     supplied = dict(contract or {})
     t0 = time.time()
@@ -2767,10 +2852,9 @@ def deepresearch(question, depth="standard", contract=None):
         log("EXCLUDED %d claim(s) from non-citable sources (T5 content farms): %s"
             % (len(non_citable), ", ".join(sorted({host_of(c.get("sourceUrl", "")) for c in non_citable})[:5])))
     ranked = coverage_balanced(citable, T["max_verify"], len(subqs))
-    dropped_pre = len(all_claims) - len(ranked)
-    globals()["DROP_N"] = dropped_pre
-    globals()["DROP_TOTAL"] = len(all_claims)
-    globals()["DROP_PCT"] = int(round(100 * dropped_pre / max(1, len(all_claims))))
+    # Budget cuts only: the T5 exclusions above are claimsExcludedNonCitable, and
+    # counting them here too reported the same claims twice (review 2026-09-27).
+    dropped_pre = len(citable) - len(ranked)
     if dropped_pre > 0:
         log("NOTE: %d lower-ranked claims dropped before verification (cap %d) - NOT covered by this report"
             % (dropped_pre, T["max_verify"]))
@@ -2868,8 +2952,11 @@ def deepresearch(question, depth="standard", contract=None):
     # One wrapper so the evidence-base signal cannot travel on some exits and not others.
     # honestLimits itself was shipped on 2 of 6 exits once, and the caveat that mattered
     # most was missing from the exit it mattered most on.
-    def honest_limits(extra=None):
-        return _honest_limits({**_run_limits(T, len(all_claims), len(ranked)), **(extra or {})},
+    # `verified`, not len(ranked): the rescue pass verifies claims `ranked` never held, so
+    # after a rescue the early exits printed "4 of 8 extracted claims were verified"
+    # beside claimsVerified: 8 (review 2026-09-27). The not-ranked exit verifies none.
+    def honest_limits(extra=None, verified=0):
+        return _honest_limits({**_run_limits(T, len(all_claims), verified), **(extra or {})},
                            evidence=_evidence_base(src_rows()))
 
     if not ranked:
@@ -3003,17 +3090,23 @@ def deepresearch(question, depth="standard", contract=None):
         else:
             log("CALIBRATION: second panel returned nothing comparable; no number produced")
 
-    tally = {}
-    for c in killed:
-        for v in c["verdicts"]:
-            if v.get("refuted"):
-                tally[v["lens"]] = tally.get(v["lens"], 0) + 1
+    def kill_tally():
+        t = {}
+        for c in killed:
+            for v in c["verdicts"]:
+                if v.get("refuted"):
+                    t[v["lens"]] = t.get(v["lens"], 0) + 1
+        return t
+    tally = kill_tally()
     # Store it, do not just print it. The JS build has recorded this in stats from the
     # start; the Python build only logged it, so six runs produced `killsByLens: {}` in
     # every report while the log line beside it read
     # `{'support': 9, 'provenance': 10, 'counter': 5}`. That asymmetry is the evidence
     # for issue #15 and it was being thrown away at the point of writing the file.
     # The parity test missed it because nobody had listed the feature in it.
+    # Stored again after the rescue panel below: its kills are kills too, and a tally
+    # frozen here totalled 12 while the killed claims cast 24 refutations
+    # (review 2026-09-27).
     globals()["KILLS_BY_LENS"] = dict(tally)
     log("Verify: %d confirmed, %d refuted, %d unverified | kills by lens: %s"
         % (len(confirmed), len(killed), len(unver), tally or "-"))
@@ -3033,10 +3126,21 @@ def deepresearch(question, depth="standard", contract=None):
                                "dataset. Previous attempts failed on source quality, so quality is the whole job.",
                        "query": s,
                        "rationale": "Nothing survived on this sub-question."} for i, s in targets]
-            r_src = sweep(question, subqs, angles, RESCUE_FETCH, "rescue", seen, dupes, dropped)
+            # needs_general_web: the rescue picker was the one never told the general
+            # web is required, so it took the scholarly filler the main sweeps refuse.
+            r_src = sweep(question, subqs, angles, RESCUE_FETCH, "rescue", seen, dupes, dropped,
+                          needs_general_web=bool(contract.get("needsGeneralWeb")))
             sources += r_src
-            r_claims = coverage_balanced([c for s in r_src for c in s["claims"]],
-                                         max(6, len(targets) * 3), len(subqs))
+            # citable_only: T4/T5 rescue claims went straight to the panel and into
+            # the confirmed findings - the main pool's exclusion never applied here
+            # (review 2026-09-27; the JS twin had the same gap).
+            r_citable, r_excluded = citable_only([c for s in r_src for c in s["claims"]])
+            if r_excluded:
+                log("RESCUE: EXCLUDED %d claim(s) from non-citable sources" % len(r_excluded))
+            r_claims = coverage_balanced(r_citable, max(6, len(targets) * 3), len(subqs))
+            # The rescue pass has its own cap; what it cuts is cut too, and was reported
+            # as nothing while synthesis blamed it on the main panel budget (2026-09-27).
+            dropped_pre += len(r_citable) - len(r_claims)
             saved = 0
             if r_claims:
                 rv = run_panel(question, r_claims, lenses)
@@ -3049,8 +3153,13 @@ def deepresearch(question, depth="standard", contract=None):
             else:
                 log("RESCUE: no new claims found - these sub-questions remain genuinely unanswered")
             all_claims = [c for s in sources for c in s["claims"]]
+            # claimsExtracted is post-rescue, so its exclusion count must be too, or
+            # one report says 22 extracted, 14 excluded and synthesis says 16.
+            non_citable = citable_only(all_claims)[1]
             rescue = {"wipedSubQuestions": [s for _, s in wiped], "targeted": len(targets),
-                      "sourcesAdded": len(r_src), "claimsReVerified": len(r_claims), "claimsSaved": saved}
+                      "sourcesAdded": len(r_src), "claimsReVerified": len(r_claims), "claimsSaved": saved,
+                      "claimsCutByRescueCap": len(r_citable) - len(r_claims)}
+            globals()["KILLS_BY_LENS"] = kill_tally()
 
     if not confirmed:
         msg = ("INFRASTRUCTURE FAILURE, not a research finding: every verifier panel failed. Retry."
@@ -3058,9 +3167,11 @@ def deepresearch(question, depth="standard", contract=None):
                "All %d claims were refuted by the %d-lens adversarial panel. Sources were weak or claims overstated. "
                "Inconclusive - this is a real result, not an error." % (len(killed), len(lenses)))
         return dict(base, summary=msg, findings=[], refuted=[to_ref(c) for c in killed],
+                    unverified=[to_unv(c) for c in unver],
+                    coverage=post_verify_coverage(coverage, confirmed) if coverage else coverage,
                     sources=src_rows(), rescue=rescue,
                     calibration=calibration, droppedSample=dropped_sample,
-                    honestLimits=honest_limits(),
+                    honestLimits=honest_limits(verified=len(voted)),
                     stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed),
                                 unverifiedCount=len(unver)))
 
@@ -3120,21 +3231,29 @@ def deepresearch(question, depth="standard", contract=None):
                         if f2.get("support") == "supported":
                             # The weakened claim is what the page carries: swap it
                             # into the pool, original preserved on the row.
-                            return dict(claim=new_claim, url=c["sourceUrl"],
-                                        survivedPanel=True, **f2,
-                                        restatedFrom=c["claim"],
+                            return dict(f2, claim=new_claim, url=c["sourceUrl"],
+                                        survivedPanel=True, restatedFrom=c["claim"],
                                         restate={"attempted": True, "verdict": "supported",
                                                  "from": c["claim"], "to": new_claim})
-                        return dict(claim=c["claim"], url=c["sourceUrl"],
-                                    survivedPanel=c["survives"], **f,
+                        return dict(f, claim=c["claim"], url=c["sourceUrl"],
+                                    survivedPanel=c["survives"],
                                     restate={"attempted": True, "verdict": f2.get("support"),
                                              "to": new_claim})
-                    return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"],
-                                **f, restate={"attempted": True, "verdict": "no-reaudit",
-                                              "to": new_claim})
+                    return dict(f, claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"],
+                                restate={"attempted": True, "verdict": "no-reaudit",
+                                         "to": new_claim})
                 # No usable restatement (call failed or echoed the claim): plain
-                # partial, no re-audit verdict, not demotable.
-            return dict(claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"], **f)
+                # partial, no re-audit verdict, not demotable - and SAID, on the row and
+                # in the log; this path used to drop the restatement without a line.
+                log("  [restate:%s] no usable restatement (%s) - kept as a plain partial"
+                    % (host_of(c["sourceUrl"]) or "?",
+                       "echoed the claim" if new_claim else "call failed or empty"))
+                return dict(f, claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"],
+                            restate={"attempted": True, "verdict": "no-restatement"})
+            # dict(f, claim=...), never dict(claim=..., **f): shape() passes unknown keys
+            # through, and an auditor that echoed `claim` or `url` raised TypeError here -
+            # the row was lost, and an unsupported claim was published (review 2026-09-27).
+            return dict(f, claim=c["claim"], url=c["sourceUrl"], survivedPanel=c["survives"])
         _audit_out = pmap(audit, voted)
         fact_rows = [f for f in _audit_out if f]
         # A call that never returned is not a citation that failed its check - but it is
@@ -3194,8 +3313,10 @@ def deepresearch(question, depth="standard", contract=None):
         demoted = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) in bad]
         if demoted:
             confirmed = [c for c in confirmed if (c["claim"], c.get("sourceUrl")) not in bad]
+            _why = {(f["claim"], f.get("url")): f.get("reasoning", "") for f in fact_rows}
             for c in demoted:
                 c["killedBy"] = (c["killedBy"] + "+" if c["killedBy"] else "") + "citation-audit"
+                c["auditWhy"] = _why.get((c["claim"], c.get("sourceUrl")), "")
             killed += demoted
             log("AUDIT DEMOTED %d claim(s): the panel passed them but the cited page does not support them"
                 % len(demoted))
@@ -3210,25 +3331,36 @@ def deepresearch(question, depth="standard", contract=None):
                     if c["claim"] == f["restatedFrom"] and c.get("sourceUrl") == f.get("url"):
                         c["restatedFrom"] = f["restatedFrom"]
                         c["claim"] = f["claim"]
-                        c["quote"] = f.get("locatedQuote") or c.get("quote", "")
+                        # The quote AND its check move together. Swapping only the quote
+                        # published onPage 'located', foundFraction 1.0 for a quote the
+                        # engine's own check called not-found (review 2026-09-27).
+                        if f.get("locatedQuote"):
+                            c["quote"] = f["locatedQuote"]
+                            c["quoteCheck"] = f.get("locatedQuoteCheck")
                         restated += 1
                         break
         fact_metrics["restatedToSupported"] = restated
         if restated:
             log("AUDIT RESTATED %d claim(s): weakened to what the cited page supports "
                 "(originals preserved in restatedFrom)" % restated)
-        if not confirmed:
-            return dict(base, summary="Every claim that survived the adversarial panel was then demoted by the blind "
-                                      "citation audit: the arguments held, but the cited pages do not support them. "
-                                      "This is a real result - the sources do not say what they were read as saying.",
-                        findings=[], citationAudit=fact_metrics, rescue=rescue,
-                        refuted=[to_ref(c) for c in killed], sources=src_rows(),
-                        citationDetail=citation_rows(fact_by),
-                        calibration=calibration, droppedSample=dropped_sample,
-                        honestLimits=honest_limits(),
-                        stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed)))
-
+    # Built BEFORE the all-demoted exit below reads it. It was built after, so the one
+    # run where the audit demoted every survivor died on UnboundLocalError and wrote no
+    # report at all (review 2026-09-27) - the exit-coverage test counted the exit's
+    # keyword arguments and never drove it.
     fact_by = {(f["claim"], f.get("url")): f for f in fact_rows}
+    if T["audit"] and not confirmed:
+        return dict(base, summary="Every claim that survived the adversarial panel was then demoted by the blind "
+                                  "citation audit: the arguments held, but the cited pages do not support them. "
+                                  "This is a real result - the sources do not say what they were read as saying.",
+                    findings=[], citationAudit=fact_metrics, rescue=rescue,
+                    refuted=[to_ref(c) for c in killed], unverified=[to_unv(c) for c in unver],
+                    coverage=post_verify_coverage(coverage, confirmed) if coverage else coverage,
+                    sources=src_rows(),
+                    citationDetail=citation_rows(fact_by),
+                    calibration=calibration, droppedSample=dropped_sample,
+                    honestLimits=honest_limits(verified=len(voted)),
+                    stats=stats(claimsVerified=len(voted), confirmed=0, killed=len(killed),
+                                unverifiedCount=len(unver)))
     return _synthesize(question, depth, base, subqs, persps, confirmed, killed, unver, voted,
                        fact_by, fact_metrics, rescue, coverage, contradictions, src_rows, stats,
                        lenses, T, all_claims, calibration, dropped_sample)
@@ -3276,6 +3408,10 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                ("Blind citation audit: **%s** - %s\n" % (f["support"], webtext(f["reasoning"], 400))) if f else ""))
 
     cov_b = ""
+    # The report's `coverage` is this reconciled table too. Only the synthesis prompt
+    # got it, so the JSON a reader (and every SKILL.md) reads still said "answered"
+    # for sub-questions whose every claim had died (review 2026-09-27).
+    reconciled = post_verify_coverage(coverage, confirmed) if coverage else coverage
     if T["deepen"] == 0 and not coverage:
         # With no deepening rounds the gap analyst never runs, so `coverage` is null -
         # indistinguishable in the rendered report from "ran and found nothing to say".
@@ -3288,7 +3424,6 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         # analyst's snapshot from before the panel ran; rendered verbatim it let a
         # sub-question whose claims were all killed still reach synthesis as
         # "answered" - coverage the filter had already removed.
-        reconciled = post_verify_coverage(coverage, confirmed)
         rows = []
         for c in reconciled:
             try:
@@ -3306,8 +3441,26 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
              % len(unver) + "\n".join("- \"%s\"" % webtext(c["claim"], 250) for c in unver) + "\n") if unver else ""
     con_b = ("\n## Contradictions flagged during gap analysis\n" +
              "\n".join("- " + webtext(x, 300) for x in contradictions) + "\n") if contradictions else ""
+    # ONE disclosure, from the final pools. There were two: this one, and a second fed
+    # by DROP_* globals set BEFORE the rescue pass, which also counted T5-excluded
+    # claims as budget cuts and still said "ranked by source tier first" months after
+    # the ranking became importance-first (review 2026-09-27). Rescue claims are in
+    # both all_claims and voted, so after a rescue the arithmetic still holds.
+    _, _non_cit = citable_only(all_claims)
     drop_n = len(all_claims) - len(voted)
-    drop_b = ("\n## Coverage limit\n%d lower-ranked claims were never verified. Say so in caveats.\n" % drop_n) if drop_n > 0 else ""
+    cut_n = max(0, drop_n - len(_non_cit))
+    _rcut = (rescue or {}).get("claimsCutByRescueCap") or 0
+    drop_b = (("\n## Coverage limit you MUST disclose\n"
+               "%d of %d extracted claims (%d%%) were never verified: %d cut by the verify "
+               "budget (%d for the main pool%s)%s. The verify pool was ranked by importance first, source tier "
+               "second, so a claim the extractor rated 'tangential' is invisible here even if "
+               "it would have overturned the answer. State this in answerFirst, not only in "
+               "caveats.\n"
+               % (drop_n, len(all_claims), round(100 * drop_n / len(all_claims)), cut_n,
+                  T["max_verify"],
+                  ("; %d of them by the rescue pass's own cap" % _rcut) if _rcut else "",
+                  ("; %d excluded as non-citable sources" % len(_non_cit)) if _non_cit else ""))
+              if drop_n > 0 else "")
     # The degraded banner rides at the TOP of the prompt, above the claims, because
     # position is the difference between disclosed and buried: the run that exposed
     # this had the fact in stats.searchHealth and nowhere a reader would look.
@@ -3334,12 +3487,6 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         % (len(confirmed), len(lenses), " and a blind citation-support audit" if T["audit"] else "") +
         deg_b +
         "## Confirmed claims\n" + WEB_NOTE + "\n".join(blocks) + cov_b + con_b + kill_b + unv_b + drop_b + "\n\n" +
-        (("## Coverage limit you MUST disclose\n"
-          "%d of %d extracted claims (%d%%) were never verified — the panel budget stops at %d. "
-          "The sample was ranked by source tier first, but a claim the extractor rated 'tangential' "
-          "is invisible here even if it would have overturned the answer. "
-          "State this in answerFirst, not only in caveats.\n\n"
-          % (DROP_N, DROP_TOTAL, DROP_PCT, T["max_verify"])) if DROP_N > 0 else "") +
         (("## Hypotheses to adjudicate\n"
           "These were written BEFORE any evidence was gathered, each with the finding that "
           "would eliminate it. Return a verdict for EVERY one in hypothesisVerdicts, and\n"
@@ -3370,7 +3517,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         "4. Put the audit result in each finding's citationCheck field. Where it is \"partial\", the "
         "citationCheck MUST also name WHAT the statement adds beyond the page - the inflated number, the "
         "borrowed attribution, the widened population. \"partial\" alone tells the reader nothing, and a "
-        "partial verdict does not remove the claim, so this sentence is the only warning they get.\n"
+        "partial that reaches you here was kept because no re-audited restatement came back, so this "
+        "sentence is the only warning they get.\n"
         "5. Surface CONTRADICTIONS explicitly rather than silently picking a side.\n"
         "6. Executive summary: 3-6 sentences that actually ANSWER the question. Every sentence must trace to a "
         "confirmed claim above - you will be audited on this. If the evidence does not answer the question, say so "
@@ -3416,6 +3564,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
         #
         # Synthesis failing says nothing about the verification that already happened.
         return dict(base, summary="Synthesis failed - returning %d verified claims unmerged." % len(confirmed),
+                    coverage=reconciled, unverified=[to_unv(c) for c in unver],
                     findings=[], confirmedRaw=[{"claim": webtext(c["claim"], 400),
                                                 "source": webtext(c["sourceUrl"], 250),
                                                 "quote": webtext(c.get("quote", ""), 400)} for c in confirmed],
@@ -3432,7 +3581,8 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
                         "calibration if one was requested. Read `confirmedRaw` and `refuted` "
                         "directly. This is an incomplete report, not an empty one.")}),
                     sources=src_rows(), stats=stats(claimsVerified=len(voted), confirmed=len(confirmed),
-                                                    killed=len(killed), afterSynthesis=0))
+                                                    killed=len(killed), unverifiedCount=len(unver),
+                                                    afterSynthesis=0))
 
     # A MANDATORY narrative field can pass every type check and still say nothing.
     # Measured on the recorded runs: 5 of 21 published a `strongestArgumentAgainst` that
@@ -3498,6 +3648,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
 
     out = dict(base)
     out.update(report)
+    out["coverage"] = reconciled
     out["contradictions"] = report.get("contradictions", []) + contradictions
     out["citationAudit"] = fact_metrics
     out["citationDetail"] = citation_rows(fact_by)
@@ -3803,65 +3954,79 @@ def selftest():
     "passes on plumbing, not effect" shape this tool exists to catch.
     """
     ok = True
+    # Under DR_TRANSPORT=stdio stdout IS the request stream, so a progress line there
+    # is a malformed request to the driver (review 2026-09-27). Progress goes to
+    # stderr on that transport, stdout everywhere else.
+    try:
+        _out = sys.stderr if _providers.current_scheme() == "stdio" else sys.stdout
+    except AuthError:
+        _out = sys.stdout
+
+    def say(*a, **k):
+        print(*a, file=_out, flush=True, **k)
+
     # Step 0, before the credential and long before any API call: do this build's own
     # gates still accept what they should and catch what they should? Ponytail's rule,
     # and the cheapest check here by orders of magnitude - pure functions, milliseconds.
     # A run whose gates are broken produces a report nobody can check, which is worse
     # than no run, so this one refuses to continue rather than warning and proceeding.
-    print("0. instruments       ...", end=" ")
+    say("0. instruments       ...", end=" ")
     _bad = instruments.verify()
     _ni, _ng, _nc = instruments.counts()
     if _bad:
-        print("FAIL (%d)" % len(_bad))
+        say("FAIL (%d)" % len(_bad))
         for _f in _bad:
-            print("      %s" % _f)
-        print("\n  A gate that cannot fail is indistinguishable from no gate.")
+            say("      %s" % _f)
+        say("\n  A gate that cannot fail is indistinguishable from no gate.")
         return EXIT_CONTRACT
-    print("OK (%d references, %d instruments, %d gates, each proving a good and a bad case)"
+    say("OK (%d references, %d instruments, %d gates, each proving a good and a bad case)"
           % (_nc, _ni, _ng))
-    print("1. credential       ...", end=" ")
+    say("1. credential       ...", end=" ")
     try:
         _t1 = _providers.transport()
-        if _t1.get("scheme") == "session":
-            print("OK (none needed - session transport, login-powered)")
+        if _t1.get("scheme") in ("session", "stdio"):
+            # stdio reads no credential either: the driving window is the model.
+            say("OK (none needed - %s transport, no key read)" % _t1["scheme"])
         else:
-            sch, sec = credential(); print("OK (%s, len %d)" % (sch, len(sec)))
+            sch, sec = credential(); say("OK (%s, len %d)" % (sch, len(sec)))
     except AuthError as e:
-        print("FAIL:", e); return False
+        # EXIT_AUTH, never False: sys.exit(False) is exit 0, so a missing credential
+        # read as HEALTHY to every preflight that checks `$?` (review 2026-09-27).
+        say("FAIL:", e); return EXIT_AUTH
     # Name the provider and the env var that fed it. A GLM run told to "set
     # ANTHROPIC_API_KEY" would be the seam lying about itself; describe() exists
     # so it cannot.
-    print("   provider: %s" % _providers.describe())
+    say("   provider: %s" % _providers.describe())
     # Plain line, never a gate: drift in the hermes skill trees is a deployment
     # problem that must not fail a selftest of the engine's dependencies.
     _sk_drift = skill_drift_warning()
-    print("   skill sync: %s" % ("current" if _sk_drift is None else _sk_drift))
-    print("2. keyless search    ...", end=" ")
+    say("   skill sync: %s" % ("current" if _sk_drift is None else _sk_drift))
+    say("2. keyless search    ...", end=" ")
     hits = web_search("anthropic claude", n=3)
-    print("OK (%d hits)" % len(hits) if hits else "FAIL (0 hits)"); ok &= bool(hits)
+    say("OK (%d hits)" % len(hits) if hits else "FAIL (0 hits)"); ok &= bool(hits)
     for name, v in sorted(search_health().items()):
-        print("      %-16s %s  results=%d" % (name, "ok" if v["ok"] else "FAIL", v["results"]))
-    print("3. page fetch        ...", end=" ")
+        say("      %-16s %s  results=%d" % (name, "ok" if v["ok"] else "FAIL", v["results"]))
+    say("3. page fetch        ...", end=" ")
     # Pinned, not hits[0]: the top search hit is sometimes a JS shell (audited
     # 2026-09-15: searxng's first result for the probe query was claude.ai, which
     # extracts to zero text and flaked the check while the fetcher was healthy).
     # A stable text-bearing page makes this check prove FETCHING, not search luck;
     # search itself is already proven by check 2.
     txt = web_fetch("https://example.com")
-    print("OK (%d chars)" % len(txt) if txt else "FAIL (empty)"); ok &= bool(txt)
-    print("4. model round-trip  ...", end=" ")
+    say("OK (%d chars)" % len(txt) if txt else "FAIL (empty)"); ok &= bool(txt)
+    say("4. model round-trip  ...", end=" ")
     r = agent("Return the single word 'pong' in the field 'reply'.",
               {"type": "object", "required": ["reply"], "properties": {"reply": {"type": "string"}}},
               label="selftest", max_tokens=100)
-    print("OK (%r)" % (r or {}).get("reply") if r else "FAIL (no structured output)"); ok &= bool(r)
-    print("5. concurrency       ...", end=" ")
+    say("OK (%r)" % (r or {}).get("reply") if r else "FAIL (no structured output)"); ok &= bool(r)
+    say("5. concurrency       ...", end=" ")
     res = pmap(lambda i: agent("Return the number %d in field 'n'." % i,
                                {"type": "object", "required": ["n"], "properties": {"n": {"type": "integer"}}},
                                label="c%d" % i, max_tokens=100), [1, 2, 3])
-    good = sum(1 for r in res if r); print("OK (%d/3 parallel agents)" % good if good == 3 else "FAIL (%d/3)" % good)
+    good = sum(1 for r in res if r); say("OK (%d/3 parallel agents)" % good if good == 3 else "FAIL (%d/3)" % good)
     ok &= good == 3
     if not ok:
-        print("\nSOME CHECKS FAILED")
+        say("\nSOME CHECKS FAILED")
         return EXIT_FAIL
 
     hp = search_health()
@@ -3888,16 +4053,16 @@ def selftest():
         dead = ", ".join("%s %d/%d" % (n, (hp.get(n) or {}).get("results", 0),
                                        (hp.get(n) or {}).get("attempts", 0))
                          for n in GENERAL_WEB if n in hp)
-        print("\nDEGRADED - every dependency works, but the general web does not.")
-        print("  probed 3 times with backoff before declaring this; attempts= shows the total.")
-        print("  no results from: %s" % (dead or "any general-web backend"))
-        print("  Consequence: this run would search Crossref, Wikipedia and the other")
-        print("  scholarly backends only. Fine for an academic question. It will miss")
-        print("  blogs, documentation, pricing, news and practitioner experience entirely,")
-        print("  and it will not say so in the answer - only in stats.searchHealth.")
-        print("  Fix (about two minutes):")
-        print("      cd contrib/searxng && docker compose up -d   # if not already up")
-        print("      sh contrib/searxng/verify.sh                  # proves JSON, not just /")
+        say("\nDEGRADED - every dependency works, but the general web does not.")
+        say("  probed 3 times with backoff before declaring this; attempts= shows the total.")
+        say("  no results from: %s" % (dead or "any general-web backend"))
+        say("  Consequence: this run would search Crossref, Wikipedia and the other")
+        say("  scholarly backends only. Fine for an academic question. It will miss")
+        say("  blogs, documentation, pricing, news and practitioner experience entirely,")
+        say("  and it will not say so in the answer - only in stats.searchHealth.")
+        say("  Fix (about two minutes):")
+        say("      cd contrib/searxng && docker compose up -d   # if not already up")
+        say("      sh contrib/searxng/verify.sh                  # proves JSON, not just /")
         # The instance's address depends on where you stand: published to
         # 127.0.0.1:8888 on the host, reachable as searxng:8080 from a container on
         # its docker network (a messenger-hosted agent lives there). A hint that
@@ -3910,22 +4075,22 @@ def selftest():
             if c and c not in cands:
                 cands.append(c)
         probed = [(c, _search.probe_searxng(c)) for c in cands]
-        print("  SearXNG, probed from here just now:")
+        say("  SearXNG, probed from here just now:")
         for c, n in probed:
             if n is None:
-                print("      %-26s no answer" % c)
+                say("      %-26s no answer" % c)
             elif n > 0:
-                print("      %-26s ANSWERS - export DR_SEARXNG_URL=%s" % (c, c))
+                say("      %-26s ANSWERS - export DR_SEARXNG_URL=%s" % (c, c))
             else:
-                print("      %-26s up, 0 results (suspended upstream engines -" % c)
-                print("                                wait, or enable more in settings.yml)")
+                say("      %-26s up, 0 results (suspended upstream engines -" % c)
+                say("                                wait, or enable more in settings.yml)")
         if not any(n for _, n in probed):
-            print("      nothing answered from this vantage - start the instance above first")
-        print("  Exit code %d = degraded but usable. 0 = healthy, 1 = failed, 2 = auth."
+            say("      nothing answered from this vantage - start the instance above first")
+        say("  Exit code %d = degraded but usable. 0 = healthy, 1 = failed, 2 = auth."
               % EXIT_DEGRADED)
         return EXIT_DEGRADED
 
-    print("\nALL CHECKS PASSED (general web live via: %s)" % ", ".join(live))
+    say("\nALL CHECKS PASSED (general web live via: %s)" % ", ".join(live))
     return EXIT_OK
 
 
@@ -3940,10 +4105,11 @@ def main():
                          "provider's own (claude-sonnet-5 / glm-5.3 / ...). Env: DR_MODEL.")
     ap.add_argument("--provider", "-p", default=None, choices=_providers.names(),
                     help="Which model provider to run on: %s. Default: DR_PROVIDER if set, "
-                         "else inferred from which key variable is set (%s), else anthropic. "
+                         "else inferred from which key variable is set (%s), else %s. "
                          "Env: DR_PROVIDER."
                          % (", ".join(_providers.names()),
-                            " / ".join(_providers.spec(n)["key_env"] for n in _providers.names())))
+                            " / ".join(_providers.spec(n)["key_env"] for n in _providers.names()),
+                            _providers._CONTRACT["default"]))
     ap.add_argument("--concurrency", "-c", type=int, default=MAX_CONCURRENCY)
     # Read the environment as the DEFAULT rather than assigning 0 and overwriting it
     # below. DR_CALIBRATE=8 was parsed correctly at import and then silently replaced
@@ -4082,7 +4248,12 @@ def main():
             "report": out,
             "skillDrift": _drift,
             "poll": "tail -15 " + logp,
-            "done_when": "pgrep -f 'deepresearch --question' returns nothing",
+            # By pid, never `pgrep -f 'deepresearch --question'`: that pattern matches the
+            # shell running pgrep itself, so the check never said done (review 2026-09-27).
+            # ps, not kill -0 alone: the detached child is orphaned at once, and under a
+            # PID 1 that never reaps it the finished run is a zombie kill -0 calls alive.
+            "done_when": ("`ps -o stat= -p %d | grep -qv Z` fails (the run has exited; a "
+                          "zombie counts as exited)" % proc.pid),
             "expect": {"quick": "2-7 min", "standard": "6-10 min", "exhaustive": "15-25 min"},
         }, indent=1))
         return
@@ -4105,10 +4276,16 @@ def main():
                 json.dump(rep["scopeContract"], f, indent=1, ensure_ascii=False)
             log("Contract written to " + stem + ".contract.json")
         print(json.dumps({k: rep.get(k) for k in
-                          ("summary", "citationAudit", "processCritique", "rescue", "stats") if k in rep},
+                          ("error", "summary", "citationAudit", "processCritique", "rescue", "stats")
+                          if k in rep},
                          indent=1, ensure_ascii=False))
     else:
         print(txt)
+    # A run that ended in {"error": ...} (an unusable plan) printed {} with --out and
+    # exited 0 either way - a failure that read as success to every wrapper checking
+    # `$?` (review 2026-09-27).
+    if rep.get("error"):
+        sys.exit(EXIT_FAIL)
 
 
 if __name__ == "__main__":

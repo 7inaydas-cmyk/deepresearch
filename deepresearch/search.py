@@ -132,18 +132,39 @@ def _get_bytes(url: str, headers: dict | None = None, timeout: int = TIMEOUT):
         return r.read(), (r.headers.get("content-type") or "")
 
 
-def _decode(raw: bytes) -> str:
-    for enc in ("utf-8", "latin-1"):
+_CHARSET = re.compile(rb"""<meta[^>]+charset=["']?([\w.:-]+)""", re.I)
+
+
+def _decode(raw: bytes, ctype: str = "") -> str:
+    """Page bytes to text, trusting the page's declared charset first.
+
+    The header's charset (then a <meta charset>) was ignored, and the latin-1 fallback
+    never fails - so a cp1252 or Shift_JIS page reached the extractor as mojibake,
+    and direct HTML reads skip the prose gate that would have caught it
+    (review 2026-09-27). cp1252 before latin-1: it is what "latin-1" pages really are.
+    """
+    # Strict UTF-8 FIRST: bytes that decode as UTF-8 are UTF-8 far more often than a
+    # declared charset is right, and a mislabelled page (UTF-8 served as ISO-8859-1, a
+    # stale <meta charset="utf-16">) must not be decoded into garbage.
+    declared = re.search(r"charset=[\"']?([\w.:-]+)", ctype or "", re.I)
+    m = declared.group(1) if declared else None
+    if not m:
+        hit = _CHARSET.search(raw[:4096])
+        m = hit.group(1).decode("ascii", "ignore") if hit else None
+        if m and m.lower().startswith(("utf-16", "utf-32", "utf16", "utf32")):
+            m = None  # a <meta> readable as ASCII cannot be in a 16/32-bit encoding
+    encs = ["utf-8"] + ([m] if m else []) + ["cp1252", "latin-1"]
+    for enc in encs:
         try:
             return raw.decode(enc)
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, LookupError):
             continue
     return raw.decode("utf-8", "replace")
 
 
 def _get(url: str, headers: dict | None = None, timeout: int = TIMEOUT) -> str:
-    raw, _ = _get_bytes(url, headers, timeout)
-    return _decode(raw)
+    raw, ctype = _get_bytes(url, headers, timeout)
+    return _decode(raw, ctype)
 
 
 _PDF_ESC = {b"n": b"\n", b"r": b"\n", b"t": b" ", b"b": b"", b"f": b""}
@@ -318,6 +339,12 @@ def _mojeek(query: str, n: int) -> list[dict]:
         out.append({"url": m.group(1), "title": _clean(m.group(2)), "snippet": ""})
         if len(out) >= n:
             break
+    # CONTRIBUTING rule 1, which this backend never followed: a captcha page answered
+    # 200, parsed to zero results and was noted `ok` - one live-looking general-web
+    # backend, so _gw_dead_from_health muted the degraded warning while every engine
+    # in the chain was being challenged (review 2026-09-27).
+    if not out and _looks_challenged(body):
+        raise RuntimeError("challenged")
     return out
 
 
@@ -516,7 +543,13 @@ def _searxng(query: str, n: int) -> list[dict]:
         hosts = {}
         for r in rows:
             h = urllib.parse.urlsplit(r["url"]).netloc.lower().split(":")[0]
-            h = ".".join(h.split(".")[-2:])
+            # The site, not the last two labels: those made every .co.uk newspaper
+            # one "host" and refused a healthy UK result page as junk.
+            # ponytail: two-letter-ccTLD heuristic, not the public suffix list.
+            p = h.split(".")
+            k = 3 if len(p) >= 3 and len(p[-1]) == 2 and p[-2] in (
+                "co", "com", "org", "net", "gov", "ac", "edu") else 2
+            h = ".".join(p[-k:])
             hosts[h] = hosts.get(h, 0) + 1
         top, n_top = max(hosts.items(), key=lambda kv: kv[1])
         if n_top / len(rows) >= 0.8:
@@ -625,9 +658,13 @@ def search(query: str, n: int = 8, backends: list[str] | None = None,
             # different fixes: `challenged` means this IP is blocked and a proxy or
             # SearXNG helps; `junk` means the engine answered with unrelated results and
             # the backend is poisoned, not quiet; `fail` means it is actually down.
-            kind = ("challenged" if "challenged" in str(e)
-                    else "junk" if isinstance(e, RuntimeError) and "unrelated" in str(e)
-                    or isinstance(e, RuntimeError) and "topically related" in str(e)
+            # _searxng's two refusals are named by their own wording: one host owning
+            # the page is junk, suspended upstream engines are a rate limit. Both read
+            # `fail` - "actually down" - until 2026-09-27.
+            msg = str(e)
+            kind = ("challenged" if "challenged" in msg or "rate-limited, not broken" in msg
+                    else "junk" if isinstance(e, RuntimeError) and (
+                        "unrelated" in msg or "topically related" in msg or "serving junk" in msg)
                     else "fail")
             _note(b, kind, 0)
             return []
@@ -724,7 +761,13 @@ def doi_in_url(url: str):
     m = _DOI_IN_URL.search(urllib.parse.unquote(url or ""))
     if not m:
         return None
-    return m.group(1).rstrip(").,;").replace("/pdf", "")
+    # A publisher's PDF path ends in the file name, not the DOI: springer's
+    # /content/pdf/10.1007/x.pdf and biorxiv's /10.1101/xv1.full.pdf handed Crossref
+    # "x.pdf" and "xv1.full.pdf", so the blocked-PDF abstract fallback always missed.
+    # (?<=\d)v: a VERSION suffix follows the DOI's digits (biorxiv "...002386v1"); an MDPI
+    # DOI like 10.3390/v12010001 starts with a v that is part of the DOI itself.
+    doi = re.sub(r"(?:(?<=\d)v\d+)?(?:\.full)?\.pdf$", "", m.group(1).rstrip(").,;"), flags=re.I)
+    return doi.rstrip(").,;").replace("/pdf", "")
 
 
 # The original guard, kept: 40 words of real text before this counts as a page.
@@ -843,7 +886,7 @@ def _try_wayback(url, cap, why):
         if raw[:5] == b"%PDF-" or "application/pdf" in ctype.lower():
             text = pdf_text(raw, cap * 8)
         else:
-            text = _readable(_decode(raw))
+            text = _readable(_decode(raw, ctype))
         ok, _why, sig = is_prose(text)
         if not ok or len(text.strip()) < 1500:
             return None, None
@@ -861,8 +904,9 @@ def _firecrawl_markdown(data) -> str | None:
     contract/conformance.json like every other decision of this shape."""
     if not isinstance(data, dict) or not data.get("success"):
         return None
-    md = ((data.get("data") or {}).get("markdown") or "")
-    return md if md.strip() else None
+    inner = data.get("data")
+    md = inner.get("markdown") if isinstance(inner, dict) else None
+    return md if isinstance(md, str) and md.strip() else None
 
 
 def _try_firecrawl(url: str, cap: int):
@@ -953,7 +997,7 @@ def _via_direct(url, cap, prev=None):
         # HERE and only here - on the http success path. The identity guard (is,
         # not name equality) makes a chain reorder a visible no-op of the
         # disclosure, never a mislabel.
-        return _readable(_decode(raw))[:cap], dict({"via": "http"},
+        return _readable(_decode(raw, ctype))[:cap], dict({"via": "http"},
                 **({"firecrawlFailed": prev[1]} if prev and prev[0] is _via_firecrawl else {}))
     except Exception as e:
         # Blocked or broken - named, never silent: the type name prefixes the

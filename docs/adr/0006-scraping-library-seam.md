@@ -11,8 +11,11 @@ exactly there: rendering, anti-bot work, extraction. Decided: a scraper is reach
 outside, as an opt-in sidecar the run survives losing — firecrawl's exact posture ("Opt-in
 by env, never a dependency", `contrib/firecrawl/README.md:4`; failures fall back to the
 stdlib ladder, `:62`) — never an in-process import: `dependencies = []` holds
-(`pyproject.toml:18`), and the deletion test stays trivial: delete the adapter and nothing
-else moves.
+(`pyproject.toml:18`), and the deletion test stays nearly trivial: delete the adapter, its
+tuple entry and the one `firecrawlFailed` fold in `_via_direct` that names it (an identity
+check, so a missing adapter is a no-op of the disclosure, never a mislabel), and nothing
+else moves. (Amended 2026-09-27: this read "nothing else moves", which a review found untrue
+of that fold.)
 
 ## The first concrete case: ScrapeGraphAI
 

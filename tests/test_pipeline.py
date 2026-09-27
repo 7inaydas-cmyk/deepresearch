@@ -69,8 +69,13 @@ def install(cfg):
             searchmod._note("ddg-html", "fail", 0)
         searchmod._note("crossref", "ok", 3)
         if cfg.get("rescue_marker", "SQ3") in q or "rescue" in q.lower():
-            return [{"url": "https://primary-rescue.org/doc", "title": "primary", "snippet": "s"}]
-        return [{"url": "https://src%d.org/p" % i, "title": "T%d" % i, "snippet": "s"} for i in range(n)]
+            return (([{"url": "https://x.hubpages.com/rescue", "title": "farm", "snippet": "s"}]
+                     if cfg.get("farm_hits") else [])
+                    + [{"url": "https://primary-rescue.org/doc", "title": "primary", "snippet": "s"}])
+        # The farm hit goes FIRST: the stub picker keeps the first four URLs.
+        return (([{"url": "https://x.hubpages.com/%d" % (abs(hash(q)) % 999), "title": "farm",
+                   "snippet": "s"}] if cfg.get("farm_hits") else [])
+                + [{"url": "https://src%d.org/p" % i, "title": "T%d" % i, "snippet": "s"} for i in range(n)])
 
     def fake_fetch(u, cap=14000, fresh=False):
         # `fresh` must be accepted: the citation audit re-fetches rather than re-reading
@@ -83,6 +88,10 @@ def install(cfg):
         # production caller sees. The guards those callers used to carry are gone; if a
         # fixture is malformed the stub now returns None the way agent() would.
         #
+        if cfg.get("capture") is not None:
+            # Records every prompt the pipeline sends, so a test can assert on what a
+            # stage was TOLD rather than on a string existing somewhere in the source.
+            cfg["capture"].append((label, prompt))
         got = _raw_fake_agent(prompt, schema, label, model, max_tokens, retries)
         if got is not None and dr._has_unknown_sentinel(got):
             # agent() retries a sentinel; the *_once fixtures behave on the second call.
@@ -136,9 +145,10 @@ def install(cfg):
                 return {"sourceQuality": "unreliable", "claims": []}
             n = next(counter)
             if "primary-rescue" in prompt:
+                # rescue_many: more rescue claims than the rescue pass's own cap holds.
                 return {"sourceQuality": "primary", "claims": [
-                    {"claim": "RESCUED-%d evidence" % n, "quote": "q", "importance": "central",
-                     "subQuestionIndex": 3}]}
+                    {"claim": "RESCUED-%d-%d evidence" % (n, i), "quote": "q", "importance": "central",
+                     "subQuestionIndex": 3} for i in range(20 if cfg.get("rescue_many") else 1)]}
             return {"sourceQuality": "primary", "publishDate": "2026-01-01", "claims": [
                 {"claim": "CLAIM-%d fact" % n, "quote": "q%d" % n, "importance": "central",
                  "subQuestionIndex": (n % 4) + 1},
@@ -154,9 +164,21 @@ def install(cfg):
                 return {"refuted": False, "evidence": "e", "confidence": "high"}
             if cfg.get("kill_all"):
                 return {"refuted": True, "evidence": "e", "confidence": "high"}
+            if cfg.get("one_refuter"):
+                # Every claim survives 2-1: the support lens refutes, the other two pass.
+                return {"refuted": label == "support", "evidence": "the losing lens's objection",
+                        "confidence": "high"}
             n = int(prompt.split("CLAIM-")[1].split()[0].rstrip("b")) if "CLAIM-" in prompt else 0
             return {"refuted": (n % 4 == 0) and label != "provenance", "evidence": "e", "confidence": "high"}
         if label.startswith("cite:"):
+            if cfg.get("cite_all_unsupported"):
+                return {"support": "unsupported", "reasoning": "the page says nothing of the kind",
+                        "locatedQuote": ""}
+            if cfg.get("cite_echo_keys"):
+                # An auditor that echoes the claim and url back: shape() keeps unknown
+                # keys, and dict(claim=..., **f) raised TypeError on them.
+                return {"support": "unsupported", "reasoning": "no", "locatedQuote": "",
+                        "claim": "echoed", "url": "https://echoed.example/"}
             if "CLAIM-1 " in prompt or "CLAIM-1b" in prompt:
                 return {"support": "unsupported", "reasoning": "page does not say this", "locatedQuote": ""}
             if cfg.get("force_partial") and "CLAIM-2 " in prompt:
@@ -170,6 +192,10 @@ def install(cfg):
             n = int(prompt.split("CLAIM-")[1].split()[0]) if "CLAIM-" in prompt else 0
             return {"claim": "CLAIM-%d WEAKENED to what the page carries" % n}
         if label.startswith("cite2:"):
+            if cfg.get("restate_located"):
+                # A located quote the page really carries ("page body for <url>").
+                return {"support": "supported", "reasoning": "on the page",
+                        "locatedQuote": "page body for https://src"}
             return ({"support": "partial", "reasoning": "still overstated", "locatedQuote": "lq"}
                     if cfg.get("restate_fails") else
                     {"support": "supported", "reasoning": "the weakened form is on the page",
@@ -1340,15 +1366,43 @@ ok("not whether it is right" in _hl.get("reliabilityNotValidity", ""),
 print("\n-- issue #9: the dropped-claim majority --")
 ok("Coverage limit you MUST disclose" in _ENG,
    "synthesis is told to disclose the coverage limit in answerFirst, not only in caveats")
-ok("if DROP_N > 0" in _ENG and "if DROP_PCT >= 50" not in _ENG,
-   "the disclosure is UNCONDITIONAL: it fires whenever claims went unchecked, not only above 50% "
-   "(2026-09-20: the majority-unchecked state was silent below the threshold)")
+# Effect, not source text (2026-09-27): the old check asserted "if DROP_N > 0" existed,
+# while the numbers it guarded were computed before the rescue pass, counted T5
+# exclusions as budget cuts, and said "ranked by source tier first" beside an
+# importance-first ranking. Assert what synthesis is actually TOLD.
+_cap = []
+_rd = run({"capture": _cap, "farm_hits": True})
+_syn = [pr for lb, pr in _cap if lb == "synthesize"]
+_st = _rd["stats"]
+_never = _st["claimsExtracted"] - _st["claimsVerified"]
+ok(_syn and _never > 0 and ("%d of %d extracted claims" % (_never, _st["claimsExtracted"])) in _syn[0],
+   "the disclosure fires whenever ANY claim went unchecked, with the final counts "
+   "(2026-09-20: the majority-unchecked state was silent below 50%%) - %d of %d"
+   % (_never, _st["claimsExtracted"]))
+ok(_syn and ("%d excluded as non-citable" % _st["claimsExcludedNonCitable"]) in _syn[0]
+   and ("%d cut by the verify budget" % _st["claimsDroppedBeforeVerify"]) in _syn[0],
+   "and it splits the unchecked into budget cuts and non-citable exclusions")
+ok(_st["claimsDroppedBeforeVerify"] + _st["claimsExcludedNonCitable"] + _st["claimsVerified"]
+   == _st["claimsExtracted"] or _rd.get("rescue"),
+   "claimsDroppedBeforeVerify counts budget cuts ONLY - the T5 exclusions were counted in "
+   "it and in claimsExcludedNonCitable, the same claims twice (%s)"
+   % {k: _st[k] for k in ("claimsExtracted", "claimsVerified", "claimsDroppedBeforeVerify",
+                          "claimsExcludedNonCitable")})
+ok(_syn and "source tier first" not in _syn[0] and "importance first" in _syn[0],
+   "the disclosure describes the ranking the code runs: importance first, tier second")
 ok("SAMPLE_DROPPED_N" in _ENG and "keptClaimSurvivalRate" in _ENG,
    "--sample-dropped verifies discarded claims and compares their survival rate to kept ones")
-ok("IMP.get(c.get(\"importance\"), 3),\n                                TIER_RANK" in _ENG,
-   "ranking leads with IMPORTANCE now, tier as tiebreaker (2026-09-20: tier-first verified "
-   "pleasant sources before load-bearing claims - a tangential T1 always entered the pool "
-   "before a central T3)")
+# Effect, not source text: the 2026-09-20 reversal changed the sort INSIDE a
+# sub-question group and left the group ORDER tier-first, and the source-text check
+# passed. At a cap of 1 across two groups the tangential T1 still took the only slot.
+_tang_t1 = {"claim": "tangential", "importance": "tangential", "tier": "T1", "subQuestionIndex": 1}
+_cent_t3 = {"claim": "central", "importance": "central", "tier": "T3", "subQuestionIndex": 2}
+ok(dr.coverage_balanced([_tang_t1, _cent_t3], 1, 2) == [_cent_t3],
+   "ranking leads with IMPORTANCE across groups too: a central T3 beats a tangential T1 "
+   "for the last slot (2026-09-20: tier-first verified pleasant sources before "
+   "load-bearing claims)")
+ok(dr.coverage_balanced([dict(_tang_t1, subQuestionIndex=1), dict(_cent_t3, subQuestionIndex=1)], 1, 2)
+   [0]["claim"] == "central", "and within one group")
 
 print("\n-- calibration statistics --")
 from deepresearch import calibration as C
@@ -1590,7 +1644,7 @@ ok('raw[:5] == b"%PDF-"' in _src and '"via": "pdf-unreadable"' in _src,
    "fetch() detects a PDF by its magic bytes and REFUSES when extraction is too thin - "
    "an unreadable PDF is unreachable, which the auditor understands; binary looked like "
    "a page that merely disagreed")
-ok('def _get_bytes' in _src and "_readable(_decode(raw))" in _src,
+ok('def _get_bytes' in _src and "_readable(_decode(raw, ctype))" in _src,
    "fetch reads BYTES first: the old latin-1 fallback decoded a PDF into mojibake that "
    "every caller downstream treated as page text")
 
@@ -1735,8 +1789,13 @@ ok(_scored["catchRateStrict"] == 0.2,
    "partials as caught - measured live: an inflated-number probe (a real figure x10) "
    "scored partial, which the OLD headline metric called a catch")
 ok(_scored["catchRate"] == 0.8, "the lenient number still exists as a labelled secondary")
-ok("catchRateNote" in _scored and "NOT caught" in _scored["catchRateNote"],
-   "and the report says plainly which one is honest")
+# Reworded 2026-09-27: "a partial is NOT caught in any sense that changes what gets
+# published" stopped being true when restate-or-drop shipped (a partial survivor is
+# rewritten and re-audited). The note still has to name the headline and demote the
+# lenient rate - that is what this asserts, not the old phrase.
+ok("catchRateNote" in _scored and "headline" in _scored["catchRateNote"]
+   and "upper bound" in _scored["catchRateNote"],
+   "and the report says plainly which one is honest - strict is the headline, lenient an upper bound")
 ok("below 0.8" in _scored["reading"], "the reading text now keys off the strict rate")
 
 print("\n-- selftest retries a general-web backend before declaring it dead --")
@@ -2530,6 +2589,9 @@ _sp = dr._session_prompt({"system_prefix": "PREFIX"}, "QUESTION", {"type": "obje
 ok(_sp.startswith("PREFIX") and "ONE JSON object" in _sp and "QUESTION" in _sp,
    "the session prompt flattens the whole agent() contract: identity, JSON-only "
    "instruction, schema verbatim, then the task")
+# The extractor is deliberately tolerant (print mode can only be ASKED for JSON), so the
+# cases pin both halves: a fenced or prose-wrapped object is recovered, and a bare array
+# or plain prose is None - which agent() turns into the corrective re-ask, never data.
 for text, want in [('junk ```json\n{"refuted": true}\n``` trailing', {"refuted": True}),
                    ('Answer: {"reply": "ok"} thanks', {"reply": "ok"}),
                    ('no json', None), ('[1,2]', None)]:
@@ -2645,11 +2707,19 @@ _V = dr_pkg.__version__
 _DOC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                     "integrations", "hermes", "SKILL.md")
 
+_HERMES_DOC = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                "integrations", "hermes", "SKILL.md"), encoding="utf-8").read()
+
+
 def _mk_tree(root, rel, version):
+    """A hermes skill tree. At the CURRENT version it is a real copy of the repo doc -
+    what sync-skill.sh writes - because --check compares content too since 2026-09-27;
+    at any other version it is a stub carrying just that version."""
     p = os.path.join(root, rel)
     os.makedirs(p, exist_ok=True)
     with open(os.path.join(p, "SKILL.md"), "w", encoding="utf-8") as f:
-        f.write("---\nname: deepresearch\nversion: %s\n---\nbody\n" % version)
+        f.write(_HERMES_DOC if version == _V
+                else "---\nname: deepresearch\nversion: %s\n---\nbody\n" % version)
     return p
 
 with _tmp2.TemporaryDirectory() as _hh:
@@ -2719,6 +2789,15 @@ with _tmp2.TemporaryDirectory() as _gd:
        "install mode repairs the drift the check just caught (and reports the version it wrote)")
     _c = _run_sh("sync-skill.sh", "--check", _gd)
     ok(_c.returncode == 0, "and --check agrees afterwards: the gate and the fix share one definition of drift")
+    # Version-only drift detection missed a doc edit made without a version bump - the
+    # tree read as current while serving old text (review 2026-09-27).
+    with open(os.path.join(_gd, "profiles/glm/skills/research/deepresearch/SKILL.md"), "a",
+              encoding="utf-8") as _f:
+        _f.write("\nstale paragraph\n")
+    _c = _run_sh("sync-skill.sh", "--check", _gd)
+    ok(_c.returncode != 0 and "CONTENT differs" in _c.stdout,
+       "same version, different text is drift too: --check compares content, not just the tag")
+    _run_sh("sync-skill.sh", _gd)
     # The watchdog: quiet when healthy, wakes on drift AND on an unreachable searxng.
     _srv2 = _serve(_ProbeJSON)
     _probe_url = "http://127.0.0.1:%d/search?format=json&q=test" % _srv2.server_address[1]
@@ -2944,7 +3023,9 @@ _pv = dr.post_verify_coverage(
 ok(_pv[0]["status"] == "killed-in-verification" and _pv[1]["status"] == "answered",
    "a sub-question whose claims all died reads killed-in-verification, not answered")
 
-# the pure panel arithmetic, exercised directly
+# The pure panel arithmetic, exercised directly: a Mode B window used to hand-count the
+# kill rule while believing it followed code, so the rule became an importable function -
+# and the one-verdict case pins that an errored lens never reads as a refutation.
 _t = dr.tally_verdicts([{"refuted": True}, {"refuted": True}, {"refuted": False}], 2, 3)
 ok(_t == (2, 0, False, True), "2 refutations of 3 kill: (refuted, errored, survives, isRef)=%r" % (_t,))
 _t2 = dr.tally_verdicts([{"refuted": True}], 2, 3)
@@ -3174,8 +3255,344 @@ ok(_via_seen == {"crossref-api", "firecrawl", "http", "pdf", "pdf-unreadable",
    "the via vocabulary is closed at eight known values; a ninth producer must fail here "
    "until engine's consumers are consciously updated")
 
-print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
-sys.exit(1 if FAIL else 0)
+
+# ── Review 2026-09-27: the search layer, the provider seam, the probes ──────
+# Each block below is a defect a whole-codebase review found and PROVED with a stubbed
+# script before it was fixed; none was visible to the suite, because each one fails
+# SILENTLY - a healthy-looking health row, a verdict made of a failed call, a crash on
+# a path only real data reaches.
+print("\n-- review 2026-09-27: search layer --")
+_rv_get, _rv_gb = searchmod._get, searchmod._get_bytes
+_rv_sx = os.environ.get("DR_SEARXNG_URL")
+try:
+    # Mojeek never followed CONTRIBUTING rule 1. A captcha page answered 200, parsed
+    # to zero results and was noted `ok` - and one "live" general-web backend made
+    # _gw_dead_from_health mute the degraded warning while every engine was challenged.
+    searchmod._get = lambda url, headers=None, timeout=25: (
+        "<html><title>Sorry</title>unusual traffic from your network - captcha</html>")
+    searchmod.reset_health()
+    searchmod.search("minimum wage employment", backends=["mojeek"])
+    _mj = searchmod.health().get("mojeek") or {}
+    ok(_mj.get("challenged") == 1 and _mj.get("ok") == 0,
+       "mojeek RAISES on a challenge page - noted challenged, never ok-with-zero (%s)" % _mj)
+
+    # SearXNG's two named refusals were both noted `fail` ("actually down"), though one
+    # is a poisoned engine and the other a rate limit - three failures, three fixes.
+    os.environ["DR_SEARXNG_URL"] = "http://localhost:8080"
+    searchmod._get = lambda url, headers=None, timeout=25: _pj.dumps({"results": [
+        {"url": "https://cebupacificair.com/%d" % i, "title": "minimum wage", "content": ""}
+        for i in range(10)]})
+    searchmod.reset_health(); searchmod.search("minimum wage", backends=["searxng"])
+    ok((searchmod.health().get("searxng") or {}).get("junk") == 1,
+       "one host owning a SearXNG page is noted junk, not fail")
+    searchmod._get = lambda url, headers=None, timeout=25: _pj.dumps(
+        {"results": [], "unresponsive_engines": [["brave", "too many requests"]]})
+    searchmod.reset_health(); searchmod.search("minimum wage", backends=["searxng"])
+    ok((searchmod.health().get("searxng") or {}).get("challenged") == 1,
+       "suspended upstream engines are noted challenged (rate-limited), not fail")
+
+    # The one-host check keyed on the last two labels, so four different UK papers
+    # were one host "co.uk" and a healthy result page was refused as junk.
+    _uk = [{"url": u, "title": "minimum wage uk", "content": "minimum wage"} for u in
+           ["https://www.bbc.co.uk/a", "https://www.telegraph.co.uk/c",
+            "https://www.independent.co.uk/d", "https://www.thetimes.co.uk/e",
+            "https://www.theguardian.com/b"]]
+    searchmod._get = lambda url, headers=None, timeout=25: _pj.dumps({"results": _uk})
+    try:
+        _uk_n = len(searchmod._searxng("uk minimum wage", 8))
+    except RuntimeError as _e:
+        _uk_n = "refused: %s" % str(_e)[:60]
+    ok(_uk_n == 5, "four .co.uk newspapers are four sites, not one host owning the page (%s)" % _uk_n)
+finally:
+    searchmod._get, searchmod._get_bytes = _rv_get, _rv_gb
+    if _rv_sx is None:
+        os.environ.pop("DR_SEARXNG_URL", None)
+    else:
+        os.environ["DR_SEARXNG_URL"] = _rv_sx
+
+# A publisher's PDF path ends in a FILE name; the DOI handed to Crossref carried
+# ".pdf" / "v1.full.pdf", so the blocked-PDF abstract fallback could never hit.
+ok(searchmod.doi_in_url("https://link.springer.com/content/pdf/10.1007/s00134-020-06022-5.pdf")
+   == "10.1007/s00134-020-06022-5", "doi_in_url strips a publisher PDF's .pdf suffix")
+ok(searchmod.doi_in_url("https://www.biorxiv.org/content/10.1101/2020.03.22.002386v1.full.pdf")
+   == "10.1101/2020.03.22.002386", "and biorxiv's version-and-full suffix")
+ok(searchmod.doi_in_url("https://www.pnas.org/doi/10.1073/pnas.1918339117")
+   == "10.1073/pnas.1918339117", "while a DOI with no file suffix is untouched")
+
+# The declared charset was ignored and the latin-1 fallback never fails, so cp1252 and
+# Shift_JIS pages reached the extractor as mojibake - and direct HTML reads skip the
+# prose gate that would have noticed.
+ok(searchmod._decode("“Minimum” wage".encode("cp1252"), "text/html; charset=windows-1252")
+   == "“Minimum” wage", "_decode honours the header charset")
+ok(searchmod._decode(b'<meta charset="shift_jis">' + "最低賃金".encode("shift_jis"))
+   .endswith("最低賃金"), "and a <meta charset> when the header has none")
+ok(searchmod._decode("✓ ok".encode(), "text/html; charset=no-such-codec") == "✓ ok",
+   "an unknown declared charset falls back instead of raising LookupError")
+
+print("\n-- review 2026-09-27: provider seam --")
+# Under the shim ITSELF - DR_PROVIDER=glm while a gateway also set ANTHROPIC_BASE_URL
+# to z.ai - the owner check compared against Anthropic's env-overridden URL, so z.ai
+# read as Anthropic's endpoint and a GLM run sent model claude-sonnet-5.
+_glm_shim = _with_env({"DR_PROVIDER": "glm", "ZAI_API_KEY": "z", "DR_TRANSPORT": "http",
+                       "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic"},
+                      lambda: (_P.select()["default_model"], _P.select()["endpoint_owner"]))
+ok(_glm_shim == ("glm-5.3", None),
+   "a GLM run under the env shim keeps glm-5.3 and claims no foreign endpoint (%s)" % (_glm_shim,))
+
+# Linux refuses any ONE argv string of 128 KiB or more; an exhaustive synthesis prompt
+# measured 119 KB, and past the limit every attempt died on E2BIG, retried five times.
+_rh_calls = []
+_rh_real = _P.subprocess.run
+class _RhProc:
+    returncode, stdout, stderr = 0, '{"ok": true}', ""
+_P.subprocess.run = lambda argv, **kw: (_rh_calls.append((argv, kw.get("input"))), _RhProc())[1]
+try:
+    _P.run_harness(["claude", "-p"], "short prompt")
+    _P.run_harness(["claude", "-p"], "x" * 130000)
+finally:
+    _P.subprocess.run = _rh_real
+ok(_rh_calls[0] == (["claude", "-p", "short prompt"], None),
+   "a normal prompt still travels positionally")
+ok(_rh_calls[1][0] == ["claude", "-p"] and len(_rh_calls[1][1] or "") == 130000,
+   "an oversized prompt goes on stdin, never as one argv string the kernel refuses")
+
+print("\n-- review 2026-09-27: probes, calibration, tools --")
+from deepresearch import probes as _PR   # noqa: E402
+_pr_agent = dr.agent
+dr.agent = lambda *a, **k: None
+try:
+    _rep = {"question": "q", "depth": "quick",
+            "citationDetail": [{"claim": "Wages rose 5% in 2020.", "url": "https://a.org/x",
+                                "support": "supported"}] * 2,
+            "summary": "Wages rose 5% in 2020. Employment held.",
+            "findings": [{"claim": "Wages rose 5%"}]}
+    _pr_fetch = dr.web_fetch
+    dr.web_fetch = lambda u, cap=14000, fresh=False: "page"
+    try:
+        _au = _PR.run_audit_probes(_rep, n=2)
+    finally:
+        dr.web_fetch = _pr_fetch
+    # A failed model call became support=None and was scored as a MISS: every call
+    # failing published catchRateStrict 0.0, "the auditor misses defects".
+    ok(_au.get("n") == 0 and _au.get("excludedFailedCalls", 0) >= 1
+       and "not measured" in (_au.get("reason") or ""),
+       "audit probes: failed calls are excluded and counted, never scored as misses (%s)"
+       % {k: _au.get(k) for k in ("n", "excludedFailedCalls", "reason")})
+    _cr = _PR.run_critic_probes(_rep)
+    # {} defaulted to verdict "sound": a failed clean arm against a working degraded
+    # one read "the verdict responds to injected defects".
+    ok(_cr.get("verdictMoved") is None and "not measured" in (_cr.get("reading") or ""),
+       "critic probes: an arm with no verdict is NOT MEASURED, never 'the verdict moved'")
+finally:
+    dr.agent = _pr_agent
+ok(_PR.score_critic_probes([], [], "unknown", "material-gaps")["verdictMoved"] is None,
+   "the scorer itself refuses to compare an unknown verdict with a real one")
+
+# The same empty-lens degenerate case agreement() already survived raised KeyError here.
+ok(_cal.per_lens_agreement({"x": []}, {"x": [True]})["x"]["rawAgreement"] is None,
+   "per_lens_agreement survives an empty lens")
+
+import subprocess as _sp  # noqa: E402
+# runs/quote-location-*.json is a LIST - a measurement, not a run - and the tool that
+# regenerates every published number crashed on the repo's own data.
+_cmp = _sp.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                            "tools", "compare_regimes.py")],
+               capture_output=True, text=True)
+ok(_cmp.returncode == 0, "tools/compare_regimes.py runs over runs/ without crashing (%s)"
+   % (_cmp.stderr.strip().splitlines() or ["ok"])[-1][:120])
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
+import compare_regimes as _CR  # noqa: E402
+ok("no reading" in _CR.reading_for(0, 0),
+   "zero samples give no reading - frac 0 used to read 'the ranking IS selecting for verifiability'")
+
+
+print("\n-- review 2026-09-27: engine exits and counts --")
+# The all-demoted exit read fact_by five lines before it was assigned: the one run
+# where the audit demoted EVERY panel survivor died on UnboundLocalError and wrote no
+# report. The exit-coverage test above counts keyword arguments and never drove it.
+try:
+    _ad = run({"cite_all_unsupported": True})
+    _ad_err = None
+except Exception as _e:
+    _ad, _ad_err = {}, "%s: %s" % (type(_e).__name__, _e)
+ok(_ad_err is None and "demoted by the blind citation audit" in (_ad.get("summary") or ""),
+   "the all-demoted exit RETURNS a report (%s)" % (_ad_err or "ok"))
+_ad_dem = [x for x in (_ad.get("refuted") or []) if "citation-audit" in x.get("killedBy", "")]
+ok(_ad_dem and all(x.get("why") for x in _ad_dem),
+   "a claim the audit demoted says WHY - the panel passed it, so there was no refuting "
+   "vote to quote and `why` was empty")
+ok("unverified" in _ad and "unverifiedCount" in (_ad.get("stats") or {})
+   and _ad.get("citationDetail"),
+   "and it carries unverified, unverifiedCount and citationDetail like every exit")
+
+# An auditor that echoes `claim`/`url` in its reply: dict(claim=..., **f) raised
+# TypeError, pmap swallowed it as a worker error, the row was lost - and a claim the
+# audit judged unsupported was PUBLISHED.
+_ek = run({"cite_echo_keys": True})
+_ek_ca = _ek.get("citationAudit") or {}
+ok(_ek_ca.get("auditErrors") == 0 and _ek_ca.get("unsupported", 0) > 0
+   and (_ek.get("stats") or {}).get("confirmed") == 0,
+   "an auditor echoing claim/url cannot lose its row or publish what it judged "
+   "unsupported (%s)" % {k: _ek_ca.get(k) for k in ("unsupported", "auditErrors")})
+ok(all(r.get("url") != "https://echoed.example/" for r in (_ek.get("citationDetail") or [])),
+   "and the engine's claim/url win over the model's echo on every row")
+
+# A restated claim swapped its quote for the re-audit's locatedQuote and kept the
+# ORIGINAL quote's check, so quoteAudit published a status for a different string.
+_rq = run({"force_partial": True, "restate_located": True})
+_rq_rows = [x for x in (_rq.get("quoteAudit") or []) if x.get("restatedFrom")]
+ok(_rq_rows and _rq_rows[0]["quote"] == "page body for https://src"
+   and _rq_rows[0]["onPage"] in dr.QUOTE_ON_PAGE,
+   "a restated claim's onPage is the check of the quote it now carries (%s)"
+   % ({k: _rq_rows[0].get(k) for k in ("quote", "onPage")} if _rq_rows else "no restated row"))
+
+# The report's `coverage` was the gap analyst's pre-panel snapshot: only the synthesis
+# prompt got the reconciled table, and every SKILL.md reads the JSON.
+_cv = run({"kill_all": True})
+ok(all(row.get("status") != "answered" for row in (_cv.get("coverage") or []))
+   or _cv.get("coverage") is None,
+   "an all-refuted run's report coverage is reconciled - nothing reads 'answered'")
+
+# Counts after a rescue. The early exits computed evidenceChecked from `ranked`, which
+# never holds rescue claims, and killsByLens was frozen before the rescue panel ran.
+_hl_ev = (_cv.get("honestLimits") or {}).get("evidenceChecked", "")
+ok(_hl_ev.startswith("%d of " % _cv["stats"]["claimsVerified"]),
+   "evidenceChecked counts the claims actually verified, rescue included (%s | "
+   "claimsVerified=%d)" % (_hl_ev[:40], _cv["stats"]["claimsVerified"]))
+ok(sum(_cv["stats"]["killsByLens"].values()) == sum(len(x["refutedBy"]) for x in _cv["refuted"]),
+   "killsByLens totals every refutation the killed claims cast, the rescue's included")
+
+# The rescue pool skipped citable_only: T4/T5 rescue claims reached the panel and the
+# confirmed findings. And the rescue picker was the one never told the general web
+# was required.
+_rc_cap = []
+_rc = run({"kill_all": True, "farm_hits": True, "dead_web": True, "capture": _rc_cap})
+# kill_all refutes every non-rescue claim it sees, so a farm claim that reached the
+# panel would sit in `refuted` with its source; the main pool's farm claims never do.
+_rc_srcs = [x.get("source", "") for x in (_rc.get("refuted") or [])]
+ok(_rc.get("rescue") and _rc["rescue"]["sourcesAdded"] >= 2
+   and not any("hubpages.com" in u for u in _rc_srcs),
+   "no claim from a non-citable rescue source reaches the panel (%d refuted, rescue %s)"
+   % (len(_rc_srcs), _rc.get("rescue")))
+_rc_picks = [pr for lb, pr in _rc_cap if lb.startswith("pick:rescue")]
+_main_picks = [pr for lb, pr in _rc_cap if lb.startswith("pick:P")]
+_gw_mark = "general web is unreachable"
+ok(_rc_picks and any(_gw_mark in pr for pr in _main_picks)
+   and all(_gw_mark in pr for pr in _rc_picks),
+   "rescue picks carry the same general-web warning as the main sweep's picks")
+
+# Two runs in one process: run 1's hypotheses, kill tally and tallies leaked into run 2.
+_lk_cap = []
+run({"kill_all": True})
+_lk = run({"no_framing": True, "capture": _lk_cap})
+_lk_syn = [pr for lb, pr in _lk_cap if lb == "synthesize"]
+ok(dr.HYPOTHESES == [] and (not _lk_syn or "Hypotheses to adjudicate" not in _lk_syn[0]),
+   "a framing-less run after a framed one adjudicates NO inherited hypotheses")
+ok(sum((_lk.get("stats") or {}).get("killsByLens", {}).values())
+   == sum(len(x["refutedBy"]) for x in (_lk.get("refuted") or [])),
+   "and its killsByLens is its own, not the previous run's")
+
+print("\n-- review 2026-09-27: the model seam --")
+# A tool call cut off at max_tokens PARSES - with empty arrays - so it never reached
+# the `got is None` branch where the stdio refactor had moved budget growth. It got the
+# corrective re-ask at the same budget five times; the 2026-09-06 fix was gone and the
+# only guard asserted the string "* 2" existed in the source.
+_tr_sent = []
+_tr_resp = [
+    {"stop_reason": "max_tokens", "usage": {},
+     "content": [{"type": "tool_use", "name": "StructuredOutput", "input": {"items": []}}]},
+    {"stop_reason": "end_turn", "usage": {},
+     "content": [{"type": "tool_use", "name": "StructuredOutput", "input": {"items": ["a"]}}]},
+]
+class _TrResp:
+    def __init__(self, body): self.b = body
+    def read(self): return _pj.dumps(self.b).encode()
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+def _tr_open(req, timeout=None):
+    _tr_sent.append(_pj.loads(req.data.decode())["max_tokens"])
+    return _TrResp(_tr_resp[min(len(_tr_sent), len(_tr_resp)) - 1])
+_tr_saved = (dr.urllib.request.urlopen, _P._TRANSPORT, dr.time.sleep)
+dr.urllib.request.urlopen, dr.time.sleep = _tr_open, (lambda s: None)
+_P._TRANSPORT = dict(_P.spec("claude"), scheme="api-key", secret="k", via=None,
+                     headers={"x-api-key": "k"}, harness_argv=None)
+try:
+    _tr = _REAL_AGENT("t", {"type": "object", "required": ["items"], "properties": {
+        "items": {"type": "array", "minItems": 1, "items": {"type": "string"}}}},
+        label="trunc", max_tokens=4000, retries=3)
+finally:
+    dr.urllib.request.urlopen, _P._TRANSPORT, dr.time.sleep = _tr_saved
+ok(_tr == {"items": ["a"]} and _tr_sent[:2] == [4000, 8000],
+   "a truncated call that parsed with empty arrays is retried with a DOUBLED budget, not "
+   "scolded at the same one (sent %s)" % _tr_sent)
+
+# The CLI's two silent successes. A missing credential in --selftest did
+# `return False`, and sys.exit(False) is exit 0 - healthy, to every preflight.
+_st_saved = _P.transport
+def _no_cred():
+    raise dr.AuthError("no credential (stub)")
+_P.transport = _no_cred
+_st_saved_scheme = _P.current_scheme
+_P.current_scheme = lambda: "http"
+try:
+    import io as _sio, contextlib as _sctx
+    with _sctx.redirect_stdout(_sio.StringIO()):
+        _st_code = dr.selftest()
+finally:
+    _P.transport, _P.current_scheme = _st_saved, _st_saved_scheme
+ok(_st_code == dr.EXIT_AUTH, "--selftest exits %d on a failed credential, not 0 (got %r)"
+   % (dr.EXIT_AUTH, _st_code))
+# An {"error": ...} report (an unusable plan) printed {} under --out and exited 0.
+_cli = _sp.run([sys.executable, "-c", """
+import sys; sys.path.insert(0, %r)
+from deepresearch import engine as E
+E.deepresearch = lambda q, d, contract=None: {"error": "Search plan unusable (stub)"}
+E.instruments.verify = lambda: []
+sys.argv = ["deepresearch", "--question", "q?", "--out", %r]
+E.main()
+""" % (os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."),
+       os.path.join(_tmp.gettempdir(), "dr-cli-error-test.json"))],
+               capture_output=True, text=True, env=dict(os.environ, DR_TRANSPORT="http",
+                                                         ANTHROPIC_API_KEY="k"))
+ok(_cli.returncode == dr.EXIT_FAIL and "Search plan unusable" in _cli.stdout,
+   "a run that ends in an error report prints the error and exits %d (got %d, stdout %r)"
+   % (dr.EXIT_FAIL, _cli.returncode, _cli.stdout[:80]))
+ok("pgrep" not in _ENG.split('"done_when"')[1][:120] if '"done_when"' in _ENG else False,
+   "the --bg handle's done_when is by pid - `pgrep -f 'deepresearch --question'` matches "
+   "the shell running pgrep and never says done")
+
+
+print("\n-- review 2026-09-27, second round: the fixes' own defects --")
+# A 2-1 SURVIVOR the audit then demoted has a refuter - the losing lens - so the first
+# version of the auditWhy fallback still published that lens's objection as `why` and
+# dropped the audit's reason.
+_ow = run({"one_refuter": True, "cite_all_unsupported": True})
+_ow_dem = [x for x in (_ow.get("refuted") or []) if "citation-audit" in x.get("killedBy", "")]
+ok(_ow_dem and all(x["why"] == "the page says nothing of the kind" for x in _ow_dem),
+   "a 2-1 survivor demoted by the audit says the AUDIT's reason, not the losing lens's")
+# The rescue pass has its own cap. What it cut was counted nowhere, and synthesis
+# blamed the main panel budget for it.
+_rm_cap = []
+_rm = run({"kill_all": True, "rescue_many": True, "capture": _rm_cap})
+_rm_st = _rm["stats"]
+_rm_syn = [pr for lb, pr in _rm_cap if lb == "synthesize"]
+ok((_rm.get("rescue") or {}).get("claimsCutByRescueCap", 0) > 0
+   and _rm_st["claimsDroppedBeforeVerify"] + _rm_st["claimsExcludedNonCitable"] + _rm_st["claimsVerified"]
+   == _rm_st["claimsExtracted"],
+   "rescue-cap cuts are counted: dropped + excluded + verified == extracted (%s)"
+   % {k: _rm_st[k] for k in ("claimsExtracted", "claimsVerified", "claimsDroppedBeforeVerify")})
+ok(_rm_syn and "rescue pass's own cap" in _rm_syn[0],
+   "and synthesis is told which cap cut them")
+# The charset fix let a DECLARED charset override bytes that are valid UTF-8: a UTF-8
+# page served as ISO-8859-1 became mojibake, and a stale <meta charset="utf-16"> turned
+# an ASCII page into CJK - a regression against the code it replaced.
+ok(searchmod._decode("héllo — ok".encode(), "text/html; charset=ISO-8859-1") == "héllo — ok",
+   "valid UTF-8 wins over a wrong declared charset")
+ok(searchmod._decode(b'<meta charset="utf-16"> plain page') == '<meta charset="utf-16"> plain page',
+   "an ASCII-readable <meta charset=utf-16> is ignored, not obeyed into garbage")
+# The version-suffix strip ate an MDPI DOI whose own first character is a v.
+ok(searchmod.doi_in_url("https://www.mdpi.com/1999-4915/12/1/1/pdf/10.3390/v12010001.pdf")
+   == "10.3390/v12010001", "an MDPI DOI keeps its leading v (a version suffix follows digits)")
 
 print("\n======== %d passed, %d failed ========" % (PASS, FAIL))
 sys.exit(1 if FAIL else 0)

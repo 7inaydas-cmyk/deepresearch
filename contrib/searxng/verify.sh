@@ -12,5 +12,6 @@ if [ "$CODE" != "200" ]; then
 fi
 N=$(curl -s -m 20 "$URL/search?format=json&q=open+source+deep+research" \
     | python3 -c 'import json,sys; print(len(json.load(sys.stdin).get("results") or []))')
-echo "OK: $URL serves JSON and returned $N results for a live query."
+# Judge before printing: it printed "OK ... returned 0 results" and THEN failed.
 [ "$N" -gt 0 ] || { echo "FAIL: 200 but zero results — the upstream engines are being blocked too."; exit 1; }
+echo "OK: $URL serves JSON and returned $N results for a live query."

@@ -413,6 +413,132 @@ import fs2 from 'node:fs'
   ok(!/citableSources < MIN_CITABLE_SOURCES\) return/.test(src) && /NOT aborted for being thin/.test(src),
      'a thin run is labelled, never aborted: the thinnest run on record was thin because of a bug, and aborting would have hidden it')
 }
+// ══════════ Review 2026-09-27: defects a whole-codebase review proved in this build ══════════
+// Each was reproduced with this harness before it was fixed; none was visible to the suite.
+{
+  // A bare hyphen counted as a depth separator, so a compound first word was eaten.
+  const a = await run('R1a compound first word', { question: 'Quick-service restaurant margins in 2026?', depth: 'exhaustive' })
+  ok(a.out.question === 'Quick-service restaurant margins in 2026?' && a.out.depth === 'exhaustive',
+     '"Quick-service ..." is a question, not a quick-depth prefix (got ' + JSON.stringify(a.out.question) + ')')
+  const b = await run('R1b spaced dash prefix', 'quick - what is the thing?')
+  ok(b.out.depth === 'quick' && b.out.question === 'what is the thing?', 'a spaced dash is still a prefix')
+}
+{
+  // agent() THROWS when a token budget is spent. Uncaught at synthesis, the whole run
+  // rejected and the fallback that keeps verified claims and calibration never ran.
+  let threw = null, r = null
+  try { r = await run('R2 agent throws at synthesis', { question: 'Q', depth: 'standard' }, { throwAt: 'synthesize' }) }
+  catch (e) { threw = e.message }
+  ok(!threw && r.out.confirmedRaw && r.out.confirmedRaw.length > 0,
+     'a thrown agent call is a failed call: the run returns its verified claims (' + (threw || 'no throw escaped') + ')')
+  ok(r && r.logs.some(l => /agent call threw/.test(l)), 'and the throw is logged, not swallowed')
+}
+{
+  // The rescue pool skipped citableOnly: a T5 rescue source reached the panel and
+  // could land in the confirmed findings.
+  const { out } = await run('R3 rescue excludes non-citable sources', { question: 'Q', depth: 'standard' },
+    { wipeSubQuestion: SQ[2], rescueTarget: SQ[2], rescueIndex: 3, farmRescue: true })
+  ok(out.rescue && out.rescue.sourcesAdded >= 2, 'the farm and the primary rescue sources were both read')
+  ok(!(out.citationDetail || []).some(r => /buzzfeed/.test(r.url)) && !(out.refuted || []).some(r => /buzzfeed/.test(r.source)),
+     'no claim from a T5 rescue source reached the panel or the audit')
+}
+{
+  // The all-demoted exit dropped calibration, the dropped sample, citationDetail and
+  // scopeContract, and a demoted claim's `why` was empty (the panel passed it).
+  const { out } = await run('R4 audit demotes every survivor', { question: 'Q', depth: 'standard', calibrate: 4 },
+    { cite_all_unsupported: true })
+  ok(/demoted by the blind citation audit/.test(out.summary || ''), 'the all-demoted exit is reached')
+  ok('calibration' in out && 'droppedSample' in out && (out.citationDetail || []).length > 0 && out.scopeContract,
+     'and it carries calibration, droppedSample, citationDetail and scopeContract')
+  const dem = (out.refuted || []).filter(r => /citation-audit/.test(r.killedBy))
+  ok(dem.length > 0 && dem.every(r => r.why), 'a demoted claim says WHY: the audit\'s reasoning, not an empty string')
+}
+{
+  // {claim, url, ...f} let the model's echo overwrite the row: an unsupported verdict
+  // stopped matching its claim and demotion silently stopped.
+  const { out } = await run('R5 auditor echoes claim/url', { question: 'Q', depth: 'standard' }, { cite_echo_keys: true })
+  ok(out.stats.confirmed === 0 && (out.citationDetail || []).every(r => r.url !== 'https://echoed.example/'),
+     'the engine\'s claim/url win over an echo, so unsupported still demotes (confirmed=' + out.stats.confirmed + ')')
+}
+{
+  // Restate-or-drop, ported from the Python twin: a partial SURVIVOR is restated and
+  // re-audited. Supported swaps in the weakened claim; still-partial demotes.
+  const a = await run('R6a restate succeeds', { question: 'Q', depth: 'standard' })
+  ok(a.labels.some(l => l.startsWith('restate:')) && a.out.citationAudit.restatedToSupported > 0,
+     'partial survivors are restated and re-audited (' + a.out.citationAudit.restatedToSupported + ' restated)')
+  ok((a.out.citationDetail || []).some(r => r.restatedFrom),
+     'a restated row keeps the original wording in restatedFrom')
+  const b = await run('R6b restate fails', { question: 'Q', depth: 'standard' }, { restate_fails: true })
+  ok(b.out.citationAudit.demotedBySurvivingPanel > a.out.citationAudit.demotedBySurvivingPanel,
+     'a restatement that is still partial DEMOTES (' + b.out.citationAudit.demotedBySurvivingPanel + ' vs ' +
+     a.out.citationAudit.demotedBySurvivingPanel + ' demoted)')
+}
+{
+  // The report's coverage was the gap analyst's PRE-panel table: a sub-question whose
+  // every claim died still read "answered". SQ1 is "answered" in the stub; kill it.
+  const { out } = await run('R7 coverage reconciled after the panel', { question: 'Q', depth: 'standard' },
+    { wipeSubQuestion: SQ[0], rescueTarget: SQ[2], rescueIndex: 3 })
+  const row = (out.coverage || []).find(c => c.subQuestion === SQ[0])
+  ok(row && row.status === 'killed-in-verification', 'a sub-question whose claims all died reads killed-in-verification (' + (row && row.status) + ')')
+}
+{
+  // Every exit carries the contract and the same unverified key; the limits say what ran.
+  const a = await run('R8a not-ranked exit', { question: 'Q', depth: 'standard' }, { emptyFetch: true })
+  ok(a.out.scopeContract && a.out.scopeContract.provenance, 'the not-ranked exit carries scopeContract')
+  const b = await run('R8b all verifiers die', { question: 'Q', depth: 'standard' }, { allVerifiersDie: true })
+  ok('unverifiedCount' in b.out.stats && !('unverified' in b.out.stats) && b.out.scopeContract,
+     'the all-refuted exit uses stats.unverifiedCount like every other exit, and carries scopeContract')
+  const q = await run('R8c quick', { question: 'Q', depth: 'quick' })
+  ok(q.out.honestLimits.citationAuditOff, 'quick depth SAYS no citation was re-checked')
+  const s = await run('R8d standard', { question: 'Q', depth: 'standard' })
+  ok(String(s.out.honestLimits.evidenceChecked || '').startsWith(s.out.stats.claimsVerified + ' of '),
+     'evidenceChecked counts the claims actually verified (' + String(s.out.honestLimits.evidenceChecked).slice(0, 30) + ')')
+  ok(!/stats\.searchHealth/.test(s.out.honestLimits.searchCoverage), 'searchCoverage no longer points at a field this build never has')
+}
+{
+  // Synthesis was told "N lower-ranked claims were never verified" counted against
+  // rankedClaims, which never holds rescue claims, and the second disclosure fired only
+  // at >=50% while describing a tier-first ranking.
+  const { out, prompts } = await run('R9 one honest never-verified disclosure', { question: 'Q', depth: 'standard' },
+    { wipeSubQuestion: SQ[2], rescueTarget: SQ[2], rescueIndex: 3, farmRescue: true })
+  const syn = (prompts.find(p => p.label === 'synthesize') || {}).prompt || ''
+  const never = out.stats.claimsExtracted - out.stats.claimsVerified
+  ok(never > 0 && syn.includes(never + ' of ' + out.stats.claimsExtracted + ' extracted claims'),
+     'the disclosure uses the final pools (' + never + ' of ' + out.stats.claimsExtracted + ')')
+  ok(!/source tier first/.test(syn) && /importance first/.test(syn), 'and describes the importance-first ranking')
+  const src = fsCap.readFileSync(new URL('../../integrations/claude-code/deepresearch.js', import.meta.url).pathname, 'utf8')
+  ok(!/DROP_PCT >= 50/.test(src), 'no threshold gates the disclosure')
+}
+{
+  // A curly apostrophe hid the negator: "don’t" tokenised as "don" + "t", so an
+  // opposite verdict stamped preRegistered with the certainty label.
+  const { out } = await run('R10 curly-apostrophe negation', { question: 'Q', depth: 'standard' }, { curly_negation: true })
+  const v = (out.hypothesisVerdicts || []).find(x => x.hypothesisNumber === 1)
+  ok(v && v.preRegistered === false, 'a verdict that negates H1 with a curly apostrophe is NOT stamped pre-registered')
+}
+// ══════════ Review 2026-09-27, second round: the fixes' own defects ══════════
+{
+  // A 2-1 SURVIVOR the audit then demoted has a refuter (the losing lens), so the first
+  // fallback still published that lens's objection as `why` and dropped the audit's reason.
+  const { out } = await run('R11 2-1 survivor demoted by the audit', { question: 'Q', depth: 'standard' },
+    { oneRefuter: true, cite_all_unsupported: true })
+  const dem = (out.refuted || []).filter(r => /citation-audit/.test(r.killedBy))
+  ok(dem.length > 0 && dem.every(r => r.why === 'the page says nothing of the kind'),
+     "a 2-1 survivor demoted by the audit says the AUDIT's reason, not the losing lens's")
+}
+{
+  // The rescue pass has its own cap; what it cut was counted nowhere and the synthesis
+  // disclosure blamed the main panel budget.
+  const { out, prompts } = await run('R12 rescue-cap cuts are counted', { question: 'Q', depth: 'standard' },
+    { wipeSubQuestion: SQ[2], rescueTarget: SQ[2], rescueIndex: 3, rescueMany: true })
+  const st = out.stats
+  ok(out.rescue && out.rescue.claimsCutByRescueCap > 0 &&
+     st.claimsDroppedBeforeVerify + st.claimsExcludedNonCitable + st.claimsVerified === st.claimsExtracted,
+     'dropped + excluded + verified == extracted after a capped rescue (' + st.claimsDroppedBeforeVerify + '+' +
+     st.claimsExcludedNonCitable + '+' + st.claimsVerified + ' vs ' + st.claimsExtracted + ')')
+  const syn = (prompts.find(p => p.label === 'synthesize') || {}).prompt || ''
+  ok(/rescue pass's own cap/.test(syn), 'and synthesis is told which cap cut them')
+}
 console.log('\n════════ FINAL ════════')
 console.log(pass + ' passed, ' + fail + ' failed')
 process.exit(fail ? 1 : 0)

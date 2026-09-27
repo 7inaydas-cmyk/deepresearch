@@ -1,10 +1,11 @@
 ---
 name: deepresearch
 description: >
-  Deep research that refutes its own findings before showing them, run BY this agent on
-  the session's own subscription - no API key, no external process. A 3-lens adversarial
-  panel kills weak claims, every citation is re-checked blind against the live page, and
-  the summary is audited for statements no source supports. Kill criteria are written
+  Deep research that refutes its own findings before showing them, powered by this
+  agent on the session's own subscription - no API key. A 3-lens adversarial panel kills
+  weak claims, every citation is re-checked against the live page (blind in Mode B; in
+  Mode A one window plays every role), and the summary is audited for statements no
+  source supports. Kill criteria are written
   before searching. Use when being WRONG is expensive: 'deep research on X', 'is it true
   that X', 'settle this', 'due diligence', 'what does the evidence actually say'. Slower
   and far more rigorous than a quick web lookup. Default depth is standard (~150 model
@@ -13,7 +14,7 @@ description: >
 
 # deepresearch — run on THIS agent
 
-You are both the orchestrator and the runtime. The pipeline below is the repo's. Seven
+You are both the orchestrator and the runtime. The pipeline below is the repo's. Eight
 prompt builders, every schema, and every deterministic checker are **imported from the
 repo, never paraphrased**, so those phases cannot drift from the engine the way
 hand-copied skills do. The one exception is the synthesis instruction list, which has
@@ -98,8 +99,10 @@ bash <repo>/contrib/zcode-session/drive.sh dr-answer '{"reply": "ok"}'   # probe
 
 Rules of the loop:
 - Answer EVERY request - the engine blocks until a matching-id reply arrives, and a
-  window that stops answering is the protocol's one failure mode (a rater that never
-  answers; preflight refuses cleanly if the first probe goes unanswered).
+  window that stops answering is the protocol's one failure mode: there is NO timeout,
+  an unanswered request (the first probe included) waits forever. To abandon a run,
+  `drive.sh dr-stop`. When the engine finishes, `dr-next` prints `done: exit N` and
+  `dr-answer` refuses rather than hanging on a fifo nobody reads.
 - One request at a time, by id. The driver compacts your JSON to one line; the
   exchange is one readline per request.
 - Answer as the subagent, not as yourself: the prompt carries the identity block,
@@ -210,7 +213,7 @@ fact/inference/assumption), hypothesisVerdicts with `hypothesisNumber` for EVERY
 hypothesis (its H-number, or 0 for anything invented after the evidence). There is
 no importable builder for this one prompt — the instruction list lives inline in
 `_synthesize` (engine.py); transcribe it from there and re-check it against the
-engine when the repo changes. The seven builders that DO import are imported; this
+engine when the repo changes. The eight builders that DO import are imported; this
 is the one place the no-paraphrase rule bends, and it says so.
 
 **9. Stamp + critique** — deterministic, in code: stamp `preRegistered` via the repo
@@ -238,7 +241,8 @@ scholarly-only, say so as an artefact, not as evidence of absence.
 
 ## Honesty rules that travel with the pipeline
 
-Default to refuting when uncertain · `partial` does not demote but is always surfaced ·
+Default to refuting when uncertain · a `partial` survivor is restated and re-audited, one
+that still fails demotes, and every kept `partial` is surfaced ·
 an unread page is `unreachable`, never `unsupported` · quotes are checked against the
 page in code (`quote_span`), and a quote only partly on the page is reported as such ·
 kill criteria are written before searching and adjudicated after · nothing is struck

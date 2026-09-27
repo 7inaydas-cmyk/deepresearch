@@ -49,7 +49,10 @@ const REFUTATIONS_REQUIRED = 2
 const RAW = (typeof args === 'object' && args !== null && !Array.isArray(args)) ? args : { question: args }
 let QUESTION = String(RAW.question == null ? '' : RAW.question).trim()
 let DEPTH = String(RAW.depth == null ? '' : RAW.depth).trim().toLowerCase()
-const prefixed = QUESTION.match(/^(quick|standard|exhaustive)\s*[:：\-—]\s*([\s\S]+)$/i)
+// A colon, or a dash with a space BEFORE it. A bare hyphen made "Quick-service
+// restaurant margins" a quick-depth run about "service restaurant margins", and
+// "Standard-of-care antibiotics" lost its subject the same way (review 2026-09-27).
+const prefixed = QUESTION.match(/^(quick|standard|exhaustive)(?:\s*[:：]|\s+[-—])\s*([\s\S]+)$/i)
 if (prefixed) {
   if (!DEPTH) DEPTH = prefixed[1].toLowerCase()
   QUESTION = prefixed[2].trim()
@@ -314,8 +317,18 @@ const agentChecked = async (prompt, opts) => {
   let correction = ''
   for (let attempt = 1; attempt <= 3; attempt++) {
     AGENT_CALLS++
-    const got = await agent(prompt + correction, opts)
     const label = (opts && opts.label) || 'agent'
+    let got
+    try {
+      got = await agent(prompt + correction, opts)
+    } catch (e) {
+      // The runtime THROWS once a token budget is spent. Uncaught, one throw at
+      // synthesis rejected the whole run and the `!report` fallback that keeps the
+      // verified claims and the calibration never ran (review 2026-09-27). A thrown
+      // call is a failed call: logged, then null, like every other failure here.
+      log('[' + label + '] agent call threw: ' + String((e && e.message) || e).slice(0, 200) + ' - treated as a failed call')
+      return null
+    }
     if (hasUnknownSentinel(got)) {
       log('[' + label + '] API returned an <UNKNOWN> sentinel instead of the structured fields; retrying (' + attempt + '/3)')
       continue
@@ -423,7 +436,7 @@ const shapeReport = (o, required) => {
 // ── BEGIN GENERATED FROM contract/tiers.json — run tools/sync_tiers.py, do not hand-edit ──
 const RESOLVERS = new Set(["doi.org", "dx.doi.org", "handle.net", "hdl.handle.net", "purl.org"])
 const TIER_RULES = [
-  ['T1', new RegExp("(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$", 'i')],
+  ['T1', new RegExp("(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.([a-z]{2}|scot|wales)|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$", 'i')],
   ['T2', new RegExp("(^|\\.)(nature\\.com|pnas\\.org|europepmc\\.org|semanticscholar\\.org|cochranelibrary\\.com|nejm\\.org|jamanetwork\\.com|thelancet\\.com|plos\\.org|frontiersin\\.org|mdpi\\.com|tandfonline\\.com|sagepub\\.com|cambridge\\.org|oup\\.com|elsevier\\.com|arxiv-sanity\\.com|lemonde\\.fr|faz\\.net|spiegel\\.de|elpais\\.com|corriere\\.it|nrc\\.nl|asahi\\.com|nikkei\\.com|scmp\\.com|thehindu\\.com|abc\\.net\\.au|cbc\\.ca|npr\\.org|propublica\\.org|science\\.org|sciencedirect\\.com|springer\\.com|wiley\\.com|acm\\.org|ieee\\.org|jstor\\.org|biomedcentral\\.com|bmj\\.com|thelancet\\.com|reuters\\.com|apnews\\.com|bloomberg\\.com|ft\\.com|wsj\\.com|economist\\.com|nytimes\\.com|bbc\\.co\\.uk|bbc\\.com|theguardian\\.com|en\\.wikipedia\\.org|openalex\\.org)$", 'i')],
   ['T3', new RegExp("(^|\\.)(github\\.com|gitlab\\.com|medium\\.com|substack\\.com|dev\\.to|news\\.ycombinator\\.com|stackoverflow\\.com|reddit\\.com|hashnode\\.dev|blogspot\\.com|wordpress\\.com)$", 'i')],
   ['T4', new RegExp("(^|\\.)(scholar\\.google\\.com|researchgate\\.net|academia\\.edu|semanticscholar\\.org\\.cache|quora\\.com|answers\\.com|ask\\.com|indeed\\.[\\w.]+|glassdoor\\.[\\w.]+|levels\\.fyi|linkedin\\.com|ziprecruiter\\.com|g2\\.com|capterra\\.com|trustpilot\\.com|producthunt\\.com|crunchbase\\.com|payscale\\.com|comparably\\.com)$", 'i')],
@@ -573,6 +586,7 @@ const FACT_SCHEMA = {
     locatedQuote: { type: 'string' },
   },
 }
+const RESTATE_SCHEMA = { type: 'object', required: ['claim'], properties: { claim: { type: 'string' } } }
 const REPORT_SCHEMA = {
   type: 'object', required: ['answerFirst', 'summary', 'findings', 'caveats', 'strongestArgumentAgainst',
              'whatWouldChangeThisCall', 'hypothesisVerdicts'],
@@ -714,6 +728,10 @@ const LENSES = [
   { key: 'counter', title: 'Counter-evidence hunter', task:
       'Assume the claim is WRONG and go find the proof. Run at least two WebSearch queries designed to surface contradiction, not confirmation — ' +
       'search the negation, search for critiques/retractions/failed replications, search for a more recent measurement that supersedes it.\n' +
+      // Judged from snippets, this lens was decorative: with the 2-of-3 rule a kill then
+      // needed both other lenses. The Python twin fetches its top counter hit since
+      // 2026-09-20; this build's lens has WebFetch itself, so the rule is the instruction.
+      'WebFetch the strongest counter-result and judge from the PAGE, never from a search snippet alone.\n' +
       'Refute if any credible source contradicts it, materially qualifies it, or supersedes it. Name the counter-source explicitly in counterSource.\n' +
       'Do NOT refute merely because you found no counter-evidence — say so and pass it.' },
   { key: 'provenance', title: 'Provenance & recency auditor', task:
@@ -755,6 +773,25 @@ const FACT_PROMPT = claim =>
   '   - **unsupported** — the page does not say this, contradicts it, or is about something else. A live URL is NOT support.\n' +
   '   - **unreachable** — fetch failed, paywalled, or the page no longer exists.\n\n' +
   'A working link proves the page EXISTS, not that it says this. Judge only what the text says.\n\nStructured output only.'
+
+// Restate-or-drop (the Python twin's p_restate, 2026-09-20): the audit's PARTIAL means
+// the statement adds scope, certainty or specificity the page does not carry. The
+// injected-defect measurement - a tenfold number, an invented consensus statement, a
+// claim widened to every adult - all came back partial and all would have been
+// published. The restatement is re-audited; still-partial means demote.
+const RESTATE_PROMPT = (claim, f) =>
+  '## Claim Restatement — weaken to what the page supports\n\n' +
+  'The blind citation audit judged this claim PARTIAL against the page it cites:\n\n' +
+  'Claim: "' + webText(claim.claim, 800) + '"\n' +
+  'Cited page: ' + webText(claim.sourceUrl, 250) + '\n' +
+  "Auditor's reasoning: " + webText(f.reasoning || '', 600) + '\n' +
+  'The auditor\'s verbatim quote from that page: "' + webText(f.locatedQuote || '', 700) + '"\n\n' +
+  'Rewrite the claim so the quote FULLY supports it: keep the part the page carries, drop the ' +
+  'added scope, certainty or specificity. Never introduce a fact, number, name or date that is ' +
+  'not already in the quote or the claim. If the supported core is thinner than the claim, the ' +
+  'thinner claim is the correct answer - this restatement will be re-audited against the same ' +
+  'page, and a claim that still overstates will be dropped. Return only the rewritten claim in ' +
+  'the field `claim`.\n\nStructured output only.'
 
 // ═══ Reusable sweep: search -> dedup -> fetch+extract (pipelined, no barrier) ═
 async function sweep(angles, fetchBudget, tag, subQuestions) {
@@ -917,7 +954,11 @@ const HYP_MIN_TOKENS = 4
 // overcorrection ship. A verdict below the bar still reaches the text path and can still
 // stamp true — it loses the certainty label, not the stamp.
 const HYP_MISMATCH_MAX = 0.65
-const normHyp = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
+// NFKC and the curly-apostrophe fold, as the Python twin's norm_quote does before its
+// _hyp_key: without them "don’t" tokenised as "don" + "t", no negator matched, and the
+// opposite hypothesis stamped preRegistered with the certainty label (review 2026-09-27).
+const normHyp = t => String(t || '').normalize('NFKC').replace(/[\u2018\u2019\u201a\u201b]/g, "'")
+  .toLowerCase().replace(/\s+/g, ' ').trim().replace(HYP_LABEL, '').trim()
 const hypTokens = t => new Set((normHyp(t).match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !HYP_STOP.has(w)))
 const sameHyp = (a, b) => {
   if (!a || !b) return false
@@ -963,7 +1004,7 @@ const sameHyp = (a, b) => {
 // against "output is unstable" at 1.000, the Python SequenceMatcher 0.941, and now the
 // token measure that replaced both scores a flat negation at 1.000. A flip is a different
 // answer wearing the same words; it needs its own check, not a better number.
-const isNegated = t => (String(t || '').toLowerCase().match(/[a-z']+/g) || []).some(w => NEGATORS.has(w))
+const isNegated = t => (normHyp(t).match(/[a-z']+/g) || []).some(w => NEGATORS.has(w))
 // Do these two hypotheses disagree about whether they assert the negative? SYMMETRIC,
 // which reverses v1.10.1. That release made it fire one way — only a verdict ADDING a
 // negation — to stop a faithful positive rewording of a registered null being marked
@@ -1012,6 +1053,25 @@ const hypMismatch = (verdictText, registeredText) => {
   return shared / Math.max(1, ta.size) < HYP_MISMATCH_MAX
 }
 
+
+// ── The panel's arithmetic and the audit's demotion rule: pure, and ABOVE the run so
+//    contract/conformance.json asks this build the same questions as the Python twin.
+//    Both sat in python_cases under a false reason ("the panel runs only in the Python
+//    engine") while this build ran a panel - and the demotion rule had already drifted:
+//    Python demoted a partial whose restatement failed its re-audit, this build only
+//    `unsupported` (review 2026-09-27).
+// Returns [refutedCount, erroredCount, survives, isRefuted]. Too few valid votes is
+// UNVERIFIED, never a kill: an infrastructure failure must not read as "refuted".
+const tallyVerdicts = (verdicts, required, nLenses) => {
+  const refuted = verdicts.filter(v => v.refuted).length
+  return [refuted, nLenses - verdicts.length, verdicts.length >= required && refuted < required, refuted >= required]
+}
+// `unsupported` always demotes. A `partial` demotes ONLY after its restatement was
+// re-audited and still failed; a partial with no re-audit verdict has no deterministic
+// verdict, so no kill.
+const demotionSet = rows => new Set(rows.filter(f => f.support === 'unsupported' ||
+  (f.support === 'partial' && ['partial', 'unsupported'].includes((f.restate || {}).verdict)))
+  .map(f => auditKey(f.claim, f.url)))
 
 phase('Scope')
 log('Question: ' + QUESTION.slice(0, 90) + (QUESTION.length > 90 ? '…' : ''))
@@ -1186,12 +1246,17 @@ const qualRank = { primary: 0, secondary: 1, blog: 2, forum: 3, unreliable: 4 }
 // entire verify budget while another gets zero slots — which is exactly how a whole
 // part of a question ends up unanswered. Round-robin by sub-question instead: every
 // sub-question is verified once before any is verified twice.
-// Deterministic tier first: it is a pure function of the host, where
-// `importance` and `sourceQuality` are the extractor grading its own work.
-const tierRankOf = c => (TIER_RANK[c.tier] === undefined ? 3 : TIER_RANK[c.tier])
-const byRank = (a, b) => (tierRankOf(a) - tierRankOf(b)) ||
-  (impRank[a.importance] - impRank[b.importance]) ||
-  (qualRank[a.sourceQuality] - qualRank[b.sourceQuality])
+// Importance first, tier as tiebreaker - the Python twin reversed tier-first on
+// 2026-09-20 and this build never followed (review 2026-09-27). Tier-first verified
+// pleasant SOURCES before load-bearing claims: a tangential T1 always entered the
+// capped pool before a central T3. A central claim from a middling host can overturn
+// the answer; a tangential one never will. Defaults match the twin's (3, 3, 5), so an
+// unknown value sorts instead of producing NaN.
+const rankIn = (m, k, d) => (m[k] === undefined ? d : m[k])
+const tierRankOf = c => rankIn(TIER_RANK, c.tier, 3)
+const byRank = (a, b) => (rankIn(impRank, a.importance, 3) - rankIn(impRank, b.importance, 3)) ||
+  (tierRankOf(a) - tierRankOf(b)) ||
+  (rankIn(qualRank, a.sourceQuality, 5) - rankIn(qualRank, b.sourceQuality, 5))
 // T4 is discovery-only and T5 is a content farm: neither may be cited as fact,
 // so neither belongs in the pool that produces cited findings. Report the
 // exclusion rather than performing it silently.
@@ -1238,13 +1303,15 @@ if (nonCitable.length) {
 }
 const rankedClaims = coverageBalanced(citableClaims, T.maxVerify)
 log('Verify pool spans ' + new Set(rankedClaims.map(sqKey)).size + ' distinct sub-question buckets (of ' + SUBQ.length + ')')
-if (allClaims.length > rankedClaims.length) {
-  log('NOTE: ' + (allClaims.length - rankedClaims.length) + ' lower-ranked claims dropped before verification (cap ' + T.maxVerify + ') — NOT covered by this report')
+// Budget cuts ONLY: the non-citable exclusions above are claimsExcludedNonCitable, and
+// counting them here too reported the same claims twice (review 2026-09-27).
+const DROPPED_BEFORE_VERIFY = citableClaims.length - rankedClaims.length
+// Set by the rescue pass. Declared HERE, above baseStats, which the not-ranked exit
+// calls long before the rescue runs - declared at the rescue it would be a TDZ throw.
+let RESCUE_CAP_CUT = 0
+if (DROPPED_BEFORE_VERIFY > 0) {
+  log('NOTE: ' + DROPPED_BEFORE_VERIFY + ' lower-ranked claims dropped before verification (cap ' + T.maxVerify + ') — NOT covered by this report')
 }
-const DROPPED_BEFORE_VERIFY = allClaims.length - rankedClaims.length
-const DROP_N = DROPPED_BEFORE_VERIFY
-const DROP_TOTAL = allClaims.length
-const DROP_PCT = Math.round(100 * DROP_N / Math.max(1, DROP_TOTAL))
 log('Total: ' + allSources.length + ' sources → ' + allClaims.length + ' claims → verifying top ' + rankedClaims.length)
 
 const sourceRows = () => allSources.map(s => ({ url: webText(s.url), quality: s.sourceQuality, angle: s.angle, wave: s.wave, claimCount: s.claims.length }))
@@ -1253,15 +1320,23 @@ const sourceRows = () => allSources.map(s => ({ url: webText(s.url), quality: s.
 // on the happy path only, so the four early exits — no claims, all killed, all demoted,
 // synthesis failed — carried none of them. The parity marker check could not see this:
 // the string `honestLimits` existed in the file, just not on the exits that needed it.
-const honestLimits = (extra) => ({
+// `verified` is passed, not read: `voted` does not exist yet at the not-ranked exit.
+const honestLimits = (extra, verified = 0) => ({
   evidenceBase: evidenceBase(allSources),
+  // The Python twin's run limits (2026-09-20), never ported: a quick-depth reader was
+  // told nothing that no citation was re-checked, and the unchecked share of the
+  // evidence travelled only when it crossed 50%.
+  ...(T.factAudit ? {} : { citationAuditOff: 'This depth ran NO blind citation audit: no claim here was re-checked against its cited page, and the report must not read as vetted. Use standard depth or above when the checking matters.' }),
+  ...(allClaims.length ? { evidenceChecked: verified + ' of ' + allClaims.length + ' extracted claims were verified (' + (allClaims.length - verified) + ' unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence.' } : {}),
   falseKillRateUnmeasured: 'This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.',
   reliabilityNotValidity: '`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses "the panel is correct".',
   confirmedMeans: '`confirmed` means "survived a filter of unknown accuracy", not "true".',
   killRateMeans: 'The kill rate reports how much was removed, never whether removal was correct.',
-  searchCoverage: 'Check stats.searchHealth. If every general-web backend reports 0 results, this run saw a scholarly-only slice of the web and its coverage gaps are a search artefact rather than evidence that nothing exists.',
+  // This build has no stats.searchHealth to point at - its search is the runtime's
+  // WebSearch - and the old text sent readers to a field that never exists here.
+  searchCoverage: "This build searches through the runtime's WebSearch tool, so it has no per-backend search health to report. Coverage gaps here are what the searchers found, not proof that nothing exists - check `sources` and the coverage checklist before reading silence as absence.",
   framingProvenance: 'scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.',
-  partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry — and it does NOT remove the claim. Only `unsupported` does. Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`, so all three would have been published. Read `citationPartials` before quoting a number or an attribution from this report.',
+  partialCitationsAreKept: 'A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry. A partial panel SURVIVOR is restated to what the page carries and re-audited: a supported restatement replaces it (the original is kept in `restatedFrom`), and one that still fails is demoted like `unsupported`. A partial is KEPT only when no re-audited restatement came back (`restate.verdict` no-restatement or no-reaudit). Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`. Read `citationPartials` before quoting a number or an attribution from this report.',
   ...(extra || {}),
 })
 // A run that is all-T3 is a weak-evidence run no matter how confident it sounds,
@@ -1280,8 +1355,9 @@ const baseStats = extra => Object.assign({
   claimsExtracted: allClaims.length,
   urlDupes: dupes.length,
   budgetDropped: budgetDropped.length,
-  claimsDroppedBeforeVerify: DROPPED_BEFORE_VERIFY,
-  claimsExcludedNonCitable: nonCitable.length,
+  claimsDroppedBeforeVerify: DROPPED_BEFORE_VERIFY + RESCUE_CAP_CUT,
+  // Counted live: claimsExtracted includes the rescue pass, so this must too.
+  claimsExcludedNonCitable: citableOnly(allClaims).dropped.length,
 }, extra)
 
 if (rankedClaims.length === 0) {
@@ -1291,6 +1367,7 @@ if (rankedClaims.length === 0) {
       ? 'AGENT FAILURE, not a research finding: no source was successfully read before the run ended — the model calls did not complete. Check credentials and connectivity, then retry. Do NOT report this as "no evidence exists". '
       : 'No claims extracted. ' + allSources.length + ' sources fetched, all empty/failed. ')
       + dupes.length + ' URL dupes, ' + budgetDropped.length + ' budget-dropped.',
+    scopeContract: CONTRACT,
     findings: [], coverage: lastCoverage, sources: sourceRows(), honestLimits: honestLimits(),
     stats: baseStats({ claimsVerified: 0, confirmed: 0 }),
   }
@@ -1313,10 +1390,7 @@ async function runPanel(claims) {
       //   isRefuted  — >=REFUTATIONS_REQUIRED refutations (lost on merit)
       //   otherwise  — unverified: too few valid votes to adjudicate
       const valid = verdicts.filter(Boolean)
-      const refuted = valid.filter(v => v.refuted).length
-      const errored = activeLenses.length - valid.length
-      const survives = valid.length >= REFUTATIONS_REQUIRED && refuted < REFUTATIONS_REQUIRED
-      const isRefuted = refuted >= REFUTATIONS_REQUIRED
+      const [refuted, errored, survives, isRefuted] = tallyVerdicts(valid, REFUTATIONS_REQUIRED, activeLenses.length)
       const killedBy = valid.filter(v => v.refuted).map(v => v.lens).join('+')
       log(quotedLabel(claim.claim) + ': ' + (valid.length - refuted) + '-' + refuted +
           (errored ? ' (' + errored + ' errored)' : '') + ' ' + (survives ? '✓' : isRefuted ? '✗ [' + killedBy + ']' : '?'))
@@ -1352,7 +1426,13 @@ if (T.rescue) {
     })), RESCUE_FETCH, 'rescue', SUBQ)
     allSources = allSources.concat(rescued)
     allClaims = allSources.flatMap(x => x.claims)
-    const rescueClaims = coverageBalanced(rescued.flatMap(x => x.claims), Math.max(6, targets.length * 3))
+    // citableOnly: T4/T5 rescue claims went straight to the panel and into the
+    // confirmed findings - the main pool's exclusion never applied here (2026-09-27).
+    const { keep: rescueCitable, dropped: rescueExcluded } = citableOnly(rescued.flatMap(x => x.claims))
+    if (rescueExcluded.length) log('RESCUE: EXCLUDED ' + rescueExcluded.length + ' claim(s) from non-citable sources')
+    const rescueClaims = coverageBalanced(rescueCitable, Math.max(6, targets.length * 3))
+    // The rescue pass has its own cap; what it cuts is cut too (2026-09-27).
+    RESCUE_CAP_CUT = rescueCitable.length - rescueClaims.length
     let saved = 0
     if (rescueClaims.length > 0) {
       const rv = await runPanel(rescueClaims)
@@ -1368,7 +1448,7 @@ if (T.rescue) {
     rescueStats = {
       wipedSubQuestions: wiped.map(q => q.slice(0, 120)),
       targeted: targets.length, sourcesAdded: rescued.length,
-      claimsReVerified: rescueClaims.length, claimsSaved: saved,
+      claimsReVerified: rescueClaims.length, claimsSaved: saved, claimsCutByRescueCap: RESCUE_CAP_CUT,
     }
   }
 }
@@ -1390,7 +1470,9 @@ const toRefuted = c => {
     claim: webText(c.claim),
     vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes,
     killedBy: c.killedBy, source: webText(c.sourceUrl),
-    why: webText((refuters[0] || {}).evidence || ''),
+    // A claim the AUDIT demoted: `why` was empty (no refuting vote) or, for a 2-1
+    // survivor, the losing lens's evidence - the audit's reason must win (2026-09-27).
+    why: webText(c.auditWhy || (refuters[0] || {}).evidence || ''),
     refutedBy: refuters.map(v => ({
       lens: v.lens, evidence: webText(v.evidence || ''),
       ...(v.counterSource ? { counterSource: webText(v.counterSource) } : {}),
@@ -1398,24 +1480,22 @@ const toRefuted = c => {
     contradictedBy: refuters.filter(v => v.counterSource).map(v => webText(v.counterSource)),
   }
 }
+// The gap analyst's table is a PRE-panel snapshot. A sub-question whose every claim
+// died still read "answered", in the synthesis prompt and in the report (the Python
+// twin's post_verify_coverage, 2026-09-20; never ported). Rows key by sub-question TEXT
+// here, so they go through the same sqKey the balancer and the rescue check use.
+const postVerifyCoverage = (coverage, survivors) => {
+  if (!coverage) return coverage
+  const live = new Set(survivors.map(sqKey))
+  return coverage.map(row => {
+    const k = sqKey({ answersSubQuestion: row.subQuestion })
+    if (k === '(unassigned)' || live.has(k) || row.status !== 'answered') return row
+    return { ...row, status: 'killed-in-verification',
+             note: (row.note ? row.note + ' | ' : '') + 'claims mapping here died in the panel or audit' }
+  })
+}
 const toUnverified = c => ({ claim: webText(c.claim), erroredVotes: c.erroredVotes, validVotes: c.verdicts.length, source: webText(c.sourceUrl) })
 
-if (confirmed.length === 0) {
-  let summary
-  if (killed.length === 0 && unverified.length > 0) {
-    summary = 'INFRASTRUCTURE FAILURE, not a research finding: all ' + unverified.length + ' verifier panels failed (likely rate-limiting or API errors). Retry.'
-  } else if (unverified.length > 0) {
-    summary = killed.length + ' claims refuted on merit; ' + unverified.length + ' could not be adjudicated (verifier agents failed). Nothing survived — inconclusive.'
-  } else {
-    summary = 'All ' + killed.length + ' claims were refuted by the ' + activeLenses.length + '-lens adversarial panel. Sources were weak or claims overstated. Inconclusive — this is a real result, not an error.'
-  }
-  return {
-    question: QUESTION, depth: DEPTH, summary, findings: [], coverage: lastCoverage,
-    refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), honestLimits: honestLimits(),
-    stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverified: unverified.length }),
-  }
-}
 
 // ═══ Calibration: is this panel a filter or a coin? ═════════════════════════
 // Re-run the SAME claims through an independent panel and measure whether the
@@ -1622,6 +1702,28 @@ if (T.calibrate > 0 && voted.length) {
   }
 }
 
+// After the dropped sample and calibration, as in the Python twin: this exit used to
+// sit before both, so an all-refuted run - the one where the panel's reliability matters
+// most - could never carry them (review 2026-09-27).
+if (confirmed.length === 0) {
+  let summary
+  if (killed.length === 0 && unverified.length > 0) {
+    summary = 'INFRASTRUCTURE FAILURE, not a research finding: all ' + unverified.length + ' verifier panels failed (likely rate-limiting or API errors). Retry.'
+  } else if (unverified.length > 0) {
+    summary = killed.length + ' claims refuted on merit; ' + unverified.length + ' could not be adjudicated (verifier agents failed). Nothing survived — inconclusive.'
+  } else {
+    summary = 'All ' + killed.length + ' claims were refuted by the ' + activeLenses.length + '-lens adversarial panel. Sources were weak or claims overstated. Inconclusive — this is a real result, not an error.'
+  }
+  return {
+    question: QUESTION, depth: DEPTH, scopeContract: CONTRACT, summary, findings: [],
+    coverage: postVerifyCoverage(lastCoverage, confirmed), rescue: rescueStats,
+    calibration, droppedSample,
+    refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
+    sources: sourceRows(), honestLimits: honestLimits(null, voted.length),
+    stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverifiedCount: unverified.length }),
+  }
+}
+
 // ═══ Phase 6: Audit — blind citation-support check (FACT) ═══════════════════
 let factRows = []
 let factMetrics = null
@@ -1635,10 +1737,33 @@ if (T.factAudit) {
   // of the panel's verdict. Kept after the panel in code order so resume can
   // still replay the verify agents from cache. Iterates `voted`, not
   // `rankedClaims`, so claims added by the rescue pass are audited too.
-  factRows = (await parallel(voted.map(c => () =>
-    agentChecked(FACT_PROMPT(c), { label: 'cite:' + sourceLabelFor({ url: c.sourceUrl, title: '' }), phase: 'Audit', schema: FACT_SCHEMA })
-      .then(f => (f ? { claim: c.claim, url: c.sourceUrl, survivedPanel: !!c.survives, ...f } : null))
-  )))
+  factRows = (await parallel(voted.map(c => () => {
+    const host = sourceLabelFor({ url: c.sourceUrl, title: '' })
+    return agentChecked(FACT_PROMPT(c), { label: 'cite:' + host, phase: 'Audit', schema: FACT_SCHEMA })
+      .then(async f => {
+        if (!f) return null
+        // The engine's claim and url LAST: shape() passes unknown keys through, and an
+        // auditor echoing `claim` overwrote the row's key, so an unsupported verdict
+        // never matched its claim and demotion silently stopped (review 2026-09-27).
+        const row = { ...f, claim: c.claim, url: c.sourceUrl, survivedPanel: !!c.survives }
+        // Restate-or-drop, panel survivors only: a partial on an already-killed claim
+        // changes nothing, and every restatement is a call spent where it matters.
+        if (f.support !== 'partial' || !c.survives) return row
+        const r = await agentChecked(RESTATE_PROMPT(c, f), { label: 'restate:' + host, phase: 'Audit', schema: RESTATE_SCHEMA })
+        const newClaim = String((r && r.claim) || '').trim()
+        if (!newClaim || newClaim === c.claim) {
+          log('[restate:' + host + '] no usable restatement (' + (newClaim ? 'echoed the claim' : 'call failed or empty') + ') - kept as a plain partial')
+          return { ...row, restate: { attempted: true, verdict: 'no-restatement' } }
+        }
+        const f2 = await agentChecked(FACT_PROMPT({ ...c, claim: newClaim }), { label: 'cite2:' + host, phase: 'Audit', schema: FACT_SCHEMA })
+        if (!f2) return { ...row, restate: { attempted: true, verdict: 'no-reaudit', to: newClaim } }
+        if (f2.support === 'supported') {
+          return { ...f2, claim: newClaim, url: c.sourceUrl, survivedPanel: true, restatedFrom: c.claim,
+                   restate: { attempted: true, verdict: 'supported', from: c.claim, to: newClaim } }
+        }
+        return { ...row, restate: { attempted: true, verdict: f2.support, to: newClaim } }
+      })
+  })))
   // A call that never returned is not a citation that failed its check, but it is not
   // nothing either. Dropping it silently shrinks the denominator of the headline number
   // exactly when the run is degraded, so citation accuracy improves under rate-limiting.
@@ -1676,24 +1801,48 @@ if (T.factAudit) {
   // The panel judges whether the ARGUMENT holds. The audit judges whether the
   // cited PAGE actually says it. A claim needs both. A survivor whose citation
   // comes back unsupported is demoted here rather than printed with a footnote.
-  const unsupported = new Set(factRows.filter(f => f.support === 'unsupported').map(f => auditKey(f.claim, f.url)))
-  const demoted = confirmed.filter(c => unsupported.has(auditKey(c.claim, c.sourceUrl)))
+  const bad = demotionSet(factRows)
+  const auditWhy = new Map(factRows.map(f => [auditKey(f.claim, f.url), f.reasoning || '']))
+  const demoted = confirmed.filter(c => bad.has(auditKey(c.claim, c.sourceUrl)))
   if (demoted.length > 0) {
-    confirmed = confirmed.filter(c => !unsupported.has(auditKey(c.claim, c.sourceUrl)))
-    killed = killed.concat(demoted.map(c => ({ ...c, killedBy: (c.killedBy ? c.killedBy + '+' : '') + 'citation-audit' })))
+    confirmed = confirmed.filter(c => !bad.has(auditKey(c.claim, c.sourceUrl)))
+    killed = killed.concat(demoted.map(c => ({ ...c, killedBy: (c.killedBy ? c.killedBy + '+' : '') + 'citation-audit',
+                                             auditWhy: auditWhy.get(auditKey(c.claim, c.sourceUrl)) || '' })))
     log('AUDIT DEMOTED ' + demoted.length + ' claim(s): the panel passed them but the cited page does not support them')
   }
   factMetrics.demotedBySurvivingPanel = demoted.length
+  // A successfully restated claim swaps into the confirmed pool weakened to what the
+  // page supports, its original preserved in restatedFrom.
+  let restated = 0
+  for (const f of factRows) {
+    if (!f.restatedFrom || f.support !== 'supported') continue
+    const i = confirmed.findIndex(c => c.claim === f.restatedFrom && c.sourceUrl === f.url)
+    if (i < 0) continue
+    confirmed[i] = { ...confirmed[i], restatedFrom: f.restatedFrom, claim: f.claim,
+                     quote: f.locatedQuote || confirmed[i].quote }
+    restated++
+  }
+  factMetrics.restatedToSupported = restated
+  if (restated) log('AUDIT RESTATED ' + restated + ' claim(s): weakened to what the cited page supports (originals preserved in restatedFrom)')
   factMetrics.scope = 'full verification pool (' + factRows.length + ' claims), not survivors only'
 }
 
+// ONE builder for the per-citation rows, used by every exit that has them. The final
+// report had its own copy and this exit had none, so the run whose audit demoted every
+// survivor published no citation detail at all (review 2026-09-27).
+const citationRows = () => factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support,
+  reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || ''),
+  ...(f.restatedFrom ? { restatedFrom: webText(f.restatedFrom) } : {}) }))
 if (confirmed.length === 0) {
   return {
-    question: QUESTION, depth: DEPTH,
+    question: QUESTION, depth: DEPTH, scopeContract: CONTRACT,
     summary: 'Every claim that survived the adversarial panel was then demoted by the blind citation audit: the arguments held, but the cited pages do not support them. Nothing is left to report. This is a real result — the sources do not say what they were read as saying.',
-    findings: [], coverage: lastCoverage, citationAudit: factMetrics, rescue: rescueStats,
+    findings: [], coverage: postVerifyCoverage(lastCoverage, confirmed), citationAudit: factMetrics, rescue: rescueStats,
+    // Both ran before this exit and were dropped here: the most expensive measurements
+    // in the run, lost on exactly the run where they matter.
+    calibration, droppedSample, citationDetail: citationRows(),
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), honestLimits: honestLimits(),
+    sources: sourceRows(), honestLimits: honestLimits(null, voted.length),
     stats: baseStats({ claimsVerified: voted.length, confirmed: 0, killed: killed.length, unverifiedCount: unverified.length }),
   }
 }
@@ -1713,8 +1862,9 @@ const block = confirmed.map((c, i) => {
     (f ? 'Blind citation audit: **' + f.support + '** — ' + webText(f.reasoning) + '\n' : '')
 }).join('\n')
 
-const coverageBlock = lastCoverage
-  ? '\n## Coverage checklist status\n' + lastCoverage.map(c => '- [' + c.status + '] ' + webText(c.subQuestion) + (c.note ? ' — ' + webText(c.note) : '')).join('\n') + '\n'
+const COVERAGE = postVerifyCoverage(lastCoverage, confirmed)
+const coverageBlock = COVERAGE
+  ? '\n## Coverage checklist status (post-verification)\n' + COVERAGE.map(c => '- [' + c.status + '] ' + webText(c.subQuestion) + (c.note ? ' — ' + webText(c.note) : '')).join('\n') + '\n'
   : ''
 const killedBlock = killed.length
   ? '\n## Refuted claims (report these for transparency)\n' + killed.map(c => '- "' + webText(c.claim) + '" — killed by ' + c.killedBy + ' (' + webText(c.sourceUrl) + ')').join('\n') + '\n'
@@ -1726,8 +1876,21 @@ const unverifiedBlock = unverified.length
 const contraBlock = allContradictions.length
   ? '\n## Contradictions flagged during gap analysis\n' + allContradictions.map(x => '- ' + webText(x)).join('\n') + '\n'
   : ''
-const droppedBlock = (allClaims.length - rankedClaims.length) > 0
-  ? '\n## Coverage limit\n' + (allClaims.length - rankedClaims.length) + ' lower-ranked claims were never verified (cap ' + T.maxVerify + '). Say so in caveats.\n'
+// ONE disclosure, from the final pools. There were two: this one counted against
+// rankedClaims, which never holds rescue claims, so after a rescue it told synthesis
+// that claims were never verified when they had been; the other fired only at >=50%
+// and still said "ranked by source tier first" (review 2026-09-27).
+const NEVER_VERIFIED = allClaims.length - voted.length
+const NON_CITABLE_N = citableOnly(allClaims).dropped.length
+const droppedBlock = NEVER_VERIFIED > 0
+  ? '\n## Coverage limit you MUST disclose\n' + NEVER_VERIFIED + ' of ' + allClaims.length +
+    ' extracted claims (' + Math.round(100 * NEVER_VERIFIED / allClaims.length) + '%) were never verified: ' +
+    Math.max(0, NEVER_VERIFIED - NON_CITABLE_N) + ' cut by the verify budget (' + T.maxVerify + ' for the main pool' +
+    (RESCUE_CAP_CUT ? '; ' + RESCUE_CAP_CUT + ' of them by the rescue pass\'s own cap' : '') + ')' +
+    (NON_CITABLE_N ? '; ' + NON_CITABLE_N + ' excluded as non-citable sources' : '') +
+    '. The verify pool was ranked by importance first, source tier second, so a claim the extractor ' +
+    'rated "tangential" is invisible here even if it would have overturned the answer. State this in ' +
+    'answerFirst, not only in caveats.\n'
   : ''
 
 const report = await agentChecked(
@@ -1754,12 +1917,6 @@ const report = await agentChecked(
       'the answer look better-supported than it is.\n' +
       '- **surviving** only if evidence bears on it and does NOT trigger its kill criterion. ' +
       'Surviving is not the same as proven.\n\n'
-    : '') +
-  ((DROP_PCT >= 50)
-    ? '## Coverage limit you MUST disclose\n' + DROP_N + ' of ' + DROP_TOTAL + ' extracted claims (' +
-      DROP_PCT + '%) were never verified — the panel budget stops at ' + T.maxVerify + '. The sample ' +
-      'was ranked by source tier first, but a claim the extractor rated "tangential" is invisible here ' +
-      'even if it would have overturned the answer. State this in answerFirst, not only in caveats.\n\n'
     : '') +
   '## Instructions\n' +
   '0. **answerFirst** — Pyramid Principle. Open with the ANSWER in 1-2 sentences, not with background. If the ' +
@@ -1793,7 +1950,8 @@ if (!report) {
     summary: 'Synthesis was skipped or failed — returning ' + confirmed.length + ' verified claims unmerged.',
     findings: [],
     confirmedRaw: confirmed.map(c => ({ claim: webText(c.claim), source: webText(c.sourceUrl), quote: webText(c.quote), vote: (c.verdicts.length - c.refutedVotes) + '-' + c.refutedVotes })),
-    coverage: lastCoverage, citationAudit: factMetrics,
+    scopeContract: CONTRACT, coverage: COVERAGE, citationAudit: factMetrics, citationDetail: citationRows(),
+    rescue: rescueStats,
     // Carry the INSTRUMENTS through this path. Both run BEFORE synthesis, and dropping
     // them here throws away the most expensive measurements in the run at exactly the
     // moment they are most worth having - a failed run is when you most want to know
@@ -1803,8 +1961,8 @@ if (!report) {
     // Synthesis failing says nothing about the verification that already happened.
     calibration, droppedSample,
     refuted: killed.map(toRefuted), unverified: unverified.map(toUnverified),
-    sources: sourceRows(), honestLimits: honestLimits({ synthesisFailed: 'The synthesis step returned nothing; the verified claims below are raw, unsummarised output.' }),
-    stats: baseStats({ claimsVerified: voted.length, confirmed: confirmed.length, killed: killed.length, unverified: unverified.length, afterSynthesis: 0 }),
+    sources: sourceRows(), honestLimits: honestLimits({ synthesisFailed: 'The synthesis step returned nothing; the verified claims below are raw, unsummarised output.' }, voted.length),
+    stats: baseStats({ claimsVerified: voted.length, confirmed: confirmed.length, killed: killed.length, unverifiedCount: unverified.length, afterSynthesis: 0 }),
   }
 }
 
@@ -1949,7 +2107,7 @@ return {
   ...report,
   ...(VERDICTS.length ? { hypothesisVerdicts: VERDICTS } : {}),
   contradictions: (report.contradictions || []).concat(allContradictions),
-  coverage: lastCoverage,
+  coverage: COVERAGE,
   citationAudit: factMetrics,
   rescue: rescueStats,
   calibration,
@@ -1967,15 +2125,16 @@ return {
         ? '`hypothesisVerdicts` holds ' + VERDICTS.length + ' verdict(s) the synthesis step wrote after seeing the evidence, every one stamped `preRegistered: false`. '
         : '`hypothesisVerdicts` is empty because there were no hypotheses to judge, NOT because every hypothesis survived — the two look identical in this JSON and mean opposite things. ') +
       'Read this report as an ordinary literature summary.' }),
-  }),
+  }, voted.length),
   // `locatedQuote` is the auditor's own verbatim pull from the page. It is demanded on
   // every audit call and was read by nothing — a silent discard, the same one the Python
   // build carried until 2026-09-08. This build cannot check it against the page (its
   // subagents fetch for themselves, so the orchestrator never holds the text), but
   // publishing it costs nothing and hands the reader evidence they can check by eye.
-  citationDetail: factRows.map(f => ({ claim: webText(f.claim), url: webText(f.url), support: f.support, reasoning: webText(f.reasoning), locatedQuote: webText(f.locatedQuote || '') })),
-  // A `partial` verdict does not demote the claim — only `unsupported` does — so it
-  // is easy to publish an overstatement with a footnote nobody reads. Measured
+  citationDetail: citationRows(),
+  // A `partial` that reaches the report was kept because no re-audited restatement
+  // came back (restate-or-drop handles the rest), so it is easy to publish an
+  // overstatement with a footnote nobody reads. Measured
   // 2026-09-06: of five injected fabrications the auditor caught all five, but
   // called three of them `partial`, and those three were the inflated number, the
   // invented attribution and the widened scope. Surface them in code.

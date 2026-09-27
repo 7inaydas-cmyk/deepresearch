@@ -122,10 +122,12 @@ def score_audit_probes(results):
         "caughtStrict": strict, "caughtAny": caught,
         "catchRateStrict": round(strict / n, 3),
         "catchRate": round(caught / n, 3),
-        "catchRateNote": ("catchRateStrict is the honest number: only `unsupported` demotes "
-                          "a claim, so a probe scored `partial` was NOT caught in any sense "
-                          "that changes what gets published. catchRate (partial counts as a "
-                          "catch) is kept only as the lenient secondary."),
+        "catchRateNote": ("catchRateStrict is the headline: `unsupported` demotes a claim "
+                          "outright. Since restate-or-drop (2026-09-20) a `partial` survivor "
+                          "is rewritten to what the page carries and re-audited, so it no "
+                          "longer publishes as written - but whether the rewrite removed the "
+                          "injected defect is not measured here, so catchRate (partial "
+                          "counts as a catch) is an upper bound, not the headline."),
         "falseNegatives": missed,
         "byMutation": by_kind,
         "reading": ("the auditor catches defects of this kind" if strict / n >= 0.8 else
@@ -185,6 +187,8 @@ def score_critic_probes(planted, flagged, clean_verdict, degraded_verdict, clean
     # summary with nothing planted in it is the false-positive floor, and a detection rate
     # that is not above that floor is not evidence of detection.
     clean_hits = [p for p in planted if _names(p["text"], clean_flagged)] if clean_flagged else []
+    measured = all(v in ("sound", "minor-gaps", "material-gaps")
+                   for v in (clean_verdict, degraded_verdict))
     return {
         "planted": len(planted),
         "named": len(hits),
@@ -198,8 +202,12 @@ def score_critic_probes(planted, flagged, clean_verdict, degraded_verdict, clean
         "missed": [p["kind"] for p in planted if p not in hits],
         "cleanVerdict": clean_verdict,
         "degradedVerdict": degraded_verdict,
-        "verdictMoved": clean_verdict != degraded_verdict,
-        "reading": ("the verdict responds to injected defects" if clean_verdict != degraded_verdict else
+        # An arm whose every critic call failed has verdict "unknown"; comparing it
+        # to a real one is not a measurement of anything.
+        "verdictMoved": (clean_verdict != degraded_verdict) if measured else None,
+        "reading": ("not measured: an arm returned no verdict (every critic call in it "
+                    "failed), so whether the verdict moves is unknown" if not measured else
+                    "the verdict responds to injected defects" if clean_verdict != degraded_verdict else
                     "the verdict did NOT move when three fabricated sentences were added — it is "
                     "saturated, and cannot discriminate a good run from a bad one"),
     }
@@ -281,12 +289,18 @@ def run_audit_probes(rep, n=5):
         text = pages.get(pr["sourceUrl"]) or ""
         got = E.agent(E.p_fact(pr["claim"], pr["sourceUrl"], text), E.S_FACT,
                       label="probe:audit:" + pr["probe"], max_tokens=1200)
+        if got is None:
+            # A failed call is no verdict. Scored, it read as a MISS: every call
+            # failing reported catchRateStrict 0.0 and "the auditor misses defects"
+            # (review 2026-09-27). Excluded and counted, like unreachable below.
+            return None
         out = dict(pr)
         out["support"] = (got or {}).get("support")
         out["auditorReasoning"] = (got or {}).get("reasoning", "")[:400]
         return out
 
     results = [r for r in E.pmap(one, probes) if r]
+    failed_calls = len(probes) - len(results)
     # An unreachable page cannot test the auditor — it tests the fetcher. Score
     # only the probes where the auditor actually had text in front of it, and say
     # how many were excluded rather than quietly counting them as catches.
@@ -294,6 +308,10 @@ def run_audit_probes(rep, n=5):
     excluded = len(results) - len(scorable)
     out = score_audit_probes(scorable)
     out["excludedUnreachable"] = excluded
+    out["excludedFailedCalls"] = failed_calls
+    if not scorable:
+        out["reason"] = ("not measured: %d probe call(s) failed and %d hit an unreachable "
+                         "page, so no auditor verdict was scorable" % (failed_calls, excluded))
     if excluded:
         out["excludedNote"] = ("%d probe(s) hit a page that would not fetch. Those measure the "
                                "fetcher, not the auditor, so they are excluded from the rate." % excluded)
@@ -345,10 +363,14 @@ def run_critic_probes(rep):
         got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, text, findings,
                                  (rep.get("scopeContract") or {}).get("provenance")),
                       E.S_CRITIC, label="probe:critic:" + which, max_tokens=3000)
-        return (which, got or {})
+        # None, not {}: an empty dict defaulted to verdict "sound", so a failed clean
+        # arm against a working degraded one read as "the verdict responds to
+        # injected defects" (review 2026-09-27).
+        return (which, got) if got else None
 
     jobs = [("clean", summary)] * n_critics + [("degraded", degraded)] * n_critics
     got = [x for x in E.pmap(arm, jobs) if x]
+    failed_calls = len(jobs) - len(got)
     order = ["sound", "minor-gaps", "material-gaps"]
     worst = lambda w: max([c.get("verdict", "sound") for k, c in got if k == w] or ["unknown"],
                           key=lambda v: order.index(v) if v in order else 0)
@@ -366,6 +388,7 @@ def run_critic_probes(rep):
     out = score_critic_probes(planted, flagged, worst("clean"), worst("degraded"),
                               clean_flagged=clean_flagged)
     out["criticsPerArm"] = n_critics
+    out["failedCalls"] = failed_calls
     out["plantedText"] = [p["text"] for p in planted]
     out["flaggedByDegradedArm"] = flagged[:12]
     out["flaggedByCleanArm"] = clean_flagged[:12]
@@ -464,10 +487,18 @@ def run_framing_probes(rep):
         which, p = spec
         got = E.agent(E.p_critic(0, n_critics, q, subqs, persps, confirmed, summary, findings, p),
                       E.S_CRITIC, label="probe:framing:" + which, max_tokens=3000)
-        return (which, got or {})
+        # A failed call is not "no flaws": {} read as zero demands and could print
+        # "the rule holds" off a ratified arm that never ran (review 2026-09-27).
+        return (which, got) if got else None
 
     jobs = [("ratified", prov)] * n_critics + [("as-if-drafted", faked)] * n_critics
     got = [x for x in E.pmap(arm, jobs) if x]
+    ran = {w: sum(1 for k, _ in got if k == w) for w in ("ratified", "as-if-drafted")}
+    if not all(ran.values()):
+        return {"reason": "not measured: an arm returned no critic verdict (every call in "
+                          "it failed) - ratified=%d as-if-drafted=%d of %d each"
+                          % (ran["ratified"], ran["as-if-drafted"], n_critics),
+                "failedCalls": len(jobs) - len(got)}
     hits = {}
     for which in ("ratified", "as-if-drafted"):
         flaws = [f for k, c in got if k == which for f in (c.get("planFlaws") or [])]

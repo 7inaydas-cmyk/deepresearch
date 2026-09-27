@@ -140,7 +140,9 @@ def per_lens_agreement(lens_a, lens_b):
         a, b = lens_a[name], lens_b[name]
         n = min(len(a), len(b))
         k, detail = _kappa_like(a[:n], b[:n], pooled=False)
-        out[name] = {"cohenKappa": k, "rawAgreement": detail["rawAgreement"],
+        # .get: an empty lens is the degenerate case agreement() already survives,
+        # and indexing it raised KeyError here (review 2026-09-27).
+        out[name] = {"cohenKappa": k, "rawAgreement": detail.get("rawAgreement"),
                      "refuteRateRun1": round(sum(a[:n]) / n, 4) if n else None,
                      "refuteRateRun2": round(sum(b[:n]) / n, 4) if n else None,
                      "n": n}

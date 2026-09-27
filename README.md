@@ -359,7 +359,7 @@ python3 tools/compare_regimes.py
 
 **Citation accuracy went DOWN, and that is the audit working.** The old range topped out at 100% because sources were scholarly stubs that the extractor and auditor read identically. On a real corpus the auditor stops agreeing with the extractor and the floor drops to 38.1%. A number that only looked good because nothing was being checked is worse than a bad number honestly obtained.
 
-**The demotion path went from 1 firing in 8 runs to 4 in 6** — for the same reason. It still under-fires: three of five injected fabrications came back `partial`, and `partial` does not demote. Check `citationPartials` before quoting any number or attribution.
+**The demotion path went from 1 firing in 8 runs to 4 in 6** — for the same reason. It still under-fired in those runs: three of five injected fabrications came back `partial`, and `partial` did not demote. Since restate-or-drop (2026-09-20, both builds since 2026-09-27) a partial survivor is rewritten to what its page carries and re-audited, and a rewrite that still fails is demoted; how often that catches an injected defect has not been re-measured. Check `citationPartials` before quoting any number or attribution.
 
 Earlier builds audited only the claims that *survived* the panel and unsurprisingly scored 100% — twice, both still in `runs/`. That was a rubber stamp: the weak claims were already dead before the auditor ran. The percentages above exclude those two and come from the current build, which audits the **whole** verification pool.
 
@@ -442,15 +442,19 @@ still works, but on a challenged IP it sees a scholarly-only slice of the web
 |---|---|
 | **CLI** | `python3 -m deepresearch --question "..."` |
 | **Claude Code** | `./install.sh claude-code` → `/deepresearch` |
-| **ZCode** | `./install.sh zcode` → `/deepresearch` — runs the pipeline **on the ZCode agent itself**, on the session's GLM subscription: no key, no subprocess; the prompts and deterministic checkers are imported from this repo so it cannot drift |
+| **ZCode** | `./install.sh zcode` → `/deepresearch` — runs the pipeline **on the ZCode agent itself**, on the session's GLM subscription, no key: Mode A drives this repo's engine over stdio (`contrib/zcode-session/drive.sh`), Mode B imports its prompts and deterministic checkers so it cannot drift |
 | **Hermes** | `./install.sh hermes` → `/deepresearch` |
 
-`install.sh` symlinks rather than copies, deliberately: the two runtimes drifted five features apart when they were separate copies.
+`install.sh` symlinks rather than copies, deliberately: the two runtimes drifted five features apart when they were separate copies. The one exception is Hermes, whose skill loader never follows a symlink: it gets real files from `contrib/hermes/sync-skill.sh`, which `install.sh hermes` runs and which must be re-run after every `git pull` of the deployed checkout (`sync-skill.sh --check` says whether it is current).
 
 ## Testing
 
 ```bash
-python3 tests/test_pipeline.py     # 49 tests, offline, no key, no network
+python3 tests/test_pipeline.py                  # the engine: ~650 checks, offline, no key, no network
+python3 tests/test_conformance.py               # every gate proves a good and a bad reference
+node tests/claude-code/conformance.mjs          # the JS build answers the SAME contract
+cd tests/claude-code && node test-workflow.mjs  # the JS build end to end, model stubbed
+python3 tests/test_parity.py                    # neither build is missing a feature the other has
 ```
 
 Every test exists because something actually broke; the comments say what. Among them: an array field that arrived as a string and became 226 one-character sub-questions, and the API's `<UNKNOWN>` serialisation artifact that appeared in roughly half of one sample of structured-output calls.

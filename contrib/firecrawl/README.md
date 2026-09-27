@@ -58,5 +58,9 @@ publicly takes on both AGPL's network-service terms and an unauthenticated
 scraping API - don't.
 
 Failure budget: any firecrawl failure (timeout at 20s, non-200, success:false,
-non-prose markdown) falls back to the stdlib ladder with `firecrawlFailed` in
-the source's meta - the run never depends on it.
+non-prose markdown, a malformed payload) falls back to the stdlib ladder - the
+run never depends on it. The failure is disclosed as `firecrawlFailed` in the
+source's meta when the direct HTTP read then serves the page. When the fallback
+lands elsewhere, that source's meta names ITS own failure instead (`blockedBy`
+on an abstract, `liveFetchFailed` on an archived copy, `error` on a failed read),
+and firecrawlFailed is not carried - the fetch-seam tests pin exactly this.

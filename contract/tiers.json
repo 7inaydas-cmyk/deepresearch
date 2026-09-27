@@ -28,7 +28,7 @@
   "rules": [
     [
       "T1",
-      "(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.[\\w-]+|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$"
+      "(^|\\.)(arxiv\\.org|biorxiv\\.org|medrxiv\\.org|osf\\.io|ssrn\\.com|zenodo\\.org|clinicaltrials\\.gov|who\\.int|ema\\.europa\\.eu|fda\\.gov|ecb\\.europa\\.eu|bis\\.org|imf\\.org|un\\.org|unesco\\.org|ilo\\.org|eurostat\\.ec\\.europa\\.eu|gov\\.uk|canada\\.ca|australia\\.gov\\.au|govt\\.nz|bund\\.de|service-public\\.fr|rfc-editor\\.org|ecma-international\\.org|unicode\\.org|khronos\\.org|sec\\.gov|europa\\.eu|[\\w-]+\\.gov|[\\w-]+\\.gov\\.([a-z]{2}|scot|wales)|nih\\.gov|who\\.int|oecd\\.org|worldbank\\.org|ietf\\.org|w3\\.org|iso\\.org|nist\\.gov|patents\\.google\\.com)$"
     ],
     [
       "T2",

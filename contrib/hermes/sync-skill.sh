@@ -35,10 +35,20 @@ ENG="$HERE/deepresearch/__init__.py"
 
 # Every profile gets its own tree (hermes resolves skills per profile), plus
 # the shared root tree. A glob that matches nothing is skipped, not an error.
+# `trees` is what EXISTS (check mode: absence is nothing to disagree with);
+# `install_trees` is every profile (install mode creates what is missing - it only
+# refreshed trees that already existed, so a new profile never got the skill while
+# it did get the watchdog; review 2026-09-27).
 trees() {
   printf '%s\n' "$DATA/skills/research/deepresearch"
   for p in "$DATA"/profiles/*/skills/research/deepresearch; do
     [ -d "$p" ] && printf '%s\n' "$p"
+  done
+}
+install_trees() {
+  printf '%s\n' "$DATA/skills/research/deepresearch"
+  for p in "$DATA"/profiles/*; do
+    [ -d "$p" ] && printf '%s\n' "$p/skills/research/deepresearch"
   done
 }
 
@@ -68,14 +78,34 @@ if [ "$MODE" = "check" ]; then
   while IFS= read -r DEST; do
     [ -n "$DEST" ] || continue
     [ -f "$DEST/SKILL.md" ] || continue
+    # A symlink passed this check (-f follows it) while hermes' loader never follows
+    # one - `install.sh hermes` made exactly that tree and the watchdog called it
+    # current (review 2026-09-27).
+    if [ -L "$DEST" ] || [ -L "$DEST/SKILL.md" ]; then
+      drifts="${drifts}DRIFT: $DEST is a symlink - hermes never loads one; run sync-skill.sh
+"
+      continue
+    fi
     v=$(fm_version "$DEST/SKILL.md")
     if [ "$v" != "$doc" ]; then
       drifts="${drifts}DRIFT: $DEST/SKILL.md is ${v:-<unreadable>}, repo doc is $doc
+"
+    elif ! cmp -s "$SRC" "$DEST/SKILL.md"; then
+      # Same version, different text: a doc edit with no version bump was invisible
+      # to a version-only check, so a stale tree read as current.
+      drifts="${drifts}DRIFT: $DEST/SKILL.md is $v like the repo doc, but its CONTENT differs
 "
     fi
   done <<EOF
 $(trees)
 EOF
+  # The watchdog copies drift the same way the skill does: sync moves both.
+  for w in "$DATA"/scripts/deepresearch-watchdog.sh "$DATA"/profiles/*/scripts/deepresearch-watchdog.sh; do
+    if [ -f "$w" ] && ! cmp -s "$HERE/contrib/hermes/watchdog.sh" "$w"; then
+      drifts="${drifts}DRIFT: $w differs from the repo's contrib/hermes/watchdog.sh
+"
+    fi
+  done
   if [ -n "$drifts" ]; then
     printf '%s' "$drifts"
     status=1
@@ -97,7 +127,7 @@ while IFS= read -r DEST; do
   cp "$SRC" "$DEST/SKILL.md"
   echo "installed: $DEST/SKILL.md ($(grep -m1 '^version:' "$DEST/SKILL.md" | tr -d '\r'))"
 done <<EOF
-$(trees)
+$(install_trees)
 EOF
 
 # The watchdog rides along, so the deployment has ONE update path: git pull +

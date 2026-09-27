@@ -22,7 +22,7 @@ if (SPLIT < 0) {
 const noop = () => {}
 const M = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
   '"use strict"; ' + SRC.slice(0, SPLIT) +
-  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase }')(
+  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase, tallyVerdicts, demotionSet }')(
   noop, noop, noop, noop, noop, { question: 'conformance', depth: 'standard' }, {})
 
 // The adapter: one entry per contract function. Return conventions differ between the
@@ -41,6 +41,10 @@ const ADAPTER = {
   // carry a claim COUNT, this build's carry the claim ARRAY. The contract asks the
   // logical question once and each adapter says it in its own runtime's shape — which is
   // this layer's whole job, and the only place such a difference may appear.
+  // Shared since 2026-09-27: both sat in python_cases under "the panel runs only in the
+  // Python engine" while this build ran a panel, and the demotion rule had drifted.
+  tally_verdicts:  (v, r, n) => M.tallyVerdicts(v, r, n),
+  demotion_set:    rows => [...M.demotionSet(rows)].map(k => k.split('\u0000')).sort(),
   evidence_base:   rows => M.evidenceBase(
                      rows.map(r => ({ ...r, claims: Array.from({ length: r.claims || 0 }) }))).citableSources,
 }

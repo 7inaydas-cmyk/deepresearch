@@ -44,7 +44,10 @@ def reading_for(same, total):
     previous test passed whenever the signal phrase appeared anywhere, and archiving a
     tenth sample would have flipped its subject without touching a line of code.
     """
-    frac = (same / total) if total else 0
+    if not total:
+        # frac 0 read as "the ranking IS selecting for verifiability" off no samples.
+        return "No archived run carries a dropped-claim sample yet, so there is no reading."
+    frac = same / total
     if frac >= CLEAR_MAJORITY:
         return ("The ranking is not selecting for verifiability - that is the unfavourable "
                 "answer and it is the one the data gives.")
@@ -160,8 +163,11 @@ def main():
     paths = sorted(p for p in glob.glob(os.path.join(ROOT, "runs", "*.json"))
                    if not p.endswith(".contract.json")
                    and not os.path.basename(p).startswith("probes-"))
-    new = [row(p) for p in paths if os.path.basename(p).startswith(("v2-", "v3-"))]
-    old = [row(p) for p in paths if not os.path.basename(p).startswith(("v2-", "v3-"))]
+    # Only reports are rows: runs/quote-location-*.json is a LIST (a measurement, not a
+    # run), and row() crashed on it - the tool failed on the repo's own data.
+    reports = [p for p in paths if isinstance(json.load(open(p, encoding="utf-8")), dict)]
+    new = [row(p) for p in reports if os.path.basename(p).startswith(("v2-", "v3-"))]
+    old = [row(p) for p in reports if not os.path.basename(p).startswith(("v2-", "v3-"))]
     table(old, "SUPERSEDED: scholarly-only search, biased calibration sample, strike dead")
     table(new, "CURRENT: SearXNG on, all fixes in")
 

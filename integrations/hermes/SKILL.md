@@ -5,11 +5,12 @@ description: >
   checks every citation blind against the live page, and audits its own summary for statements
   no source supports. Writes falsifiable kill criteria before it searches. Use for: 'deep
   research on X', 'is it true that X', 'settle this question', 'due diligence', 'what does the
-  evidence actually say', or any question where being WRONG is expensive. Keyless search, no
-  API key beyond the Claude subscription. Slower and far more rigorous than mega_research —
+  evidence actually say', or any question where being WRONG is expensive. Keyless search;
+  model calls ride whatever login or key the engine resolves (session-first, ADR-0005).
+  Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.16.0
+version: 1.17.0
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]
@@ -101,10 +102,15 @@ long run does not look like a hang:
 tail -15 /opt/data/research/raw/dr/run.log
 ```
 
-**Step 3 - when the process is gone, read the report:**
+**Step 3 - when the process is gone, read the report.** Check the `pid` the launch
+printed (its handle's `done_when` says the same). Not `pgrep -f "deepresearch --question"`:
+that pattern matches the shell running pgrep itself, so it never reported done.
+
+A zombie counts as done: the detached run is orphaned at once, and a container whose
+PID 1 never reaps children keeps a finished run as a zombie that `kill -0` calls alive.
 
 ```bash
-pgrep -f "deepresearch --question" || echo DONE
+ps -o stat= -p <pid> 2>/dev/null | grep -qv Z || echo DONE
 python3 -c "import json;d=json.load(open('/opt/data/research/raw/dr/run.json'));print(d['answerFirst'])"
 ```
 
@@ -238,19 +244,24 @@ Report these six things. Do not bury them.
    say what they were read as saying.
 2. **`citationPartials`** - claims the blind re-fetch rated `partial`: the page points this
    way, but the statement adds scope, certainty or specificity the page does not carry.
-   **A `partial` does NOT remove the claim** - only `unsupported` does - so these get
-   published with nothing but a note. Measured with injected defects: of five fabrications
-   the auditor caught all five, but rated three `partial`, and those three were an inflated
-   number, an invented attribution, and a claim widened to every adult on earth. Check this
-   list before quoting a number or an attribution.
+   A partial panel SURVIVOR is restated to what the page carries and re-audited
+   (restate-or-drop): a supported restatement replaces it, with the original kept in
+   `restatedFrom`, and one that still fails is demoted like `unsupported`. The partials
+   that remain were kept because no re-audited restatement came back (`restate.verdict`
+   no-restatement or no-reaudit) - they are published with nothing but a note. Measured with
+   injected defects: of five fabrications the auditor caught all five, but rated three
+   `partial`, and those three were an inflated number, an invented attribution, and a claim
+   widened to every adult on earth. Check this list before quoting a number or an
+   attribution.
 3. **`processCritique.untraceableCount` and `untraceableStatements`** - assertions in the
    summary that trace to no verified claim. These are orchestrator hallucinations.
    **Strike them from what you tell the user**, and say you struck them. Read these, not
    `processCritique.verdict`: three fabricated sentences were appended to a real summary and
    the critic named all three while returning `material-gaps` on the clean and the degraded
    version alike. The verdict is a coarse tag, measured not to move.
-4. **`coverage`** - sub-questions that came back `unanswered`. A hole in the answer, not a
-   footnote.
+4. **`coverage`** - sub-questions that came back `unanswered`, and ones that read
+   `killed-in-verification` (the gap analyst saw them answered, but every claim behind that
+   answer died in the panel or the audit). Either is a hole in the answer, not a footnote.
 5. **`rescue`** - present only if some sub-question lost every claim. `claimsSaved: 0`
    means the retry also failed: that part is genuinely unanswerable from the web, say so.
 
@@ -307,7 +318,15 @@ Beyond the six numbered items above, surface:
 ## Cost and limits
 
 Search is free (Hermes's own keyless `research` tool: DuckDuckGo, Mojeek, Wikipedia,
-OpenAlex, Crossref, HN with failover). Model calls are **per-token billed by whoever's
+OpenAlex, Crossref, HN with failover). Model calls are paid by whichever power source the
+engine resolves, **session first** (ADR-0005):
+
+- **A harness CLI resolves** (`hermes` on PATH, or `DR_GLM_HARNESS` naming one): every
+  model call spawns `hermes -p glm -z` and hermes' own held credential pays - deepresearch
+  reads no key at all. `stats.transport` says `session`. This wins even when a key is set.
+- **`DR_TRANSPORT=http`** forces the key paths below instead.
+
+Without a harness, or with `DR_TRANSPORT=http`, calls are **per-token billed by whoever's
 credential is active** - the engine is provider-aware since v1.12 (ADR-0004):
 
 - **`ZAI_API_KEY` set** (what this gateway provides): runs on **glm-5.3** via Z.ai's
@@ -355,7 +374,8 @@ reads mid-failure.
 - **The scope agent needs `max_tokens=6000`, not 3000.** The merged `scopeContract` shares
   one response with `subQuestions` and `perspectives`. At 3000 the JSON truncates and comes
   back carrying ONLY `perspectives`, and the run dies with
-  `unusable plan (0 sub-questions, N perspectives)`. Fixed 2026-09-06; if that error ever
+  `Search plan unusable after 2 attempts (0 sub-questions, N perspectives)`. Fixed
+  2026-09-06 (the CLI now also exits 1 on it, where it used to exit 0); if that error ever
   returns, the error text now lists the keys present — missing sub-questions alongside
   present perspectives means truncation, so raise max_tokens rather than retrying blind.
 

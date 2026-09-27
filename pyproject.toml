@@ -1,6 +1,6 @@
 [project]
 name = "deepresearch"
-version = "1.16.0"
+version = "1.17.0"
 description = "Multi-agent research that attacks its own output: adversarial verification, blind citation audit, and a critic that catches the orchestrator inventing things."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -31,5 +31,8 @@ Issues = "https://github.com/7inaydas-cmyk/deepresearch/issues"
 requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
+# Editable installs only (pip install -e .): the engine reads contract/*.json from the
+# checkout beside the package, and a regular wheel does not carry it. The package
+# refuses to import without it, with that instruction, rather than failing deep inside.
 [tool.setuptools.packages.find]
 include = ["deepresearch*"]

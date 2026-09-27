@@ -70,7 +70,21 @@ _Avoid_: fact check, link check
 
 **Partial**:
 A citation-audit verdict: the page points this way but the statement adds scope, certainty
-or specificity the page does not carry. A partial is kept, not demoted.
+or specificity the page does not carry. A partial on a panel survivor triggers
+**restate-or-drop**; a partial is kept only when no re-audited restatement came back.
+
+**Restate-or-drop**:
+What the audit does with a partial survivor: rewrite the claim to what the auditor's located
+quote supports, then re-audit the rewrite blind against the same page. Supported: the weaker
+claim replaces the original, which travels in `restatedFrom`. Partial or unsupported again:
+demoted, exactly like unsupported. Both builds share the rule through `demotion_set`.
+_Avoid_: softening, rewording (the rewrite is re-audited; it is not an edit)
+
+**Killed-in-verification**:
+A coverage status set after the panel and the audit: the gap analyst saw the sub-question
+answered, but every claim behind that answer died. The analyst's table is a pre-panel
+snapshot; the report publishes the reconciled one.
+_Avoid_: unanswered (nothing was missing - it was found and refuted)
 
 **Critic**:
 The agent that audits the finished summary for statements tracing to no confirmed claim.

@@ -15,12 +15,16 @@ const pipeline = async (items, ...stages) => Promise.all(items.map(async (item, 
 const SQ = ['SQ1 premise check', 'SQ2 mechanism', 'SQ3 cost', 'SQ4 counter-case']
 let calls = 0
 const seenLabels = []
+const seenPrompts = []
 
 function makeAgent(cfg) {
   return async (prompt, opts = {}) => {
     calls++
     const L = opts.label || ''
     seenLabels.push(L)
+    seenPrompts.push({ label: L, prompt })
+    // The runtime THROWS once a token budget is spent; this reproduces it at one label.
+    if (cfg.throwAt && L === cfg.throwAt) throw new Error('token budget exhausted')
 
     if (L === 'framing') {
       if (cfg.no_framing) return null
@@ -33,7 +37,7 @@ function makeAgent(cfg) {
       }
       // Hypotheses with enough content words to actually score, so the number a verdict
       // declares can be checked against the one it names.
-      if (cfg.misnumbered_verdict) {
+      if (cfg.misnumbered_verdict || cfg.curly_negation) {
         return { decisionAtStake: 'd', keyQuestion: 'k', assumptions: ['a1', 'a2'],
                  whatWouldChangeTheAnswer: ['w1', 'w2'], needsGeneralWeb: true,
                  hypotheses: [
@@ -67,7 +71,9 @@ function makeAgent(cfg) {
       if (p === 'P2') return { results: [
         { url: 'https://evil.com\\@trusted.org/x', title: 'spoof', relevance: 'high' },
         { url: 'https://аmazon.com/idn', title: 'idn homograph', relevance: 'low' }] }
-      if (p.startsWith('rescue')) return { results: [{ url: 'https://primary-' + p + '.org/doc', title: 'primary ' + p, relevance: 'high' }] }
+      if (p.startsWith('rescue')) return { results: [
+        ...(cfg.farmRescue ? [{ url: 'https://www.buzzfeed.com/' + p, title: 'farm ' + p, relevance: 'high' }] : []),
+        { url: 'https://primary-' + p + '.org/doc', title: 'primary ' + p, relevance: 'high' }] }
       if (p === 'FU0') return { results: [{ url: 'https://followup.org/deep', title: 'FU', relevance: 'high' }] }
       return { results: [{ url: 'https://' + p.toLowerCase() + '.org/p', title: p, relevance: 'medium' }] }
     }
@@ -77,9 +83,11 @@ function makeAgent(cfg) {
       const isRescue = /primary-rescue/.test(prompt)
       if (isRescue) {
         const sq = (prompt.match(/rescue(\d)/) || [0, '1'])[1]
-        return { sourceQuality: 'primary', publishDate: '2026-01-01', claims: [
-          { claim: 'RESCUED-' + calls + ' primary evidence', quote: 'q', importance: 'central',
-            subQuestionIndex: (cfg.rescueIndex || 3), answersSubQuestion: cfg.rescueTarget || SQ[2] }]}
+        // rescueMany: more rescue claims than the rescue pass's own cap holds.
+        return { sourceQuality: 'primary', publishDate: '2026-01-01', claims: Array.from(
+          { length: cfg.rescueMany ? 20 : 1 }, (_, i) => (
+          { claim: 'RESCUED-' + calls + '-' + i + ' primary evidence', quote: 'q', importance: 'central',
+            subQuestionIndex: (cfg.rescueIndex || 3), answersSubQuestion: cfg.rescueTarget || SQ[2] })) }
       }
       // Spread claims across sub-questions so coverage balancing has something to balance.
       const a = SQ[calls % SQ.length], b = SQ[(calls + 1) % SQ.length]
@@ -100,6 +108,8 @@ function makeAgent(cfg) {
     if (/^(support|counter|provenance):/.test(L)) {
       const lens = L.split(':')[0]
       if (cfg.allVerifiersDie) return null
+      // Every claim survives 2-1: the support lens refutes, the other two pass.
+      if (cfg.oneRefuter) return { refuted: lens === 'support', evidence: "the losing lens's objection", confidence: 'high' }
       if (/RESCUED-/.test(prompt)) return { refuted: false, evidence: 'rescued primary source holds', confidence: 'high' }
       // cfg.wipeSubQuestion: kill EVERY claim tagged with that sub-question.
       if (cfg.wipeSubQuestion && prompt.includes('[' + cfg.wipeSubQuestion + ']')) {
@@ -111,6 +121,8 @@ function makeAgent(cfg) {
     }
 
     if (L.startsWith('cite:')) {
+      if (cfg.cite_all_unsupported) return { support: 'unsupported', reasoning: 'the page says nothing of the kind', locatedQuote: '' }
+      if (cfg.cite_echo_keys) return { support: 'unsupported', reasoning: 'no', locatedQuote: '', claim: 'echoed', url: 'https://echoed.example/' }
       const n = parseInt((prompt.match(/CLAIM-(\d+)/) || [0, '3'])[1], 10)
       const mode = n % 5
       // A NUMBER where a string is declared. `required` only ever meant key-present, so
@@ -119,6 +131,18 @@ function makeAgent(cfg) {
       const quote = cfg.string_leaf_violation ? 404 : 'located'
       return { support: mode === 0 ? 'unsupported' : mode === 1 ? 'partial' : mode === 2 ? 'unreachable' : 'supported',
                reasoning: 'blind audit', locatedQuote: quote }
+    }
+
+    // Restate-or-drop (ported 2026-09-27). `restate_fails` makes the re-audit come back
+    // partial again, so the demotion half of the rule is exercised too.
+    if (L.startsWith('restate:')) {
+      const n = (prompt.match(/CLAIM-(\d+b?)/) || [0, '0'])[1]
+      return { claim: 'CLAIM-' + n + ' WEAKENED to what the page carries' }
+    }
+    if (L.startsWith('cite2:')) {
+      return cfg.restate_fails
+        ? { support: 'partial', reasoning: 'still overstated', locatedQuote: 'located' }
+        : { support: 'supported', reasoning: 'the weakened form is on the page', locatedQuote: 'the weakened quote' }
     }
 
     if (L === 'synthesize') {
@@ -131,7 +155,11 @@ function makeAgent(cfg) {
                // A verdict adjudicating a hypothesis the run NEVER registered, declaring
                // H1 anyway. Stamping believed the number with nothing examined, so this
                // came back `preRegistered: true` — gamed by typing a digit.
-               hypothesisVerdicts: cfg.misnumbered_verdict ? [
+               // The opposite of H1, negated with a CURLY apostrophe (review 2026-09-27).
+               hypothesisVerdicts: cfg.curly_negation ? [
+                 { hypothesis: 'Minimum wage increases don\u2019t reduce teen employment modestly in the first two years',
+                   hypothesisNumber: 1, verdict: 'surviving', killCriterion: 'k1', reasoning: 'r' }] :
+               cfg.misnumbered_verdict ? [
                  { hypothesis: 'The minimum wage increase caused a decade-long employment decline across all age groups',
                    hypothesisNumber: 1, verdict: 'surviving', killCriterion: 'k1', reasoning: 'r' },
                  { hypothesis: 'H2: The apparent effect is largely a publication-selection artifact in the older literature',
@@ -166,11 +194,11 @@ function makeAgent(cfg) {
 }
 
 export async function run(name, args, cfg = {}) {
-  logs.length = 0; seenLabels.length = 0; calls = 0
+  logs.length = 0; seenLabels.length = 0; seenPrompts.length = 0; calls = 0
   const fn = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
     '"use strict"; return (async () => {' + SRC + '})()')
   const out = await fn(makeAgent(cfg), parallel, pipeline, phase, log, args, { total: null, spent: () => 0, remaining: () => Infinity })
   console.log('\n══════ ' + name + ' ══════')
-  return { out, logs: [...logs], labels: [...seenLabels], calls }
+  return { out, logs: [...logs], labels: [...seenLabels], prompts: [...seenPrompts], calls }
 }
 export { SQ }

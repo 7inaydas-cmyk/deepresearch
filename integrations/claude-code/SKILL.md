@@ -78,8 +78,11 @@ State any load-bearing premise explicitly. The scoper is instructed to turn asse
 premises into sub-questions to *test*, not to assume — but only if it can see them.
 
 **Better: pass what you settled as a contract, not as prose.** `args.contract` takes an
-object with any subset of `decisionAtStake`, `keyQuestion`, `assumptions`,
-`whatWouldChangeTheAnswer`, `hypotheses`. Supplied fields are never re-derived — the model
+object with any subset of the SIX framing fields: `decisionAtStake`, `keyQuestion`,
+`assumptions`, `whatWouldChangeTheAnswer`, `hypotheses`, `needsGeneralWeb` (a boolean;
+this build's search is the runtime's WebSearch, so it has no degraded mode to report, but
+the field keeps contract files interchangeable with the Python CLI). Supplying the other
+five still drafts `needsGeneralWeb` in a framing call. Supplied fields are never re-derived — the model
 drafts only what is missing (typically the hypotheses and their kill criteria) — and the
 report's `scopeContract.provenance` says, per field, which were yours and which were drafted.
 Weaving answers into the question string throws that structure away one call later.
@@ -150,7 +153,7 @@ sh verify.sh
 
 ## Reading the result
 
-Report these four things. Do not bury them.
+Report these five things. Do not bury them.
 
 1. **`citationAudit.citationAccuracy`** — of every verified claim, the percentage whose
    cited page, re-fetched blind, actually supports it. **This is the single most important
@@ -160,8 +163,11 @@ Report these four things. Do not bury them.
    these numbers when they exist.
 2. **`citationPartials`** — claims the blind re-fetch rated `partial`: the page points this
    way, but the statement adds scope, certainty or specificity the page does not carry.
-   **A `partial` does NOT remove the claim** — only `unsupported` does — so these are
-   published with nothing but a note. Measured with injected defects: of five fabrications
+   A partial panel SURVIVOR is restated to what the page carries and re-audited
+   (restate-or-drop): a supported restatement replaces it, with the original kept in
+   `restatedFrom` in `citationDetail`, and one that still fails is demoted like
+   `unsupported`. The partials left were kept because no re-audited restatement came back,
+   so they are published with nothing but a note. Measured with injected defects: of five fabrications
    the auditor caught all five, but rated three of them `partial`, and those three were an
    inflated number, an invented attribution, and a claim widened to every adult on earth.
    Check this list before you quote a number or an attribution from the report.
@@ -172,8 +178,9 @@ Report these four things. Do not bury them.
    and the critic named all three while returning `material-gaps` on the clean and the
    degraded version alike. The verdict is a coarse tag, measured not to move. The list
    and the count are where the information is.
-4. **`coverage`** — which sub-questions came back `unanswered`. An unanswered sub-question
-   is a hole in the answer, not a footnote.
+4. **`coverage`** — which sub-questions came back `unanswered`, and which read
+   `killed-in-verification` (the gap analyst saw them answered, but every claim behind that
+   answer died in the panel or the audit). Either is a hole in the answer, not a footnote.
 5. **`rescue`** — present only when some sub-question lost every claim. `claimsSaved: 0`
    means the second attempt at primary sources also failed: that part of the question is
    genuinely unanswerable from what is on the web, and you must say so outright.

@@ -137,14 +137,20 @@ def run_harness(argv, prompt, timeout=300):
 
     The spawn is MECHANISM and lives at the seam; POLICY (retries, the corrective
     re-ask, sentinel recovery, shape()) stays in engine.agent() exactly as it does on
-    the HTTP path - ADR-0001 applies to both transports equally. Non-zero exit and
-    timeouts raise RuntimeError so agent()'s retry loop can treat them like any other
-    failed attempt.
+    the HTTP path - ADR-0001 applies to both transports equally. A non-zero exit
+    raises RuntimeError and a timeout raises subprocess.TimeoutExpired; agent()'s
+    retry loop treats both like any other failed attempt.
     """
-    # A prompt of many kilobyts on the argv would blow ARG_MAX on some harnesses;
-    # claude -p and hermes -z both accept it positionally and handle long strings,
-    # but be defensive the cheap way.
-    proc = subprocess.run(argv + [prompt], capture_output=True, text=True, timeout=timeout)
+    # Linux refuses any ONE argv string of 128 KiB or more (MAX_ARG_STRLEN), and an
+    # exhaustive-depth synthesis prompt was measured at 119 KB (review 2026-09-27):
+    # past the limit every attempt died on E2BIG and agent() retried it five times.
+    # Oversized prompts go on stdin instead - `claude -p` reads its prompt there when
+    # none is given; a harness that cannot fails with its own stderr named below,
+    # which is no worse than a spawn the kernel refuses every time.
+    if len(prompt.encode("utf-8")) < 120000:
+        proc = subprocess.run(argv + [prompt], capture_output=True, text=True, timeout=timeout)
+    else:
+        proc = subprocess.run(argv, input=prompt, capture_output=True, text=True, timeout=timeout)
     if proc.returncode != 0 or not (proc.stdout or "").strip():
         raise RuntimeError("harness %r exited %d: %s"
                            % (argv[0], proc.returncode, (proc.stderr or "")[:200]))
@@ -168,10 +174,11 @@ def _mark_endpoint_owner(s, p):
     for other, op in _CONTRACT["providers"].items():
         if other == s["name"]:
             continue
-        base = (os.environ.get(op["baseUrlEnv"], "").rstrip("/")
-                if op.get("baseUrlEnv") and os.environ.get(op["baseUrlEnv"])
-                else op["baseUrl"].rstrip("/"))
-        if host == base:
+        # The other provider's OWN endpoint, never its env override: under the shim
+        # itself (ANTHROPIC_BASE_URL=api.z.ai while DR_PROVIDER=glm) the override
+        # made z.ai read as Anthropic's, and a GLM run sent model claude-sonnet-5
+        # (review 2026-09-27).
+        if host == op["baseUrl"].rstrip("/"):
             s["endpoint_owner"] = other
             if not os.environ.get("DR_MODEL", "").strip():
                 s["default_model"] = op["defaultModel"]
