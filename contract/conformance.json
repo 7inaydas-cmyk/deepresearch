@@ -55,7 +55,8 @@
   "demotion_set": "gate",
   "_gw_dead_from_health": "gate",
   "is_interstitial": "gate",
-  "annotate_flags": "transform"
+  "annotate_flags": "transform",
+  "strike_flags": "transform"
  },
  "cases": {
   "webtext": [
@@ -999,6 +1000,96 @@
      0
     ],
     "why": "a paraphrased flag is not located, never fuzzily"
+   }
+  ],
+  "strike_flags": [
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "why": "a flagged sentence is struck whole and the rest of the summary is untouched"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Employment was flat across every group studied.",
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "why": "the same flag twice strikes ONCE: the strike loop shares flag_spans with annotate, so a repeat cannot fragment the removal (review of 1.18.0, 2026-09-27)"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "was flat across every group studied.",
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "why": "a flag inside another strikes the whole sentence once, never the substring fragment first - 1.18.1 gave both consumers one locator"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied. Hours fell in the control group.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. Hours fell in the control group.",
+     [
+      "Employment was flat across every group studied."
+     ]
+    ],
+    "why": "the hole a strike leaves collapses: the double space where the sentence sat becomes one, so the stricken summary reads as prose"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "flat across every group"
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     []
+    ],
+    "why": "25 characters or fewer is too short to locate safely: nothing struck, summary byte-identical"
+   },
+   {
+    "in": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     [
+      "Nothing like this sentence appears in the summary text."
+     ]
+    ],
+    "out": [
+     "Wages rose five percent in the treated counties. Employment was flat across every group studied.",
+     []
+    ],
+    "why": "a paraphrased flag is not struck, never fuzzily"
    }
   ]
  },

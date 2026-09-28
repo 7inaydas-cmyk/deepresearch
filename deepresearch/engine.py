@@ -33,7 +33,7 @@ Usage:
   deepresearch --question "..." [--depth quick|standard|exhaustive]
                [--out report.json] [--bg] [--selftest]
 """
-import argparse, contextlib, difflib, glob, json, os, re, subprocess, sys, threading, time, unicodedata
+import argparse, contextlib, difflib, glob, json, os, random, re, subprocess, sys, threading, time, unicodedata
 import urllib.request, urllib.error, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -2001,6 +2001,13 @@ def _run_limits(T, all_claims_n, verified_n):
     return out
 
 
+def _coverage_extra(not_scored):
+    """The one merge both honest_limits wrappers share: the coverage caveat rides
+    every exit or none. It was written twice until the 1.18.2 review (2026-09-28)
+    counted the copies - a third wrapper would have inherited the omission silently."""
+    return {"coverageNotScored": not_scored} if not_scored else {}
+
+
 def _honest_limits(extra=None, evidence=None):
     """The caveats that travel WITH every report, not just the happy one.
 
@@ -2130,6 +2137,23 @@ def calibration_sample(voted, n):
         if i < want_k:
             out.append(kill[i])
     return out[:n]
+
+
+def sample_dropped(citable, ranked, n):
+    """Uniform random draw from the claims the verify cap discarded.
+
+    Taking the first N was wrong, and it took a review to see it (2026-09-28): the
+    comment called the draw "random-ish" while the code took a PREFIX - and because
+    `citable` preserves extraction order, the prefix was wave-1 claims, starving
+    exactly the deepening wave that exists to fill coverage gaps. The same mistake
+    calibration_sample made with rank order (measured 2026-09-06); this is the
+    dropped-pool instance of it. A uniform draw has no positional story to tell,
+    and the per-claim rows the report carries are the record of what was drawn, so
+    the draw itself does not need to be reproducible.
+    """
+    ranked_ids = {id(c) for c in ranked}
+    dropped = [c for c in citable if id(c) not in ranked_ids]
+    return random.sample(dropped, min(n, len(dropped))) if dropped else []
 
 
 # --- Helpers ----------------------------------------------------------------
@@ -3028,8 +3052,7 @@ def deepresearch(question, depth="standard", contract=None):
     # beside claimsVerified: 8 (review 2026-09-27). The not-ranked exit verifies none.
     def honest_limits(extra=None, verified=0):
         return _honest_limits({**_run_limits(T, len(all_claims), verified),
-                               **({"coverageNotScored": coverage_not_scored}
-                                  if coverage_not_scored else {}),
+                               **_coverage_extra(coverage_not_scored),
                                **(extra or {})},
                               evidence=_evidence_base(src_rows()))
 
@@ -3076,12 +3099,15 @@ def deepresearch(question, depth="standard", contract=None):
     unver = [c for c in voted if not c["survives"] and not c["isRefuted"]]
     # --- Dropped-claim sampling: would the discarded 60-80% have mattered? ---
     # The report rests on a fifth of the gathered evidence and nobody has measured
-    # whether the rest would have changed anything. Verify a random-ish sample of
-    # what was dropped and report the survival rate: if dropped claims survive at
-    # the same rate as kept ones, the ranking is not selecting for much.
+    # whether the rest would have changed anything. Draw a uniform random sample of
+    # what was dropped (sample_dropped - not a positional prefix) and report the
+    # survival rate: if dropped claims survive at the same rate as kept ones, the
+    # ranking is not selecting for much. Survival is the cheap half of #9: whether a
+    # dropped claim would have CHANGED the answer is not measured, and `measures`
+    # says so in the report rather than letting the number imply it.
     dropped_sample = None
     if SAMPLE_DROPPED_N > 0:
-        pool = [c for c in citable if c not in ranked][:SAMPLE_DROPPED_N]
+        pool = sample_dropped(citable, ranked, SAMPLE_DROPPED_N)
         if pool:
             log("SAMPLING %d dropped claims to measure what the cap discarded" % len(pool))
             sv = run_panel(question, pool, lenses)
@@ -3091,6 +3117,12 @@ def deepresearch(question, depth="standard", contract=None):
                 "sampled": len(pool), "survived": survived,
                 "survivalRate": round(survived / len(pool), 3),
                 "keptClaimSurvivalRate": round(kept_rate, 3),
+                # The per-claim rows ARE the record of the draw; nothing about the
+                # sample is recoverable from the aggregate alone.
+                "claims": [{"claim": c.get("claim"), "sourceUrl": c.get("sourceUrl"),
+                            "survived": bool(c["survives"])} for c in sv],
+                "measures": ("survival of dropped claims only; whether one would have "
+                             "changed the answer is #9's open half, not measured"),
                 "reading": ("dropped claims survive at a similar rate to kept ones, so the "
                             "importance ranking is not selecting for verifiability"
                             if abs(survived / len(pool) - kept_rate) < 0.15 else
@@ -3468,8 +3500,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # signal must not reach some exits and not others.
     def honest_limits(extra=None):
         return _honest_limits({**_run_limits(T, len(all_claims), len(voted)),
-                               **({"coverageNotScored": coverage_not_scored}
-                                  if coverage_not_scored else {}),
+                               **_coverage_extra(coverage_not_scored),
                                **(extra or {})},
                               evidence=_evidence_base(src_rows()))
 

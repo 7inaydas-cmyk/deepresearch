@@ -7,6 +7,7 @@ Every test here exists because something actually broke. The comments say what.
 """
 import itertools
 import os
+import random
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -2319,6 +2320,16 @@ ok(isinstance((_calrep.get("calibration") or {}).get("excludedForLensErrors"), i
    "list it was accidentally sharing a name with")
 ok(isinstance(_calrep.get("droppedSample"), dict) or _calrep.get("droppedSample") is None,
    "and the dropped-claim sample survives to the report beside it")
+_dsamp = _calrep.get("droppedSample")
+if isinstance(_dsamp, dict):
+    # The aggregate alone cannot be audited: which claims were drawn decides what the
+    # number means, and until 1.18.3 that existed only in the log (review 2026-09-28).
+    # Survival is also only #9's cheap half - the report must say the open half.
+    ok(_dsamp.get("claims") and len(_dsamp["claims"]) == _dsamp.get("sampled")
+       and all(("claim" in r and "survived" in r) for r in _dsamp["claims"]),
+       "the sample's per-claim rows ride with the report, so the draw is its own record")
+    ok("not measured" in (_dsamp.get("measures") or ""),
+       "and the report says materiality is #9's open half, not measured")
 
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
@@ -3759,6 +3770,9 @@ _nm = run({"summary": _g1_sum,
 ok(_nm["processCritique"]["markedInSummary"] == 1
    and _nm["summaryAnnotated"].count("[UNTRACEABLE:") == 1,
    "duplicate and substring flags mark the sentence once (%r)" % _nm.get("summaryAnnotated"))
+# Under strike the SAME locator must take the whole sentence: 1.18.0's strike loop
+# removed the substring fragment first, so part of a flagged sentence survived in the
+# summary while the flag list said the sentence was struck (review 2026-09-27).
 _ns_saved = dr.UNTRACEABLE_POLICY
 dr.UNTRACEABLE_POLICY = "strike"
 try:
@@ -3770,6 +3784,28 @@ finally:
 ok(_ns["summary"] == "Wages rose five percent in the treated counties."
    and _ns["processCritique"]["struckFromSummary"] == ["Employment was flat across every group studied."],
    "strike removes the WHOLE flagged sentence, never a fragment of it first (%r)" % _ns["summary"])
+
+# The dropped-claim "sample" was the FIRST N of the dropped pool for three versions
+# while its comment said "random-ish" (review of 1.18.2, 2026-09-28). The pool
+# preserves extraction order, so the sample was wave-1 claims and the deepening
+# wave - the one that exists to fill coverage gaps - was never drawn from. The
+# sampler for calibration made the same mistake with rank order (2026-09-06); this
+# is the dropped-pool instance of it. What matters is the POPULATION handed to the
+# draw: the whole dropped pool, not a prefix of it.
+_pop = []
+_rs_saved = random.sample
+random.sample = lambda pop, k: (_pop.append(list(pop)), list(pop)[:k])[1]
+try:
+    _cit = [{"claim": "c%d" % i, "sourceUrl": "u%d" % i} for i in range(10)]
+    _rkd = _cit[:4]
+    _samp = dr.sample_dropped(_cit, _rkd, 3)
+finally:
+    random.sample = _rs_saved
+ok(len(_pop) == 1 and len(_pop[0]) == 6 and all(c not in _rkd for c in _pop[0]),
+   "the sampler draws from the WHOLE dropped pool (%d claims), never a positional prefix"
+   % len(_pop[0]))
+ok(len(_samp) == 3 and all(c in _pop[0] for c in _samp),
+   "and what it returns is a subset of that pool")
 
 
 print("\n-- map review 2026-09-27: exits and failed stages say what happened --")

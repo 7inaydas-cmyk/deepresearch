@@ -115,6 +115,16 @@ SHARED = {
     # (annotate_flags), so these markers only prove the helpers exist and are used.
     "flags marked in summary":   ("def annotate_flags(", "const annotateFlags = "),
     "one flag locator":          ("def flag_spans(", "const flagSpans = "),
+    # The 1.18.2 exits and stage disclosures shipped in both builds with no row here, so
+    # a future non-port of any of them would have passed parity (review 2026-09-28).
+    # Markers only prove existence; the answers are pinned per build by effect tests.
+    "coverage caveat on every exit": ('"coverageNotScored"', "coverageNotScored:"),
+    "framing-less runs say so":  ("noFramingContract", "noFramingContract"),
+    "critics that returned counted": ("criticsReturned", "criticsReturned"),
+    "no critic ran is said":     ("criticNotRun", "criticNotRun"),
+    "all non-citable names the reason": ("non-citable source (a T4 aggregator", "non-citable source (a T4 aggregator"),
+    "refuted + unadjudicated is three outcomes": ("could not be adjudicated", "could not be adjudicated"),
+    "dropped sample is a draw, not a prefix": ("def sample_dropped(", "const sampleDropped = "),
     "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),

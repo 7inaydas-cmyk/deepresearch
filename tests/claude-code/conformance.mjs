@@ -22,7 +22,7 @@ if (SPLIT < 0) {
 const noop = () => {}
 const M = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
   '"use strict"; ' + SRC.slice(0, SPLIT) +
-  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase, tallyVerdicts, demotionSet, annotateFlags }')(
+  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase, tallyVerdicts, demotionSet, annotateFlags, strikeFlags }')(
   noop, noop, noop, noop, noop, { question: 'conformance', depth: 'standard' }, {})
 
 // The adapter: one entry per contract function. Return conventions differ between the
@@ -45,6 +45,7 @@ const ADAPTER = {
   // Python engine" while this build ran a panel, and the demotion rule had drifted.
   tally_verdicts:  (v, r, n) => M.tallyVerdicts(v, r, n),
   annotate_flags:  (summary, cands) => M.annotateFlags(summary, cands),
+  strike_flags:    (summary, cands) => M.strikeFlags(summary, cands),
   demotion_set:    rows => [...M.demotionSet(rows)].map(k => k.split('\u0000')).sort(),
   evidence_base:   rows => M.evidenceBase(
                      rows.map(r => ({ ...r, claims: Array.from({ length: r.claims || 0 }) }))).citableSources,

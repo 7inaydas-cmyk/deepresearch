@@ -244,6 +244,15 @@ import fs2 from 'node:fs'
   ok(/not selecting for verifiability|materially different rate/.test(out.droppedSample.reading || ''),
      'with a reading that states which of the two it is, rather than leaving the reader to subtract')
   ok(logs.some(l => /dropped claims survived/.test(l)), 'and it is logged as it happens')
+  // Both builds took a PREFIX of the dropped pool for three versions while the Python
+  // comment said "random-ish" (review of 1.18.2, 2026-09-28). The draw is now uniform
+  // and the per-claim rows are the record of it - the aggregate alone cannot be audited.
+  ok(Array.isArray(out.droppedSample.claims) &&
+     out.droppedSample.claims.length === out.droppedSample.sampled &&
+     out.droppedSample.claims.every(r => r.claim && typeof r.survived === 'boolean'),
+     'each sampled claim rides with the report, so the draw is its own record')
+  ok(/not measured/.test(out.droppedSample.measures || ''),
+     'and the report says survival is measured, materiality (#9) is not')
 
   // The mirror: when the cap discarded NOTHING, no rate is invented. A survival rate
   // over an empty pool would be a number with no measurement behind it.

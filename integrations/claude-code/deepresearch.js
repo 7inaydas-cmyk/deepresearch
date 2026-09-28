@@ -1604,6 +1604,21 @@ const interpretGate = (kappa, n, perLens) => {
   return ['noise', 'FAIL: the central claim does not hold. Stop and redesign before any polish.']
 }
 
+// Uniform draw from what the cap discarded. Both builds took a PREFIX of the dropped
+// pool while the Python comment said "random-ish" (review of 1.18.2, 2026-09-28) - and
+// the pool preserves extraction order, so the sample was wave-1 claims and the
+// deepening wave, the one that exists to fill gaps, went unsampled. Partial
+// Fisher-Yates from the front: every subset of size n is equally likely, no sort.
+const sampleDropped = (citableClaims, kept, n) => {
+  const pool = citableClaims.filter(c => !kept.has(c))
+  const k = Math.min(n, pool.length)
+  for (let i = 0; i < k; i++) {
+    const j = i + Math.floor(Math.random() * (pool.length - i))
+    const t = pool[i]; pool[i] = pool[j]; pool[j] = t
+  }
+  return pool.slice(0, k)
+}
+
 // ═══ Dropped-claim sample — what did the cap actually discard? ══════════════
 // The verify cap keeps the top `maxVerify` claims by (importance, sourceQuality) and
 // drops the rest, which is typically 80% of the evidence. Nothing checked whether that
@@ -1618,7 +1633,7 @@ const interpretGate = (kappa, n, perLens) => {
 let droppedSample = null
 if (T.sampleDropped > 0) {
   const kept = new Set(rankedClaims)
-  const pool = citableClaims.filter(c => !kept.has(c)).slice(0, T.sampleDropped)
+  const pool = sampleDropped(citableClaims, kept, T.sampleDropped)
   if (pool.length) {
     phase('Sample dropped')
     log('SAMPLING ' + pool.length + ' dropped claims to measure what the cap discarded')
@@ -1630,6 +1645,10 @@ if (T.sampleDropped > 0) {
       sampled: pool.length, survived,
       survivalRate: Math.round(rate * 1000) / 1000,
       keptClaimSurvivalRate: Math.round(keptRate * 1000) / 1000,
+      // The per-claim rows ARE the record of the draw; nothing about the sample is
+      // recoverable from the aggregate alone.
+      claims: sv.map(c => ({ claim: c.claim, sourceUrl: c.sourceUrl, survived: !!c.survives })),
+      measures: 'survival of dropped claims only; whether one would have changed the answer is #9\'s open half, not measured',
       reading: Math.abs(rate - keptRate) < 0.15
         ? 'dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability'
         : 'dropped claims survive at a materially different rate to kept ones',
