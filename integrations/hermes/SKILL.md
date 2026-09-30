@@ -10,7 +10,7 @@ description: >
   Slower and far more rigorous than mega_research —
   use mega_research for a quick sourced answer, deepresearch when correctness matters more
   than speed.
-version: 1.18.3
+version: 1.19.0
 author: ported from the Claude Code /deepresearch harness
 license: MIT
 platforms: [linux]

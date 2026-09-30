@@ -193,6 +193,14 @@ unreachable. Two disciplines the engine treats as load-bearing:
   included, rescue claims included) - not survivors only. Auditing only what the
   lenses already cleared measured 100% on three consecutive live runs: a rubber
   stamp, not an audit.
+- **An empty audit dispatch is a defect, not a small audit** - whatever artifact
+  carries the pool to the auditors (pool.json, audit-input) must exist and hold the
+  full ranked pool BEFORE any auditor is dispatched; a missing or empty pool is
+  run-stopping. Measured 2026-09-30 on a parallel run: a failed companion-file write
+  fell through a silent `.catch(() => [])` and two auditors ran on empty lists while
+  the run looked healthy - an auditor's escalation caught it, not the script. The
+  recovery is deterministic regeneration from the ranked pool (claim text + URL only,
+  quotes stripped, so blindness is intact), never an audit of nothing.
 - **An auditor call that returned nothing is not a citation that failed** - count it
   as `auditErrors`, exclude it from the accuracy denominator, and REPORT it.
   Dropping it silently makes citationAccuracy improve under degradation.

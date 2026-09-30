@@ -99,7 +99,16 @@ sys.exit(0 if _firecrawl_markdown(json.loads(urllib.request.urlopen(req, timeout
     if [ -f "$RUN/exit.code" ]; then
       echo "done: exit $(cat "$RUN/exit.code") - report $RUN/report.json, log $RUN/run.log"
     else
-      tail -1 "$RUN/req.out" 2>/dev/null || echo "waiting"
+      # Test emptiness, not existence: req.out is CREATED empty by the launch
+      # redirect and stays empty until the first model call, and `tail -1` exits 0
+      # on an empty file - so the `|| echo "waiting"` fallback was dead in exactly
+      # the startup window it existed for, and a polling window got an empty line
+      # to parse as a request (review 2026-09-30).
+      if [ -s "$RUN/req.out" ]; then
+        tail -n 1 "$RUN/req.out"
+      else
+        echo "waiting"
+      fi
     fi
     ;;
   dr-answer)

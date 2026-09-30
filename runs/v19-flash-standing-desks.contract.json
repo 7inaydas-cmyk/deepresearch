@@ -1,0 +1,44 @@
+{
+ "decisionAtStake": "Whether an office worker, employer, or workplace-wellness buyer should spend money and floor space on sit-stand desks (with or without a supporting programme): if desks cut sitting meaningfully but health outcomes stay flat, the purchase is a behaviour/environment change, not a health intervention, and should be justified and evaluated as such; if health outcomes improve too, it competes with clinical prevention spend.",
+ "keyQuestion": "In adult office workers, do sit-stand desk interventions - desk alone or desk plus an organisational/behavioural programme - reduce total daily sitting time by a meaningful amount, and do any health outcomes improve in replicated trials?",
+ "assumptions": [
+  "Population is sedentary desk-based adults, mostly in high-income countries; clinical and industrial-worker populations are out of scope.",
+  "Meaningful sitting reduction means roughly 30+ min/day, the lower band of the 30-100 min/day range workplace guidelines associate with benefit; smaller shifts are reported as modest, not dismissed.",
+  "Health outcomes that count are measured in-trial (blood pressure, glucose/HbA1c, lipids, weight, validated musculoskeletal pain scales); acute post-meal responses or single-arm biomarker wiggles do not count as health benefit.",
+  "Evidence base will be dominated by RCTs of 4 weeks to 12 months follow-up, most device- or questionnaire-measured, mostly from Australia, the UK, and the US; long-term adherence beyond 12 months is largely untested.",
+  "A health outcome counts as replicated only if at least two independent trials or a pooled meta-analysis point the same direction with acceptable precision."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "Device-measured RCTs pooling to under ~15 min/day sitting reduction would collapse the meaningful-reduction conclusion to no effect.",
+  "Two or more independent trials, or a meta-analysis, showing consistent improvement in the same health outcome (e.g. blood pressure or low-back pain) would flip the no-replicated-health-benefit expectation.",
+  "Evidence that sitting reductions fade or reverse by 3-6 months without continued support would change the conclusion from durable change to short-term displacement.",
+  "Systematic reviews grading the health-outcome evidence high-certainty would force upgrading any no-benefit statement to an honest unknown rather than a negative finding."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "Sit-stand desks alone produce a modest sitting reduction (roughly 30-60 min/day) with no replicated improvement in health outcomes.",
+   "killCriterion": "Pooled device-measured RCT effect under ~15 min/day, or desk-only trials showing replicated improvement in at least one health outcome."
+  },
+  {
+   "hypothesis": "Desks plus a structured programme (coaching, sit-stand goals, managerial support) cut sitting substantially more (roughly 60-100+ min/day), still without replicated health gains.",
+   "killCriterion": "Programme trials showing sitting reductions no larger than desk-only, or programme trials with replicated health-outcome improvement."
+  },
+  {
+   "hypothesis": "Sit-stand interventions reduce sitting AND improve at least one health outcome in replicated fashion.",
+   "killCriterion": "No two independent trials agree on the same outcome improving, or pooled effects on that outcome cross null."
+  },
+  {
+   "hypothesis": "Interventions largely fail to change total sitting at all once the novelty effect washes out.",
+   "killCriterion": "Consistent reductions of 30+ min/day sustained to 6-12 months in device-measured trials."
+  }
+ ],
+ "needsGeneralWeb": false,
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted",
+  "needsGeneralWeb": "drafted"
+ }
+}

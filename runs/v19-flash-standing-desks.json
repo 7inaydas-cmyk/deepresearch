@@ -1,0 +1,574 @@
+{
+ "question": "Do sit-stand desk interventions reduce total sitting time or improve health outcomes in office workers?",
+ "depth": "quick",
+ "coverage": null,
+ "contradictions": [
+  "Direction of cardiometabolic evidence: Graves 2015 reports total cholesterol improving (p=0.049) with 'beneficial' FMD and diastolic BP changes [1]; MacEwen 2017 reports no change in any cardiometabolic marker despite a larger sitting reduction [5][8]. Not directly contradictory (different populations, durations, and marker panels), but the run cannot resolve which better represents desk-scale effects; neither is replicated.",
+  "Durability: Nelson-Wong 2021's title reports long-term maintenance of decreased workplace sitting [9], while Konradt 2022 found health/comfort effects faded by 24 months [2]. These concern different outcomes (sitting versus health/comfort), so they are tension rather than contradiction - but a reader cannot hold 'benefits persist' and 'benefits fade' simultaneously without noting the outcome mismatch."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether an office worker, employer, or workplace-wellness buyer should spend money and floor space on sit-stand desks (with or without a supporting programme): if desks cut sitting meaningfully but health outcomes stay flat, the purchase is a behaviour/environment change, not a health intervention, and should be justified and evaluated as such; if health outcomes improve too, it competes with clinical prevention spend.",
+  "keyQuestion": "In adult office workers, do sit-stand desk interventions - desk alone or desk plus an organisational/behavioural programme - reduce total daily sitting time by a meaningful amount, and do any health outcomes improve in replicated trials?",
+  "assumptions": [
+   "Population is sedentary desk-based adults, mostly in high-income countries; clinical and industrial-worker populations are out of scope.",
+   "Meaningful sitting reduction means roughly 30+ min/day, the lower band of the 30-100 min/day range workplace guidelines associate with benefit; smaller shifts are reported as modest, not dismissed.",
+   "Health outcomes that count are measured in-trial (blood pressure, glucose/HbA1c, lipids, weight, validated musculoskeletal pain scales); acute post-meal responses or single-arm biomarker wiggles do not count as health benefit.",
+   "Evidence base will be dominated by RCTs of 4 weeks to 12 months follow-up, most device- or questionnaire-measured, mostly from Australia, the UK, and the US; long-term adherence beyond 12 months is largely untested.",
+   "A health outcome counts as replicated only if at least two independent trials or a pooled meta-analysis point the same direction with acceptable precision."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Device-measured RCTs pooling to under ~15 min/day sitting reduction would collapse the meaningful-reduction conclusion to no effect.",
+   "Two or more independent trials, or a meta-analysis, showing consistent improvement in the same health outcome (e.g. blood pressure or low-back pain) would flip the no-replicated-health-benefit expectation.",
+   "Evidence that sitting reductions fade or reverse by 3-6 months without continued support would change the conclusion from durable change to short-term displacement.",
+   "Systematic reviews grading the health-outcome evidence high-certainty would force upgrading any no-benefit statement to an honest unknown rather than a negative finding."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "Sit-stand desks alone produce a modest sitting reduction (roughly 30-60 min/day) with no replicated improvement in health outcomes.",
+    "killCriterion": "Pooled device-measured RCT effect under ~15 min/day, or desk-only trials showing replicated improvement in at least one health outcome."
+   },
+   {
+    "hypothesis": "Desks plus a structured programme (coaching, sit-stand goals, managerial support) cut sitting substantially more (roughly 60-100+ min/day), still without replicated health gains.",
+    "killCriterion": "Programme trials showing sitting reductions no larger than desk-only, or programme trials with replicated health-outcome improvement."
+   },
+   {
+    "hypothesis": "Sit-stand interventions reduce sitting AND improve at least one health outcome in replicated fashion.",
+    "killCriterion": "No two independent trials agree on the same outcome improving, or pooled effects on that outcome cross null."
+   },
+   {
+    "hypothesis": "Interventions largely fail to change total sitting at all once the novelty effect washes out.",
+    "killCriterion": "Consistent reductions of 30+ min/day sustained to 6-12 months in device-measured trials."
+   }
+  ],
+  "needsGeneralWeb": false,
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted",
+   "needsGeneralWeb": "drafted"
+  }
+ },
+ "skillDrift": null,
+ "searchDegraded": false,
+ "singleRater": true,
+ "perspectives": [
+  {
+   "label": "Meta-analyst",
+   "lens": "A primary-literature academic pooling RCTs, who distrusts self-report sitting measures, single-arm before-after designs, and cherry-picked outcome switching.",
+   "query": "sit-stand desk workstation intervention office workers randomized controlled trial sitting time minutes per day meta-analysis"
+  },
+  {
+   "label": "Programme champion",
+   "lens": "An occupational-health practitioner who has run Take-a-Stand style programmes and believes the null-health reading underweights well-supported interventions; distrusts meta-analyses that lump weak desk-only deployments.",
+   "query": "take a stand workplace program sit-stand desk coaching blood pressure glucose back pain improvement office workers study"
+  },
+  {
+   "label": "Trial skeptic",
+   "lens": "A skeptical epidemiologist hunting the strongest counter-case: novelty-effect decay, publication bias, tiny underpowered trials, and outcome-shopping in industry-adjacent research.",
+   "query": "sit-stand desk intervention no significant reduction sitting time adherence decline novelty effect randomized trial null result"
+  },
+  {
+   "label": "Workplace buyer",
+   "lens": "A corporate real-estate or HR buyer deciding whether to purchase, who distrusts vendor marketing and academic measures nobody in an office actually feels; reads costs, complaints, and productivity.",
+   "query": "standing desk workplace cost per employee musculoskeletal discomfort productivity ergonomics guidance employer"
+  }
+ ],
+ "summary": "Sit-stand desks do reduce sitting time: the run's strongest evidence is a Sydney crossover pilot RCT (n=42, 4 weeks) showing a 73 min/workday device-measured reduction at work versus controls (p=0.004), with self-reported total daily sitting down about 80 min/workday (95% CI roughly -155 to -4), so the workplace reduction was not offset by more sitting elsewhere [0][7]; a separate study's title reports office workers maintained decreased workplace sitting long-term after its intervention, though the fetched record could not verify magnitude [9]. On health outcomes the answer is negative as far as the captured evidence goes: no outcome is replicated across two independent trials - the single positive signal is total cholesterol down 0.40 mmol/L (p=0.049) plus magnitude-based-inference benefits in flow-mediated dilation and diastolic blood pressure in one 8-week desk-only trial [1], while a 12-week trial in office workers with abdominal obesity found a ~100-160 min/day sitting reduction changed no marker of cardiometabolic risk [5][8], and an RCT with 24-month follow-up found health/comfort effects faded out [2]. On harms, the one trial reporting them found no relative worsening of musculoskeletal discomfort, with workstations self-reported as easy to use and without perceived productivity loss [4]. The evidence base is thin: the trialists themselves call for larger, more representative samples before population claims [3], the Cochrane Clinical Answer could be fetched only as citation-free metadata rather than its pooled estimate [6], and the majority of extracted claims were never verified.",
+ "answerFirst": "Yes on sitting, no on health: in the best evidence this run captured, a device-measured crossover pilot (n=42, 4 weeks) found sit-stand workstations cut work sitting by 73 min/workday versus controls (p=0.004), total daily sitting fell about 80 min/day without displacement to evenings, and one study's title reports long-term maintenance - but no health outcome shows replicated improvement, and one trial in which a ~100-160 min/day reduction moved no cardiometabolic marker in 12 weeks argues desk-scale reductions may be too small or too short to matter clinically. Coverage warning: 12 of 22 extracted claims (55%) were never verified - cut by the verify budget - and no pooled estimate was captured, so this answer rests on a handful of small single trials plus title-level maintenance evidence.",
+ "hingeNumber": {
+  "value": "73 min/workday device-measured sitting reduction versus controls (95% CI roughly -106 to -39, p=0.004)",
+  "why": "It is the only device-measured, control-condition sitting effect in the captured evidence; the sitting-reduction half of the answer rests on this one number plus the same trial's self-reported total (-80 min/workday). No pooled estimate was captured (the Cochrane Clinical Answer fetch returned metadata only), so a single small pilot is doing all the quantitative work.",
+  "sensitivity": "If the wider-literature pooled desk-only effect is near 40 min/day rather than 73, the conclusion 'desks meaningfully reduce sitting' survives; if pooled device-measured effects fall under ~30 min/day (or under the ~15 min/day noise floor), the meaningfulness claim collapses to no effect. A 10-20% move in this number does not flip the answer, but the answer does flip on which trial is trusted - one small pilot versus a future pooled estimate.",
+  "source": "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7 (claim [0], TIER T2, vote 3-0)"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "Sit-stand desks alone produce a modest sitting reduction (roughly 30-60 min/day) with no replicated improvement in health outcomes.",
+   "hypothesisNumber": 1,
+   "verdict": "surviving",
+   "killCriterion": "Pooled device-measured RCT effect under ~15 min/day, or desk-only trials showing replicated improvement in at least one health outcome.",
+   "reasoning": "Neither kill condition is met. The one device-measured effect is 73 min/workday ([0]) - above this hypothesis's modest band, not below 15 - and the only health-outcome improvement is explicitly unreplicated ([1]), while an independent desk-only trial moved no cardiometabolic marker ([5],[8]). Surviving, with the caveat that the observed magnitude comes from one small pilot and the no-replicated-improvement leg could reflect short trial durations rather than absence of benefit.",
+   "claimsCited": [
+    0,
+    7,
+    1,
+    5,
+    8
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "Desks plus a structured programme (coaching, sit-stand goals, managerial support) cut sitting substantially more (roughly 60-100+ min/day), still without replicated health gains.",
+   "hypothesisNumber": 2,
+   "verdict": "untested",
+   "killCriterion": "Programme trials showing sitting reductions no larger than desk-only, or programme trials with replicated health-outcome improvement.",
+   "reasoning": "No confirmed claim compares a programme-augmented arm against desk-only or quantifies a programme effect. The two perspectives designed to reach programme and practitioner evidence (programme champion, workplace buyer) returned no usable search results in this run, so the only long-term maintenance claim ([9]) is title-level and cannot size a programme effect. This is an honest gap, not a negative finding.",
+   "claimsCited": [],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "Sit-stand interventions reduce sitting AND improve at least one health outcome in replicated fashion.",
+   "hypothesisNumber": 3,
+   "verdict": "killed",
+   "killCriterion": "No two independent trials agree on the same outcome improving, or pooled effects on that outcome cross null.",
+   "reasoning": "The trigger is met: exactly one trial reports a health-outcome improvement (total cholesterol, p=0.049, with magnitude-based-inference vascular benefits) ([1]), and an independent trial that produced a larger sitting reduction changed no cardiometabolic marker at all ([5],[8]). No outcome is confirmed by two independent trials, and no pooled health-outcome estimate was captured. Sitting reduction itself is supported, but the replicated-health-improvement condition fails.",
+   "claimsCited": [
+    1,
+    5,
+    8
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "Interventions largely fail to change total sitting at all once the novelty effect washes out.",
+   "hypothesisNumber": 4,
+   "verdict": "surviving",
+   "killCriterion": "Consistent reductions of 30+ min/day sustained to 6-12 months in device-measured trials.",
+   "reasoning": "The kill criterion is not met: short-term reductions are real in the captured evidence ([0],[7]), and one study's title reports maintenance of decreased workplace sitting long-term ([9]) - but that record is title-only, does not state device measurement, and (per its publisher record, outside the confirmed claim) concerns a multicomponent intervention, so it cannot satisfy a device-measured 6-12 month criterion. The hypothesis is weakened, not killed, and durability remains the weakest link in the answer.",
+   "claimsCited": [
+    0,
+    7,
+    9
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  }
+ ],
+ "strongestArgumentAgainst": "The strongest honest case against this answer: both halves rest on a thin, selection-prone base. The sitting-reduction effect (73 min/day) comes from one 4-week crossover pilot in a single Australian health agency (86% female, n=42) with a rolling waitlist design, and the only long-term support is a paper title - while 55% of extracted claims were never verified, and verification was importance-ranked by the extractor, so any null or negative sitting trials among the 12 unaudited claims are systematically invisible; positive small pilots are exactly what survives such a funnel. On health, 'no replicated improvement' may be evidence of absence of adequate trials rather than absence of benefit: every captured health-outcome measurement comes from trials of 4-24 weeks (plus one 24-month comfort-outcome follow-up), far too short for cardiometabolic risk to move, and the one trial that did measure markers closely (n=25, 12 weeks, abdominal obesity) lacked power to detect the small changes a 3-4% shift in daily sitting could plausibly cause. A reviewer could honestly conclude: 'unproven, not disproven - and the sitting effect is probably smaller than the one pilot suggests.'",
+ "whatWouldChangeThisCall": [
+  "A pooled device-measured estimate (Cochrane review or successor, fetched in full) showing average desk-only reductions under ~30 min/day would collapse the sitting conclusion from 'meaningful reduction' to 'marginal or none'.",
+  "Any second independent trial reporting improvement in the SAME health outcome (e.g., another trial with total cholesterol or blood pressure improving) would flip the no-replicated-health-benefit leg and revive hypothesis H3.",
+  "Device-measured follow-up at 6-12 months showing sustained 30+ min/day reductions would kill H4 outright and move durability from title-level to evidenced.",
+  "Auditing the 12 unverified claims: if any contains a larger RCT with null sitting effects, the 73 min/day anchor must be revised downward and the confidence downgraded.",
+  "A head-to-head trial of desk-only versus desk-plus-programme would test H2, which this run left entirely untested after its programme and buyer search perspectives returned nothing usable."
+ ],
+ "baseRate": "Absent. The confirmed evidence contains no outside-view base rate - no figure for how often workplace interventions sustain behaviour change at 12+ months, and no pooled success rate for sit-stand deployments. The one adjacent signal, the authors' own statement that larger samples are needed before public-health impact can be determined [3], is a caution, not a base rate. Any projection of sustained real-world benefit from these trials is therefore running on inside-view optimism alone.",
+ "findings": [
+  {
+   "claim": "Sit-stand workstations reduce sitting at work by roughly 70-80 min/day in short-term trials: 73 min/workday device-measured versus controls (p=0.004) in a 4-week crossover pilot, and about 80 min/workday self-reported total daily sitting in the same trial, with no offset elsewhere in the day; one further study's title reports long-term maintenance of decreased workplace sitting.",
+   "confidence": "medium",
+   "sources": [
+    "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+    "https://doi.org/10.1080/00140139.2021.1998647"
+   ],
+   "evidence": "Claims [0] and [7]: ActivPAL-assessed work sitting -73 min/workday, printed CI sign-mangled ('106,-39', consistent with -106 to -39), p=0.004; total sitting -80 min/workday, CI consistent with -155 to -4. Claim [9]: title-only maintenance evidence (Ergonomics 2021; metadata-only fetch, magnitude and follow-up unverifiable; publisher records indicate a multicomponent intervention).",
+   "vote": "3-0 on each underlying claim",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - all three claims passed a 3-0 adversarial panel; the CI sign readings and the title-only scope are carried as hedges inside the claims themselves"
+  },
+  {
+   "claim": "No health outcome shows replicated improvement across independent trials. The single positive signal is one 8-week desk-only RCT reporting total cholesterol down 0.40 mmol/L (p=0.049) plus 'beneficial' flow-mediated dilation and diastolic blood pressure changes judged by magnitude-based inference - a candidate, not a replicated finding.",
+   "confidence": "medium",
+   "sources": [
+    "https://bmcpublichealth.biomedcentral.com/track/pdf/10.1186/s12889-015-2469-8",
+    "https://doi.org/10.1123/jpah.2016-0384"
+   ],
+   "evidence": "Claim [1] (Graves 2015, n=47): the cholesterol endpoint is nominally significant; the vascular outcomes rest on magnitude-based inference, a method that does not yield ordinary p-value guarantees. Claims [5] and [8] (MacEwen 2017, n=25 with abdominal obesity, 12 weeks): despite a ~100-160 min/day sitting reduction, no marker of cardiometabolic risk changed in either group (all P > .05). The two trials measured overlapping markers and disagree in direction, with only one positive.",
+   "vote": "3-0 on each underlying claim",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - claims [1], [5], [8] each passed 3-0; the 'unreplicated' characterization is an inference across them, and the run captured no pooled health-outcome estimate that could confirm or refute it"
+  },
+  {
+   "claim": "Where health and comfort effects of sit-stand interventions were followed longest, they faded: an RCT with follow-up to 24 months found no significant intervention effect on musculoskeletal complaints and activation at 24 months.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1186/s40359-022-00948-9"
+   ],
+   "evidence": "Claim [2] (Konradt 2022, seven waves plus 18-month-later follow-up, Bayesian structural equation modelling): 'no significant intervention effect after 24 months implying a fade-out'; earlier improvement velocity predicted later benefit. The abstract covers these outcomes, not sitting time.",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - 3-0 panel; scope explicitly limited to the non-sitting outcomes the abstract measures"
+  },
+  {
+   "claim": "Sit-stand workstations were well tolerated in the one trial reporting harms: no relative worsening of musculoskeletal discomfort or pain, self-reported ease of use, and no perceived productivity loss.",
+   "confidence": "medium",
+   "sources": [
+    "https://bmcpublichealth.biomedcentral.com/track/pdf/10.1186/s12889-015-2469-8"
+   ],
+   "evidence": "Claim [4] (Graves 2015, 8 weeks, n=47): no harmful changes in musculoskeletal discomfort/pain relative to controls; acceptability and productivity are self-reports over 8 weeks only - longer-term standing-related discomfort is not covered by any captured source.",
+   "vote": "3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "supported - 3-0 panel; the verifier noted the productivity half rests on same-page Results text outside the quoted slice, both verbatim"
+  },
+  {
+   "claim": "The captured evidence base cannot support population-level claims: trialists themselves call for larger, more representative samples, and the run never captured a pooled estimate - the Cochrane Clinical Answer addressing the core question was fetchable only as citation-free metadata.",
+   "confidence": "medium",
+   "sources": [
+    "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+    "https://doi.org/10.1002/cca.3147"
+   ],
+   "evidence": "Claims [3] and [6]: 'Larger scale studies on more representative samples are needed to determine the public health impact'; the Cochrane Clinical Answer record shows Cited by: 0 in fetched Crossref metadata and no abstract, so its underlying pooled estimate never entered this run's evidence.",
+   "vote": "3-0 on each underlying claim",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "supported - the underlying claims passed 3-0; the leap from them to 'cannot support population-level claims' is the synthesist's reading, flagged as inference"
+  }
+ ],
+ "caveats": "Unanswered sub-questions: no pooled desk-only sitting effect was captured (sub-question 1 answered from single trials only); the desk-plus-programme effect (sub-question 2) is entirely untested - the programme-champion and workplace-buyer search perspectives returned no usable results; no physiology/mechanism source (sub-question 6) and no quantified cost or harm magnitude beyond self-reported acceptability (sub-question 7) were captured; the Cochrane certainty question (sub-question 5) is answered only by a metadata shell. Unverified claims: 12 of 22 extracted claims (55%) were never audited - cut by the verify budget, ranked by importance first - so claims an extractor rated tangential are invisible here even if they would have overturned the answer; this is a structural blind spot, not a clean bill. Weak sources: the maintenance evidence is title-only; two anchor trials have n=42 and n=47 with 4-8 week horizons; all sitting-effect numbers come from essentially one pilot trial. Dropped claims: none were dropped as unsupported at synthesis, but 12 unaudited claims were excluded from consideration wholesale. Time-sensitivity: the most recent trial evidence is 2022; pooled estimates published since would supersede the single-trial anchor immediately.",
+ "openQuestions": [
+  "What is the pooled device-measured desk-only effect on workplace sitting with confidence intervals - the Cochrane review's own numbers, which this run could not fetch?",
+  "Does adding a structured programme to the desk increase the sitting reduction over desk-only, and by how much (head-to-head or adjusted indirect comparison)?",
+  "Do sitting reductions persist at 6-12 months when measured by posture-sensing devices rather than titles and self-report?",
+  "At what duration and magnitude of sitting reduction do cardiometabolic markers actually move, if any - is the 12-week null a power failure or a real absence?"
+ ],
+ "citationAudit": null,
+ "citationDetail": [],
+ "quoteAudit": [
+  {
+   "claim": "In this Sydney crossover pilot RCT (n=42, four weeks), sit-stand workstations reduced ActivPAL-device-assessed sitting at work by 73 min/workday versus controls (the printed 95% CI appears sign-mangled by PDF extraction: '106,-39', consistent with -106 to -39), significant at p=0.004.",
+   "url": "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+   "quote": "ively assessed time spent sitting at work by 73 min/workday(95% CI:106,-39) and increased standing time at work by 65min/workday (95% CI: 47, 83); these changes weresignificant relative to controls (p = 0.004 and p < 0.001, respectively).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1456
+  },
+  {
+   "claim": "This desk-only trial reported one nominally significant lipid change - total cholesterol down 0.40 mmol/L (95% CI 0.79 to 0.003, p=0.049) - plus 'beneficial' changes in flow-mediated dilation and diastolic blood pressure judged by magnitude-based inference, making it a candidate but unreplicated hea…",
+   "url": "https://bmcpublichealth.biomedcentral.com/track/pdf/10.1186/s12889-015-2469-8",
+   "quote": "decrease in totalcholesterol (0.40 mmol/L (0.79,0.003);p= 0.049). No harmful changes in musculoskeletal discomfort/painwere observed relative to controls, and beneficial changes in flow-mediated dilation and diastolic blood pressurewere observed.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1607
+  },
+  {
+   "claim": "In this seven-wave RCT of a sit-stand desk intervention with follow-up out to 24 months, the intervention effect on employees' musculoskeletal complaints and activation (vigilance, vitality) was no longer significant at 24 months - a fade-out of health/comfort effects, though the abstract addresses …",
+   "url": "https://doi.org/10.1186/s40359-022-00948-9",
+   "quote": "Bayesian structural equational modeling revealed no significant intervention effect after 24 months implying a fade-out.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1211
+  },
+  {
+   "claim": "The authors themselves rate the evidence insufficient for population claims, calling for larger studies on more representative samples to determine public-health impact - relevant when grading certainty for this question.",
+   "url": "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+   "quote": "Larger scale studies on more representative samples are needed to determine the publichealth impact of sit-stand workstations.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1947
+  },
+  {
+   "claim": "On the harms side, the trial found no relative worsening of musculoskeletal discomfort or pain, and most participants self-reported the workstation was easy to use with no perceived productivity loss.",
+   "url": "https://bmcpublichealth.biomedcentral.com/track/pdf/10.1186/s12889-015-2469-8",
+   "quote": "No harmful changes in musculoskeletal discomfort/painwere observed relative to controls",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1673
+  },
+  {
+   "claim": "The authors conclude a workday sitting reduction of roughly 100-160 min/day was still insufficient to move cardiometabolic markers in 12 weeks - relevant to the mechanism question of whether desk-scale reductions can produce measurable health change at all.",
+   "url": "https://doi.org/10.1123/jpah.2016-0384",
+   "quote": "However, these changes were not sufficient to improve markers of cardiometabolic risk in this population.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4698
+  },
+  {
+   "claim": "This Cochrane Clinical Answer record shows 0 citations in the fetched Crossref metadata, which limits any claim about its influence but not about the underlying review.",
+   "url": "https://doi.org/10.1002/cca.3147",
+   "quote": "Cited by: 0 Authors: Jane Burch, Christopher Bunt",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 161
+  },
+  {
+   "claim": "Total daily sitting (self-reported) also declined by about 80 min/workday in intervention participants in the same trial (printed CI '155,4', consistent with -155 to -4) - i.e., the workplace reduction was not offset by more sitting elsewhere.",
+   "url": "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+   "quote": "Total sitting time significantly declined in interventionparticipants (80 min/workday; 95% CI:155,4).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1695
+  },
+  {
+   "claim": "Despite the sitting reduction, no marker of cardiometabolic risk changed in either group over 12 weeks in this trial - one data point against short-trial health benefits from desk substitution.",
+   "url": "https://doi.org/10.1123/jpah.2016-0384",
+   "quote": "There were no changes in sitting or standing time outside of work hours, steps taken each day, or any marker of cardiometabolic risk in either group (all P > .05).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 4343
+  },
+  {
+   "claim": "Office workers who took part in a sit-stand desk intervention study maintained a decreased level of workplace sitting time over long-term follow-up - per this study's own title; the fetched record carries no abstract, so the size of the reduction and the follow-up length cannot be verified from this…",
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "quote": "Office-workers maintain decreased workplace sitting time long-term following participation in a sit-stand desk intervention study",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 2
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 6,
+   "floor": 5,
+   "thin": false,
+   "verdict": "6 citable sources, at or above the floor of 5.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry. A partial panel SURVIVOR is restated to what the page carries and re-audited: a supported restatement replaces it (the original is kept in `restatedFrom`), and one that still fails is demoted like `unsupported`. A partial is KEPT only when no re-audited restatement came back (`restate.verdict` no-restatement or no-reaudit). Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available, and those sources carry `abstractOnly: true`. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "`searchDegraded` (top level) is true when the general web was tried and answered under a fifth of its attempts: the report then rests mostly on a scholarly slice (Wikipedia/Crossref), and its coverage gaps are a search artefact rather than evidence that nothing exists. stats.generalWebOkRate is that rate, and stats.searchHealth has the per-backend counts behind it.",
+  "citationAuditOff": "This depth ran NO blind citation audit: no claim here was re-checked against its cited page, and the report must not read as vetted. Use standard depth or above when the checking matters.",
+  "singleRater": "Mode A (stdio): one driving window played every role - extractor, every verification lens, the citation auditor, synthesis and critic - in one conversation. Lens independence and audit blindness are NOT guaranteed here; what did run in code was the schema shaping, the kill tally and the citation arithmetic.",
+  "evidenceChecked": "10 of 22 extracted claims were verified (12 unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence."
+ },
+ "summaryAnnotated": "Sit-stand desks do reduce sitting time: the run's strongest evidence is a Sydney crossover pilot RCT (n=42, 4 weeks) showing a 73 min/workday device-measured reduction at work versus controls (p=0.004), with self-reported total daily sitting down about 80 min/workday (95% CI roughly -155 to -4), so the workplace reduction was not offset by more sitting elsewhere [0][7]; a separate study's title reports office workers maintained decreased workplace sitting long-term after its intervention, though the fetched record could not verify magnitude [9]. On health outcomes the answer is negative as far as the captured evidence goes: no outcome is replicated across two independent trials - [UNTRACEABLE: the single positive signal is total cholesterol down 0.40 mmol/L (p=0.049) plus magnitude-based-inference benefits in flow-mediated dilation and diastolic blood pressure in one 8-week desk-only trial [1]], while a 12-week trial in office workers with abdominal obesity found a ~100-160 min/day sitting reduction changed no marker of cardiometabolic risk [5][8], and an RCT with 24-month follow-up found health/comfort effects faded out [2]. On harms, the one trial reporting them found no relative worsening of musculoskeletal discomfort, with workstations self-reported as easy to use and without perceived productivity loss [4]. The evidence base is thin: the trialists themselves call for larger, more representative samples before population claims [3], the Cochrane Clinical Answer could be fetched only as citation-free metadata rather than its pooled estimate [6], and the majority of extracted claims were never verified.",
+ "processCritique": {
+  "untraceableCount": 2,
+  "criticsReturned": 1,
+  "criticsRequested": 1,
+  "markedInSummary": 1,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "minor-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "The single positive signal is one 8-week desk-only RCT reporting total cholesterol down 0.40 mmol/L (p=0.049)",
+   "the single positive signal is total cholesterol down 0.40 mmol/L (p=0.049) plus magnitude-based-inference benefits in flow-mediated dilation and diastolic blood pressure in one 8-week desk-only trial [1]"
+  ],
+  "untraceableStatements": [
+   "Finding 2 repeats the same unsupported descriptor: 'one 8-week desk-only RCT' - the duration is again not stated by any numbered claim ([1] says only 'This desk-only trial').",
+   "The summary attributes the single positive health signal to 'one 8-week desk-only trial [1]', but claim [1] never states the trial's duration - no numbered claim carries the 8-week figure for the Graves trial; it appears only in the unaudited extraction of that page. The descriptor is true of the source but not traceable to the verified pool the report was allowed to draw from."
+  ],
+  "coverageGaps": [
+   "Source types never reached: full systematic-review text, any 2023-2026 large RCT, practitioner or procurement guidance, and dissenting expert commentary on the null-health reading.",
+   "Sub-question 1 is answered from a single pilot trial (claims [0],[7]); the device-versus-self-report comparison the sub-question asks for exists only within that one trial, and no pooled estimate was captured.",
+   "Sub-question 2 (desk-plus-programme versus desk-only) received zero evidence: both the programme-champion and workplace-buyer perspectives returned no usable search results, so the additional-effect question is untested, not unanswered-but-likely.",
+   "Sub-question 5 (highest-quality systematic reviews' certainty statements) is unanswered in substance: the Cochrane Clinical Answer was fetched as Crossref metadata only (claim [6]); the review's pooled estimates and GRADE ratings never entered the evidence pool.",
+   "Sub-question 6 (physiological mechanism) has no source of any kind - no prolonged-sitting or sitting-breaks physiology study was captured; the mechanism statement in claim [5] is trial inference, not mechanism literature.",
+   "Sub-question 7 (harms and costs, and how large) is half-answered: only self-reported acceptability from one 8-week trial (claim [4]); no cost-per-worker figure, no quantified adherence drop-off, no measured productivity effect."
+  ],
+  "planFlaws": [
+   "Perspective queries were long natural-language strings (10+ words with hyphenated terms); the search backend answered them with first-keyword dictionary junk - the plan did not anticipate backend limits with shorter scholarly-style queries, and no re-query with reformulated terms occurred within the run.",
+   "The mandatory steelman perspective (programme champion) was exactly the one that got no evidence, so the null-health conclusion was never actually adversarially tested by the panel the plan designed.",
+   "The scoping committed needsGeneralWeb=false while sub-question 7's cost-and-practitioner half inherently requires the general web; when the general-web backend served irrelevant results, two of four perspectives (programme champion, workplace buyer) produced zero sources and the plan had no fallback lens for them."
+  ],
+  "rationales": [
+   "The two traceability defects are one recurring issue (an '8-week' descriptor true of the source but absent from the verified pool) and do not change any conclusion; the summary's load-bearing numbers (73 min/day, p=0.004, -0.40 mmol/L, 100-160 min/day null) all trace cleanly to claims [0],[1],[5],[7],[8]. The report discloses its worst gaps in its own first paragraph (55% of claims unaudited, no pooled estimate), so a reader acting on it is warned rather than misled. What keeps this from 'sound'…"
+  ]
+ },
+ "refuted": [],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://europepmc.org/article/PMC/PMC11512617",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://ijbnpa.biomedcentral.com/counter/pdf/10.1186/s12966-014-0127-7",
+   "quality": "primary",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "pdf"
+  },
+  {
+   "url": "https://bmcpublichealth.biomedcentral.com/track/pdf/10.1186/s12889-015-2469-8",
+   "quality": "primary",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "pdf"
+  },
+  {
+   "url": "https://europepmc.org/article/PMC/PMC11031993",
+   "quality": "unreliable",
+   "perspective": "Meta-analyst",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://doi.org/10.1186/s40359-022-00948-9",
+   "quality": "primary",
+   "perspective": "Trial skeptic",
+   "wave": "w1",
+   "claims": 4,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1002/cca.3147",
+   "quality": "secondary",
+   "perspective": "Trial skeptic",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "quality": "primary",
+   "perspective": "Trial skeptic",
+   "wave": "w1",
+   "claims": 2,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1123/jpah.2016-0384",
+   "quality": "primary",
+   "perspective": "Trial skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T?",
+   "via": "http"
+  }
+ ],
+ "stats": {
+  "depth": "quick",
+  "provider": "glm",
+  "model": "glm-5.3",
+  "transport": "stdio",
+  "perspectives": 4,
+  "subQuestions": 7,
+  "sourcesFetched": 8,
+  "claimsExtracted": 22,
+  "urlDupes": 0,
+  "budgetDropped": 0,
+  "claimsDroppedBeforeVerify": 12,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 14,
+    "ok": 11,
+    "fail": 3,
+    "challenged": 1,
+    "junk": 2,
+    "results": 61
+   },
+   "ddg-html": {
+    "attempts": 3,
+    "ok": 1,
+    "fail": 2,
+    "challenged": 0,
+    "junk": 0,
+    "results": 5
+   },
+   "ddg-lite": {
+    "attempts": 2,
+    "ok": 0,
+    "fail": 2,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 2,
+    "ok": 0,
+    "fail": 2,
+    "challenged": 2,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 2,
+    "ok": 2,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "crossref": {
+    "attempts": 2,
+    "ok": 1,
+    "fail": 1,
+    "challenged": 0,
+    "junk": 0,
+    "results": 8
+   },
+   "europepmc": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 6
+   },
+   "openalex": {
+    "attempts": 1,
+    "ok": 1,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 8
+   }
+  },
+  "generalWebOkRate": 0.571,
+  "sourceTiers": {
+   "T2": 7,
+   "T?": 1
+  },
+  "killsByLens": {},
+  "fetchVia": {
+   "failed": 2,
+   "pdf": 2,
+   "crossref-api": 3,
+   "http": 1
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 2,
+   "hits": 32,
+   "rate": 0.5
+  },
+  "agentCalls": 45,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 22,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 0,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 0,
+   "misses": 18,
+   "charsServedFromCache": 0,
+   "hitRate": 0.0
+  },
+  "wallSeconds": 3801.7,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 0,
+  "unverifiedCount": 0,
+  "afterSynthesis": 5
+ }
+}

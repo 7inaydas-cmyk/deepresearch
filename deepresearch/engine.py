@@ -243,7 +243,26 @@ def strike_flags(summary, cands):
     for s, e, _ in spans:
         out.append(summary[last:s])
         last = e
-    return re.sub(r"\s{2,}", " ", "".join(out) + summary[last:]).strip(), [f for _, _, f in spans]
+    out.append(summary[last:])
+    text, seams, pos = "", [], 0
+    for i, piece in enumerate(out):
+        text += piece
+        if i < len(out) - 1:
+            seams.append(len(text))
+    # Collapse whitespace ONLY at the seams the removals opened - the hole a strike
+    # leaves reads as prose, per the contract's case. The whole-summary re.sub this
+    # replaced also flattened every PARAGRAPH BREAK in the summary whenever one
+    # sentence anywhere was struck (review 2026-09-30); text outside a seam now
+    # stays byte-identical.
+    for seam in reversed(seams):
+        l, r = seam, seam
+        while l > 0 and text[l - 1].isspace():
+            l -= 1
+        while r < len(text) and text[r].isspace():
+            r += 1
+        if l < r:
+            text = text[:l] + " " + text[r:]
+    return text.strip(), [f for _, _, f in spans]
 
 
 def norm_url(u):
@@ -285,7 +304,7 @@ _doi_meta, _doi_lock = {}, threading.Lock()
 # A picker that is handed hits and chooses NONE of them, over and over, is the only
 # signal the pipeline has that search returned irrelevant results. searchHealth counts
 # results, not relevance, so a poisoned upstream engine reads as perfect health.
-_pick_tally, _pick_lock = {"calls": 0, "starved": 0, "hits": 0}, threading.Lock()
+_pick_tally, _pick_lock = {"calls": 0, "starved": 0, "hits": 0, "retried": 0}, threading.Lock()
 # How each URL was actually read: http | pdf | crossref-api | crossref-fallback |
 # pdf-unreadable | failed. Reported per source and censused in stats.
 _fetch_meta = {}
@@ -1279,7 +1298,9 @@ def read_provenance(url, text):
     if meta.get("abstractOnly") or via == "crossref-fallback":
         return True, "", (
             "\n**WHAT YOU ARE READING: the publisher blocked this page, so the text below is "
-            "the ABSTRACT ONLY, not the full paper.** Judge only what an abstract can settle. "
+            "the ABSTRACT ONLY (or, when Crossref held no abstract, the record's metadata "
+            "only - it says so in its own text), not the full paper.** Judge only what an "
+            "abstract can settle. "
             "If the statement concerns a detail an abstract cannot carry - a subgroup, a "
             "table value, a method - answer `unreachable`, NOT `unsupported`: the page that "
             "would settle it was never read, and that is an infrastructure limit rather than "
@@ -1664,6 +1685,43 @@ def citation_rows(fact_by):
             for f in fact_by.values()]
 
 
+_CI_RE = re.compile(
+    r"\bCI\b[^0-9\-]{0,4}(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)")
+
+
+def ci_bounds_flag(text):
+    """Pure: "" when no confidence interval looks wrong, else a warning naming it.
+
+    PDF extraction eats minus signs - they render as hyphens that vanish, or as
+    mojibake like the leading-\u00bf form - and the damage is not cosmetic: a live
+    2026-09-30 run shipped '95% CI:106,-39' (the pooled effect's bounds INVERTED,
+    lower above upper) into report-bearing claim text, and the driving window had
+    to hand-repair the sign and was audited twice for the repair. The check is
+    mechanical at extraction time: find 'CI'-shaped two-number intervals and flag
+    any whose first number is numerically above the second. A warning, never a
+    kill: some styles print bounds in the other order, and the panel decides.
+    """
+    m = _CI_RE.search(text or "")
+    if not m:
+        return ""
+    lo, hi = float(m.group(1)), float(m.group(2))
+    if lo <= hi:
+        return ""
+    return ("suspicious CI: lower bound %s is ABOVE upper %s - a PDF-extraction "
+            "sign error is the usual cause; check the original before trusting "
+            "the interval" % (m.group(1), m.group(2)))
+
+
+def _ci_line(c):
+    """State the CI check to the panel the way _quote_line states the quote check."""
+    flag = c.get("ciFlag")
+    if not flag:
+        return ""
+    return ("**Suspicious interval in this claim's text** (checked in code): %s. "
+            "Do not quote the interval as printed; verify the sign against the "
+            "source or drop the numbers.\n" % flag)
+
+
 def _quote_line(c):
     """State the quote's page-location result to the panel as a settled fact.
 
@@ -1722,7 +1780,7 @@ def p_verify(q, c, lens_key, lens_title, lens_task, idx, total, counter_block=""
         "**Source:** " + webtext(c["sourceUrl"], 250) + " (quality: " + webtext(c.get("sourceQuality", "?")) + ")\n"
         "**Publish date:** " + webtext(c.get("publishDate") or "unstated", 60) + "\n"
         + (provenance_note or "") +
-        "**Supporting quote:** \"" + webtext(c.get("quote", ""), 900) + "\"\n" + _quote_line(c) + "\n" + counter_block +
+        "**Supporting quote:** \"" + webtext(c.get("quote", ""), 900) + "\"\n" + _quote_line(c) + _ci_line(c) + "\n" + counter_block +
         "## Your lens\n" + lens_task + "\n\n"
         "Set refuted=true if your lens finds the claim wanting; false only if it passes YOUR check cleanly. Default to "
         "refuted=true when genuinely uncertain, but never refute for a reason belonging to another verifier's lens. "
@@ -2080,8 +2138,10 @@ def _honest_limits(extra=None, evidence=None):
             "used ONLY after a live read failed or returned an abstract-only stub."),
         "abstractOnlySources": (
             "stats.fetchVia counts how each source was READ. `crossref-fallback` means the "
-            "publisher blocked the fetch and only the abstract was available, and those "
-            "sources carry `abstractOnly: true`. A claim verified against an abstract has "
+            "publisher blocked the fetch and only the abstract was available (or, when "
+            "Crossref held no abstract, the record's metadata only), and those sources "
+            "carry `abstractOnly: true`. `pmc-fulltext` means the EuropePMC open-access "
+            "mirror served the full text. A claim verified against an abstract has "
             "been checked against a summary of the paper, not the paper."),
         # The rule is rate-based since 2026-09-20 and the field is top-level; this text
         # described the old all-or-nothing rule at a path that does not exist.
@@ -2462,6 +2522,25 @@ def citable_only(claims):
     return keep, dropped
 
 
+def coverage_status(deepen, coverage, coverage_not_scored):
+    """Pure: which coverage block the synthesis prompt renders - 'quick', 'not-scored',
+    'stale-table', 'table', or None. One decision for both builds: this chain lived
+    inline in each and the JS build had two of its branches, silently missing quick
+    depth, because no conformance case or parity row pinned the arithmetic (review
+    2026-09-30). The stale-table case is exhaustive-depth only (round 1 succeeded,
+    round 2's analyst failed): coverage is truthy AND a failure note exists, which the
+    old `elif coverage_not_scored and not coverage` guard excluded, so synthesis read
+    a stale table with no note that deepening stopped early."""
+    has = bool(coverage)
+    if deepen == 0 and not has:
+        return "quick"
+    if coverage_not_scored and not has:
+        return "not-scored"
+    if has:
+        return "stale-table" if coverage_not_scored else "table"
+    return None
+
+
 def post_verify_coverage(coverage, survivors):
     """Pure: the gap analyst's pre-verification table, reconciled against what
     survived the panel and the audit. A sub-question is answered only if a
@@ -2535,34 +2614,55 @@ def coverage_balanced(claims, cap, n_subq):
 def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped, needs_general_web=False):
     """One wave. Search and fetch are deterministic and free; agents only judge."""
     def do_search(p):
+        def _try_pick(hit_list, label_suffix=""):
+            """Search-free half of the perspective: hand the picker a hit list, get
+            back the hits it actually chose (indexed by BOTH url forms - the list
+            renders webtext(url, 200), so the model faithfully copies a truncated
+            form for any URL over 200 chars; see the by_url note below)."""
+            pick = agent(p_pick(q, p, hit_list, needs_general_web=needs_general_web),
+                         S_PICK, label="pick:%s%s" % (p["label"], label_suffix))
+            if not pick:
+                return None
+            by_url = {}
+            for h in hit_list:
+                by_url[norm_url(h["url"])] = h
+                by_url.setdefault(norm_url(webtext(h["url"], 200)), h)
+            chosen = []
+            for r in sorted(pick["results"], key=lambda r: REL.get(r["relevance"], 3)):
+                h = by_url.get(norm_url(r["url"]))
+                if h:
+                    chosen.append(dict(h, relevance=r["relevance"]))
+                else:
+                    # A picked URL that is not in the hit list - trailing slash, rewritten
+                    # scheme, or invented. This was the one silent discard left at the pick
+                    # seam after the parse seam was instrumented: `8 hits -> 0 picked` with
+                    # no line saying why, indistinguishable from the model choosing fewer.
+                    log("  [pick:%s] URL not in hit list, dropped: %r" % (p["label"], str(r["url"])[:120]))
+            return chosen
+
         hits = web_search(p["query"], n=8)
         if not hits:
             log("  [%s] %s: search returned NOTHING" % (tag, p["label"]))
             return None
-        pick = agent(p_pick(q, p, hits, needs_general_web=needs_general_web),
-                     S_PICK, label="pick:" + p["label"])
-        if not pick:
-            return None
-        # Index by BOTH the real URL and the form the model was actually shown. The pick
-        # list renders each hit as webtext(url, 200), which appends an ellipsis when it
-        # truncates - so for any URL over 200 characters the model faithfully copies a
-        # string that can never match the original, and a good source is dropped for
-        # obeying the instruction to "copy each url EXACTLY as given".
-        by_url = {}
-        for h in hits:
-            by_url[norm_url(h["url"])] = h
-            by_url.setdefault(norm_url(webtext(h["url"], 200)), h)
-        chosen = []
-        for r in sorted(pick["results"], key=lambda r: REL.get(r["relevance"], 3)):
-            h = by_url.get(norm_url(r["url"]))
-            if h:
-                chosen.append(dict(h, relevance=r["relevance"]))
-            else:
-                # A picked URL that is not in the hit list - trailing slash, rewritten
-                # scheme, or invented. This was the one silent discard left at the pick
-                # seam after the parse seam was instrumented: `8 hits -> 0 picked` with
-                # no line saying why, indistinguishable from the model choosing fewer.
-                log("  [pick:%s] URL not in hit list, dropped: %r" % (p["label"], str(r["url"])[:120]))
+        chosen = _try_pick(hits) or []
+        if not chosen:
+            # A starved pick used to end the perspective right there - no re-search,
+            # nothing in the report beyond the tally (live 2026-09-30: the entirely
+            # untested programme-effect hypothesis traces to exactly one starved
+            # pick, at starvation rate 0.5, below the run-level 0.6 warning). Retry
+            # ONCE with the query reduced to its content terms - the shorter shape
+            # that answers when a backend chokes on operators or long phrasing -
+            # and pick again from the fresh hits.
+            retry_q = " ".join(sorted(_search._query_terms(p["query"])))
+            if retry_q:
+                hits2 = web_search(retry_q, n=8)
+                if hits2:
+                    with _pick_lock:
+                        _pick_tally["retried"] += 1
+                    log("  [%s] %s: starved on %d hits - one retry with content terms %r"
+                        % (tag, p["label"], len(hits), retry_q))
+                    chosen = _try_pick(hits2, ":retry") or []
+                    hits = hits + hits2
         log("  [%s] %s: %d hits -> %d picked" % (tag, p["label"], len(hits), len(chosen)))
         with _pick_lock:
             _pick_tally["calls"] += 1
@@ -2605,6 +2705,11 @@ def sweep(q, subqs, perspectives, budget, tag, seen, dupes, dropped, needs_gener
             # Locate the quote in the exact text the extractor was shown. This is the
             # only moment that text is definitively in hand, and the check is free.
             c["quoteCheck"] = quote_span(text, c.get("quote", ""))
+            # Same moment, same reasoning: the CI sign check is free and pure, and a
+            # mangled interval is invisible to everything downstream of extraction.
+            c["ciFlag"] = ci_bounds_flag("%s %s" % (c.get("claim", ""), c.get("quote", "")))
+            if c["ciFlag"]:
+                log("  [ci:%s] %s" % (host_of(s["url"]) or "?", c["ciFlag"]))
             with _quote_lock:
                 _quote_tally[c["quoteCheck"]["status"]] = _quote_tally.get(c["quoteCheck"]["status"], 0) + 1
             if c["quoteCheck"]["status"] not in QUOTE_ON_PAGE and c["quoteCheck"]["status"] != "unverifiable":
@@ -2799,7 +2904,7 @@ def _reset_run_state():
     """
     global HYPOTHESES, KILLS_BY_LENS
     HYPOTHESES, KILLS_BY_LENS = [], {}
-    _pick_tally.update(calls=0, starved=0, hits=0)
+    _pick_tally.update(calls=0, starved=0, hits=0, retried=0)
     _refetch_tally.update(fresh=0, fellBackToCache=0)
     _page_tally.update(hits=0, misses=0, charsServedFromCache=0)
     _quote_tally.clear()
@@ -3118,8 +3223,11 @@ def deepresearch(question, depth="standard", contract=None):
                 "survivalRate": round(survived / len(pool), 3),
                 "keptClaimSurvivalRate": round(kept_rate, 3),
                 # The per-claim rows ARE the record of the draw; nothing about the
-                # sample is recoverable from the aggregate alone.
-                "claims": [{"claim": c.get("claim"), "sourceUrl": c.get("sourceUrl"),
+                # sample is recoverable from the aggregate alone. webtext + caps like
+                # every other claim-bearing surface - these rows once shipped raw and
+                # uncapped, the only surface that did (review 2026-09-30).
+                "claims": [{"claim": webtext(c.get("claim") or "", 300),
+                            "sourceUrl": webtext(c.get("sourceUrl") or "", 250),
                             "survived": bool(c["survives"])} for c in sv],
                 "measures": ("survival of dropped claims only; whether one would have "
                              "changed the answer is #9's open half, not measured"),
@@ -3539,16 +3647,23 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # got it, so the JSON a reader (and every SKILL.md) reads still said "answered"
     # for sub-questions whose every claim had died (review 2026-09-27).
     reconciled = post_verify_coverage(coverage, confirmed) if coverage else coverage
-    if T["deepen"] == 0 and not coverage:
+    _cov_status = coverage_status(T["deepen"], coverage, coverage_not_scored)
+    if _cov_status == "quick":
         # With no deepening rounds the gap analyst never runs, so `coverage` is null -
         # indistinguishable in the rendered report from "ran and found nothing to say".
         # Say the first, so a quick-depth reader knows the checklist was never scored.
         cov_b = ("\n## Coverage checklist status\nNot scored: quick depth runs no gap "
                  "analyst. The sub-questions above may or may not have been answered - "
                  "check the findings, not this table.\n")
-    elif coverage_not_scored and not coverage:
+    elif _cov_status == "not-scored":
         cov_b = ("\n## Coverage checklist status\nNot scored: " + coverage_not_scored + "\n")
-    elif coverage:
+    elif _cov_status in ("table", "stale-table"):
+        if _cov_status == "stale-table":
+            # Exhaustive depth, round 1 ok, round 2's analyst failed: the table below
+            # IS the round-1 snapshot and synthesis must be told so (review 2026-09-30).
+            # The note itself already says "the coverage table is from the round before
+            # it" - rendered before the table it qualifies.
+            cov_b = ("\n## Coverage checklist status\nStale: " + coverage_not_scored + "\n")
         # Reconciled POST-verification (2026-09-20). The raw table is the gap
         # analyst's snapshot from before the panel ran; rendered verbatim it let a
         # sub-question whose claims were all killed still reach synthesis as
@@ -3562,7 +3677,7 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
             name = subqs[idx - 1] if 1 <= idx <= len(subqs) else "?"
             rows.append("- [%s] %s%s" % (c.get("status"), webtext(name, 200),
                                          (" - " + webtext(c.get("note", ""), 200)) if c.get("note") else ""))
-        cov_b = "\n## Coverage checklist status (post-verification)\n" + "\n".join(rows) + "\n"
+        cov_b += "\n## Coverage checklist status (post-verification)\n" + "\n".join(rows) + "\n"
     kill_b = ("\n## Refuted claims (report these for transparency)\n" +
               "\n".join("- \"%s\" - killed by %s (%s)" % (webtext(c["claim"], 300), c["killedBy"],
                                                           webtext(c["sourceUrl"], 160)) for c in killed) + "\n") if killed else ""
@@ -4223,10 +4338,13 @@ def selftest():
             if n is None:
                 say("      %-26s no answer" % c)
             elif n > 0:
-                say("      %-26s ANSWERS - export DR_SEARXNG_URL=%s" % (c, c))
+                say("      %-26s ANSWERS with on-topic results - export DR_SEARXNG_URL=%s" % (c, c))
             else:
-                say("      %-26s up, 0 results (suspended upstream engines -" % c)
-                say("                                wait, or enable more in settings.yml)")
+                # The probe counts results ABOUT its query, not raw rows (2026-09-30):
+                # a dead-but-answering instance serves junk for anything, and 0 here
+                # means exactly that as much as suspended upstream engines.
+                say("      %-26s up, 0 on-topic results (suspended upstream engines," % c)
+                say("                                or answering junk - check settings.yml)")
         if not any(n for _, n in probed):
             say("      nothing answered from this vantage - start the instance above first")
         say("  Exit code %d = degraded but usable. 0 = healthy, 1 = failed, 2 = auth."

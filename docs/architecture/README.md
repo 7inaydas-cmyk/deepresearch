@@ -22,6 +22,12 @@ specifications. The JSON files are the source of truth; the HTML is generated fr
 
 A map is a claim about the code. When the code moves, re-pin `meta.repository.revision`
 and re-run the commands below; a cited line that no longer exists fails validation.
+That guard covers the ARCHITECTURE map, which pins every component's `sources`. The
+workflow schema has no `repository` meta and the pipeline map carries no per-node
+sources, so nothing mechanical protects it - what protects it is the claim-by-claim
+trace against `research()`'s every early return, re-done when the engine's exits move
+(the 2026-09-30 review found the panel's all-refuted exit unreachable in the graph and
+the `nosurvivor` node merging two distinct exits; both fixed that day).
 
 ## Rebuild
 

@@ -95,12 +95,18 @@ function makeAgent(cfg) {
       return { sourceQuality: 'primary', publishDate: '2026-01-01', claims: [
         { claim: 'CLAIM-' + calls + ' [' + a + '] concrete', quote: 'quote ' + calls, importance: 'central',
           subQuestionIndex: (calls % SQ.length) + 1, answersSubQuestion: a },
-        { claim: 'CLAIM-' + calls + 'b [' + b + '] detail', quote: 'quote b ' + calls, importance: 'supporting',
+        // longClaim: an oversized, tab-and-newline claim so the report-side caps
+        // have a real fixture (2026-09-30) - the per-claim sample rows once shipped raw.
+        { claim: cfg.longClaim
+            ? 'CLAIM-' + calls + 'b [' + b + '] detail ' + 'word '.repeat(140) + '\n'
+            : 'CLAIM-' + calls + 'b [' + b + '] detail',
+          quote: 'quote b ' + calls, importance: 'supporting',
           subQuestionIndex: ((calls + 1) % SQ.length) + 1, answersSubQuestion: b },
       ]}
     }
 
     if (L.startsWith('gap-analysis') && cfg.gapFails) return null
+    if (L.startsWith('gap-analysis:r') && !L.startsWith('gap-analysis:r1') && cfg.gapR2Fails) return null
     if (L.startsWith('gap-analysis')) return {
       coverage: SQ.map((q, i) => ({ subQuestion: q, status: i === 0 ? 'answered' : i === 2 ? 'unanswered' : 'partial', note: 'n' })),
       contradictions: ['Source A says X, source B says not-X'],

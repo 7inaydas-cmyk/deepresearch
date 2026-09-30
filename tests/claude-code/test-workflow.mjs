@@ -234,7 +234,7 @@ import fs2 from 'node:fs'
   // cap actually bites here. At `standard` (cap 30) nothing is dropped — which is the
   // mirror case, checked below.
   const { out, logs } = await run('T17f the cap is measured, not assumed',
-    { question: 'Q', depth: 'quick', sampleDropped: 3 })
+    { question: 'Q', depth: 'quick', sampleDropped: 3 }, { longClaim: true })
   ok(out.droppedSample && out.droppedSample.sampled > 0,
      'claims the verify cap discarded are sampled and put through the panel')
   ok(typeof out.droppedSample.survivalRate === 'number' &&
@@ -253,6 +253,8 @@ import fs2 from 'node:fs'
      'each sampled claim rides with the report, so the draw is its own record')
   ok(/not measured/.test(out.droppedSample.measures || ''),
      'and the report says survival is measured, materiality (#9) is not')
+  ok(out.droppedSample.claims.every(r => (r.claim || '').length <= 301 && !/[\n\t]/.test(r.claim || '')),
+     'per-claim rows are webText-capped single-line text, like every other claim-bearing surface (2026-09-30)')
 
   // The mirror: when the cap discarded NOTHING, no rate is invented. A survival rate
   // over an empty pool would be a number with no measurement behind it.
@@ -559,6 +561,15 @@ import fs2 from 'node:fs'
   ok((out.summaryAnnotated || '').includes('[UNTRACEABLE: Employment was flat across every group studied.]') &&
      out.processCritique.markedInSummary === 1,
      'summaryAnnotated marks the flagged sentence in place, and markedInSummary counts it')
+  // 2026-09-30: the 1.18.1 release note claimed the ORIGINAL-summary clarification
+  // landed 'in markedInSummaryMeans... and both skill docs' - this build's key never
+  // got it, and untraceableCountMeans was missing entirely, while parity stayed green
+  // because its JS marker matched the count key itself.
+  ok(/ORIGINAL summary/.test(out.processCritique.markedInSummaryMeans || ''),
+     'markedInSummaryMeans says summaryAnnotated is the ORIGINAL summary - the clause the JS build never got')
+  ok(!!out.processCritique.untraceableCountMeans &&
+     /distinct flagged STRINGS/.test(out.processCritique.untraceableCountMeans),
+     'untraceableCountMeans exists and says the count is strings, not problems')
 }
 {
   // Review of 1.18.0: a duplicate or substring flag nested a second marker inside the
@@ -579,6 +590,20 @@ import fs2 from 'node:fs'
   const syn = (prompts.find(p => p.label === 'synthesize') || {}).prompt || ''
   ok(out.honestLimits.coverageNotScored && /Not scored: The gap analyst failed/.test(syn),
      'a failed gap analyst is recorded in honestLimits and told to synthesis')
+  {
+    // 2026-09-30: this build had two branches where Python had three - quick depth's
+    // 'Not scored: quick depth runs no gap analyst' never rendered here, and no parity
+    // row or conformance case could see the gap (coverageStatus is shared and pinned now).
+    const qk = await run('R16b quick depth coverage note', { question: 'Q', depth: 'quick' }, {})
+    const qsyn = ((qk.prompts || []).find(p => p.label === 'synthesize') || {}).prompt || ''
+    ok(/Not scored: quick depth runs no gap analyst/.test(qsyn),
+       'quick depth tells synthesis the checklist was never scored')
+    const st = await run('R16c stale coverage table named', { question: 'Q', depth: 'exhaustive' }, { gapR2Fails: true })
+    const stsyn = ((st.prompts || []).find(p => p.label === 'synthesize') || {}).prompt || ''
+    ok((st.out.honestLimits || {}).coverageNotScored && /Stale: The gap analyst failed/.test(stsyn)
+       && /Coverage checklist status \(post-verification\)/.test(stsyn),
+       'a round-2 analyst failure at exhaustive depth renders the STALE table with the stopped-early note in front of it')
+  }
   const fo = await run('R17 every claim non-citable', { question: 'Q', depth: 'standard' }, { farmOnly: true })
   ok(/non-citable source/.test(fo.out.summary) && !/all empty/.test(fo.out.summary),
      'all claims non-citable is its own reason (' + fo.out.summary.slice(0, 60) + ')')

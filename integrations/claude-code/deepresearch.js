@@ -689,7 +689,7 @@ const FETCH_PROMPT = (source, angleLabel, subQuestions) =>
   'Sub-questions this research must answer:\n' + subQuestions.map((q, i) => (i + 1) + '. ' + q).join('\n') + '\n\n' +
   '**URL:** ' + webText(source.url) + '\n**Title:** ' + webText(source.title) + '\n**Found via:** ' + webText(angleLabel) + '\n\n' +
   '## Task\n' +
-  '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality.\n' +
+  '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality. If the record holds no abstract (it says "metadata only"), do NOT answer from the title alone: try the open-access mirror first - `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:"<the DOI>"&format=json` lists a `pmcid` when EuropePMC holds the paper, and `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC/<pmcid>/fullTextXML` is the full text. When only the metadata was readable, say so in your answer and scope every claim to what a record\'s metadata can carry.\n' +
   '1. WebFetch the page.\n' +
   // The orchestrator never sees this fetch - the subagent makes it - so the rule has
   // to travel in the prompt. Measured in the Python twin 2026-09-08: shown an
@@ -750,6 +750,9 @@ const VERIFY_PROMPT = (claim, lens, idx, total) =>
   '**Source:** ' + webText(claim.sourceUrl) + ' (quality: ' + webText(claim.sourceQuality) + ')\n' +
   '**Publish date:** ' + webText(claim.publishDate || 'unstated') + '\n' +
   '**Supporting quote:** "' + webText(claim.quote) + '"\n\n' +
+  (claim.ciFlag
+    ? '**Suspicious interval in this claim\'s text** (checked in code): ' + claim.ciFlag + '. Do not quote the interval as printed; verify the sign against the source or drop the numbers.\n\n'
+    : '') +
   '## Your lens\n' + lens.task + '\n\n' +
   'Set refuted=true if your lens finds the claim wanting. Set refuted=false only if it passes YOUR check cleanly.\n' +
   'Default to refuted=true when genuinely uncertain — but do not refute for a reason that belongs to another verifier\'s lens.\n' +
@@ -764,7 +767,7 @@ const FACT_PROMPT = claim =>
   '## Statement\n' + WEB_NOTE + '"' + webText(claim.claim) + '"\n\n' +
   '## Cited URL\n' + webText(claim.sourceUrl) + '\n\n' +
   '## Task\n' +
-  '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality.\n' +
+  '**If the URL is a doi.org / dx.doi.org link, do NOT fetch it.** A DOI resolver 302s to a publisher that answers crawlers with a JS challenge — measured, it returns ~200 bytes of "a required part of this site couldn\'t load". Fetch `https://api.crossref.org/works/<the DOI>` instead (keyless): it returns the title, journal, year, author list and usually the full abstract as JSON. Strip the JATS tags from the abstract. Treat the journal named in `container-title` as the real source when you rate quality. If the record holds no abstract (it says "metadata only"), do NOT answer from the title alone: try the open-access mirror first - `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:"<the DOI>"&format=json` lists a `pmcid` when EuropePMC holds the paper, and `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC/<pmcid>/fullTextXML` is the full text. When only the metadata was readable, say so in your answer and scope every claim to what a record\'s metadata can carry.\n' +
   '1. WebFetch the URL.\n' +
   '2. Search the page for text that supports the statement. Quote what you find VERBATIM in locatedQuote. This is REQUIRED. If you could not fetch or read the page, answer `unreachable` and leave locatedQuote empty — never rule `supported` or `unsupported` on a page you did not read.\n' +
   '3. Rule:\n' +
@@ -828,10 +831,14 @@ async function sweep(angles, fetchBudget, tag, subQuestions) {
             url: source.url, title: source.title, angle: sr.angle, wave: tag,
             tier: t.tier, tierWhy: t.why,
             sourceQuality: ext.sourceQuality, publishDate: ext.publishDate,
-            claims: ext.claims.map(c => ({
-              ...c, sourceUrl: source.url, sourceQuality: ext.sourceQuality,
-              tier: t.tier, publishDate: ext.publishDate,
-            })),
+            claims: ext.claims.map(c => {
+              // Code-side check the moment a claim arrives (the Python twin does this
+              // beside quoteCheck in its do_fetch): an inverted CI is invisible to
+              // everything downstream of extraction.
+              const ciFlag = ciBoundsFlag((c.claim || '') + ' ' + (c.quote || ''))
+              return { ...c, sourceUrl: source.url, sourceQuality: ext.sourceQuality,
+                tier: t.tier, publishDate: ext.publishDate, ...(ciFlag ? { ciFlag } : {}) }
+            }),
           }
         }).catch(e => {
           log('fetch failed: ' + stripLabelChars(source.url) + ' — ' + stripLabelChars(e.message || e))
@@ -1105,9 +1112,52 @@ const annotateFlags = (summary, cands) => {
 const strikeFlags = (summary, cands) => {
   const text = String(summary || ''), spans = flagSpans(text, cands)
   if (!spans.length) return [text, []]
-  let out = '', last = 0
-  for (const [s, e] of spans) { out += text.slice(last, s); last = e }
-  return [(out + text.slice(last)).replace(/\s{2,}/g, ' ').trim(), spans.map(x => x[2])]
+  const pieces = [], seams = []
+  let last = 0
+  for (const [s, e] of spans) { pieces.push(text.slice(last, s)); last = e }
+  pieces.push(text.slice(last))
+  let out = '', pos = 0
+  pieces.forEach((p, i) => { out += p; if (i < pieces.length - 1) seams.push(out.length) })
+  // Collapse whitespace ONLY at the seams the removals open - the hole a strike leaves
+  // reads as prose, per the contract's case. The whole-summary replace this replaced
+  // also flattened every PARAGRAPH BREAK whenever one sentence anywhere was struck
+  // (review 2026-09-30); text outside a seam stays byte-identical.
+  for (const seam of [...seams].reverse()) {
+    let l = seam, r = seam
+    while (l > 0 && /\s/.test(out[l - 1])) l--
+    while (r < out.length && /\s/.test(out[r])) r++
+    if (l < r) out = out.slice(0, l) + ' ' + out.slice(r)
+  }
+  return [out.trim(), spans.map(x => x[2])]
+}
+
+// Pure: which coverage block the synthesis prompt renders - 'quick', 'not-scored',
+// 'stale-table', 'table', or null. One decision for both builds: this chain lived
+// inline in each and THIS build had two of its branches, silently missing quick depth,
+// because no conformance case or parity row pinned the arithmetic (review 2026-09-30).
+// The stale-table case is exhaustive-depth only (round 1 succeeded, round 2's analyst
+// failed): coverage is non-empty AND a failure note exists.
+const coverageStatus = (deepen, coverage, notScored) => {
+  const has = Array.isArray(coverage) && coverage.length > 0
+  if (deepen === 0 && !has) return 'quick'
+  if (notScored && !has) return 'not-scored'
+  if (has) return notScored ? 'stale-table' : 'table'
+  return null
+}
+
+// Pure: '' when no confidence interval looks wrong, else a warning naming it - the
+// twin of the Python build's ci_bounds_flag. PDF extraction eats minus signs, and a
+// live 2026-09-30 run shipped '95% CI:106,-39' - bounds inverted - into
+// report-bearing claim text. Needs no page: it runs on the claim text the
+// orchestrator already holds, the one moment this build can check it.
+const CI_RE = /\bCI\b[^0-9-]{0,4}(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)/
+const ciBoundsFlag = text => {
+  const m = CI_RE.exec(String(text || ''))
+  if (!m) return ''
+  const lo = parseFloat(m[1]), hi = parseFloat(m[2])
+  if (lo <= hi) return ''
+  return 'suspicious CI: lower bound ' + m[1] + ' is ABOVE upper ' + m[2] +
+    ' - a PDF-extraction sign error is the usual cause; check the original before trusting the interval'
 }
 
 phase('Scope')
@@ -1646,8 +1696,10 @@ if (T.sampleDropped > 0) {
       survivalRate: Math.round(rate * 1000) / 1000,
       keptClaimSurvivalRate: Math.round(keptRate * 1000) / 1000,
       // The per-claim rows ARE the record of the draw; nothing about the sample is
-      // recoverable from the aggregate alone.
-      claims: sv.map(c => ({ claim: c.claim, sourceUrl: c.sourceUrl, survived: !!c.survives })),
+      // recoverable from the aggregate alone. webText + caps like every other
+      // claim-bearing surface - these rows once shipped raw and uncapped, the only
+      // surface that did (review 2026-09-30).
+      claims: sv.map(c => ({ claim: webText(c.claim || '', 300), sourceUrl: webText(c.sourceUrl || '', 250), survived: !!c.survives })),
       measures: 'survival of dropped claims only; whether one would have changed the answer is #9\'s open half, not measured',
       reading: Math.abs(rate - keptRate) < 0.15
         ? 'dropped claims survive at a similar rate to kept ones, so the importance ranking is not selecting for verifiability'
@@ -1936,11 +1988,24 @@ const block = confirmed.map((c, i) => {
 }).join('\n')
 
 const COVERAGE = postVerifyCoverage(lastCoverage, confirmed)
-const coverageBlock = (!COVERAGE && COVERAGE_NOT_SCORED)
-  ? '\n## Coverage checklist status\nNot scored: ' + COVERAGE_NOT_SCORED + '\n'
-  : COVERAGE
-  ? '\n## Coverage checklist status (post-verification)\n' + COVERAGE.map(c => '- [' + c.status + '] ' + webText(c.subQuestion) + (c.note ? ' — ' + webText(c.note) : '')).join('\n') + '\n'
-  : ''
+// One decision for both builds (coverageStatus, pinned in contract/conformance.json):
+// this ternary used to have two branches and silently dropped quick depth's
+// 'Not scored: quick depth runs no gap analyst' note the Python build renders
+// (review 2026-09-30).
+const COV_STATUS = coverageStatus(T.deepenRounds, COVERAGE, COVERAGE_NOT_SCORED)
+let coverageBlock = ''
+if (COV_STATUS === 'quick') {
+  coverageBlock = '\n## Coverage checklist status\nNot scored: quick depth runs no gap analyst. The sub-questions above may or may not have been answered - check the findings, not this table.\n'
+} else if (COV_STATUS === 'not-scored') {
+  coverageBlock = '\n## Coverage checklist status\nNot scored: ' + COVERAGE_NOT_SCORED + '\n'
+} else if (COV_STATUS === 'table' || COV_STATUS === 'stale-table') {
+  // Exhaustive depth, round 1 ok, round 2's analyst failed: the note says the table
+  // below is the round-1 snapshot, rendered before the table it qualifies.
+  if (COV_STATUS === 'stale-table') {
+    coverageBlock = '\n## Coverage checklist status\nStale: ' + COVERAGE_NOT_SCORED + '\n'
+  }
+  coverageBlock += '\n## Coverage checklist status (post-verification)\n' + COVERAGE.map(c => '- [' + c.status + '] ' + webText(c.subQuestion) + (c.note ? ' — ' + webText(c.note) : '')).join('\n') + '\n'
+}
 const killedBlock = killed.length
   ? '\n## Refuted claims (report these for transparency)\n' + killed.map(c => '- "' + webText(c.claim) + '" — killed by ' + c.killedBy + ' (' + webText(c.sourceUrl) + ')').join('\n') + '\n'
   : ''
@@ -2108,10 +2173,23 @@ const critVerdict = critiques.length
   : 'unknown'
 // Shaped at the seam: every declared array is a list of strings. Optional ones may be
 // absent, which is what the `|| []` covers - absence, not malformation.
-const untraceable = [...new Set(critiques.flatMap(c => c.untraceableStatements))]
-const untraceableVerbatim = [...new Set(critiques.flatMap(c => c.untraceableVerbatim || []))]
-const gaps = [...new Set(critiques.flatMap(c => c.coverageGaps))]
-const planFlaws = [...new Set(critiques.flatMap(c => c.planFlaws || []))]
+// Normalised dedup, ported from the Python build's uniq(): two flags that differ only
+// by whitespace, case or a trailing period are ONE flag. The Python build has always
+// collapsed these (whitespace-collapsed, lowered, period-stripped key); the JS Set
+// here deduped exact strings only, so its untraceableCountMeans would have described
+// a normalisation this build did not perform (review 2026-09-30).
+const uniqList = arr => {
+  const seen = new Set(), out = []
+  for (const x of arr) {
+    const k = String(x).replace(/\s+/g, ' ').trim().toLowerCase().replace(/\.$/, '')
+    if (k && !seen.has(k)) { seen.add(k); out.push(String(x).trim()) }
+  }
+  return out
+}
+const untraceable = uniqList(critiques.flatMap(c => c.untraceableStatements))
+const untraceableVerbatim = uniqList(critiques.flatMap(c => c.untraceableVerbatim || []))
+const gaps = uniqList(critiques.flatMap(c => c.coverageGaps))
+const planFlaws = uniqList(critiques.flatMap(c => c.planFlaws || []))
 // Strike only sentences we can actually LOCATE. Prefer the verbatim field; fall back to
 // pulling a quoted fragment out of the prose description, trying the quote characters
 // the critic actually writes — the Python build matched only on " and therefore reported
@@ -2221,7 +2299,8 @@ return {
                      criticsReturned: critiques.length, criticsRequested: T.critics,
                      ...(critiques.length ? {} : { criticNotRun: 'Every critic call failed, so the summary was NOT audited: untraceableCount 0 means unchecked, not clean.' }),
                      markedInSummary,
-                     markedInSummaryMeans: 'how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.',
+                     markedInSummaryMeans: 'how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under UNTRACEABLE_POLICY=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.',
+                     untraceableCountMeans: 'distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.',
                      readThisFirst: 'Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three — and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.',
                      verdict: critVerdict,
                      verdictNote: 'coarse tag, measured to be saturated at `material-gaps`; see readThisFirst',

@@ -99,7 +99,11 @@ SHARED = {
     "every refuter published":   ("\"refutedBy\": [", "refutedBy: refuters.map"),
     "counter-source published":  ("\"contradictedBy\":", "contradictedBy: refuters"),
     "critique leads with count":  ("untraceableCount", "untraceableCount"),
-    "count says what it counts": ("untraceableCountMeans", "untraceableCount"),
+    # The JS marker was the bare token "untraceableCount", which matched the JS count
+    # key itself, so the row was green while the JS build had no untraceableCountMeans
+    # at all - the same class of pass CONTRIBUTING records (a marker that names the
+    # mechanism, not the feature). The key exists in both builds since 2026-09-30.
+    "count says what it counts": ("untraceableCountMeans", "untraceableCountMeans"),
     "evidence-base label":       ("def _evidence_base(", "const evidenceBase = "),
     "limits on EVERY exit":      ("def honest_limits(extra=None", "const honestLimits = (extra"),
     # The quality fixes of 2026-09-20 landed in Python only and parity reported 0 drift,
@@ -127,6 +131,12 @@ SHARED = {
     "dropped sample is a draw, not a prefix": ("def sample_dropped(", "const sampleDropped = "),
     "non-answer in a required field": ("def is_nonanswer(", "const isNonanswer = "),
     "dropped-claim sample":      ("keptClaimSurvivalRate", "keptClaimSurvivalRate"),
+    # The 2026-09-30 review: features shipped in both builds with markers that proved
+    # less than they named, or in one build only. Rows pin the shared shape.
+    "inverted CI flagged":       ("def ci_bounds_flag(", "const ciBoundsFlag = "),
+    "coverage branch arithmetic shared": ("def coverage_status(", "const coverageStatus = "),
+    "flag dedup is normalised":  ('.rstrip(".")', ".replace(/\\.$/, '')"),
+    "europepmc mirror reached":  ("def _via_pmc(", "ebi.ac.uk/europepmc/webservices/rest"),
     "instruments survive a failed synthesis": ("droppedSample=dropped_sample", "calibration, droppedSample,"),
     "steelman re-asked once":    ('label="steelman-retry"', "label: 'steelman-retry'"),
     "no-steelman disclosure":    ("NOT PRODUCED. The synthesis step returned a cross-reference",

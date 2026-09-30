@@ -109,11 +109,13 @@ because one flipped claim moves kappa by about the width of the bands at that si
 `args: {question, depth, sampleDropped: N}` verifies N of the claims the verify cap
 discarded and reports their survival rate beside the kept claims'. The cap drops most of
 the evidence — typically around 80% — and nothing checked whether the ranking that chooses
-what to drop predicts anything. Measured twice on the Python build: **10 of 10 dropped
-claims survived (100%) against 80% of kept, and 8 of 10 (80%) against 83%.** On that
-evidence the `(importance, sourceQuality)` sort is not selecting for verifiability, so
-read `droppedSample.reading` before treating the cap as a quality filter. It costs one
-panel pass over N claims.
+what to drop predicts anything. Eleven samples now, the largest at n=30 under
+importance-first ranking: **29 of 30 dropped claims survived (97%) against 87% of kept**
+— the same direction as every earlier sample, and Fisher's exact test still cannot
+separate it from chance (p = 0.35). Every archived sample predates the 1.18.3 uniform
+draw, so treat the table in README #9 (6 of 10 samples in the no-consistent-signal
+band) as the record and read `droppedSample.reading` before treating the cap as a
+quality filter. It costs one panel pass over N claims.
 
 Both instruments run before synthesis and are published even when synthesis fails — a
 failed run is when you most want to know whether the panel was behaving.

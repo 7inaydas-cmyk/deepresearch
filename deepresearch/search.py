@@ -598,18 +598,51 @@ def _searxng(query: str, n: int) -> list[dict]:
              "snippet": (r.get("content") or "")[:300]} for r in rows[:n]]
 
 
+def probe_relevant(rows, query, need=2):
+    """Pure: how many probe results are actually ABOUT the probe query - a result
+    counts when it shares at least `need` DISTINCT content words with it.
+
+    The adoption probe used to count raw results, and an instance can answer every
+    query with junk: live 2026-09-30, the local SearXNG passed the probe with 61
+    hits while every one of them was dictionary/spiritual-site filler for a
+    standing-desks question - the run then starved 2 of 4 perspectives while
+    reporting searchDegraded=false. Counting on-topic results makes that instance
+    score 0 and stay unadopted. `relevant()` itself is deliberately generous (one
+    shared word keeps a row - it is a junk filter, not a ranker); a PROBE answers a
+    different question - is this backend usable at all - so it holds results to the
+    stricter bar without touching run-time filtering.
+    """
+    terms = _query_terms(query)
+    if not terms:
+        return 0
+    n = 0
+    for r in rows:
+        hay = " ".join(str(r.get(k) or "") for k in ("title", "snippet", "url")).lower()
+        if sum(1 for t in terms if t in hay) >= need:
+            n += 1
+    return n
+
+
+# Distinctive on purpose: a probe query made of common words ("test") is exactly
+# what a junk-answering instance serves plausible-looking filler for. Three content
+# words, of which a real result about the topic shares at least two.
+PROBE_QUERY = "lattice quantum chromodynamics review"
+
+
 def probe_searxng(base: str, timeout: int = 10) -> int | None:
     """One cheap question for the degraded-mode hint: does this SearXNG address
-    answer search JSON from HERE?
+    answer search JSON from HERE, with results that are ABOUT the question?
 
     The same compose instance is published to 127.0.0.1:8888 on the host and
     answers as http://searxng:8080 from a container on its docker network, so
     no single address is right from every vantage (measured 2026-09-16: the
     selftest hint prescribed the host address to an agent running inside the
     messenger container, who followed it verbatim and reached a dead URL).
-    Returns the result count, or None when nothing answers at all - reachable
-    but empty (suspended upstream engines) is a different failure and must not
-    read as "wrong address".
+    Returns how many results share at least two content words with PROBE_QUERY -
+    an instance that answers with junk scores 0 and must not be adopted, which a
+    raw count cannot tell (live 2026-09-30). None means nothing answered at all;
+    0 means it answered with nothing usable - a different failure the hint must
+    not conflate.
 
     The timeout is 10, not the 4 it first shipped with: a cold query through
     the messenger deployment's instance took over 4s to aggregate its upstream
@@ -617,9 +650,9 @@ def probe_searxng(base: str, timeout: int = 10) -> int | None:
     "no answer" - the exact false negative the probe exists to avoid.
     """
     try:
-        data = json.loads(_get(base.rstrip("/") + "/search?format=json&q=test",
-                               timeout=timeout))
-        return len(data.get("results") or [])
+        data = json.loads(_get(base.rstrip("/") + "/search?format=json&q="
+                               + urllib.parse.quote(PROBE_QUERY), timeout=timeout))
+        return probe_relevant(data.get("results") or [], PROBE_QUERY)
     except Exception:
         return None
 
@@ -948,6 +981,14 @@ def _try_firecrawl(url: str, cap: int):
     (and again on the audit's fresh re-fetch), so a black-holed instance must
     cost about what _try_wayback's 10+30s ladder costs, not twice that.
     Measured scrapes: 2-20s; a page slower than this belongs to the ladder.
+
+    No waitFor: this body shipped `"waitFor": 2` from 850a62d, but Firecrawl's
+    waitFor is in MILLISECONDS - a 2ms no-op, indistinguishable from the default
+    0, and the only render-time knob the seam had (review 2026-09-30). Rather
+    than assert an unmeasured 2000ms budget, render adequacy is enforced where
+    it can be measured: is_prose below rejects a JS shell that rendered nothing
+    readable. The request body is pinned by a test, so a future waitFor must be
+    a named diff with its measurement, not a silent re-addition.
     """
     base = os.environ.get("DR_FIRECRAWL_URL", "").rstrip("/")
     if not base:
@@ -956,7 +997,7 @@ def _try_firecrawl(url: str, cap: int):
     key = os.environ.get("DR_FIRECRAWL_KEY", "").strip()
     if key:
         headers["Authorization"] = "Bearer " + key
-    body = json.dumps({"url": url, "formats": ["markdown"], "waitFor": 2}).encode()
+    body = json.dumps({"url": url, "formats": ["markdown"]}).encode()
     req = urllib.request.Request(base + "/v1/scrape", data=body, method="POST", headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
@@ -981,9 +1022,17 @@ def _via_crossref_api(url, cap, prev=None):
     if not doi:
         return None, None
     text, meta = crossref_record(doi)
-    if text:
+    # Serve only a record that carries an ABSTRACT. A metadata-only shell (title,
+    # journal, citation count) served as if it were the page put the run's most
+    # load-bearing numbers into claims extracted from a title (live 2026-09-30:
+    # the pooled effect and the maintenance effect size, both via crossref-api,
+    # no flag anywhere). Fall through instead - the walk then tries the live
+    # publisher, the EuropePMC mirror, and finally _via_crossref_fallback, which
+    # serves the SAME record labelled abstractOnly with the failure named.
+    if text and (meta or {}).get("hasAbstract"):
         return text[:cap], {"via": "crossref-api", **(meta or {})}
-    return None, None
+    return None, ("crossref record for %s holds no abstract (metadata only)" % doi
+                  if text else None)
 
 
 def _via_firecrawl(url, cap, prev=None):
@@ -1031,6 +1080,51 @@ def _via_direct(url, cap, prev=None):
         # Blocked or broken - named, never silent: the type name prefixes the
         # reason, so a fall-through from here always has something to say.
         return None, "%s: %s" % (type(e).__name__, e)
+
+
+_EPMC = "https://www.ebi.ac.uk/europepmc/webservices/rest"
+
+
+def _via_pmc(url, cap, prev=None):
+    """The EuropePMC open-access mirror: full text for a DOI whose Crossref record
+    holds no abstract, and for a europepmc.org article URL the live read failed on.
+
+    The two most load-bearing sources of the 2026-09-30 live run - a Cochrane
+    Clinical Answer and an Ergonomics maintenance study - reached the extractor as
+    bare Crossref metadata shells, and two europepmc URLs died outright via=failed:
+    the numbers a reader most needed never entered the evidence, and no field said
+    so. EuropePMC often holds exactly those papers open-access. Serves the full text
+    as `via: "pmc-fulltext"`; on ANY miss returns (None, None) - invariant (b) of
+    _FETCH_CHAIN: nothing after _via_direct may fall through with a reason.
+    """
+    try:
+        pmcid = None
+        m = re.search(r"europepmc\.org/article/(?:[^/]*/)?(PMC\d+)", url or "")
+        if m:
+            pmcid = m.group(1)
+        else:
+            doi = doi_of(url) or doi_in_url(url)
+            if not doi:
+                return None, None
+            # Measured against the live API 2026-09-30: the search answer is
+            # resultList.result[] carrying pmcid/isOpenAccess - NOT the hitList.hit
+            # shape this first shipped against, which matched nothing and made the
+            # adapter a silent no-op for every DOI.
+            data = json.loads(_get("%s/search?query=DOI:%%22%s%%22&format=json"
+                                   % (_EPMC, urllib.parse.quote(doi)), timeout=15))
+            hits = ((data.get("resultList") or {}).get("result")) or []
+            pmcid = next((h.get("pmcid") for h in hits if h.get("pmcid")), None)
+        if not pmcid:
+            return None, None
+        # /rest/{PMCID}/fullTextXML (no source segment): the /rest/PMC/{pmcid}/ form 404s.
+        xml = _get("%s/%s/fullTextXML" % (_EPMC, pmcid), timeout=30)
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", xml))).strip()
+        ok, why, sig = is_prose(text)
+        if not ok:
+            return None, None
+        return text[:cap], {"via": "pmc-fulltext", "pmcid": pmcid, **sig}
+    except Exception:
+        return None, None
 
 
 def _via_crossref_fallback(url, cap, prev=None):
@@ -1089,9 +1183,12 @@ def _via_wayback(url, cap, prev=None):
 #       fall-through reason is never empty and nothing after it falls through with
 #       a reason - a reorder that breaks this fails loudly (TypeError), intended.
 _FETCH_CHAIN = (
-    _via_crossref_api,       # resolver URLs -> the record, never the redirect (see the module docstring)
+    _via_crossref_api,       # resolver URLs -> the record (ABSTRACT-bearing only; a
+                             # metadata-only shell falls through, review 2026-09-30)
     _via_firecrawl,          # opt-in rendered read; SKIPPED for any DOI-bearing URL
     _via_direct,             # the stdlib read: one _get_bytes, PDF and HTML branches
+    _via_pmc,                # DOI/europepmc URL -> the EuropePMC open-access mirror;
+                             # falls through (None, None) only, per invariant (b)
     _via_crossref_fallback,  # blocked with a DOI in the path -> the abstract, labelled
     _via_wayback,            # the archived copy, when the live read failed
 )

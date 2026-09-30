@@ -866,4 +866,5 @@ hinge number, broad low-wage groups near zero, H1 (near zero) surviving; citatio
 | `calibration-*` | Panel reliability runs, superseded — the first two are the ones the gate amendment was written against. |
 | `*-BLOCKED-*` | A run that died on a server-side credential revocation. Kept because it is why `preflight()` exists. |
 | `v18-*` | Live 1.18.x runs over the session transport (`claude -p`), importance-first ranking. |
+| `v19-*` | Live 1.18.3 quick run with the MODEL ITSELF on GLM-5.3-Flash through the stdio driver (`dr-launch`/`dr-next`/`dr-answer`) - 45 calls, 0 errors, 63 min, answer matches the known-good standing-desks truth. The run that measured the junk-answering searxng, the Crossref metadata shells and the inverted-CI extraction defect, all fixed in 1.19.0. |
 | everything else | Superseded regime. See above. |

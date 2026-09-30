@@ -56,7 +56,9 @@
   "_gw_dead_from_health": "gate",
   "is_interstitial": "gate",
   "annotate_flags": "transform",
-  "strike_flags": "transform"
+  "strike_flags": "transform",
+  "coverage_status": "transform",
+  "ci_bounds_flag": "transform"
  },
  "cases": {
   "webtext": [
@@ -65,7 +67,7 @@
      "xxxxxxxxxxxxxxxxxxxx",
      5
     ],
-    "out": "xxxxx\u2026",
+    "out": "xxxxx…",
     "why": "a cap TRUNCATES. The JS helper took one parameter for months while seven call sites passed a length, so JavaScript discarded it in silence and shipped untruncated model text into prompts the Python twin bounded"
    },
    {
@@ -289,7 +291,7 @@
    },
    {
     "in": [
-     "Minimum wage increases don\u2019t reduce teen employment among fast food workers",
+     "Minimum wage increases don’t reduce teen employment among fast food workers",
      "Minimum wage increases reduce teen employment among fast food workers"
     ],
     "out": false,
@@ -735,12 +737,12 @@
    },
    {
     "in": [
-     "Minimum wage increases don\u2019t reduce teen employment among fast food workers",
+     "Minimum wage increases don’t reduce teen employment among fast food workers",
      "Minimum wage increases reduce teen employment among fast food workers"
     ],
     "out": true,
     "ref": "bad",
-    "why": "a CURLY apostrophe hid the negator: both builds matched negators on the raw text, where don\u2019t splits into don + t, so the opposite hypothesis certified as the registered one (review 2026-09-27)"
+    "why": "a CURLY apostrophe hid the negator: both builds matched negators on the raw text, where don’t splits into don + t, so the opposite hypothesis certified as the registered one (review 2026-09-27)"
    }
   ],
   "tally_verdicts": [
@@ -977,13 +979,13 @@
    },
    {
     "in": [
-     "He said \u201cemployment was flat across every group\u201d in 2020.",
+     "He said “employment was flat across every group” in 2020.",
      [
       "He said employment was flat across every group in 2020."
      ]
     ],
     "out": [
-     "[UNTRACEABLE: He said \u201cemployment was flat across every group\u201d in 2020.]",
+     "[UNTRACEABLE: He said “employment was flat across every group” in 2020.]",
      1
     ],
     "why": "located through the webtext view the critic read: quotation marks deleted there still sit in the raw summary"
@@ -1090,6 +1092,117 @@
      []
     ],
     "why": "a paraphrased flag is not struck, never fuzzily"
+   },
+   {
+    "in": [
+     "Para one talks.\n\nWages rose five percent. Employment was flat across the board.\n\nPara three ends.",
+     [
+      "Employment was flat across the board."
+     ]
+    ],
+    "out": [
+     "Para one talks.\n\nWages rose five percent. Para three ends.",
+     [
+      "Employment was flat across the board."
+     ]
+    ],
+    "why": "a strike collapses the hole it leaves, not the whole summary: paragraph breaks outside the removed sentence survive - the old whole-string re.sub flattened every break whenever one sentence anywhere was struck (review 2026-09-30)"
+   }
+  ],
+  "coverage_status": [
+   {
+    "in": [
+     0,
+     null,
+     null
+    ],
+    "out": "quick",
+    "why": "quick depth runs no gap analyst - the JS build rendered nothing here where Python said 'Not scored: quick depth runs no gap analyst', because no case pinned the chain (review 2026-09-30)"
+   },
+   {
+    "in": [
+     0,
+     [],
+     null
+    ],
+    "out": "quick",
+    "why": "an empty table is no table: the builds' truthiness differs on [] and the helper normalises that - JS arrays are truthy when empty, Python lists are not"
+   },
+   {
+    "in": [
+     1,
+     null,
+     "The gap analyst failed in deepening round 1 of 1, so deepening stopped there and the coverage checklist was never scored."
+    ],
+    "out": "not-scored",
+    "why": "a failed first-round analyst with no earlier table: the run says Not scored"
+   },
+   {
+    "in": [
+     2,
+     [
+      {
+       "subQuestionIndex": 1,
+       "status": "answered"
+      }
+     ],
+     "The gap analyst failed in deepening round 2 of 2, so deepening stopped there and the coverage table is from the round before it."
+    ],
+    "out": "stale-table",
+    "why": "exhaustive depth, round 1 ok, round 2 failed: the table IS the round-1 snapshot and synthesis must be told - the old guard (`and not coverage`) excluded exactly this case and rendered the stale table bare"
+   },
+   {
+    "in": [
+     2,
+     [
+      {
+       "subQuestionIndex": 1,
+       "status": "answered"
+      }
+     ],
+     null
+    ],
+    "out": "table",
+    "why": "a complete deepening pass renders the reconciled table"
+   },
+   {
+    "in": [
+     1,
+     null,
+     null
+    ],
+    "out": null,
+    "why": "nothing gathered before the deepen loop ran: no table, no failure, nothing to render"
+   }
+  ],
+  "ci_bounds_flag": [
+   {
+    "in": [
+     "cuts sitting by 73 min per workday (95% CI:106,-39)"
+    ],
+    "out": "suspicious CI: lower bound 106 is ABOVE upper -39 - a PDF-extraction sign error is the usual cause; check the original before trusting the interval",
+    "why": "the live 2026-09-30 run shipped this exact inverted interval into report-bearing claim text; PDF extraction had eaten the minus sign"
+   },
+   {
+    "in": [
+     "the effect was CI¿155, 4 in the pooled sample"
+    ],
+    "out": "suspicious CI: lower bound 155 is ABOVE upper 4 - a PDF-extraction sign error is the usual cause; check the original before trusting the interval",
+    "why": "the mojibake minus-sign form of the same defect"
+   },
+   {
+    "in": [
+     "cuts sitting by 41.7 min/day (95% CI [-56.3, -27.0], SMART Work and Life)"
+    ],
+    "out": "",
+    "why": "a well-formed interval with both minus signs intact raises no flag"
+   },
+   {
+    "in": [
+     "the Cochrane review found reductions of 30 to 100 min/day"
+    ],
+    "out": "",
+    "why": "a range phrased with 'to' has no comma-delimited bounds to check - absence of a flag is not proof of a clean interval"
    }
   ]
  },

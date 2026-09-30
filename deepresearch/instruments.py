@@ -78,6 +78,8 @@ def _adapter():
         "is_interstitial":     lambda text: _search._is_interstitial(text),
         "annotate_flags":      lambda summary, cands: list(dr.annotate_flags(summary, cands)),
         "strike_flags":        lambda summary, cands: list(dr.strike_flags(summary, cands)),
+        "coverage_status":     lambda deepen, coverage, not_scored: dr.coverage_status(deepen, coverage, not_scored),
+        "ci_bounds_flag":      lambda text: dr.ci_bounds_flag(text),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "_extract_json":       lambda text: dr._extract_json(text),
         "frontmatter_version": lambda content: _fm_via_tempfile(content),

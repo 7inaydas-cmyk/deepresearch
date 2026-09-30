@@ -135,8 +135,17 @@ def install(cfg):
                 # The API's structured-output serialisation artefact.
                 return {"strategy": "s", "subQuestions": "\n<UNKNOWN>\n", "perspectives": "\n<UNKNOWN>\n"}
             return {"strategy": "s", "subQuestions": list(SQ),
-                    "perspectives": [{"label": "P%d" % i, "lens": "l", "query": "q%d" % i} for i in range(6)]}
+                    "perspectives": [{"label": "P%d" % i, "lens": "l",
+                                      # content-word queries under the starve flag: the
+                                      # retry reduces a query to its content terms, and
+                                      # "q0" has none to reduce to
+                                      "query": ("trial evidence query %d" % i
+                                                if cfg.get("starve_first_pick") else "q%d" % i)}
+                                     for i in range(6)]}
         if label.startswith("pick:"):
+            if cfg.get("starve_first_pick") and not cfg.get("_starved_once"):
+                cfg["_starved_once"] = True
+                return {"results": []}
             urls, seen = [], set()
             for tok in prompt.split():
                 tok = tok.strip("*_,|")
@@ -148,17 +157,24 @@ def install(cfg):
             if cfg.get("empty_pages"):
                 return {"sourceQuality": "unreliable", "claims": []}
             n = next(counter)
+            _ci = " (95% CI:106,-39)" if (cfg.get("ci_claim") and n == 1) else ""
             if "primary-rescue" in prompt:
                 # rescue_many: more rescue claims than the rescue pass's own cap holds.
                 return {"sourceQuality": "primary", "claims": [
                     {"claim": "RESCUED-%d-%d evidence" % (n, i), "quote": "q", "importance": "central",
                      "subQuestionIndex": 3} for i in range(20 if cfg.get("rescue_many") else 1)]}
             return {"sourceQuality": "primary", "publishDate": "2026-01-01", "claims": [
-                {"claim": "CLAIM-%d fact" % n, "quote": "q%d" % n, "importance": "central",
+                {"claim": "CLAIM-%d fact%s" % (n, _ci), "quote": "q%d" % n, "importance": "central",
                  "subQuestionIndex": (n % 4) + 1},
-                {"claim": "CLAIM-%db detail" % n, "quote": "qb", "importance": "supporting",
+                {"claim": ("CLAIM-%db detail with a very long tail\t" % n) + ("word " * 140 + "\n")
+                           if cfg.get("long_claim") else "CLAIM-%db detail" % n,
+                 "quote": "qb", "importance": "supporting",
                  "subQuestionIndex": ((n + 1) % 4) + 1}]}
         if label.startswith("gap:") and cfg.get("gap_fails"):
+            return None
+        if label.startswith("gap:r") and label != "gap:r1" and cfg.get("gap_r2_fails"):
+            # The stale-coverage shape: round 1 succeeded and left a table, round 2's
+            # analyst died - reachable only at exhaustive depth (standard deepens once).
             return None
         if label.startswith("gap:"):
             return {"coverage": [{"subQuestionIndex": i + 1, "status": "partial"} for i in range(4)],
@@ -1837,7 +1853,12 @@ ok("probe_searxng" in _sel_src and "127.0.0.1:8888" in _sel_src and "searxng:808
 import http.server as _hs, socket as _sock, threading as _thr  # noqa: E402
 
 class _ProbeJSON(_hs.BaseHTTPRequestHandler):
-    body = b'{"results": [{"url": "https://example.com/a"}, {"url": "https://example.com/b"}]}'
+    # On-topic for the probe query: the probe counts results ABOUT the question
+    # (two or more shared content words), not raw rows (2026-09-30).
+    body = (b'{"results": [{"url": "https://example.com/a", "title": "A lattice '
+            b'quantum chromodynamics review", "snippet": "review of lattice QCD"}, '
+            b'{"url": "https://example.com/b", "title": "Lattice quantum chromodynamics '
+            b'review, second", "snippet": "another review"}]}')
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
@@ -1850,6 +1871,15 @@ class _ProbeJSON(_hs.BaseHTTPRequestHandler):
 class _ProbeEmpty(_ProbeJSON):
     body = b'{"results": []}'
 
+class _ProbeJunk(_ProbeJSON):
+    # Answers every query with plausible-looking filler about something else - the
+    # dead-but-answering instance the 2026-09-30 live run adopted on a raw count,
+    # starving two of four perspectives while the report said searchDegraded=false.
+    body = (b'{"results": [{"url": "https://spirit.example/meaning", "title": "The '
+            b'spiritual meaning of desks", "snippet": "what your chair says about you"}, '
+            b'{"url": "https://dict.example/lattice", "title": "Lattice: definition", '
+            b'"snippet": "lattice, n. a structure"}]}')
+
 def _serve(cls):
     srv = _hs.ThreadingHTTPServer(("127.0.0.1", 0), cls)
     _thr.Thread(target=srv.serve_forever, daemon=True).start()
@@ -1861,6 +1891,12 @@ ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _srv_full.server_address[1]) 
 ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _srv_empty.server_address[1]) == 0,
    "reachable-but-empty reads as 0, not None - suspended upstream engines are a "
    "different failure from a wrong address, and the hint must not conflate them")
+_srv_junk = _serve(_ProbeJunk)
+ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _srv_junk.server_address[1]) == 0,
+   "an instance ANSWERING WITH JUNK scores 0 - the probe counts results about its "
+   "query, so a dead-but-answering backend is not adopted (live 2026-09-30: the local "
+   "searxng passed a raw count with 61 dictionary hits and starved the run)")
+_srv_junk.shutdown()
 _srv_full.shutdown(); _srv_empty.shutdown()
 _sk = _sock.socket(); _sk.bind(("127.0.0.1", 0)); _dead = _sk.getsockname()[1]; _sk.close()
 ok(searchmod.probe_searxng("http://127.0.0.1:%d" % _dead) is None,
@@ -2304,7 +2340,7 @@ print("\n-- a CALIBRATED run reaches the end, not just the calibration --")
 _prev_cal, _prev_drop = dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N
 try:
     dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N = 6, 3
-    _calrep = run(depth="standard", q="Does a calibrated run survive to the report?")
+    _calrep = run({"long_claim": True}, depth="standard", q="Does a calibrated run survive to the report?")
 finally:
     dr.CALIBRATE_N, dr.SAMPLE_DROPPED_N = _prev_cal, _prev_drop
 
@@ -2330,6 +2366,13 @@ if isinstance(_dsamp, dict):
        "the sample's per-claim rows ride with the report, so the draw is its own record")
     ok("not measured" in (_dsamp.get("measures") or ""),
        "and the report says materiality is #9's open half, not measured")
+    # 2026-09-30: the per-claim rows were the only claim-bearing report surface that
+    # shipped RAW text - no webtext, no cap - so a 700-char claim with tabs and a
+    # newline rode into every consumer (both builds).
+    ok(all(len(str(r.get("claim") or "")) <= 301 and "\n" not in str(r.get("claim") or "")
+           and "\t" not in str(r.get("claim") or "") for r in _dsamp["claims"]),
+       "per-claim sample rows are webtext-capped single-line text, like every other "
+       "claim-bearing report surface")
 
 print("\n-- the amended gate (dated, and it can only tighten) --")
 ok(C.interpret(1.0, n=10)[0] == "underpowered",
@@ -2929,6 +2972,7 @@ with _tmp3.TemporaryDirectory() as _cd:
 class _FirecrawlOK(_ProbeJSON):
     # Long enough to clear the prose gate's fragment floor: a real rendered page is
     # hundreds of words, and a 30-word stub is (correctly) rejected as a fragment.
+    posts = []                                     # request bodies, for the body pin below
     body = (b'{"success": true, "data": {"markdown": "# Rendered Page\\n\\n'
             b'This is the rendered body that a headless browser actually saw when it '
             b'executed the page scripts and waited for the content to hydrate. The '
@@ -2943,6 +2987,10 @@ class _FirecrawlOK(_ProbeJSON):
     def do_POST(self):
         # /v1/scrape is a POST; a GET-only stub answers 501 and the adapter correctly
         # falls through - the stub was wrong, not the adapter.
+        try:
+            self.posts.append(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode())
+        except Exception:
+            pass
         self.do_GET()
 class _FirecrawlDown(_ProbeJSON):
     body = b'{"success": false, "error": "scrape failed"}'
@@ -2955,6 +3003,12 @@ try:
     _t, _m = searchmod.fetch("https://example.com/js-heavy", cap=14000)
     ok(_m.get("via") == "firecrawl" and "rendered body" in _t,
        "a configured firecrawl serves its markdown first, and via names it")
+    ok(_FirecrawlOK.posts and '"url"' in _FirecrawlOK.posts[0]
+       and '"markdown"' in _FirecrawlOK.posts[0] and "waitFor" not in _FirecrawlOK.posts[0],
+       "the scrape request body is pinned: url + markdown, and NO waitFor - the body "
+       "shipped a 2-MILLISECOND waitFor for two releases (Firecrawl counts ms), a "
+       "no-op either way; re-adding any waitFor must be a named diff with its "
+       "measurement (review 2026-09-30)")
     os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:%d" % _fc_down.server_address[1]
     _t2, _m2 = searchmod.fetch("http://127.0.0.1:%d/plain" % _plain.server_address[1], cap=14000)
     ok(_m2.get("via") == "http" and "firecrawlFailed" in _m2,
@@ -3118,7 +3172,7 @@ _srv4.shutdown(); _srv5.shutdown()
 # the adapter-chain refactor: they are the no-drift net for the fetch seam.
 import urllib.error as _ue
 
-_real_xr, _real_gb = searchmod.crossref_record, searchmod._get_bytes
+_real_xr, _real_gb, _real_get = searchmod.crossref_record, searchmod._get_bytes, searchmod._get
 _real_fc, _real_wb, _real_pdft = (searchmod._try_firecrawl, searchmod._try_wayback,
                                   searchmod.pdf_text)
 try:
@@ -3143,7 +3197,8 @@ try:
     searchmod._get_bytes = _html_read
 
     # 1. a resolver URL is served by its Crossref record; the scraper is never tried
-    searchmod.crossref_record = lambda doi: (" ".join(["finding"] * 50), {"journal": "J"})
+    searchmod.crossref_record = lambda doi: (" ".join(["finding"] * 50),
+                                              {"journal": "J", "hasAbstract": True})
     os.environ["DR_FIRECRAWL_URL"] = "http://127.0.0.1:9"  # set: only the DOI exclusion keeps the scraper out
     _t1, _m1 = searchmod.fetch("https://doi.org/10.1234/x", cap=200)
     ok(_m1.get("via") == "crossref-api" and _m1.get("journal") == "J" and len(_t1) <= 200,
@@ -3157,6 +3212,55 @@ try:
        and "plain readable body" in _t2 and _cr_hits == ["10.1234/y"],
        "a resolver URL whose record missed reads DIRECT - a resolver is not page content, "
        "so the scraper is skipped even on the miss")
+
+    # The network is stubbed at every seam the walk can reach: the EuropePMC adapter
+    # (added 2026-09-30) speaks _get, so an unstubbed _get here would leave the suite.
+    def _epmc_off(url, timeout=15):
+        raise RuntimeError("network stubbed")
+    searchmod._get = _epmc_off
+    searchmod._try_wayback = _wb_none
+
+    # 2b. a resolver whose record holds NO abstract is not served as the page: the walk
+    # tries the live publisher, the EuropePMC mirror, and only then the labelled shell
+    searchmod.crossref_record = lambda doi: (
+        "# Shell title\n\nJournal: J\n\n## Abstract\n(Crossref holds no abstract "
+        "for this record \u2014 metadata only.)", {"journal": "J", "hasAbstract": False})
+    searchmod._get_bytes = _blocked_read
+    _t2b, _m2b = searchmod.fetch("https://doi.org/10.1234/meta", cap=2000)
+    ok(_m2b.get("via") == "crossref-fallback" and _m2b.get("abstractOnly") is True
+       and _m2b.get("hasAbstract") is False
+       and _m2b.get("blockedBy", "").startswith("URLError: "),
+       "a metadata-only Crossref record is NEVER served as crossref-api: it falls through "
+       "the live publisher and the EuropePMC mirror, and what finally serves the shell is "
+       "crossref-fallback with abstractOnly and blockedBy - the reader can tell a title "
+       "from a paper (live 2026-09-30: the run's two most load-bearing sources were shells)")
+
+    # 2c. the EuropePMC mirror serves the full text when it holds the paper
+    def _epmc(url, timeout=15):
+        if "/search?" in url:
+            # The shape the live API answers with (measured 2026-09-30): resultList.
+            # result[]. The adapter's first draft guessed hitList.hit[], matched
+            # nothing live, and this stub - written from the same guess - hid it.
+            return __import__("json").dumps({"resultList": {"result": [{"pmcid": "PMC1234567"}]}})
+        return ("<article><body>" + "the study found that the measured effect was real "
+                "and the results held in every analysis with these data present " * 20
+                + "</body></article>")
+    searchmod._get = _epmc
+    _t2c, _m2c = searchmod.fetch("https://doi.org/10.1234/noabs", cap=2000)
+    ok(_m2c.get("via") == "pmc-fulltext" and _m2c.get("pmcid") == "PMC1234567"
+       and "measured effect" in _t2c,
+       "a DOI whose record has no abstract reaches the EuropePMC mirror - full text, "
+       "via pmc-fulltext, pmcid carried")
+    _t2d, _m2d = searchmod.fetch("https://europepmc.org/article/PMC/PMC1234567", cap=2000)
+    ok(_m2d.get("via") == "pmc-fulltext",
+       "and a europepmc.org article URL the live read failed on is rescued by the same "
+       "mirror (the 2026-09-30 run lost two sources here to via=failed)")
+    searchmod._get = _epmc_off
+    searchmod._get_bytes = _html_read
+    searchmod.crossref_record = lambda doi: (" ".join(["finding"] * 50),
+                                             {"journal": "J", "hasAbstract": True})
+    _fc_hits.clear()   # 2d's europepmc URL legitimately reached the probe; test 3's
+                       # emptiness claim is about ITS PNAS call, not about this block
 
     # 3. the broad exclusion: a publisher URL with the DOI in its path skips the scraper too
     _t3, _m3 = searchmod.fetch(_PNAS)
@@ -3275,7 +3379,7 @@ try:
     ok(_m11c.get("via") == "wayback" and "firecrawlFailed" not in _m11c,
        "and the archived copy discloses liveFetchFailed, never firecrawlFailed")
 finally:
-    searchmod.crossref_record, searchmod._get_bytes = _real_xr, _real_gb
+    searchmod.crossref_record, searchmod._get_bytes, searchmod._get = _real_xr, _real_gb, _real_get
     searchmod._try_firecrawl, searchmod._try_wayback, searchmod.pdf_text = (
         _real_fc, _real_wb, _real_pdft)
     os.environ.pop("DR_FIRECRAWL_URL", None)
@@ -3287,9 +3391,10 @@ finally:
 _via_seen = set(_re.findall(r'"via": "([a-z-]+)"',
                             open(searchmod.__file__, encoding="utf-8").read()))
 ok(_via_seen == {"crossref-api", "firecrawl", "http", "pdf", "pdf-unreadable",
-                 "crossref-fallback", "wayback", "failed"},
-   "the via vocabulary is closed at eight known values; a ninth producer must fail here "
-   "until engine's consumers are consciously updated")
+                 "crossref-fallback", "pmc-fulltext", "wayback", "failed"},
+   "the via vocabulary is closed at nine known values; a tenth producer must fail here "
+   "until engine's consumers are consciously updated - pmc-fulltext (2026-09-30) is "
+   "consumed by honestLimits.abstractOnlySources prose")
 
 
 # ── Review 2026-09-27: the search layer, the provider seam, the probes ──────
@@ -3827,6 +3932,31 @@ _gf = run({"gap_fails": True, "capture": _gcap})
 _gsyn = [pr for lb, pr in _gcap if lb == "synthesize"]
 ok("coverageNotScored" in _gf.get("honestLimits", {}) and _gsyn and "Not scored: The gap analyst failed" in _gsyn[0],
    "a failed gap analyst is recorded in honestLimits and told to synthesis")
+# The stale case the old guard missed (review 2026-09-30): exhaustive depth, round 1
+# ok, round 2's analyst dead - synthesis must be told the table is the round-1 snapshot.
+_scap = []
+_sf = run({"gap_r2_fails": True, "capture": _scap}, depth="exhaustive")
+_ssyn = [pr for lb, pr in _scap if lb == "synthesize"]
+ok("coverageNotScored" in (_sf.get("honestLimits") or {}) and _ssyn
+   and "Stale: The gap analyst failed" in _ssyn[0]
+   and "Coverage checklist status (post-verification)" in _ssyn[0],
+   "a round-2 analyst failure at exhaustive depth renders the STALE table with the "
+   "stopped-early note in front of it - the old `and not coverage` guard shipped the "
+   "stale table bare")
+# The starved-pick retry (live 2026-09-30: one starved pick silently killed a lens).
+_rcap = []
+_rr = run({"starve_first_pick": True, "capture": _rcap})
+_rps = (_rr.get("stats") or {}).get("pickStarvation") or {}
+ok(_rps.get("retried") == 1 and _rps.get("starved") == 0
+   and any(lb.endswith(":retry") for lb, _ in _rcap),
+   "a starved pick retries ONCE with the query's content terms and the tally discloses "
+   "the retry - the perspective is no longer lost in silence")
+# The CI sign check reaches the panel (live 2026-09-30: '95% CI:106,-39' shipped).
+_ccap = []
+run({"ci_claim": True, "capture": _ccap})
+ok(any("Suspicious interval" in pr for lb, pr in _ccap if lb in ("support", "counter", "provenance")),
+   "an inverted confidence interval in a claim is flagged to every verification lens - "
+   "the damage is mechanical to see at extraction time, and invisible after it")
 # Every claim from a non-citable source read "all empty, paywalled or irrelevant".
 _fo = run({"farm_only": True})
 ok("non-citable source" in _fo.get("summary", "") and "paywalled" not in _fo.get("summary", ""),
