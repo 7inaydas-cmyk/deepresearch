@@ -1,0 +1,45 @@
+{
+ "decisionAtStake": "Whether a TypeScript team should adopt decorator metadata on TS 5.9 today (vs. stay on legacy experimentalDecorators/emitDecoratorMetadata or wait), and which ecosystem pages they should monitor to know when that flips.",
+ "keyQuestion": "As of October 2026, what stage has the TC39 Decorator Metadata proposal reached and how does TypeScript 5.9 actually support it, and which JavaScript-ecosystem documentation pages (TC39, TypeScript, MDN/BCD, caniuse, Node) currently and explicitly track that status?",
+ "assumptions": [
+  "'Current' means early October 2026, not TypeScript 5.9's release date; newer stable TS releases (5.9.x or 6.x) are in scope as context but the question is anchored to 5.9.",
+  "'Decorators metadata proposal' means the TC39 Decorator Metadata proposal built on the Stage 3 standard decorators — not the legacy tsc flags experimentalDecorators/emitDecoratorMetadata, though the interplay with those flags is part of the answer.",
+  "'JS-heavy documentation pages' means first-party ecosystem trackers — the tc39/proposal-decorator-metadata repo and tc39.es, TypeScript release notes/docs/tsconfig reference, MDN and MDN browser-compat-data, caniuse, Node.js docs — kept in English; framework docs (NestJS, Angular) and blog posts are excluded unless they turn out to be the only trackers.",
+  "'Tracks it' means the page actively states proposal stage, flag status, or engine/compiler support and gets updated — a page that merely mentions decorators once does not count.",
+  "The reader is a practicing TypeScript engineer or lead deciding adoption and monitoring; transpiler support (Babel/swc/esbuild) is secondary context, and no scholarly corpus is expected to be relevant."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "TC39 advancing Decorator Metadata to Stage 3 or 4, or any engine shipping it unflagged (Node LTS or a major browser), flips the verdict from 'experiment only, keep legacy flags' to 'adopt and migrate'.",
+  "TypeScript shipping a 5.9-era change — a new or renamed flag, altered metadata emission semantics, or deprecation of the experimental support — changes both the status answer and which docs pages are authoritative.",
+  "Finding that TS 5.9 introduced no decorator-metadata change at all (support frozen since the TS 5.2 implementation) reframes the question as a stale premise and shifts the authoritative pages to 5.2-era notes plus the TC39 repo.",
+  "Presence or absence of live MDN browser-compat-data / caniuse entries — and what status they show (no entry vs experimental vs shipped) — directly changes which pages count as trackers and the maturity verdict.",
+  "The proposal being renamed, merged into the main decorators proposal repo, or withdrawn would relocate where status is tracked and could invalidate the whole premise."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "Stage-2 limbo: as of Oct 2026 Decorator Metadata is still pre-Stage-3, TypeScript supports it only behind an unstable/experimental flag, and the only pages tracking it are the tc39 proposal README and TypeScript release notes — verdict: do not adopt yet.",
+   "killCriterion": "TC39 readme/meeting notes or tc39.es showing Stage 3+ advancement, any unflagged engine shipment, or a live MDN/BCD/caniuse entry showing support."
+  },
+  {
+   "hypothesis": "Stage 3 plateau: metadata sits at Stage 3 (decorators themselves have been Stage 3 since 2022) but remains flag-gated in TS 5.9 and unshipped in engines; trackers now include TypeScript's tsconfig/docs pages and possibly draft MDN BCD entries — verdict: safe to experiment behind flags, not to ship.",
+   "killCriterion": "Evidence the proposal is still formally Stage 2 (proposal README or TC39 deck), or conversely that it reached Stage 4 / spec inclusion."
+  },
+  {
+   "hypothesis": "Shipped or Stage 4: by Oct 2026 Decorator Metadata hit Stage 4 or shipped in Node/browsers, TS 5.9-era compilers emit it without a legacy flag, and MDN plus caniuse carry live compat data — verdict: adopt and delete emitDecoratorMetadata.",
+   "killCriterion": "MDN/BCD/caniuse still showing no support or experimental-only status, and the TC39 readme still listing it below Stage 4."
+  },
+  {
+   "hypothesis": "Stale premise / no 5.9 delta: TypeScript 5.9 changed nothing about decorator metadata (implementation frozen since TS 5.2's Stage 2 support), so status is unchanged and the only true trackers are the TC39 proposal repo and TS 5.2-era documentation — the '5.9' framing is an artifact, not a development.",
+   "killCriterion": "TypeScript 5.9 release notes, changelog, or PR history showing a decorator-metadata-specific change, or any TC39 status movement since the 5.2-era implementation."
+  }
+ ],
+ "needsGeneralWeb": true,
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted",
+  "needsGeneralWeb": "drafted"
+ }
+}

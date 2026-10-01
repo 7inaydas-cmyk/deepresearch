@@ -1,0 +1,197 @@
+Provider: Z.ai GLM (flash) | model: glm-5.3-flash | credential: session
+Question: What is the current state of TypeScript 5.9'sDecorators metadata proposal and which JS-heavy documentation pag
+Depth: quick (4 perspectives, 0 deepening round(s), 3-lens verify, citation audit off)
+Key question: As of October 2026, what stage has the TC39 Decorator Metadata proposal reached and how does TypeScr
+Assumptions stated: 5 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: TC39 primary-source constructor | TypeScript 5.9 release-notes auditor | Adoption advocate (steelman) | Compat-data auditor
+  [w1] Adoption advocate (steelman): 8 hits -> 4 picked
+  [w1] Compat-data auditor: 8 hits -> 4 picked
+  [w1] TypeScript 5.9 release-notes auditor: 8 hits -> 4 picked
+  [w1] TC39 primary-source constructor: 8 hits -> 4 picked
+  [quote:tc39.es] partial (83% on page): 'TC39 will maintain a list of in-process additions, along with the current maturity stage o'
+  [quote:typescriptlang.org] not-found (0% on page): 'which works with the module `reflect-metadata`'
+  [quote:typescriptlang.org] not-found (0% on page): 'Minimal and Updated `tsc --init` ... Support for `import defer` ... Support for `--module '
+  [quote:v8.dev] not-found (21% on page): '200. How we made JSON.stringify more than twice as fast 04 August 2025; 201. Speculative O'
+  [quote:v8.dev] not-found (0% on page): 'More articles can be found in the blog archive and the features section .'
+[w1] 10 sources, 43 claims
+NOTE: 33 lower-ranked claims dropped before verification (cap 10) - NOT covered by this report
+Verify pool spans 7 of 8 sub-questions; 1 claim(s) map to no sub-question
+Total: 10 sources -> 43 claims -> verifying 10
+  [counter] RuntimeError: harness 'docker' exited 2: 
+  [counter] exhausted 5 attempt(s) and returned nothing
+  OK          2-1  The official tc39 Decorator Metadata proposal README records the proposal at Stage 3, with…
+  OK          2-1  The official TypeScript 5.9 release notes list no decorator-metadata-specific feature or c…
+  OK          3-0  TypeScript's official TSConfig reference documents emitDecoratorMetadata as experimental s…
+  OK          2-0  Decorator Metadata's advancement to Stage 2.7 is dated to the 19 May 2026 TC39 plenary, re…
+  OK          3-0  Decorator Metadata is tracked as a distinct repository (tc39/proposal-decorator-metadata) …
+  OK          3-0  In the proposed design, a metadata object is passed to each decorator via the decorator co…
+  OK          3-0  Under the TC39 process, a proposal cannot reach Stage 4 (inclusion in the standard) withou…
+  OK          2-1  The emitted decorator type metadata is documented as designed to interoperate with the ext…
+  KILLED[support+counter+provenance] 0-3  The tc39/proposals main README does not state Decorator Metadata's stage anywhere in its c…
+  OK          3-0  TypeScript 5.9's new ECMAScript proposal support is `import defer` (deferred module evalua…
+Verify: 9 confirmed, 1 refuted, 0 unverified | kills by lens: {'support': 1, 'counter': 1, 'provenance': 1}
+Process critique: material-gaps | 3 untraceable, 6 coverage gaps, 4 plan flaws
+Report written to /home/excelsior/Desktop/deepresearch/out/v121-firecrawl-live/report.json
+Contract written to /home/excelsior/Desktop/deepresearch/out/v121-firecrawl-live/report.contract.json
+{
+ "summary": "Decorator Metadata's last dated status record shows it was moved back to TC39 Stage 2.7 at the 19 May 2026 plenary, in the same continuation item that moved Decorators to Stage 2.7 [3]; it had previously recorded Stage 3 in its proposal README [0], a repo whose last push (2024-01-17) predates that demotion, making the README's stage line stale. TypeScript 5.9 shipped no decorator-metadata change of any kind: its documented feature set contains zero decorator/metadata content and its only new ECMAScript-proposal support is import defer [1][8], while the flag that emits decorator type metadata, emitDecoratorMetadata, remains documented as experimental and tied to the reflect-metadata npm module rather than any built-in runtime API [2][7]. The pages that track the proposal are the tc39/proposal-decorator-metadata repo (stage line, spec text pzuraq/ecma262#10, Symbol.metadata design) [0][4][5], the tc39/proposal-decorators repo it extends [4], the tc39/notes May 2026 record surfaced via proposals.fyi [3], and TypeScript's tsconfig/emitDecoratorMetadata reference page [2][7]; the 5.9 release notes track nothing about it [1]. Because Stage 4 requires two Test262-passing implementations plus significant field experience with shipping implementations [6], no engine-shipment path exists at Stage 2.7. This answer rests on a scholarly-only slice: the general web was unreachable, 77% of extracted claims went unverified, and no post-19-May-2026 status record was obtainable.",
+ "citationAudit": null,
+ "processCritique": {
+  "untraceableCount": 3,
+  "criticsReturned": 1,
+  "criticsRequested": 1,
+  "markedInSummary": 2,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "Decorator Metadata's last dated status record shows it was moved back to TC39 Stage 2.7 at the 19 May 2026 plenary, in the same continuation item that moved Decorators to Stage 2.7 [3];",
+   "a repo whose last push (2024-01-17) predates that demotion, making the README's stage line stale."
+  ],
+  "untraceableStatements": [
+   "Finding 2's staleness case rests on 'the repo's last push (2024-01-17)' — a specific repository-activity date that appears in no numbered claim (claim [0] only records Stage 3 and the pzuraq/ecma262#10 spec PR; claim [4] only records the repo's separateness), so the 'README's stage line is stale' conclusion rests on an unsupported date.",
+   "Finding 5 asserts the tc39/proposal-decorators README was 'updated Jun 2026 at Stage 2.7 per verifier' — sourced to an unnumbered verifier assertion that is not part of the verified claim pool, so it is presented as verified without being one of claims [0]-[8].",
+   "The summary and finding 1 describe the proposal as having been 'moved back' to Stage 2.7 (a regression/demotion from Stage 3), but the only evidence claim [3] records an ADVANCEMENT to Stage 2.7 at the 19 May 2026 plenary; the direction of movement and the word 'demotion' are inserted, not evidenced — the proposal could equally have advanced from Stage 2 to 2.7."
+  ],
+  "coverageGaps": [
+   "Checklist item 2 is answered by a single record (the 19 May 2026 plenary, via claim [3]); no mid-2025-through-October-2026 agenda/notes sweep was done, and the summary concedes no post-19-May-2026 status record was obtainable — any June-October 2026 plenary (two more plenaries typically intervene) is unchecked, so 'last dated record' may be ~5 months stale.",
+   "Checklist item 4 was answered from the 5.9 release notes alone (claim [1]); the 5.2-to-5.9 changelog and merged-PR history were never searched, so 'no decorator-metadata change of any kind' on the whole release line is extrapolated from one release's notes rather than tested (item 4 explicitly asked whether the implementation is frozen since 5.2).",
+   "Checklist item 5 was never answered by lookup: no V8/Chrome, SpiderMonkey/Firefox, JavaScriptCore/Safari, or Node.js status page, changelog, or compat table was checked. Finding 6 substitutes a process-logic derivation (Stage 4 requires implementations, ergo no shipment path at 2.7) — which cannot rule out a behind-a-flag or shipped-but-staged implementation, and was used as a stand-in for an engine-status check that never happened.",
+   "Checklist item 6 (MDN browser-compat-data / caniuse) was never searched at all: zero claims, zero findings, and no statement about MDN BCD or caniuse status — the compat-data auditor perspective was scoped but produced no evidence. This silently guts the second half of the original question ('which JS-heavy documentation pages track it'), since MDN/caniuse are the canonical JS-heavy trackers; the report answers that half from TypeScript docs only.",
+   "Checklist item 7 was only half-checked: the existence of a separate tc39/proposal-decorator-metadata repo extending the decorators repo (claim [4]) rules out one merge path but does not establish absence of rename, transfer, redirect, or relocation to another canonical location.",
+   "Checklist item 8 was never searched: no Node.js documentation, no reflect-metadata, no decorator-using framework (e.g., NestJS, TypeORM) source was consulted, so the report says nothing about whether the ecosystem considers decorator metadata production-reliable."
+  ],
+  "planFlaws": [
+   "The plan treated 'general web was unreachable' as a terminal condition rather than a blocker requiring an alternate route (direct fetch of mdn/browser-compat-data on GitHub, caniuse-js GitHub data, tc39.es source, GitHub API for the repo's pushed_at date); a single unreachable channel silently deleted half the committed checklist instead of triggering fallback retrieval.",
+   "The report's central status claim (Stage 2.7 as of 19 May 2026) rests on exactly one claim, tagged medium, in a run whose summary admits 77% of extracted claims went unverified — yet finding 1 and the summary present the 2.7 status as the anchor fact without carrying that caveat beyond a final admissions sentence.",
+   "The scoper committed to 8 checklist sub-questions but execution covered items 1-4 and 7 only; items 5, 6, and 8 — including both halves of the canonical 'which pages track it' question (MDN/caniuse, Node docs) — produced no evidence at all. Nothing in the plan forced checklist completion or flagged mid-run that 3 of 8 items were never touched.",
+   "Two of the four scoped perspectives were decoration: the compat-data auditor's machine-readable surfaces (MDN BCD, caniuse, Node docs tables) yielded zero claims, and the adoption advocate's unflagged-engine/Node counter-evidence likewise yielded nothing — the perspective list promised source-type diversity the execution never attempted, masking the gaps as covered ground."
+  ],
+  "rationales": [
+   "The original question has two halves: the proposal's current status AND which JS-heavy documentation pages track it. The first half is answered on a thin single-claim basis with three traceability defects (an evidenced-direction-only 'moved back' framing, an unsupported 2024-01-17 last-push date propping up the 'stale README' finding, and an unnumbered 'per verifier' repo date). The second half is materially unanswerable from the evidence gathered: MDN/BCD, caniuse, and Node documentation — the …"
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "quick",
+  "provider": "glm-flash",
+  "model": "glm-5.3-flash",
+  "transport": "session",
+  "reasoning": "max",
+  "perspectives": 4,
+  "subQuestions": 8,
+  "sourcesFetched": 10,
+  "claimsExtracted": 43,
+  "urlDupes": 0,
+  "budgetDropped": 6,
+  "claimsDroppedBeforeVerify": 33,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 14,
+    "ok": 0,
+    "fail": 14,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-html": {
+    "attempts": 14,
+    "ok": 7,
+    "fail": 7,
+    "challenged": 7,
+    "junk": 0,
+    "results": 41
+   },
+   "ddg-lite": {
+    "attempts": 9,
+    "ok": 1,
+    "fail": 8,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 9,
+    "ok": 0,
+    "fail": 9,
+    "challenged": 8,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 9,
+    "ok": 9,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "crossref": {
+    "attempts": 9,
+    "ok": 9,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 48
+   }
+  },
+  "generalWebOkRate": 0.174,
+  "sourceTiers": {
+   "T3": 10
+  },
+  "killsByLens": {
+   "support": 1,
+   "counter": 1,
+   "provenance": 1
+  },
+  "fetchVia": {
+   "firecrawl": 10
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 0,
+   "hits": 32,
+   "retried": 0,
+   "rate": 0.0
+  },
+  "agentCalls": 48,
+  "agentErrors": 1,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 36,
+   "located-approx": 1,
+   "partial": 1,
+   "not-found": 4,
+   "located-elided": 1,
+   "onPageRate": 0.884
+  },
+  "auditRefetch": {
+   "fresh": 0,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 3,
+   "misses": 17,
+   "charsServedFromCache": 12295,
+   "hitRate": 0.15
+  },
+  "wallSeconds": 2576.5,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 9,
+  "killed": 1,
+  "unverifiedCount": 0,
+  "afterSynthesis": 7
+ }
+}
