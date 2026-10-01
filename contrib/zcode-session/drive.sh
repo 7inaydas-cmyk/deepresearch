@@ -38,7 +38,13 @@
 # DR_DEPTHS_FILE may point at a custom depth contract (e.g. a minimal e2e fixture);
 # every depth must keep perspectives >= 3 or the plan schema will reject the reply.
 set -euo pipefail
-RUN="${DR_RUN_DIR:-/tmp/dr-stdio}"
+# A run dir per TERMINAL: every window used to share /tmp/dr-stdio - one fifo, one
+# req.out, one engine.pid - and two concurrent runs clobbered each other mid-run
+# (2026-10-01). The default is now keyed to this shell's TTY, and dr-launch refuses
+# to start where a LIVE engine already runs. DR_RUN_DIR still pins one explicitly -
+# agent windows with no TTY should set it per run.
+_tty="$(ps -o tty= -p $$ 2>/dev/null | tr -c 'a-zA-Z0-9' '_')"
+RUN="${DR_RUN_DIR:-/tmp/dr-run.${_tty:-default}}"
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 case "${1:-}" in
@@ -81,6 +87,13 @@ sys.exit(0 if _firecrawl_markdown(json.loads(urllib.request.urlopen(req, timeout
       fi
     fi
     TRANSPORT="${DR_TRANSPORT:-harness}"
+    # Never two engines in one run dir: they would share one fifo/report/pid and
+    # clobber each other - the collision the TTY-keyed default above exists to
+    # prevent. Refuse loudly while the earlier run still lives.
+    if [ -f "$RUN/engine.pid" ] && kill -0 "$(cat "$RUN/engine.pid" 2>/dev/null)" 2>/dev/null; then
+      echo "refusing: a live engine already runs in $RUN (pid $(cat "$RUN/engine.pid")) - two runs would clobber one fifo and one report. Set DR_RUN_DIR to a fresh directory." >&2
+      exit 1
+    fi
     mkdir -p "$RUN"
     rm -f "$RUN/req.out" "$RUN/ans.fifo" "$RUN/run.log" "$RUN/report.json" "$RUN/exit.code" \
           "$RUN/engine.pid" "$RUN/keeper.pid" "$RUN/transport.mode"

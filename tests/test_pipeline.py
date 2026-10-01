@@ -2890,8 +2890,20 @@ _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def _run_sh(script, *args, **env):
     e = {"PATH": "/usr/bin:/bin", "HOME": "/tmp"}
     e.update(env)
-    return _sp3.run(["sh", os.path.join(_REPO, "contrib", "hermes", script)] + list(args),
+    _r = _sp3.run(["sh", os.path.join(_REPO, "contrib", "hermes", script)] + list(args),
                     capture_output=True, text=True, env=e, timeout=60)
+    if script == "watchdog.sh" and _r.returncode != 0:
+        import subprocess as _sp4
+        _direct = ""
+        if env.get("DR_WATCHDOG_FIRECRAWL"):
+            _direct = _sp4.run(["curl", "-s", "-m", "10", "-X", "POST",
+                                env["DR_WATCHDOG_FIRECRAWL"] + "/v1/scrape",
+                                "-H", "Content-Type: application/json",
+                                "-d", '{"url":"https://example.com","formats":["markdown"]}'],
+                               capture_output=True, text=True).stdout
+        with open("/tmp/watchdog-dbg.log", "a") as _f:
+            _f.write("=== rc %d\nOUT: %s\nERR: %s\nDIRECT-CURL: %r\n" % (_r.returncode, _r.stdout, _r.stderr[-300:], _direct[:150]))
+    return _r
 
 with _tmp2.TemporaryDirectory() as _gd:
     _mk_tree(_gd, "skills/research/deepresearch", _V)
@@ -2920,18 +2932,61 @@ with _tmp2.TemporaryDirectory() as _gd:
     # The watchdog: quiet when healthy, wakes on drift AND on an unreachable searxng.
     _srv2 = _serve(_ProbeJSON)
     _probe_url = "http://127.0.0.1:%d/search?format=json&q=test" % _srv2.server_address[1]
-    _w0 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url)
+
+    class _FCScrapeOK(_ProbeJSON):
+        # The watchdog's firecrawl check demands CONTENT: success:true plus non-empty
+        # markdown from a real POST /v1/scrape (2026-10-01) - never a status code.
+        # NB: a bytes literal's \n is a REAL newline byte, and a raw newline
+        # inside a JSON string is invalid JSON - the watchdog's parse fails it,
+        # which is correct. Real firecrawl escapes its newlines; so does this
+        # stub, via one clean line.
+        body = (b'{"success": true, "data": {"markdown": "# Example Domain - this '
+                b'domain is for use in documentation examples."}}')
+        def do_POST(self):
+            self.do_GET()
+
+    class _FCScrapeBad(_ProbeJSON):
+        body = b'{"success": false, "error": "scrape failed"}'
+        def do_POST(self):
+            self.do_GET()
+
+    _fc_ok2 = _serve(_FCScrapeOK)
+    _fc_url = "http://127.0.0.1:%d" % _fc_ok2.server_address[1]
+    _w0 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url,
+                  DR_WATCHDOG_FIRECRAWL=_fc_url)
     ok(_w0.returncode == 0,
        "watchdog exits 0 (stays asleep, spends nothing) when trees are synced and searxng answers")
     _mk_tree(_gd, "profiles/glm/skills/research/deepresearch", "1.9.2")
-    _w1 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url)
+    _w1 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url,
+                  DR_WATCHDOG_FIRECRAWL=_fc_url)
     ok(_w1.returncode != 0 and "skill drift" in _w1.stdout,
        "watchdog wakes (nonzero + says why) on drift alone, even with searxng healthy")
     _w2 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd,
-                  DR_WATCHDOG_SEARXNG="http://127.0.0.1:9/search?format=json&q=x")
+                  DR_WATCHDOG_SEARXNG="http://127.0.0.1:9/search?format=json&q=x",
+                  DR_WATCHDOG_FIRECRAWL=_fc_url)
     ok(_w2.returncode != 0 and "searxng unreachable" in _w2.stdout,
        "watchdog wakes on an unreachable searxng from its vantage - the failure that "
        "silently degraded every gateway search to scholarly-only")
+    _fc_ok2.shutdown()
+    # firecrawl: a 200 answering success:false is a FAILURE - the stack sat fully
+    # down for 13 days before 2026-10-01 with nothing watching it.
+    _fc_bad = _serve(_FCScrapeBad)
+    _w5 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url,
+                  DR_WATCHDOG_FIRECRAWL="http://127.0.0.1:%d" % _fc_bad.server_address[1])
+    ok(_w5.returncode != 0 and "firecrawl failed the content probe" in _w5.stdout,
+       "watchdog wakes when firecrawl answers but a real scrape returns no markdown - "
+       "content, never the status code")
+    _fc_bad.shutdown()
+    # keeper interventions surface through the monitor gate: a fresh actions-only
+    # log under HERMES_HOME is reported; its absence adds no line (stays asleep).
+    open(os.path.join(_gd, "firecrawl-keeper.log"), "w").write(
+        "2026-10-01T16:56:37Z KEEPER: compose brought something up:\n"
+        "     Container firecrawl-playwright-service-1 Started\n")
+    _w6 = _run_sh("watchdog.sh", DR_REPO=_REPO, HERMES_HOME=_gd, DR_WATCHDOG_SEARXNG=_probe_url,
+                  DR_WATCHDOG_FIRECRAWL=_probe_url.replace("/search?format=json&q=test", ""))
+    ok("keeper acted" in _w6.stdout and "playwright-service" in _w6.stdout,
+       "a keeper intervention inside the last 24h is reported through the watchdog - "
+       "the monitor gate wakes telegram exactly when the host cron did something")
     _srv2.shutdown()
 
 print("\n-- a dead general web must be impossible to miss (searchDegraded + banners) --")
@@ -3110,6 +3165,12 @@ ok('${DR_PROVIDER:-glm-flash}' in _drive and 'transport.mode' in _drive
 ok('${DR_GLM_HARNESS:-docker exec hermes-agent' in _drive,
    "the harness launch carries DR_GLM_HARNESS through docker exec when hermes is not "
    "on PATH - the deployed vantage")
+ok('/tmp/dr-run.' in _drive and 'DR_RUN_DIR' in _drive,
+   "the run dir is TTY-keyed by default, not one shared /tmp/dr-stdio - two windows "
+   "used to clobber one fifo/req.out/engine.pid (2026-10-01)")
+ok('refusing: a live engine already runs' in _drive and 'kill -0' in _drive,
+   "dr-launch refuses to start where a live engine holds the run dir, instead of "
+   "clobbering it silently")
 
 # Restate-or-drop: the audit's PARTIAL verdict used to leave overstated claims fully in
 # the report (the repo's own injected-defect measurement called partial the dominant

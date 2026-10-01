@@ -91,4 +91,51 @@ EOF
   fi
 fi
 
+# 3. firecrawl - the rendered-read backend, probed on CONTENT like everything else:
+# a real scrape must return markdown, never a status code. The stack sat fully DOWN
+# for 13 days before 2026-10-01 with nothing watching it. The HOST-side keeper
+# (contrib/firecrawl/firecrawl-keeper.sh, cron */5) revives and self-heals it;
+# this check is the in-container vantage - the one the engine's sandboxes use -
+# and the keeper's intervention log (default: $HERMES_HOME/firecrawl-keeper.log,
+# written actions-only) is reported below so an intervention wakes this watchdog
+# exactly once via the monitor gate.
+fc="${DR_WATCHDOG_FIRECRAWL:-http://firecrawl:3002}"
+fc_body=$(curl -s -m 45 -X POST "$fc/v1/scrape" -H 'Content-Type: application/json' \
+            -d '{"url":"https://example.com","formats":["markdown"]}' 2>/dev/null) || fc_body=""
+fc_ok=0
+if [ -n "$fc_body" ]; then
+  printf '%s' "$fc_body" | python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    sys.exit(1)
+md = ((d.get("data") or {}).get("markdown") or "")
+sys.exit(0 if d.get("success") and md.strip() else 1)' 2>/dev/null && fc_ok=1
+fi
+if [ "$fc_ok" -ne 1 ]; then
+  echo "firecrawl failed the content probe from this vantage ($fc): a real scrape returned no markdown"
+  status=1
+fi
+
+# Keeper interventions: reported only when the keeper LOG moved in the last 25h
+# (one daily tick plus slack), so a healthy stack adds no line and the monitor
+# gate stays asleep. The line disappearing again later reads as "recovered".
+klog="${DR_WATCHDOG_KEEPER_LOG:-${HERMES_HOME:-/opt/data}/firecrawl-keeper.log}"
+if [ -f "$klog" ] && find "$klog" -mmin -1500 >/dev/null 2>&1 && [ -s "$klog" ]; then
+  echo "firecrawl keeper acted in the last 24h (host cron revived/restarted something):"
+  tail -n 10 "$klog" | sed 's/^/  /'
+fi
+
+# 4. disk - a full disk kills every tenant on this host at once. Reported only at
+# >= 80% so a healthy day adds no line; the number itself is the alert, and a
+# one-point change re-wakes only while the condition holds.
+disk_pct=$(df -P / 2>/dev/null | awk 'NR==2 {gsub("%",""); print $5}')
+case "$disk_pct" in
+  ''|*[!0-9]*) ;;                       # unparseable df: say nothing, fail nothing
+  *) if [ "$disk_pct" -ge 80 ]; then
+       echo "disk at ${disk_pct}% - a full disk takes every container on this host down"
+     fi ;;
+esac
+
 exit "$status"

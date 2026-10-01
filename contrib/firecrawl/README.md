@@ -68,3 +68,34 @@ source's meta when the direct HTTP read then serves the page. When the fallback
 lands elsewhere, that source's meta names ITS own failure instead (`blockedBy`
 on an abstract, `liveFetchFailed` on an archived copy, `error` on a failed read),
 and firecrawlFailed is not carried - the fetch-seam tests pin exactly this.
+
+## Keeping it up (2026-10-01)
+
+The stack sat fully DOWN for 13 days before 2026-10-01: every compose service
+shipped `restart: "no"`, so one playwright crash (exit 1, mid-scrape) and nothing
+came back, while deepresearch runs silently degraded to the stdlib ladder. Two
+layers now hold it up, and a third watches:
+
+1. **`docker-compose.override.yml`** (in the compose checkout) sets
+   `restart: unless-stopped` on every long-running service — docker itself revives
+   a crashed container and brings the stack back after a daemon or host restart.
+   `foundationdb-init` deliberately keeps `restart: "no"`: it is a one-shot job.
+2. **`firecrawl-keeper.sh`** (this directory), from a host cron every 5 minutes:
+   `docker compose up -d` revives anything down (idempotent — it also covers image
+   pulls and compose edits), docker-unhealthy containers are restarted, and a
+   CONTENT probe (a real scrape must return markdown, never a status code)
+   restarts `api` + `playwright-service` when it fails. Its log records ACTIONS
+   ONLY — a healthy tick writes nothing — under the hermes home
+   (`~/.local/share/hermes-agent/firecrawl-keeper.log`) so the daily watchdog can
+   read it from its container vantage. Register once:
+   `*/5 * * * * <repo>/contrib/firecrawl/firecrawl-keeper.sh >/dev/null 2>&1`
+3. **The daily watchdog** (`contrib/hermes/watchdog.sh`, hermes cron 09:00,
+   monitor-gated, telegram) now probes firecrawl from the container vantage on
+   content, reports keeper interventions from the last 24h, and flags disk ≥ 80%.
+
+Taking the stack down INTENTIONALLY means `docker compose stop` AND disabling the
+keeper cron — the keeper brings a stopped stack back within 5 minutes by design.
+Cross-tenant note: the API is unauthenticated but published loopback-only, and
+dr-net's only other members are this fleet's own hermes containers — the shared
+redis/FDB scrape cache is keyed by URL, so concurrent runs contend for crawl
+capacity, they never read each other's data.
