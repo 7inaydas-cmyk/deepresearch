@@ -99,3 +99,11 @@ Cross-tenant note: the API is unauthenticated but published loopback-only, and
 dr-net's only other members are this fleet's own hermes containers — the shared
 redis/FDB scrape cache is keyed by URL, so concurrent runs contend for crawl
 capacity, they never read each other's data.
+
+**Vantage wiring (found 2026-10-01):** the dr-net attachment must sit on the **api**
+service (`networks: {backend: {}, dr-net: {aliases: [firecrawl]}}`) — the engine's
+sandboxes reach the instance as `http://firecrawl:3002`. The block first landed
+under *redis* by mistake, so `firecrawl` on dr-net resolved to a container listening
+on nothing: the host vantage (127.0.0.1:3002) worked while every in-container probe
+failed. The daily watchdog now probes from the container vantage, which is the one
+the runs use — that asymmetry cannot hide again.
