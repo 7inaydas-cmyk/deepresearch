@@ -22,7 +22,7 @@ if (SPLIT < 0) {
 const noop = () => {}
 const M = new Function('agent', 'parallel', 'pipeline', 'phase', 'log', 'args', 'budget',
   '"use strict"; ' + SRC.slice(0, SPLIT) +
-  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase, tallyVerdicts, demotionSet, annotateFlags, strikeFlags, coverageStatus, ciBoundsFlag }')(
+  '; return { shape, tierOf, asList, webText, hostIsAmbiguous, sameHyp, hypMismatch, normHyp, isNonanswer, evidenceBase, tallyVerdicts, demotionSet, annotateFlags, strikeFlags, coverageStatus, ciBoundsFlag, uniqList }')(
   noop, noop, noop, noop, noop, { question: 'conformance', depth: 'standard' }, {})
 
 // The adapter: one entry per contract function. Return conventions differ between the
@@ -47,6 +47,7 @@ const ADAPTER = {
   annotate_flags:  (summary, cands) => M.annotateFlags(summary, cands),
   strike_flags:    (summary, cands) => M.strikeFlags(summary, cands),
   coverage_status: (deepen, coverage, notScored) => M.coverageStatus(deepen, coverage, notScored),
+  flag_uniq:        items => M.uniqList(items),
   ci_bounds_flag:  text => M.ciBoundsFlag(text),
   demotion_set:    rows => [...M.demotionSet(rows)].map(k => k.split('\u0000')).sort(),
   evidence_base:   rows => M.evidenceBase(

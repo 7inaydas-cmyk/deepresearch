@@ -58,7 +58,8 @@
   "annotate_flags": "transform",
   "strike_flags": "transform",
   "coverage_status": "transform",
-  "ci_bounds_flag": "transform"
+  "ci_bounds_flag": "transform",
+  "flag_uniq": "transform"
  },
  "cases": {
   "webtext": [
@@ -1203,6 +1204,59 @@
     ],
     "out": "",
     "why": "a range phrased with 'to' has no comma-delimited bounds to check - absence of a flag is not proof of a clean interval"
+   }
+  ],
+  "flag_uniq": [
+   {
+    "in": [
+     [
+      "Employment was flat across every group studied.",
+      "employment was flat across every group studied"
+     ]
+    ],
+    "out": [
+     "Employment was flat across every group studied."
+    ],
+    "why": "the same objection twice, differing only by case, counts once - the JS Set deduped exact strings only until 2026-09-30"
+   },
+   {
+    "in": [
+     [
+      "Wages rose five percent.",
+      "Wages rose five percent  ",
+      "wages rose five percent"
+     ]
+    ],
+    "out": [
+     "Wages rose five percent."
+    ],
+    "why": "whitespace and a trailing period do not make a new objection"
+   },
+   {
+    "in": [
+     [
+      "Employment was flat.",
+      "Employment rose sharply."
+     ]
+    ],
+    "out": [
+     "Employment rose sharply.",
+     "Employment was flat."
+    ],
+    "why": "genuinely different objections both stay, sorted so both builds answer identically"
+   },
+   {
+    "in": [
+     [
+      "",
+      "   ",
+      "Employment was flat."
+     ]
+    ],
+    "out": [
+     "Employment was flat."
+    ],
+    "why": "empty and whitespace-only flags are not objections"
    }
   ]
  },

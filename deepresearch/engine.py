@@ -222,6 +222,23 @@ def flag_spans(summary, cands):
     return sorted(spans)
 
 
+def flag_uniq(items):
+    """Pure: normalised dedup of flagged strings - the key collapses whitespace, case
+    and a trailing period, so the same objection twice (or two critics wording it
+    near-identically) counts once while genuinely different objections stay. The
+    Python build has always collapsed these; the JS twin deduped exact strings only
+    until 2026-09-30, and the shared behaviour is pinned in contract/conformance.json
+    (flag_uniq) - CONTRIBUTING: markers for prompts and prose, conformance for
+    answers. Sorted so both builds answer identically."""
+    seen, out = set(), []
+    for x in items:
+        k = re.sub(r"\s+", " ", str(x)).strip().lower().rstrip(".")
+        if k and k not in seen:
+            seen.add(k)
+            out.append(str(x).strip())
+    return sorted(out)
+
+
 def annotate_flags(summary, cands):
     """Pure: (summary with each located flag wrapped [UNTRACEABLE: ...], how many)."""
     summary, out, last = summary or "", [], 0
@@ -244,7 +261,7 @@ def strike_flags(summary, cands):
         out.append(summary[last:s])
         last = e
     out.append(summary[last:])
-    text, seams, pos = "", [], 0
+    text, seams = "", []
     for i, piece in enumerate(out):
         text += piece
         if i < len(out) - 1:
@@ -3884,14 +3901,9 @@ def _synthesize(q, depth, base, subqs, persps, confirmed, killed, unver, voted,
     # phrasing one objection differently, and untraceableCountMeans says so rather than
     # letting the number imply a precision it does not have.
     def uniq(key):
-        seen, out_ = {}, []
-        for c in crits:
-            for x in (c.get(key) or []):
-                k = re.sub(r"\s+", " ", str(x)).strip().lower().rstrip(".")
-                if k and k not in seen:
-                    seen[k] = True
-                    out_.append(str(x).strip())
-        return sorted(out_)
+        # The shared, conformance-pinned normalised dedup (flag_uniq) - the inline
+        # copy this replaces was identical logic in a second home (review 2026-10-01).
+        return flag_uniq([x for c in crits for x in (c.get(key) or [])])
     log("Process critique: %s | %d untraceable, %d coverage gaps, %d plan flaws"
         % (verdict, len(uniq("untraceableStatements")), len(uniq("coverageGaps")), len(uniq("planFlaws"))))
 

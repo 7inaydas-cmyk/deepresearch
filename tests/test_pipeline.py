@@ -2890,20 +2890,8 @@ _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def _run_sh(script, *args, **env):
     e = {"PATH": "/usr/bin:/bin", "HOME": "/tmp"}
     e.update(env)
-    _r = _sp3.run(["sh", os.path.join(_REPO, "contrib", "hermes", script)] + list(args),
+    return _sp3.run(["sh", os.path.join(_REPO, "contrib", "hermes", script)] + list(args),
                     capture_output=True, text=True, env=e, timeout=60)
-    if script == "watchdog.sh" and _r.returncode != 0:
-        import subprocess as _sp4
-        _direct = ""
-        if env.get("DR_WATCHDOG_FIRECRAWL"):
-            _direct = _sp4.run(["curl", "-s", "-m", "10", "-X", "POST",
-                                env["DR_WATCHDOG_FIRECRAWL"] + "/v1/scrape",
-                                "-H", "Content-Type: application/json",
-                                "-d", '{"url":"https://example.com","formats":["markdown"]}'],
-                               capture_output=True, text=True).stdout
-        with open("/tmp/watchdog-dbg.log", "a") as _f:
-            _f.write("=== rc %d\nOUT: %s\nERR: %s\nDIRECT-CURL: %r\n" % (_r.returncode, _r.stdout, _r.stderr[-300:], _direct[:150]))
-    return _r
 
 with _tmp2.TemporaryDirectory() as _gd:
     _mk_tree(_gd, "skills/research/deepresearch", _V)

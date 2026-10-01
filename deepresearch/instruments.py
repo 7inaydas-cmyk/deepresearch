@@ -79,6 +79,7 @@ def _adapter():
         "annotate_flags":      lambda summary, cands: list(dr.annotate_flags(summary, cands)),
         "strike_flags":        lambda summary, cands: list(dr.strike_flags(summary, cands)),
         "coverage_status":     lambda deepen, coverage, not_scored: dr.coverage_status(deepen, coverage, not_scored),
+        "flag_uniq":           lambda items: dr.flag_uniq(items),
         "ci_bounds_flag":      lambda text: dr.ci_bounds_flag(text),
         "calibration_verdict": lambda kappa, n: _cal.interpret(kappa, n=n)[0],
         "_extract_json":       lambda text: dr._extract_json(text),

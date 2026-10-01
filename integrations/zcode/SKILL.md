@@ -81,6 +81,11 @@ bash <repo>/contrib/zcode-session/drive.sh dr-next     # last log line = progres
 # ...until it prints: done: exit N - report $DR_RUN_DIR/report.json
 ```
 
+Run isolation: the run dir defaults to a per-terminal directory; two windows never
+share it. An agent window with NO terminal must set `DR_RUN_DIR` to a fresh directory
+per run — the TTY-keyed default cannot tell two no-TTY windows apart, and `dr-launch`
+refuses only a LIVE collision.
+
 Cost of the default, measured 2026-09-30: one harness spawn per model call at MAX
 reasoning — ~2 min on a medium prompt, more on verify-sized ones (the seam gives
 max-effort spawns a 900s budget) — so a quick run is 60-120 min and a standard one

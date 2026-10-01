@@ -1116,7 +1116,7 @@ const strikeFlags = (summary, cands) => {
   let last = 0
   for (const [s, e] of spans) { pieces.push(text.slice(last, s)); last = e }
   pieces.push(text.slice(last))
-  let out = '', pos = 0
+  let out = ''
   pieces.forEach((p, i) => { out += p; if (i < pieces.length - 1) seams.push(out.length) })
   // Collapse whitespace ONLY at the seams the removals open - the hole a strike leaves
   // reads as prose, per the contract's case. The whole-summary replace this replaced
@@ -1129,6 +1129,20 @@ const strikeFlags = (summary, cands) => {
     if (l < r) out = out.slice(0, l) + ' ' + out.slice(r)
   }
   return [out.trim(), spans.map(x => x[2])]
+}
+
+// Normalised dedup, ported from the Python build's uniq(): two flags that differ only
+// by whitespace, case or a trailing period are ONE flag. The Python build has always
+// collapsed these (whitespace-collapsed, lowered, period-stripped key); the JS Set
+// here deduped exact strings only, so its untraceableCountMeans would have described
+// a normalisation this build did not perform (review 2026-09-30).
+const uniqList = arr => {
+  const seen = new Set(), out = []
+  for (const x of arr) {
+    const k = String(x).replace(/\s+/g, ' ').trim().toLowerCase().replace(/\.$/, '')
+    if (k && !seen.has(k)) { seen.add(k); out.push(String(x).trim()) }
+  }
+  return out.sort()   // the Python twin sorts; the contract needs identical answers
 }
 
 // Pure: which coverage block the synthesis prompt renders - 'quick', 'not-scored',
@@ -2173,19 +2187,6 @@ const critVerdict = critiques.length
   : 'unknown'
 // Shaped at the seam: every declared array is a list of strings. Optional ones may be
 // absent, which is what the `|| []` covers - absence, not malformation.
-// Normalised dedup, ported from the Python build's uniq(): two flags that differ only
-// by whitespace, case or a trailing period are ONE flag. The Python build has always
-// collapsed these (whitespace-collapsed, lowered, period-stripped key); the JS Set
-// here deduped exact strings only, so its untraceableCountMeans would have described
-// a normalisation this build did not perform (review 2026-09-30).
-const uniqList = arr => {
-  const seen = new Set(), out = []
-  for (const x of arr) {
-    const k = String(x).replace(/\s+/g, ' ').trim().toLowerCase().replace(/\.$/, '')
-    if (k && !seen.has(k)) { seen.add(k); out.push(String(x).trim()) }
-  }
-  return out
-}
 const untraceable = uniqList(critiques.flatMap(c => c.untraceableStatements))
 const untraceableVerbatim = uniqList(critiques.flatMap(c => c.untraceableVerbatim || []))
 const gaps = uniqList(critiques.flatMap(c => c.coverageGaps))
