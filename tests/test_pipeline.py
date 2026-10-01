@@ -2410,9 +2410,9 @@ def _with_env(env, fn):
     # exactly the environment-dependent test this repo treats as no test at all
     # (caught by CI 2026-09-15: the BASE_URL-override case called transport() with no
     # key and silently borrowed the local Claude Code login to succeed).
-    _clear = ("DR_PROVIDER", "DR_MODEL", "DR_TRANSPORT", "ANTHROPIC_API_KEY",
-              "ZAI_API_KEY", "GLM_API_KEY", "ANTHROPIC_BASE_URL", "GLM_BASE_URL",
-              "DR_GLM_HARNESS")
+    _clear = ("DR_PROVIDER", "DR_MODEL", "DR_TRANSPORT", "DR_REASONING",
+              "ANTHROPIC_API_KEY", "ZAI_API_KEY", "GLM_API_KEY", "ANTHROPIC_BASE_URL",
+              "GLM_BASE_URL", "DR_GLM_HARNESS")
     _saved = {k: _os.environ.get(k) for k in list(env) + list(_clear)}
     for k in _clear:
         _os.environ.pop(k, None)
@@ -2643,15 +2643,55 @@ ok(_with_harness(_claaude_only := (lambda c: "/usr/bin/claude" if c == "claude" 
                  {"DR_PROVIDER": "claude"}, lambda: _P.transport()["harness_argv"])
    == ["claude", "-p"],
    "the claude adapter spawns exactly `claude -p` + prompt - the verified shape")
+
+# MODEL SELECTION ON THE HARNESS PATH (2026-09-30): the model used to reach only the
+# HTTP body, so a harness run silently used the CLI's own default and --model was
+# accepted and ignored. glm-flash is the first row pinning BOTH a model and an effort
+# level into every spawn - the owner's default for every zcode-launched session.
+_hermes_only = lambda c: "/usr/bin/hermes" if c == "hermes" else None
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm-flash"},
+                 lambda: _P.transport()["harness_argv"])
+   == ["hermes", "-m", "glm-5.3-flash", "--reasoning", "max", "-p", "glm", "-z"],
+   "the glm-flash row spawns hermes -m glm-5.3-flash --reasoning max -p glm -z - "
+   "flags BEFORE the row's args, because -z takes the prompt as its value and a "
+   "flag appended after it becomes the prompt (the first live run died on exactly "
+   "that usage error, 2026-09-30): "
+   "flash at MAX effort is a property of the run, not of the session that opened it")
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm-flash", "DR_MODEL": "glm-5.3"},
+                 lambda: _P.transport()["harness_argv"])
+   == ["hermes", "-m", "glm-5.3", "--reasoning", "max", "-p", "glm", "-z"],
+   "DR_MODEL still wins over the row's model - with the row's effort intact")
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm-flash", "DR_REASONING": "low"},
+                 lambda: _P.transport()["harness_argv"])
+   == ["hermes", "-m", "glm-5.3-flash", "--reasoning", "low", "-p", "glm", "-z"],
+   "DR_REASONING overrides the row's effort - the default is a default, not a lock")
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm"},
+                 lambda: _P.transport()["harness_argv"])
+   == ["hermes", "-m", "glm-5.3", "-p", "glm", "-z"],
+   "the plain glm row gains an explicit -m of the model it already used and NO "
+   "--reasoning - its effort stays hermes' own default, deliberately unchanged")
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm", "DR_MODEL": "glm-5.3-flash"},
+                 lambda: _P.transport()["harness_argv"])
+   == ["hermes", "-m", "glm-5.3-flash", "-p", "glm", "-z"],
+   "DR_MODEL/--model now reach the harness spawn too - before 2026-09-30 they "
+   "changed only the HTTP body")
+ok(_with_harness(_hermes_only, {"DR_PROVIDER": "glm-flash"}, lambda: _P.reasoning_level()) == "max"
+   and _with_harness(_hermes_only, {"DR_PROVIDER": "glm"}, lambda: _P.reasoning_level()) == ""
+   and _with_harness(_hermes_only, {"DR_PROVIDER": "glm-flash", "DR_TRANSPORT": "stdio"},
+                     lambda: _P.reasoning_level()) == "",
+   "reasoning_level() is pure (a which() lookup, never a credential): max on "
+   "glm-flash, empty on plain glm, empty on stdio - the window's effort is the "
+   "session's and the report must not claim otherwise")
 _glm_env = {"DR_PROVIDER": "glm", "DR_GLM_HARNESS":
             "docker exec hermes-agent /opt/hermes/.venv/bin/hermes"}
 _glm_argv = _with_harness(lambda c: "/usr/bin/docker" if c == "docker" else None,
                           _glm_env, lambda: _P.transport()["harness_argv"])
 ok(_glm_argv is not None and _glm_argv[:4] == ["docker", "exec", "hermes-agent",
                                                "/opt/hermes/.venv/bin/hermes"]
-   and _glm_argv[4:] == ["-p", "glm", "-z"],
-   "the zai adapter spawns `hermes -p glm -z` - via the container where hermes lives, "
-   "the verified shape; hermes holds the credential, deepresearch holds nothing")
+   and _glm_argv[4:] == ["-m", "glm-5.3", "-p", "glm", "-z"],
+   "the zai adapter spawns `hermes -m glm-5.3 -p glm -z` - via the container where "
+   "hermes lives, the verified shape, the model now threaded into the spawn "
+   "(2026-09-30); hermes holds the credential, deepresearch holds nothing")
 ok(_with_harness(_nothing, {"DR_PROVIDER": "glm", "ZAI_API_KEY": "k"},
                  lambda: _P.transport()["scheme"]) == "api-key",
    "no harness resolvable -> the seam falls back to the credential path (HTTP), which "
@@ -3063,6 +3103,13 @@ ok("probe_searxng" in _drive and "127.0.0.1:8888" in _drive and "127.0.0.1:8080"
    "the Mode A driver probes both local searxng publishes with the repo's own content prober")
 ok('-z "${DR_SEARXNG_URL:-}"' in _drive and 'DR_SEARXNG_URL="${DR_SEARXNG_URL:-}"' in _drive,
    "and an explicitly set DR_SEARXNG_URL always wins - the probe only runs when it is unset")
+ok('${DR_PROVIDER:-glm-flash}' in _drive and 'transport.mode' in _drive
+   and 'DR_TRANSPORT:-harness' in _drive and 'DR_TRANSPORT=stdio' in _drive,
+   "dr-launch defaults to the HARNESS transport on glm-flash (flash at max effort), "
+   "stdio is the explicit opt-in, and the mode file routes dr-next/dr-answer")
+ok('${DR_GLM_HARNESS:-docker exec hermes-agent' in _drive,
+   "the harness launch carries DR_GLM_HARNESS through docker exec when hermes is not "
+   "on PATH - the deployed vantage")
 
 # Restate-or-drop: the audit's PARTIAL verdict used to leave overstated claims fully in
 # the report (the repo's own injected-defect measurement called partial the dominant

@@ -1,0 +1,609 @@
+{
+ "question": "Do sit-stand desk interventions reduce total sitting time or improve health outcomes in office workers?",
+ "depth": "quick",
+ "coverage": null,
+ "contradictions": [
+  "[0] vs [8] — same trial, two publications: the Work 2024 report states no significant time×group interaction on the activPAL primary sitting outcome, while the PAAH 2025 report states 'The intervention group showed a significantly reduced sitting time.' Reconcilable as between-group null vs within-group significant, but the dual publication lets a within-arm result masquerade as a sitting benefit; this synthesis takes the stricter between-group reading.",
+  "[4] vs [2] — body fat improved within the intervention arm (Δ−3.7%, p<0.05) while the only significant between-group cardiometabolic result favored control (waist Δ−1.81 cm, p=0.04): within-arm improvement coexists with zero relative benefit and one nominally adverse relative result.",
+  "[9] vs [1] — within the same paper: early rapid health improvements 'predict longer-term benefit' yet no significant intervention effect remains at 24 months. The authors reconcile this as fade-out, but the reader should note the 'predictor' operates entirely inside a disappearing effect."
+ ],
+ "scopeContract": {
+  "decisionAtStake": "Whether an employer / occupational-health program should spend budget on deploying sit-stand desks for office workers to cut sedentary time and improve health, or redirect that spend to alternative sedentary-reduction measures (activity prompts, walking breaks, treadmill desks, organisational policy) or to nothing.",
+  "keyQuestion": "Do sit-stand desk interventions in office workers reduce total sitting time by a sustained, meaningful margin (roughly ≥30 min/day measured by inclinometer for ≥3 months) and/or produce clinically meaningful improvements in cardiometabolic or musculoskeletal health outcomes versus conventional seated desks?",
+  "assumptions": [
+   "Population is working-age adults in sedentary office jobs, mostly studied in high-income countries (Europe, North America, Australia) — findings may not transfer to other settings.",
+   "'Reduce total sitting time' means device-measured (accelerometer/inclinometer) sedentary time across the whole day, not just self-reported desk posture; 'meaningful' is set at ≥30 min/day sustained at ≥3 months.",
+   "Health outcomes cover cardiometabolic markers (body weight, blood pressure, glucose/HbA1c, lipids), musculoskeletal complaints (low-back/neck discomfort), plus harms like prolonged-standing discomfort.",
+   "Comparison group is conventional seated workstations or usual practice; both hardware-only deployments and desk-plus-support multicomponent programs count as 'sit-stand desk interventions'.",
+   "Evidence standard: RCTs and cluster-RCTs are decisive; systematic reviews/meta-analyses (e.g., Cochrane) are the synthesis base; follow-up horizon ≤12 months.",
+   "Decision context is procurement/wellness programming, not clinical prescription for individual patients."
+  ],
+  "whatWouldChangeTheAnswer": [
+   "Device-measured trials showing sitting reductions <15 min/day, or effects that disappear once the intervention ends or prompts stop.",
+   "Meta-analyses finding null or clinically negligible changes in weight, blood pressure, glucose/HbA1c, lipids, or musculoskeletal pain at ≥3 months.",
+   "Evidence that harms (increased lower-limb/back discomfort, standing-related vascular issues) occur at non-trivial rates.",
+   "Component or head-to-head analyses showing hardware alone ≈ hardware+prompts, or that multicomponent programs also fail — this splits the intervention into a dead end vs. a program change.",
+   "Cost-effectiveness or comparative findings that cheaper interventions (activity-permissive workplace design, hourly break prompts) match sit-stand desks — the decision flips even if modest efficacy holds.",
+   "High risk-of-bias / publication-bias findings that shrink pooled effects below the meaningfulness threshold."
+  ],
+  "hypotheses": [
+   {
+    "hypothesis": "H1 — Behavior only: sit-stand desks reliably cut sitting time (~30–100 min/day, sustained at 3–12 months) but health-outcome effects are small, delayed, or undetectable at that horizon.",
+    "killCriterion": "Pooled device-measured effect from adequately powered RCTs is <15 min/day, or sustained reductions require components beyond the desk itself (prompts, coaching) that fail when removed."
+   },
+   {
+    "hypothesis": "H2 — Health outcomes delivered: sit-stand desk use produces clinically meaningful improvements (e.g., weight, blood pressure, glucose, or reduced musculoskeletal pain) within 3–12 months.",
+    "killCriterion": "Systematic reviews of RCTs show null or trivial pooled effects on all cardiometabolic and musculoskeletal outcomes at ≥3 months with tight confidence intervals."
+   },
+   {
+    "hypothesis": "H3 — Conditional effect: hardware-only deployments show minimal sustained effect, while multicomponent programs (desk + prompts + organisational policy) achieve sustained sitting reductions and downstream health benefit.",
+    "killCriterion": "Head-to-head or factorial evidence shows hardware-only and multicomponent arms differ negligibly (either both work or both fail), or multicomponent arms lose effect at follow-up."
+   },
+   {
+    "hypothesis": "H4 — No meaningful effect on either axis: pooled sitting-time reductions are trivial and health outcomes null, with apparent effects explained by publication bias and small underpowered trials.",
+    "killCriterion": "Large, low-bias RCTs or Cochrane-grade reviews demonstrate consistent ≥30 min/day sustained reductions with acceptable risk-of-bias assessment."
+   }
+  ],
+  "needsGeneralWeb": false,
+  "provenance": {
+   "decisionAtStake": "drafted",
+   "keyQuestion": "drafted",
+   "assumptions": "drafted",
+   "whatWouldChangeTheAnswer": "drafted",
+   "hypotheses": "drafted",
+   "needsGeneralWeb": "drafted"
+  }
+ },
+ "skillDrift": null,
+ "searchDegraded": false,
+ "singleRater": false,
+ "perspectives": [
+  {
+   "label": "Pro-desk steelman",
+   "lens": "Occupational-health physiologist and evidence synthesist arguing the affirmative; distrusts dismissals built on underpowered trials and demands the strongest positive case be made honestly",
+   "query": "systematic review meta-analysis sit-stand workstations office workers objectively measured sitting time reduction sustained follow-up effectiveness"
+  },
+  {
+   "label": "Primary-trial constructor",
+   "lens": "Quantitative reviewer who distrusts second-hand pooled estimates and rebuilds the effect from individual registered RCTs with device-measured outcomes",
+   "query": "randomized controlled trial sit-stand desk workstation activPAL inclinometer sitting time minutes per day office workers 6 12 month results"
+  },
+  {
+   "label": "Null-and-harms skeptic",
+   "lens": "Clinical-trials methodologist hunting the strongest counter-case; distrusts small, industry-funded, or unblinded trials and looks specifically for negative results and adverse effects",
+   "query": "sit-stand desk intervention no significant effect publication bias harms lower limb discomfort venous randomized trial office workers"
+  },
+  {
+   "label": "Occupational-health economist",
+   "lens": "Budget-holding program evaluator asking what buys the most sitting reduction per dollar; distrusts efficacy claims that ignore component costs and comparator interventions",
+   "query": "cost-effectiveness economic evaluation workplace sedentary behaviour interventions sit-stand desks versus activity prompts walking breaks treadmill desks"
+  }
+ ],
+ "summary": "On the evidence verified in this run, sit-stand desk interventions showed no demonstrated between-group reduction in total sitting time and no health benefit in office workers. The SUFHA cluster RCT (39 randomized, 38 analyzed, activPAL-measured primary outcome, prospectively registered on OSF) found no significant time-by-group effect on sitting time or any secondary outcome except waist circumference, which favored the control group (Δ−1.81 cm, pinteraction=0.04) [0][2][3][5]. A separate RCT found no significant intervention effect on musculoskeletal complaints or activation at 24 months, with its authors concluding effects fade out [1][9]. Within-arm improvements in the intervention group (discomfort, fatigue, need for recovery, body fat, quality of life) and a within-arm sitting reduction are real measurements but uncontrolled, and cannot be attributed to the desks [4][8]. No hypothesis was killed — the systematic reviews and adequately powered pooled estimates their kill criteria require are absent from this pool — so all four survive, with H4 (no meaningful effect on either axis) the direction this evidence points, and 44% of extracted claims were never verified.",
+ "answerFirst": "On this verified pool, sit-stand desk interventions demonstrated no significant between-group reduction in objectively measured sitting time and no health benefit — the only significant between-group result favored the control group (waist circumference, Δ−1.81 cm, p=0.04) — and within-group improvements cannot be causally attributed to the desks. Coverage limit: 8 of 18 extracted claims (44%) were never verified, cut by the verify budget and ranked by importance first, so a claim that would have overturned this answer is invisible; the pool is dominated by one small RCT (38 analyzed, powered only for effect size 0.80) reported in two venues, plus one 24-month fade-out RCT. All four pre-registered hypotheses survive their formal kill criteria — none was triggered — with H4 (no meaningful effect on either axis) best supported and none proven.",
+ "hingeNumber": {
+  "value": "Effect size 0.80 with calculated sample of 34 (38 analyzed)",
+  "why": "The 'no demonstrated effect' conclusion rests on a between-group null from a trial that could only detect large effects; if the true sitting reduction is moderate (d≈0.3–0.5), this trial would predictably miss it, making the null uninformative rather than negative.",
+  "sensitivity": "If the true effect is d≥0.8, the null stands and the answer is firm; if it is d≈0.3–0.5, the question reopens and one adequately powered trial could flip the answer in either direction. The conclusion is one power calculation away from flipping — stated plainly, not dressed up.",
+  "source": "[5] — paahjournal.com/articles/409/files/67c04110c8702.pdf (Ramos et al., Phys Act Health 2025;9(1):55-66, T3), verbatim: 'the total calculated sample size was 34 participants'"
+ },
+ "hypothesisVerdicts": [
+  {
+   "hypothesis": "H1 — Behavior only: sit-stand desks reliably cut sitting time (~30–100 min/day, sustained at 3–12 months) but health-outcome effects are small, delayed, or undetectable at that horizon.",
+   "hypothesisNumber": 1,
+   "verdict": "surviving",
+   "killCriterion": "Pooled device-measured effect from adequately powered RCTs is <15 min/day, or sustained reductions require components beyond the desk itself (prompts, coaching) that fail when removed.",
+   "reasoning": "Evidence bears directly and adversely on the hypothesis's first half: the pool's only device-measured RCT (SUFHA) found no significant between-group sitting effect ([0],[3]), and the significant reduction reported in its second publication is within-arm only ([8]). But the kill criterion is not triggered: SUFHA was powered only for effect size 0.80 (calculated n=34, 38 analyzed) ([5]), so no adequately powered pooled estimate exists in this pool, and no confirmed claim shows reductions failing after prompt removal — [6] confirms prompts were integral but post-taper outcomes are not in the confirmed claims. Surviving on a technicality: the 'reliably cut 30–100 min/day sustained' half has zero affirmative support in the verified evidence, and the prompt-dependence half is half-confirmed by [6].",
+   "claimsCited": [
+    0,
+    3,
+    5,
+    6,
+    8
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H2 — Health outcomes delivered: sit-stand desk use produces clinically meaningful improvements (e.g., weight, blood pressure, glucose, or reduced musculoskeletal pain) within 3–12 months.",
+   "hypothesisNumber": 2,
+   "verdict": "surviving",
+   "killCriterion": "Systematic reviews of RCTs show null or trivial pooled effects on all cardiometabolic and musculoskeletal outcomes at ≥3 months with tight confidence intervals.",
+   "reasoning": "Evidence bears uniformly against health benefits: null secondary outcomes plus a control-favoring waist result ([0],[2]), null phase angle ([8]), null musculoskeletal/activation effects at 24 months ([1]), and within-arm improvements explicitly unattributable to the desk ([4]). The kill criterion is nevertheless not triggered because it specifically requires systematic-review-level pooled nulls with tight CIs, and no systematic review is present in the confirmed pool. Surviving strictly because the kill evidence was unavailable in this run, not because any evidence supports health benefits: every between-group health result in the pool is null or adverse.",
+   "claimsCited": [
+    0,
+    1,
+    2,
+    4,
+    8
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H3 — Conditional effect: hardware-only deployments show minimal sustained effect, while multicomponent programs (desk + prompts + organisational policy) achieve sustained sitting reductions and downstream health benefit.",
+   "hypothesisNumber": 3,
+   "verdict": "surviving",
+   "killCriterion": "Head-to-head or factorial evidence shows hardware-only and multicomponent arms differ negligibly (either both work or both fail), or multicomponent arms lose effect at follow-up.",
+   "reasoning": "Evidence bears on it partially and adversely: the pool's one multicomponent program (SUFHA desk plus tapered motivational prompts, pre-registered) ([6]) did NOT achieve a significant between-group sitting reduction ([0]), undercutting the hypothesis's positive half, while its within-arm reduction ([8]) and symptom improvements ([4]) leave a conditional effect possible but undetected. The kill criterion is not triggered: no head-to-head or factorial hardware-only vs multicomponent comparison exists in the pool, and the fade-out evidence ([1],[9]) comes from a trial whose component composition is not stated in the confirmed claims, so 'multicomponent arms lose effect at follow-up' cannot be shown. The conditional hypothesis needs a comparison this run never produced.",
+   "claimsCited": [
+    0,
+    1,
+    4,
+    6,
+    8,
+    9
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  },
+  {
+   "hypothesis": "H4 — No meaningful effect on either axis: pooled sitting-time reductions are trivial and health outcomes null, with apparent effects explained by publication bias and small underpowered trials.",
+   "hypothesisNumber": 4,
+   "verdict": "surviving",
+   "killCriterion": "Large, low-bias RCTs or Cochrane-grade reviews demonstrate consistent ≥30 min/day sustained reductions with acceptable risk-of-bias assessment.",
+   "reasoning": "The hypothesis best supported by this pool: sitting effects are null between groups in the only device-measured trial ([0],[3]) with the affirmative result being within-arm ([8]); health outcomes are null or control-favoring ([0],[2],[8]); the affirmative within-arm improvements are exactly the small-uncontrolled-trial pattern the hypothesis names ([4]); trials are small and powered only for large effects ([5]); and effects fade by 24 months ([1],[9]) — consistent with apparent effects arising from small-trial artifacts. The kill criterion is not triggered because no large, low-bias RCT or Cochrane-grade review demonstrating ≥30 min/day sustained reductions exists in the verified pool. Surviving and strengthened — but it rests on the same narrowed, single-trial-dominated base, with 44% of extracted claims never verified, so this is direction, not proof.",
+   "claimsCited": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9
+   ],
+   "preRegistered": true,
+   "preRegisteredBy": "hypothesisNumber (subject, scope and added negation checked - NOT polarity, and not that the claim is identical)"
+  }
+ ],
+ "strongestArgumentAgainst": "The 'no demonstrated effect' verdict may be an artifact of this run, not of the world. The pool is dominated by a single underpowered trial — powered only to detect d=0.80 — counted twice via dual publication, so five of ten 'confirmed claims' restate one n=38 study, inflating apparent consensus for a null. SUFHA used a waiting-list control, a design in which control arms often also reduce sitting (measurement reactivity), which can mask a genuine intervention effect even when the intervention arm's sitting falls significantly within-arm [8]. Meanwhile 44% of extracted claims — exactly where systematic reviews and large cluster RCTs reporting sustained tens-of-minutes-per-day reductions would typically sit — were never verified, ranked out by an importance heuristic before anyone read them. Survivorship/selection risk cuts both ways: the verify budget chose which trials we saw at all. A fairer reading may be 'the evidence here is too thin and too selected to conclude anything,' which is materially weaker than the 'no demonstrated effect' this report states.",
+ "whatWouldChangeThisCall": [
+  "A Cochrane-grade review or pooled device-measured estimate showing sustained ≥30 min/day between-group sitting reductions — kills H4 and flips the answer to 'yes, sitting time falls.'",
+  "An adequately powered pre-registered RCT (calculated n≥150) replicating a null between-group sitting result — upgrades 'no demonstrated effect' from a small-trial caveat to a firm conclusion.",
+  "Head-to-head or factorial data showing hardware-only and desk+prompts arms differ negligibly — kills H3.",
+  "SUFHA's 3-month follow-up results showing the within-arm sitting reduction vanished after prompts tapered — triggers H1's prompt-dependence kill prong.",
+  "Full-budget re-verification of the 8 unverified claims surfacing contrary pooled evidence — mandates immediate revision of this call."
+ ],
+ "baseRate": "Absent — flagged. The verified pool contains no systematic review, pooled estimate, or meta-analytic base rate for how much sit-stand interventions typically reduce sitting or improve health; the only quantitative anchor is a trial powered for an effect size of 0.80 ([5]). Any outside-view prior must be imported from literature this run did not verify, so none is asserted here — the absence itself is material and warns against treating 'no demonstrated effect' as 'no effect.'",
+ "findings": [
+  {
+   "claim": "No significant between-group effect on device-measured sitting time in the pool's only objectively measured, pre-registered RCT (SUFHA, 38 analyzed); the 'significantly reduced sitting time' reported in the same trial's second publication is a within-arm result.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.3233/wor-230624",
+    "https://paahjournal.com/articles/409/files/67c04110c8702.pdf"
+   ],
+   "evidence": "[0] verbatim: 'No significant time*group interaction was found for the primary or secondary outcomes' where 'The primary outcome of sitting time was assessed using ActivPAL'; [3]: prospectively registered (OSF.IO/JHGPW), ActivPAL4 worn 24h/day for 7 days, 39 randomized; [5]: 'Initially, 39 office workers were randomly assigned... 38 office workers being included.' [8]'s 'The intervention group showed a significantly reduced sitting time' cannot offset the null between-group primary — the two publications describe the same trial. Caveat: sources are one trial reported twice (Work 2024 T2; PAAH 2025 T3), not independent.",
+   "vote": "[0] 3-0, [3] 2-1, [5] 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "Audit supported (high): all quotes verbatim in primary sources; claim [3] passed on a split 2-1 vote. The reading of [8] as within-arm (not a sitting benefit) is an inference from reconciling [0] with [8], flagged here."
+  },
+  {
+   "claim": "No between-group health benefit in either RCT in the pool: the only significant between-group result favored the control group (waist circumference Δ−1.81 cm, pinteraction=0.04), phase angle showed no group-by-time effect, and musculoskeletal complaints/activation showed no intervention effect at 24 months.",
+   "confidence": "high",
+   "sources": [
+    "https://doi.org/10.3233/wor-230624",
+    "https://doi.org/10.1186/s40359-022-00948-9",
+    "https://paahjournal.com/articles/409/files/67c04110c8702.pdf"
+   ],
+   "evidence": "[2]/[0] verbatim: 'apart from waist circumference favoring the control group (Δ–1.81 cm, pinteraction = 0.04)' — the sole significant between-group result, and it favors control; [8] verbatim: 'No time interaction or differences between groups were found for PhA (p > 0.05)'; [1] verbatim: 'no significant intervention effect after 24 months implying a fade-out.' These span two independent RCTs (SUFHA; Konradt et al.), which is what earns high confidence.",
+   "vote": "[2] 3-0, [8] 2-1, [1] 3-0",
+   "sourceTier": "T2/T3",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "Audit supported (high): quotes verbatim across mirrors (sage.cnpereading.com, research.ulusofona.pt) and the PAAH PDF; claim [8] passed 2-1."
+  },
+  {
+   "claim": "Intervention effects fade: no significant effect on musculoskeletal complaints or activation at 24 months, and the authors conclude positive effects fade out over time with early rapid improvements predicting longer-term benefit.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.1186/s40359-022-00948-9"
+   ],
+   "evidence": "[1] verbatim: 'Bayesian structural equational modeling revealed no significant intervention effect after 24 months implying a fade-out'; [9] verbatim (the paper's Conclusion): 'positive intervention effects fade out over time and health effects benefit from prompt progresses at the beginning of the intervention.' Internal tension the authors themselves hold together: early improvement is prognostic within an overall fade-out, not evidence of durable effect.",
+   "vote": "[1] 3-0, [9] 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "Audit supported (high): verbatim in the BMC Psychology 10:246 abstract and full text — but a single source (Konradt et al. 2022), hence medium per the rubric."
+  },
+  {
+   "claim": "Within-arm improvements at 6 months (musculoskeletal discomfort Δ−4.9, fatigue Δ−2.2, need for recovery Δ−1.7, body fat Δ−3.7%, quality of life Δ2.2, all p<0.05; no standing-related harms reported) are uncontrolled paired changes and cannot be attributed to the desks — this is the evidence most often mistaken for benefit.",
+   "confidence": "medium",
+   "sources": [
+    "https://doi.org/10.3233/wor-230624",
+    "https://paahjournal.com/articles/409/files/67c04110c8702.pdf"
+   ],
+   "evidence": "[4] verbatim with full-text Table 4 corroboration (−4.89*, −2.21*, −1.68*, −3.65%*, +2.16*; * = significant within-group paired t-test). Scope preserved: 'within the intervention group', 6-month follow-up, no between-group generalization — and [4] itself states these changes 'cannot be attributed to the desk.'",
+   "vote": "[4] 3-0",
+   "sourceTier": "T2",
+   "factInferenceAssumption": "fact",
+   "citationCheck": "Audit supported (high): numbers verbatim and Table 4-corroborated; single-trial source, hence medium. The non-attributability clause is a design-based judgment (within-group tests, no control comparison), quoted from the claim's own hedged wording."
+  },
+  {
+   "claim": "The pool's behavioral null comes from a trial powered only to detect a large effect (d=0.80, calculated n=34, 38 analyzed) using a multicomponent intervention (desk plus tapered motivational prompts over 6 months) — so the null is uninformative about moderate effects, and any real effect may be prompt-dependent rather than desk-dependent.",
+   "confidence": "medium",
+   "sources": [
+    "https://paahjournal.com/articles/409/files/67c04110c8702.pdf"
+   ],
+   "evidence": "[5] verbatim: 'an effect size of 0.80, a power of 0.80, and a significance level of 0.05 (two-tailed), the total calculated sample size was 34 participants'; [6] verbatim: prompts 'varied weekly in the first month, fortnightly in the second and third months, and monthly until the end of the intervention', within a 6-month intervention and 3-month follow-up. The interpretive bound (absence of evidence vs evidence of absence; prompt-dependence) is inference from these design numbers.",
+   "vote": "[5] 3-0, [6] 2-1",
+   "sourceTier": "T3",
+   "factInferenceAssumption": "inference",
+   "citationCheck": "Audit supported (high) on both claims, but [6] passed on a split 2-1 vote and both are T3 single-journal sources; the bound drawn from them is this synthesis's inference, not a page quote."
+  }
+ ],
+ "caveats": "Coverage: 8 of 18 extracted claims (44%) were never verified — cut by the verify budget (10 for the main pool), ranked by importance first and source tier second, so a 'tangential'-rated claim that would have overturned the answer is invisible; this is stated in answerFirst as required. Dropped claims: none — all 10 confirmed claims passed audit with verbatim, high-confidence verifier evidence, but claims [3], [6], [8] passed on split 2-1 votes. Weak sources / independence: the pool is effectively one small RCT reported in two venues (SUFHA — Work 2024, T2; PAAH 2025, T3), so five of ten confirmed claims are non-independent; the 24-month evidence is a single paper (Konradt et al., T2); no systematic review made the verified pool, so nothing here can be generalized beyond 'what this pool shows.' One source (DOI 10.1080/00140139.2024.2414197, Ergonomics 2024) is entirely unverifiable — its Crossref record holds no abstract [7] — so any outcomes it reports are outside this synthesis. Unanswered sub-questions: adequately powered (n>200) between-group sitting results; desk-only vs multicomponent head-to-head; durability after prompt removal; SUFHA's own 3-month follow-up outcomes. Time-sensitivity: evidence runs through 2025; newer trials or reviews are not captured. The [0]-vs-[8] publication contradiction is handled above, not buried.",
+ "openQuestions": [
+  "Do adequately powered RCTs (calculated n≥150) with device-measured outcomes show between-group sitting reductions, for desk-only vs multicomponent interventions?",
+  "Did the 8 unverified claims include systematic reviews or large cluster RCTs reporting sustained sitting reductions — i.e., would a full-budget verification overturn this answer?",
+  "Did SUFHA's within-arm sitting reduction persist at the 3-month post-intervention follow-up once prompts tapered to monthly and stopped?",
+  "What outcomes does the unverifiable Ergonomics 2024 study (10.1080/00140139.2024.2414197) report on sitting time, discomfort, or fatigue?"
+ ],
+ "citationAudit": null,
+ "citationDetail": [],
+ "quoteAudit": [
+  {
+   "claim": "In the SUFHA 6-month cluster RCT (39 Portuguese office workers), sit-stand workstations produced no significant between-group (time×group) effect on the activPAL-measured primary outcome of sitting time or on any secondary outcome except waist circumference.",
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quote": "No significant time*group interaction was found for the primary or secondary outcomes, apart from waist circumference favoring the control group (Δ–1.81 cm, pinteraction = 0.04).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1131
+  },
+  {
+   "claim": "In this RCT of a sit-stand desk intervention, Bayesian structural equation modeling found no significant intervention effect on musculoskeletal complaints or activation at 24 months, indicating the intervention's effects faded out.",
+   "url": "https://doi.org/10.1186/s40359-022-00948-9",
+   "quote": "Bayesian structural equational modeling revealed no significant intervention effect after 24 months implying a fade-out.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1211
+  },
+  {
+   "claim": "On cardiometabolic outcomes, the only significant between-group result in this RCT favored the control group: waist circumference decreased 1.81 cm more in controls (pinteraction = 0.04), i.e. the sit-stand desk arm showed no cardiometabolic benefit and one nominally adverse relative result.",
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quote": "waist circumference favoring the control group (Δ–1.81 cm, pinteraction = 0.04)",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1229
+  },
+  {
+   "claim": "This trial measured its primary sitting outcome objectively with activPAL (not self-report) in 39 randomized office workers and was prospectively registered on OSF (OSF.IO/JHGPW, registered 15 November 2022) — and this small, device-measured, pre-registered RCT found a null between-group sitting eff…",
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quote": "39 Portuguese office workers were randomized into a 6-month parallel-group cluster RCT consisting by the implementation of sit-stand desks in the workplace. The primary outcome of sitting time was assessed using ActivPAL.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 676
+  },
+  {
+   "claim": "Within the intervention arm at 6 months, musculoskeletal discomfort improved (Δ–4.9) alongside reduced overall fatigue (Δ–2.2), reduced need for recovery after work (Δ–1.7), lower percent body fat (Δ–3.7%), and higher quality-of-life ratings (Δ2.2), all p<0.05; no standing-related harms (worsened pa…",
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quote": "Changes were also observed within the intervention group for percent body fat (Δ–3.7%) and ratings of quality of life (Δ2.2), musculoskeletal discomfort (Δ–4.9), overall fatigue (Δ–2.2), and the need for recovery after work (Δ–1.7) at 6-month follow-up (p &lt; 0.05).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1613
+  },
+  {
+   "claim": "This is a small trial: only 39 office workers were randomized (38 analyzed after one pregnancy exclusion), powered on sitting time for an effect size of 0.80 with a calculated sample of just 34.",
+   "url": "https://paahjournal.com/articles/409/files/67c04110c8702.pdf",
+   "quote": "Initially, 39 ofce workers were randomly assigned to the intervention or control group. One participant was removed from the analysis due to pregnancy, resulting in 38 ofce workers being included.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 12350
+  },
+  {
+   "claim": "The intervention was multicomponent, not desk-only: the sit-stand desk was paired with motivational prompts delivered at tapered frequency (weekly in month 1, fortnightly in months 2-3, monthly until 6 months), within a pre-registered trial (OSF jhgpw) with a 3-month follow-up period.",
+   "url": "https://paahjournal.com/articles/409/files/67c04110c8702.pdf",
+   "quote": "The prompts were varied weekly in the rst month, fortnightly in the second and third months, and monthly until the end of the intervention.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 7853
+  },
+  {
+   "claim": "The Crossref record for this article (DOI 10.1080/00140139.2024.2414197) contains no abstract, so no results on musculoskeletal discomfort, fatigue, or sitting time can be verified from this source.",
+   "url": "https://doi.org/10.1080/00140139.2024.2414197",
+   "quote": "Crossref holds no abstract for this record — metadata only.",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 369
+  },
+  {
+   "claim": "In a 6-month cluster RCT (SUFHA) of a sit-stand desk plus motivational prompts vs waiting-list control in 38 office workers, the intervention group significantly reduced sitting time, but showed no significant effect on bioimpedance-derived phase angle (no group-by-time interaction, p > 0.05).",
+   "url": "https://paahjournal.com/articles/409/files/67c04110c8702.pdf",
+   "quote": "The intervention group showed a signicantly reduced sitting time. No time interaction or differences between groups were found for PhA (p > 0.05).",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1731
+  },
+  {
+   "claim": "The authors conclude that positive effects of the sit-stand desk intervention fade out over time and that early rapid health improvements predict longer-term benefit.",
+   "url": "https://doi.org/10.1186/s40359-022-00948-9",
+   "quote": "The findings of this study suggest that positive intervention effects fade out over time and health effects benefit from prompt progresses at the beginning of the intervention",
+   "onPage": "located",
+   "foundFraction": 1.0,
+   "offset": 1550
+  }
+ ],
+ "rescue": null,
+ "calibration": null,
+ "droppedSample": null,
+ "honestLimits": {
+  "evidenceBase": {
+   "citableSources": 4,
+   "floor": 5,
+   "thin": true,
+   "verdict": "THIN: 4 citable source(s), under the floor of 5. Treat every finding as provisional and check the sources by hand - a report this thin has been recorded at 25% citation accuracy. Thinness is usually a retrieval failure rather than a silent world: read stats.searchHealth and stats.pickStarvation before concluding the evidence does not exist.",
+   "note": "This run was NOT aborted for being thin, by design. A thin run is evidence about the retrieval path and has twice exposed a real bug; discarding it would hide exactly the signal worth having."
+  },
+  "falseKillRateUnmeasured": "This report kills claims. How often it kills a TRUE one has never been measured — here or anywhere in the published literature. Read `refuted` before concluding something is unsupported.",
+  "reliabilityNotValidity": "`calibration` measures whether the panel repeats itself, not whether it is right. An LLM panel has been recorded agreeing with itself at alpha 0.77 while being systematically wrong. A high kappa never licenses 'the panel is correct'.",
+  "confirmedMeans": "`confirmed` means 'survived a filter of unknown accuracy', not 'true'.",
+  "killRateMeans": "The kill rate reports how much was removed, never whether removal was correct.",
+  "quotesAreLocatedInCode": "Every claim's verbatim quote is searched for in the exact page text the extractor was shown, in code, before the panel votes - see `quoteAudit` and `stats.quoteLocation`. A quote the engine could not fully locate was assembled from more than one place or had wording added, and is a defect in the EVIDENCE regardless of whether the claim is true. `unverifiable` means the page was empty or the quote too short to judge, and is never evidence of fabrication. Measured over 30 real quotes on 2026-09-08: 93% located.",
+  "partialCitationsAreKept": "A `partial` citation verdict means the page points this way but the statement adds scope, certainty or specificity the page does not carry. A partial panel SURVIVOR is restated to what the page carries and re-audited: a supported restatement replaces it (the original is kept in `restatedFrom`), and one that still fails is demoted like `unsupported`. A partial is KEPT only when no re-audited restatement came back (`restate.verdict` no-restatement or no-reaudit). Measured with injected defects: an inflated number, an invented attribution and an inflated scope all came back `partial`. Read `citationPartials` before quoting a number or an attribution from this report.",
+  "framingProvenance": "scopeContract.provenance says, per field, whether the asker SUPPLIED it or the model DRAFTED it. A drafted assumption and a supplied one look identical in the JSON and mean opposite things: a supplied field is a decision to respect, a drafted one is a premise the run should have tested.",
+  "irrelevantSearchResults": "stats.pickStarvation counts how often the source picker was handed search hits and chose NONE of them. A high rate means search returned results that were not about the question - a poisoned or rate-limited upstream engine - and NOT that the web is silent. searchHealth counts results, not relevance, so it reads as healthy in exactly this case.",
+  "archivedCopies": "A source whose `via` is `wayback` was read from the Internet Archive, not live: the publisher blocked the fetch. `snapshotDate` says when the copy was captured, and it matters - the provenance lens judges recency, and an archived page is as old as its snapshot, not as old as today. The archive is used ONLY after a live read failed or returned an abstract-only stub.",
+  "abstractOnlySources": "stats.fetchVia counts how each source was READ. `crossref-fallback` means the publisher blocked the fetch and only the abstract was available (or, when Crossref held no abstract, the record's metadata only), and those sources carry `abstractOnly: true`. `pmc-fulltext` means the EuropePMC open-access mirror served the full text. A claim verified against an abstract has been checked against a summary of the paper, not the paper.",
+  "searchCoverage": "`searchDegraded` (top level) is true when the general web was tried and answered under a fifth of its attempts: the report then rests mostly on a scholarly slice (Wikipedia/Crossref), and its coverage gaps are a search artefact rather than evidence that nothing exists. stats.generalWebOkRate is that rate, and stats.searchHealth has the per-backend counts behind it.",
+  "citationAuditOff": "This depth ran NO blind citation audit: no claim here was re-checked against its cited page, and the report must not read as vetted. Use standard depth or above when the checking matters.",
+  "evidenceChecked": "10 of 18 extracted claims were verified (8 unchecked: ranked out of the panel budget by importance then tier, or excluded as non-citable sources). Unchecked is not refuted - see evidenceBase before reading silence as absence."
+ },
+ "summaryAnnotated": "On the evidence verified in this run, sit-stand desk interventions showed no demonstrated between-group reduction in total sitting time and no health benefit in office workers. The SUFHA cluster RCT (39 randomized, 38 analyzed, activPAL-measured primary outcome, prospectively registered on OSF) found no significant time-by-group effect on sitting time or any secondary outcome except waist circumference, which favored the control group (Δ−1.81 cm, pinteraction=0.04) [0][2][3][5]. A separate RCT found no significant intervention effect on musculoskeletal complaints or activation at 24 months, with its authors concluding effects fade out [1][9]. Within-arm improvements in the intervention group (discomfort, fatigue, need for recovery, body fat, quality of life) and a within-arm sitting reduction are real measurements but uncontrolled, and cannot be attributed to the desks [4][8]. No hypothesis was killed — the systematic reviews and adequately powered pooled estimates their kill criteria require are absent from this pool — [UNTRACEABLE: so all four survive, with H4 (no meaningful effect on either axis) the direction this evidence points], [UNTRACEABLE: and 44% of extracted claims were never verified].",
+ "processCritique": {
+  "untraceableCount": 4,
+  "criticsReturned": 1,
+  "criticsRequested": 1,
+  "markedInSummary": 2,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "and 44% of extracted claims were never verified",
+   "so all four survive, with H4 (no meaningful effect on either axis) the direction this evidence points",
+   "the 'significantly reduced sitting time' reported in the same trial's second publication is a within-arm result",
+   "this is the evidence most often mistaken for benefit"
+  ],
+  "untraceableStatements": [
+   "Finding 1 states as flat fact that the significant sitting reduction in [8] is a within-arm result; no claim labels it as such, [8] does not specify its sitting measurement method, and the between-group-null-implies-within-arm reconciliation depends on [0] and [8] measuring sitting the same way, which the pool never establishes.",
+   "Finding 4's closing clause is an unsupported frequency claim about how this evidence is commonly misread; no claim in the pool concerns misinterpretation rates, so 'most often mistaken for benefit' is inserted rhetoric.",
+   "The summary claims the evidence 'points' toward H4 (no meaningful effect on either axis), but this inflates certainty beyond what the pool licenses: the only behavioral null comes from a trial the report's own Finding 5 declares uninformative about moderate effects (powered for d=0.80, n=34), so the evidence underdetermines 'no meaningful effect,' and the hypotheses/kill criteria referenced are absent from the packet.",
+   "The summary's final clause asserts a verification statistic that appears nowhere in the claim pool or packet: no numbered claim states what fraction of extracted claims was verified, so this figure cannot be checked."
+  ],
+  "coverageGaps": [
+   "Base-rate blindness: the pool is effectively one trial (SUFHA) plus one related 24-month analysis paper, yet the question concerns 'interventions' plural; the process never established how many eligible RCTs or meta-analyses exist in total, so the report cannot distinguish 'no effect demonstrated' from 'almost nothing was retrieved.'",
+   "Checklist item 1 (pooled device-measured sitting reduction at >=3 months vs the 30-min/day threshold) was never answered: no systematic review or meta-analysis entered the pool, and the summary itself concedes pooled estimates are absent; the well-developed meta-analytic literature on sit-stand workstations was never retrieved.",
+   "Checklist item 2 only partially addressed: the 24-month fade-out claim [1][9] is not tied to any desk-only vs desk-plus-support maintenance comparison, and no trial reporting sitting time after withdrawal of prompts or coaching was retrieved.",
+   "Checklist item 3 (pooled cardiometabolic effects at 3-12 months) unanswered: the pool contains only single-trial results (waist circumference, phase angle); no pooled weight/BMI, blood pressure, glucose/HbA1c, or lipid estimates exist anywhere in the packet.",
+   "Checklist item 4 harms half-answered: 'no standing-related harms reported' in one publication [4] is absence of reporting, not a harm rate; no dedicated harms literature (prolonged-standing leg/foot discomfort, venous pooling, fatigue incidence rates) was searched.",
+   "Checklist item 5 (desk-only vs multicomponent head-to-head or factorial trials) unanswered: no component or factorial trial entered the pool, so Finding 5's 'prompt-dependent rather than desk-dependent' speculation rests on zero supporting evidence.",
+   "Checklist item 6 (cost per minute of sitting reduced or per QALY vs prompts, break policies, walking breaks, treadmill desks) completely unanswered: the occupational-health economist perspective produced zero claims and no economic evaluation of any kind entered the pool.",
+   "Checklist item 7 (largest, lowest risk-of-bias, pre-registered RCTs vs small trials; funnel-plot asymmetry; publication bias) unanswered: the pool's largest trial randomized 39 people, no large multicentre RCT (e.g., SMArT Work-scale, ~146 participants, ~80 min/day objective reduction at 12 months) and no publication-bias assessment were retrieved.",
+   "Checklist item 8 (proportion of device vs self-report measurement; self-report inflation) unanswered: the pool has no data on measurement-method distribution or on self-reported vs objective effect-size gaps in this literature."
+  ],
+  "planFlaws": [
+   "A verification stage that left 44% of extracted claims unverified was allowed to stand without re-verification or pool expansion; the scoper set no minimum verified-pool threshold despite demanding quantitative pooled answers.",
+   "Checklist item 1's binary framing (>=30 min/day vs <15 min/day) presupposes a pooled estimate exists at a specific horizon; with no meta-analysis retrieved, the framing steered the run toward a threshold question it had no data to answer, and the packet never surfaced this mismatch to the reader up front.",
+   "The scoper committed to pooled estimates, bias assessment, and economic evaluation (checklist items 1, 3, 6, 7) but had no fallback or escalation gate when those source types failed to materialize, so the run was accepted with a single-trial pool that could not answer six of eight committed questions.",
+   "The scoper never required a coverage census (count of eligible RCTs and meta-analyses in the literature), so the 'primary-trial constructor' perspective tasked with rebuilding effects from individual registered RCTs produced exactly one trial and this counted as completion."
+  ],
+  "rationales": [
+   "The summary is internally honest and nearly every sentence traces to the pool, but the pool itself is grossly insufficient for the question: it contains essentially one 39-person cluster RCT powered only for d=0.80 plus one related 24-month fade-out paper, while six of the eight committed checklist items (pooled sitting reduction, pooled cardiometabolic effects, component head-to-heads, cost-effectiveness, publication bias, measurement-method distribution) went entirely unanswered. The headline …"
+  ]
+ },
+ "refuted": [],
+ "unverified": [],
+ "sources": [
+  {
+   "url": "https://www.thelancet.com/journals/lanpub/article/PIIS2468-2667(25)00038-6/fulltext",
+   "quality": "unreliable",
+   "perspective": "Pro-desk steelman",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "failed"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/",
+   "quality": "unreliable",
+   "perspective": "Primary-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://paahjournal.com/articles/409/files/67c04110c8702.pdf",
+   "quality": "primary",
+   "perspective": "Primary-trial constructor",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T3",
+   "via": "pdf"
+  },
+  {
+   "url": "https://journals.humankinetics.com/downloadpdf/journals/jpah/14/9/article-p710.pdf",
+   "quality": "unreliable",
+   "perspective": "Primary-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T3",
+   "via": "http"
+  },
+  {
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6517221/",
+   "quality": "unreliable",
+   "perspective": "Primary-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T1",
+   "via": "failed"
+  },
+  {
+   "url": "https://www.tandfonline.com/doi/full/10.1080/00140139.2024.2441451",
+   "quality": "unreliable",
+   "perspective": "Primary-trial constructor",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T2",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.3233/wor-230624",
+   "quality": "primary",
+   "perspective": "Null-and-harms skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1186/s40359-022-00948-9",
+   "quality": "primary",
+   "perspective": "Null-and-harms skeptic",
+   "wave": "w1",
+   "claims": 5,
+   "tier": "T2",
+   "via": "crossref-api"
+  },
+  {
+   "url": "https://doi.org/10.1080/00140139.2024.2414197",
+   "quality": "primary",
+   "perspective": "Null-and-harms skeptic",
+   "wave": "w1",
+   "claims": 3,
+   "tier": "T?",
+   "via": "crossref-fallback",
+   "abstractOnly": true
+  },
+  {
+   "url": "https://doi.org/10.1080/00140139.2021.1998647",
+   "quality": "unreliable",
+   "perspective": "Null-and-harms skeptic",
+   "wave": "w1",
+   "claims": 0,
+   "tier": "T?",
+   "via": "failed"
+  }
+ ],
+ "stats": {
+  "depth": "quick",
+  "provider": "glm-flash",
+  "model": "glm-5.3-flash",
+  "transport": "session",
+  "reasoning": "max",
+  "perspectives": 4,
+  "subQuestions": 8,
+  "sourcesFetched": 10,
+  "claimsExtracted": 18,
+  "urlDupes": 0,
+  "budgetDropped": 6,
+  "claimsDroppedBeforeVerify": 8,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 14,
+    "ok": 11,
+    "fail": 3,
+    "challenged": 0,
+    "junk": 3,
+    "results": 59
+   },
+   "ddg-html": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "crossref": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 26
+   }
+  },
+  "generalWebOkRate": 0.423,
+  "sourceTiers": {
+   "T2": 4,
+   "T1": 2,
+   "T3": 2,
+   "T?": 2
+  },
+  "killsByLens": {},
+  "fetchVia": {
+   "failed": 4,
+   "pdf": 1,
+   "http": 1,
+   "crossref-fallback": 2,
+   "crossref-api": 2
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 0,
+   "hits": 32,
+   "retried": 0,
+   "rate": 0.0
+  },
+  "agentCalls": 44,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 18,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 0,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 1,
+   "misses": 19,
+   "charsServedFromCache": 1786,
+   "hitRate": 0.05
+  },
+  "wallSeconds": 1447.2,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 0,
+  "unverifiedCount": 0,
+  "afterSynthesis": 5
+ }
+}

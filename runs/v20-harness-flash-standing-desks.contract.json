@@ -1,0 +1,47 @@
+{
+ "decisionAtStake": "Whether an employer / occupational-health program should spend budget on deploying sit-stand desks for office workers to cut sedentary time and improve health, or redirect that spend to alternative sedentary-reduction measures (activity prompts, walking breaks, treadmill desks, organisational policy) or to nothing.",
+ "keyQuestion": "Do sit-stand desk interventions in office workers reduce total sitting time by a sustained, meaningful margin (roughly ≥30 min/day measured by inclinometer for ≥3 months) and/or produce clinically meaningful improvements in cardiometabolic or musculoskeletal health outcomes versus conventional seated desks?",
+ "assumptions": [
+  "Population is working-age adults in sedentary office jobs, mostly studied in high-income countries (Europe, North America, Australia) — findings may not transfer to other settings.",
+  "'Reduce total sitting time' means device-measured (accelerometer/inclinometer) sedentary time across the whole day, not just self-reported desk posture; 'meaningful' is set at ≥30 min/day sustained at ≥3 months.",
+  "Health outcomes cover cardiometabolic markers (body weight, blood pressure, glucose/HbA1c, lipids), musculoskeletal complaints (low-back/neck discomfort), plus harms like prolonged-standing discomfort.",
+  "Comparison group is conventional seated workstations or usual practice; both hardware-only deployments and desk-plus-support multicomponent programs count as 'sit-stand desk interventions'.",
+  "Evidence standard: RCTs and cluster-RCTs are decisive; systematic reviews/meta-analyses (e.g., Cochrane) are the synthesis base; follow-up horizon ≤12 months.",
+  "Decision context is procurement/wellness programming, not clinical prescription for individual patients."
+ ],
+ "whatWouldChangeTheAnswer": [
+  "Device-measured trials showing sitting reductions <15 min/day, or effects that disappear once the intervention ends or prompts stop.",
+  "Meta-analyses finding null or clinically negligible changes in weight, blood pressure, glucose/HbA1c, lipids, or musculoskeletal pain at ≥3 months.",
+  "Evidence that harms (increased lower-limb/back discomfort, standing-related vascular issues) occur at non-trivial rates.",
+  "Component or head-to-head analyses showing hardware alone ≈ hardware+prompts, or that multicomponent programs also fail — this splits the intervention into a dead end vs. a program change.",
+  "Cost-effectiveness or comparative findings that cheaper interventions (activity-permissive workplace design, hourly break prompts) match sit-stand desks — the decision flips even if modest efficacy holds.",
+  "High risk-of-bias / publication-bias findings that shrink pooled effects below the meaningfulness threshold."
+ ],
+ "hypotheses": [
+  {
+   "hypothesis": "H1 — Behavior only: sit-stand desks reliably cut sitting time (~30–100 min/day, sustained at 3–12 months) but health-outcome effects are small, delayed, or undetectable at that horizon.",
+   "killCriterion": "Pooled device-measured effect from adequately powered RCTs is <15 min/day, or sustained reductions require components beyond the desk itself (prompts, coaching) that fail when removed."
+  },
+  {
+   "hypothesis": "H2 — Health outcomes delivered: sit-stand desk use produces clinically meaningful improvements (e.g., weight, blood pressure, glucose, or reduced musculoskeletal pain) within 3–12 months.",
+   "killCriterion": "Systematic reviews of RCTs show null or trivial pooled effects on all cardiometabolic and musculoskeletal outcomes at ≥3 months with tight confidence intervals."
+  },
+  {
+   "hypothesis": "H3 — Conditional effect: hardware-only deployments show minimal sustained effect, while multicomponent programs (desk + prompts + organisational policy) achieve sustained sitting reductions and downstream health benefit.",
+   "killCriterion": "Head-to-head or factorial evidence shows hardware-only and multicomponent arms differ negligibly (either both work or both fail), or multicomponent arms lose effect at follow-up."
+  },
+  {
+   "hypothesis": "H4 — No meaningful effect on either axis: pooled sitting-time reductions are trivial and health outcomes null, with apparent effects explained by publication bias and small underpowered trials.",
+   "killCriterion": "Large, low-bias RCTs or Cochrane-grade reviews demonstrate consistent ≥30 min/day sustained reductions with acceptable risk-of-bias assessment."
+  }
+ ],
+ "needsGeneralWeb": false,
+ "provenance": {
+  "decisionAtStake": "drafted",
+  "keyQuestion": "drafted",
+  "assumptions": "drafted",
+  "whatWouldChangeTheAnswer": "drafted",
+  "hypotheses": "drafted",
+  "needsGeneralWeb": "drafted"
+ }
+}

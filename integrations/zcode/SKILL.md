@@ -62,35 +62,43 @@ python3 -c "import json,sys; from deepresearch.engine import shape, S_VERDICT; \
 
 Subagents return JSON and nothing else — say so in every dispatch.
 
-## Mode A - stdio: the ENGINE drives, this window is the model (preferred)
+## Mode A - the engine drives itself (preferred; the window only watches)
 
-Since ADR-0005 the engine can run its whole pipeline with the driving window as its
-model transport - every retry, sentinel recovery, schema shaping, ranking and the
-2-of-3 kill rule executed by the engine's audited code, not re-orchestrated by hand.
+Since ADR-0005 the engine can run its whole pipeline self-powered, and since
+2026-09-30 that is the zcode default: `dr-launch` starts the run on the **glm-flash
+provider row — GLM-5.3-Flash at MAX reasoning effort** — with the engine spawning
+hermes per call (`hermes -p glm -z -m glm-5.3-flash --reasoning max`, resolved
+through `DR_GLM_HARNESS` as `docker exec hermes-agent ...` where hermes is not on
+PATH). The model is a property of the RUN, not of whichever window opened it, which
+is the whole point: a measured flash quick run took 45 calls with zero schema
+violations, so flash-at-max is the default and `DR_MODEL` / `DR_PROVIDER` /
+`DR_REASONING` / `DR_TRANSPORT` all still win when set.
 
 ```bash
 bash <repo>/contrib/zcode-session/drive.sh dr-launch "<question>" standard
+# then watch - nothing is ever sent to this window on this transport:
+bash <repo>/contrib/zcode-session/drive.sh dr-next     # last log line = progress
+# ...until it prints: done: exit N - report $DR_RUN_DIR/report.json
 ```
 
-Search backend: the driver adopts a local SearXNG automatically when one answers
-(`127.0.0.1:8888`, then `:8080`) and says so; an explicit `DR_SEARXNG_URL` always
-wins. Do NOT conclude "the keyless web is dead from this machine" without checking
-that: with the var unset the searxng backend silently self-skips, and once DDG and
-Mojeek are blocked the chain falls through to Wikipedia/Crossref filler - which
-looks exactly like "the web has nothing" (measured 2026-09-16, a session restarted
-in Mode B on that false verdict while the instance was alive the whole time).
+Cost of the default, measured 2026-09-30: one harness spawn per model call at MAX
+reasoning — ~2 min on a medium prompt, more on verify-sized ones (the seam gives
+max-effort spawns a 900s budget) — so a quick run is 60-120 min and a standard one
+longer; `DR_REASONING=low` or `high` buys speed back without changing the model.
+`stats` labels what actually ran
+(`model: "glm-5.3-flash"`, `reasoning: "max"`, `transport: "session"`); quote those
+numbers when you present the report.
 
-Page rendering (optional): `DR_FIRECRAWL_URL` points the fetch layer at a
-self-hosted Firecrawl. The driver adopts a local instance at `127.0.0.1:3002` by
-itself when a real test scrape returns markdown (it says so, like SearXNG); an
-explicit `DR_FIRECRAWL_URL` always wins, and nothing answering means fully off.
-The engine itself has NO default - outside the driver, unset means zero network
-attempts. From inside the docker network the address is `http://firecrawl:3002`
-(see contrib/firecrawl/README.md for the deployment recipe).
-Pages are scraped to rendered markdown BEFORE the stdlib reader runs - the point
-is JS-heavy pages the stdlib reads as empty shells - and any Firecrawl failure
-falls back to the normal ladder, so it can never take a run down. `via:
-"firecrawl"` on a source says the rendered read served it.
+### Mode A-stdio - the window IS the model (explicit opt-in)
+
+`DR_TRANSPORT=stdio` selects the second transport: the engine emits one JSON request
+per call and blocks until this window replies, so the run's model is whatever model
+the SESSION is on - faster (no spawns), but the model choice leaves the repo's
+control, and one window plays every role (the singleRater caveat below).
+
+```bash
+DR_TRANSPORT=stdio bash <repo>/contrib/zcode-session/drive.sh dr-launch "<question>" standard
+```
 
 Then loop: `dr-next` prints the pending request; read its `prompt` (and `schema`),
 compose the reply as that subagent would, and answer with ONE JSON object:
@@ -115,18 +123,49 @@ Rules of the loop:
   `$DR_RUN_DIR/report.json` with the same fields the CLI produces,
   `stats.transport: "stdio"`.
 
-**What Mode A does NOT give you (say this to the reader, don't bury it):** one
+Search backend (both transports): the driver adopts a local SearXNG automatically
+when one answers (`127.0.0.1:8888`, then `:8080`) and says so; an explicit
+`DR_SEARXNG_URL` always wins. Do NOT conclude "the keyless web is dead from this
+machine" without checking that: with the var unset the searxng backend silently
+self-skips, and once DDG and Mojeek are blocked the chain falls through to
+Wikipedia/Crossref filler - which looks exactly like "the web has nothing"
+(measured 2026-09-16, a session restarted in Mode B on that false verdict while the
+instance was alive the whole time). Since 2026-09-30 the adoption probe counts
+results ABOUT its query, so an instance answering with junk is not adopted.
+
+Page rendering (optional): `DR_FIRECRAWL_URL` points the fetch layer at a
+self-hosted Firecrawl. The driver adopts a local instance at `127.0.0.1:3002` by
+itself when a real test scrape returns markdown (it says so, like SearXNG); an
+explicit `DR_FIRECRAWL_URL` always wins, and nothing answering means fully off.
+The engine itself has NO default - outside the driver, unset means zero network
+attempts. From inside the docker network the address is `http://firecrawl:3002`
+(see contrib/firecrawl/README.md for the deployment recipe).
+Pages are scraped to rendered markdown BEFORE the stdlib reader runs - the point
+is JS-heavy pages the stdlib reads as empty shells - and any Firecrawl failure
+falls back to the normal ladder, so it can never take a run down. `via:
+"firecrawl"` on a source says the rendered read served it.
+
+**What Mode A-stdio does NOT give you (say this to the reader, don't bury it):** one
 window - you - plays every role: extractor, all three verification lenses, the
 citation auditor, synthesis and the critic, in ONE conversation. Lens independence
 and audit blindness are NOT guaranteed here; a later role remembers what an earlier
 role composed. What does still run in code is the schema shaping, the kill tally,
 the citation arithmetic and the ranking. The report carries `singleRater: true` and
-an `honestLimits.singleRater` note saying exactly this - do not strip them. Choose
-Mode A for the engine's code-level guarantees at minimal moving parts; choose Mode B
-when rater independence matters, because its subagents genuinely do not share a
-context. Mode B is also where Mode A's prompts come from.
+an `honestLimits.singleRater` note saying exactly this - do not strip them. The
+harness default has no such caveat - its calls are independent spawns - but it is
+serial and spawn-paced. Choose the harness default for a self-contained run at a
+pinned model; choose stdio when the window wants to BE the model on its own
+subscription; choose Mode B when rater independence matters with a model you pick.
 
 ## Mode B - the phases (hand-orchestrated)
+
+**Dispatch rule (2026-09-30): every subagent in Mode B runs on GLM-5.3-Flash at max
+effort.** A plain `Agent`-tool dispatch inherits the session's model and cannot be
+pinned, so run the phases as a **dynamic workflow** with
+`subagent_model: "account:zai-individual-coding-plan/GLM-5.3-Flash"` (max is its
+default reasoning level; an explicit `$max` suffix pins it). If the session cannot
+run a workflow, say so in the report's honestLimits rather than silently running
+the session's model.
 
 
 

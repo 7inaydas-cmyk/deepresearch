@@ -75,3 +75,28 @@ measured as the bottleneck; correctness first.
   protocol level — the Python CLI can now do the same thing natively, and a future
   simplification can point the skill at the CLI instead of re-implementing the
   orchestration in agent prose.
+
+## Amendment (2026-09-30): the zcode driver defaults to the HARNESS, not the window
+
+The stdio transport made the model "whichever model the session happens to be on" —
+the skill cannot switch the session's model, so a run's model was an accident of
+where it was launched from. The owner decided every deepresearch session launched
+from zcode runs GLM-5.3-Flash at MAX effort, and the only way to make that a
+property of the RUN is the harness transport. Therefore:
+
+- `contract/providers.json` gains a first-class `glm-flash` row (defaultModel
+  `glm-5.3-flash`; harness flags `modelFlag: -m`, `reasoningFlag: --reasoning`,
+  `reasoningDefault: max`), and the seam threads the EFFECTIVE model and effort
+  into every spawn — before this, `DR_MODEL`/`--model` reached only the HTTP body
+  and a harness run silently used the CLI's own default.
+- `drive.sh dr-launch` defaults to the harness transport (provider `glm-flash`;
+  `DR_GLM_HARNESS` carries the spawn through `docker exec hermes-agent` where
+  hermes is not on PATH). The window only watches: `dr-next` tails the run log
+  until `done: exit N`. `dr-answer` refuses on a harness run — nothing waits.
+- stdio remains a first-class explicit opt-in (`DR_TRANSPORT=stdio`) for a window
+  that wants to BE the model on its own subscription; the singleRater caveat
+  belongs to it alone now.
+- `stats` gains `reasoning` beside the existing `model`/`transport`, so a report
+  says what effort actually ran. Overrides keep their precedence: `DR_MODEL` >
+  `--model` > the row default; `DR_REASONING` > the row default; `DR_PROVIDER` and
+  `DR_TRANSPORT` select everything else.

@@ -1,0 +1,199 @@
+Provider: Z.ai GLM (flash) | model: glm-5.3-flash | credential: session
+Question: Do sit-stand desk interventions reduce total sitting time or improve health outcomes in office workers?
+Depth: quick (4 perspectives, 0 deepening round(s), 3-lens verify, citation audit off)
+Key question: Do sit-stand desk interventions in office workers reduce total sitting time by a sustained, meaningf
+Assumptions stated: 6 | hypotheses w/ kill criteria: 4
+Checklist: 8 sub-questions
+Perspectives: Pro-desk steelman | Primary-trial constructor | Null-and-harms skeptic | Occupational-health economist
+  [w1] Primary-trial constructor: 8 hits -> 5 picked
+  [w1] Null-and-harms skeptic: 8 hits -> 5 picked
+  [w1] Occupational-health economist: 8 hits -> 5 picked
+  [pick:Pro-desk steelman] URL not in hit list, dropped: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD010912.pub5/full'
+  [pick:Pro-desk steelman] URL not in hit list, dropped: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11492196/'
+  [pick:Pro-desk steelman] URL not in hit list, dropped: 'https://www.cdc.gov/pcd/issues/2012/11_0323.htm'
+  [pick:Pro-desk steelman] URL not in hit list, dropped: 'https://link.springer.com/article/10.1186/s12966-014-0127-7'
+  [w1] Pro-desk steelman: 8 hits -> 1 picked
+[w1] 10 sources, 18 claims
+NOTE: 8 lower-ranked claims dropped before verification (cap 10) - NOT covered by this report
+Verify pool spans 7 of 8 sub-questions; 1 claim(s) map to no sub-question
+Total: 10 sources -> 18 claims -> verifying 10
+  OK          3-0  In the SUFHA 6-month cluster RCT (39 Portuguese office workers), sit-stand workstations pr…
+  OK          3-0  In this RCT of a sit-stand desk intervention, Bayesian structural equation modeling found …
+  OK          3-0  On cardiometabolic outcomes, the only significant between-group result in this RCT favored…
+  OK          2-1  This trial measured its primary sitting outcome objectively with activPAL (not self-report…
+  OK          3-0  Within the intervention arm at 6 months, musculoskeletal discomfort improved (Δ–4.9) along…
+  OK          3-0  This is a small trial: only 39 office workers were randomized (38 analyzed after one pregn…
+  OK          2-1  The intervention was multicomponent, not desk-only: the sit-stand desk was paired with mot…
+  OK          3-0  The Crossref record for this article (DOI 10.1080/00140139.2024.2414197) contains no abstr…
+  OK          2-1  In a 6-month cluster RCT (SUFHA) of a sit-stand desk plus motivational prompts vs waiting-…
+  OK          3-0  The authors conclude that positive effects of the sit-stand desk intervention fade out ove…
+Verify: 10 confirmed, 0 refuted, 0 unverified | kills by lens: -
+Process critique: material-gaps | 4 untraceable, 9 coverage gaps, 4 plan flaws
+Report written to /home/excelsior/Desktop/deepresearch/out/v120-product-test/report.json
+Contract written to /home/excelsior/Desktop/deepresearch/out/v120-product-test/report.contract.json
+{
+ "summary": "On the evidence verified in this run, sit-stand desk interventions showed no demonstrated between-group reduction in total sitting time and no health benefit in office workers. The SUFHA cluster RCT (39 randomized, 38 analyzed, activPAL-measured primary outcome, prospectively registered on OSF) found no significant time-by-group effect on sitting time or any secondary outcome except waist circumference, which favored the control group (Δ−1.81 cm, pinteraction=0.04) [0][2][3][5]. A separate RCT found no significant intervention effect on musculoskeletal complaints or activation at 24 months, with its authors concluding effects fade out [1][9]. Within-arm improvements in the intervention group (discomfort, fatigue, need for recovery, body fat, quality of life) and a within-arm sitting reduction are real measurements but uncontrolled, and cannot be attributed to the desks [4][8]. No hypothesis was killed — the systematic reviews and adequately powered pooled estimates their kill criteria require are absent from this pool — so all four survive, with H4 (no meaningful effect on either axis) the direction this evidence points, and 44% of extracted claims were never verified.",
+ "citationAudit": null,
+ "processCritique": {
+  "untraceableCount": 4,
+  "criticsReturned": 1,
+  "criticsRequested": 1,
+  "markedInSummary": 2,
+  "markedInSummaryMeans": "how many flagged sentences were located verbatim and marked [UNTRACEABLE: ...] in summaryAnnotated, which is the ORIGINAL summary - under DR_UNTRACEABLE=strike the `summary` field has the same sentences removed. A flag the critic paraphrased cannot be located, so it appears only in untraceableStatements - read those too.",
+  "untraceableCountMeans": "distinct flagged STRINGS across all critics, after normalising whitespace and case - not distinct problems. Two critics objecting to one sentence in different words count twice, and one critic splitting a sentence into two flags counts twice. Deduplicating by meaning would need a semantic judgement, which is the class of problem this codebase has learned not to solve with a similarity threshold. Read the statements, not only the count.",
+  "readThisFirst": "Read `untraceableCount` and `untraceableStatements`, NOT `verdict`. Measured 2026-09-06: three fabricated sentences were appended to a real summary and the critic named all three - and returned `material-gaps` on the clean and the degraded summary alike. The verdict did not move, so it cannot separate a good run from a bad one. The statement list is where the information is.",
+  "verdict": "material-gaps",
+  "verdictNote": "coarse tag, measured to be saturated at `material-gaps`; see readThisFirst",
+  "policy": "flag",
+  "struckFromSummary": [],
+  "untraceableVerbatim": [
+   "and 44% of extracted claims were never verified",
+   "so all four survive, with H4 (no meaningful effect on either axis) the direction this evidence points",
+   "the 'significantly reduced sitting time' reported in the same trial's second publication is a within-arm result",
+   "this is the evidence most often mistaken for benefit"
+  ],
+  "untraceableStatements": [
+   "Finding 1 states as flat fact that the significant sitting reduction in [8] is a within-arm result; no claim labels it as such, [8] does not specify its sitting measurement method, and the between-group-null-implies-within-arm reconciliation depends on [0] and [8] measuring sitting the same way, which the pool never establishes.",
+   "Finding 4's closing clause is an unsupported frequency claim about how this evidence is commonly misread; no claim in the pool concerns misinterpretation rates, so 'most often mistaken for benefit' is inserted rhetoric.",
+   "The summary claims the evidence 'points' toward H4 (no meaningful effect on either axis), but this inflates certainty beyond what the pool licenses: the only behavioral null comes from a trial the report's own Finding 5 declares uninformative about moderate effects (powered for d=0.80, n=34), so the evidence underdetermines 'no meaningful effect,' and the hypotheses/kill criteria referenced are absent from the packet.",
+   "The summary's final clause asserts a verification statistic that appears nowhere in the claim pool or packet: no numbered claim states what fraction of extracted claims was verified, so this figure cannot be checked."
+  ],
+  "coverageGaps": [
+   "Base-rate blindness: the pool is effectively one trial (SUFHA) plus one related 24-month analysis paper, yet the question concerns 'interventions' plural; the process never established how many eligible RCTs or meta-analyses exist in total, so the report cannot distinguish 'no effect demonstrated' from 'almost nothing was retrieved.'",
+   "Checklist item 1 (pooled device-measured sitting reduction at >=3 months vs the 30-min/day threshold) was never answered: no systematic review or meta-analysis entered the pool, and the summary itself concedes pooled estimates are absent; the well-developed meta-analytic literature on sit-stand workstations was never retrieved.",
+   "Checklist item 2 only partially addressed: the 24-month fade-out claim [1][9] is not tied to any desk-only vs desk-plus-support maintenance comparison, and no trial reporting sitting time after withdrawal of prompts or coaching was retrieved.",
+   "Checklist item 3 (pooled cardiometabolic effects at 3-12 months) unanswered: the pool contains only single-trial results (waist circumference, phase angle); no pooled weight/BMI, blood pressure, glucose/HbA1c, or lipid estimates exist anywhere in the packet.",
+   "Checklist item 4 harms half-answered: 'no standing-related harms reported' in one publication [4] is absence of reporting, not a harm rate; no dedicated harms literature (prolonged-standing leg/foot discomfort, venous pooling, fatigue incidence rates) was searched.",
+   "Checklist item 5 (desk-only vs multicomponent head-to-head or factorial trials) unanswered: no component or factorial trial entered the pool, so Finding 5's 'prompt-dependent rather than desk-dependent' speculation rests on zero supporting evidence.",
+   "Checklist item 6 (cost per minute of sitting reduced or per QALY vs prompts, break policies, walking breaks, treadmill desks) completely unanswered: the occupational-health economist perspective produced zero claims and no economic evaluation of any kind entered the pool.",
+   "Checklist item 7 (largest, lowest risk-of-bias, pre-registered RCTs vs small trials; funnel-plot asymmetry; publication bias) unanswered: the pool's largest trial randomized 39 people, no large multicentre RCT (e.g., SMArT Work-scale, ~146 participants, ~80 min/day objective reduction at 12 months) and no publication-bias assessment were retrieved.",
+   "Checklist item 8 (proportion of device vs self-report measurement; self-report inflation) unanswered: the pool has no data on measurement-method distribution or on self-reported vs objective effect-size gaps in this literature."
+  ],
+  "planFlaws": [
+   "A verification stage that left 44% of extracted claims unverified was allowed to stand without re-verification or pool expansion; the scoper set no minimum verified-pool threshold despite demanding quantitative pooled answers.",
+   "Checklist item 1's binary framing (>=30 min/day vs <15 min/day) presupposes a pooled estimate exists at a specific horizon; with no meta-analysis retrieved, the framing steered the run toward a threshold question it had no data to answer, and the packet never surfaced this mismatch to the reader up front.",
+   "The scoper committed to pooled estimates, bias assessment, and economic evaluation (checklist items 1, 3, 6, 7) but had no fallback or escalation gate when those source types failed to materialize, so the run was accepted with a single-trial pool that could not answer six of eight committed questions.",
+   "The scoper never required a coverage census (count of eligible RCTs and meta-analyses in the literature), so the 'primary-trial constructor' perspective tasked with rebuilding effects from individual registered RCTs produced exactly one trial and this counted as completion."
+  ],
+  "rationales": [
+   "The summary is internally honest and nearly every sentence traces to the pool, but the pool itself is grossly insufficient for the question: it contains essentially one 39-person cluster RCT powered only for d=0.80 plus one related 24-month fade-out paper, while six of the eight committed checklist items (pooled sitting reduction, pooled cardiometabolic effects, component head-to-heads, cost-effectiveness, publication bias, measurement-method distribution) went entirely unanswered. The headline …"
+  ]
+ },
+ "rescue": null,
+ "stats": {
+  "depth": "quick",
+  "provider": "glm-flash",
+  "model": "glm-5.3-flash",
+  "transport": "session",
+  "reasoning": "max",
+  "perspectives": 4,
+  "subQuestions": 8,
+  "sourcesFetched": 10,
+  "claimsExtracted": 18,
+  "urlDupes": 0,
+  "budgetDropped": 6,
+  "claimsDroppedBeforeVerify": 8,
+  "claimsExcludedNonCitable": 0,
+  "searchHealth": {
+   "searxng": {
+    "attempts": 14,
+    "ok": 11,
+    "fail": 3,
+    "challenged": 0,
+    "junk": 3,
+    "results": 59
+   },
+   "ddg-html": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "ddg-lite": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "mojeek": {
+    "attempts": 4,
+    "ok": 0,
+    "fail": 4,
+    "challenged": 4,
+    "junk": 0,
+    "results": 0
+   },
+   "wikipedia": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 0
+   },
+   "crossref": {
+    "attempts": 4,
+    "ok": 4,
+    "fail": 0,
+    "challenged": 0,
+    "junk": 0,
+    "results": 26
+   }
+  },
+  "generalWebOkRate": 0.423,
+  "sourceTiers": {
+   "T2": 4,
+   "T1": 2,
+   "T3": 2,
+   "T?": 2
+  },
+  "killsByLens": {},
+  "fetchVia": {
+   "failed": 4,
+   "pdf": 1,
+   "http": 1,
+   "crossref-fallback": 2,
+   "crossref-api": 2
+  },
+  "pickStarvation": {
+   "calls": 4,
+   "starved": 0,
+   "hits": 32,
+   "retried": 0,
+   "rate": 0.0
+  },
+  "agentCalls": 44,
+  "agentErrors": 0,
+  "rateLimited": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheWriteTokens": 0,
+  "cacheReadTokens": 0,
+  "usageUnrecorded": {},
+  "quoteLocation": {
+   "located": 18,
+   "onPageRate": 1.0
+  },
+  "auditRefetch": {
+   "fresh": 0,
+   "fellBackToCache": 0
+  },
+  "pageFetchCache": {
+   "hits": 1,
+   "misses": 19,
+   "charsServedFromCache": 1786,
+   "hitRate": 0.05
+  },
+  "wallSeconds": 1447.2,
+  "claimsVerified": 10,
+  "lensesPerClaim": 3,
+  "confirmed": 10,
+  "killed": 0,
+  "unverifiedCount": 0,
+  "afterSynthesis": 5
+ }
+}

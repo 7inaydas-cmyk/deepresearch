@@ -1,24 +1,42 @@
 #!/usr/bin/env bash
-# Drive deepresearch over the stdio transport from an agent window (ADR-0005).
+# Drive deepresearch from an agent window (ADR-0005).
 #
-#   dr-launch <question> [depth]     -> prints paths; the engine then WAITS for answers
-#   dr-next                          -> prints the pending request, "waiting", or "done"
-#   dr-answer '<json reply>'         -> answers the pending request by id
+#   dr-launch <question> [depth]     -> default: HARNESS transport. The engine powers
+#                                       its own model calls (hermes -p glm -z -m
+#                                       glm-5.3-flash --reasoning max, provider row
+#                                       glm-flash) and this window only WATCHES: no
+#                                       requests come to you, the log's last line is
+#                                       the progress. DR_TRANSPORT=stdio (or the env
+#                                       DR_PROVIDER/DR_MODEL/DR_REASONING overrides)
+#                                       selects everything else - see below.
+#   dr-next                          -> prints the run's progress (log line for a
+#                                       harness run; the pending request for stdio),
+#                                       "waiting", or "done"
+#   dr-answer '<json reply>'         -> stdio runs only: answers the pending request
 #   dr-stop                          -> ends a run you are abandoning
 #
-# Failure modes, stated: if you stop answering, the engine blocks FOREVER - there is
-# no timeout on the stdio exchange (ADR-0005: readline blocks), and that is the one
-# real hang class, a rater that never answers. An unterminated partial line on the
-# fifo has the same effect. `dr-stop` is how such a run ends. A malformed or
-# mismatched-id reply is refused (and logged) and retried with a new id - tail -1
-# always sees the newest request.
+# Stdio mode (DR_TRANSPORT=stdio) is the second transport: the engine emits one JSON
+# request per call ({id, prompt, schema}) on its stdout and blocks until a matching-id
+# reply arrives on the answer fifo. The WINDOW is the model: read the request, answer
+# it as the subagent prompt asks, echo the reply. One request at a time - the
+# transport serializes by design (one window is one rater). Failure modes, stated: if
+# you stop answering, the engine blocks FOREVER - there is no timeout on the stdio
+# exchange (ADR-0005: readline blocks), and that is the one real hang class, a rater
+# that never answers. An unterminated partial line on the fifo has the same effect.
+# `dr-stop` is how such a run ends. A malformed or mismatched-id reply is refused (and
+# logged) and retried with a new id - tail -1 always sees the newest request.
+#
+# Why the harness transport is the DEFAULT (owner decision, 2026-09-30): with stdio,
+# the run's model is whichever model the SESSION happens to be on, and the skill
+# cannot switch that. With the harness, glm-5.3-flash at MAX effort is a property of
+# the run itself. Cost: one spawn per model call (~15-40s each) - a quick run is
+# 15-30 min, a standard one 30-75; the stdio transport is faster and stays available
+# for a window that wants to BE the model on its own subscription. Measured
+# max-effort spawn latency: ~2 min on a medium prompt, more on verify-sized
+# ones (run_harness gives max-effort spawns 900s) - a quick run is 60-120 min.
+# DR_REASONING=low/high buys speed back without changing the model.
 # DR_DEPTHS_FILE may point at a custom depth contract (e.g. a minimal e2e fixture);
 # every depth must keep perspectives >= 3 or the plan schema will reject the reply.
-#
-# The engine emits one JSON request per call ({id, prompt, schema}) on its stdout and
-# blocks until a matching-id reply arrives on the answer fifo. The WINDOW is the model:
-# read the request, answer it as the subagent prompt asks, echo the reply. One request
-# at a time - the transport serializes by design (one window is one rater).
 set -euo pipefail
 RUN="${DR_RUN_DIR:-/tmp/dr-stdio}"
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -62,43 +80,68 @@ sys.exit(0 if _firecrawl_markdown(json.loads(urllib.request.urlopen(req, timeout
         echo "firecrawl: adopting $c (probed live: a scrape returned markdown)"
       fi
     fi
+    TRANSPORT="${DR_TRANSPORT:-harness}"
     mkdir -p "$RUN"
     rm -f "$RUN/req.out" "$RUN/ans.fifo" "$RUN/run.log" "$RUN/report.json" "$RUN/exit.code" \
-          "$RUN/engine.pid" "$RUN/keeper.pid"
-    mkfifo "$RUN/ans.fifo"
-    # A held-open writer keeps the engine's stdin alive between answers; without it
-    # the fifo EOFs after the first reply and every later call reads nothing. It
-    # lives exactly as long as the engine: it was `sleep 7200`, a hidden two-hour
-    # deadline after which every remaining call read EOF (review 2026-09-27).
-    tail -f /dev/null > "$RUN/ans.fifo" 2>/dev/null &
-    KEEPER=$!
-    echo "$KEEPER" > "$RUN/keeper.pid"
-    # NOT the engine's own --bg: that re-exec redirects the child's stdout to a log,
-    # and stdout IS the request stream. The subshell's & detaches enough for a window.
-    # `|| rc=$?` because set -e would end the subshell before the keeper is released.
-    ( cd "$REPO" || exit 1
-      rc=0
-      DR_PROVIDER="${DR_PROVIDER:-glm}" DR_TRANSPORT=stdio \
-        DR_SEARXNG_URL="${DR_SEARXNG_URL:-}" DR_FIRECRAWL_URL="${DR_FIRECRAWL_URL:-}" \
-        python3 -m deepresearch --question "$Q" --depth "$DEPTH" \
-        --out "$RUN/report.json" \
-        < "$RUN/ans.fifo" > "$RUN/req.out" 2> "$RUN/run.log" || rc=$?
-      echo "$rc" > "$RUN/exit.code"
-      kill "$KEEPER" 2>/dev/null || true ) < /dev/null > /dev/null 2>&1 &
-    # ^ The wrapper runs several commands, so bash cannot exec python in its place, and
-    # an inherited stdout kept the CALLER's pipe open for the whole run: any tool that
-    # captures dr-launch's output hung until the research finished (found 2026-09-27;
-    # the one-command version before it did not). The engine's own streams are the
-    # fifo and the files above, so nothing is lost.
-    echo "$!" > "$RUN/engine.pid"
-    echo "launched: requests=$RUN/req.out log=$RUN/run.log report=$RUN/report.json"
+          "$RUN/engine.pid" "$RUN/keeper.pid" "$RUN/transport.mode"
+    if [ "$TRANSPORT" = "stdio" ]; then
+      echo stdio > "$RUN/transport.mode"
+      mkfifo "$RUN/ans.fifo"
+      # A held-open writer keeps the engine's stdin alive between answers; without it
+      # the fifo EOFs after the first reply and every later call reads nothing. It
+      # lives exactly as long as the engine: it was `sleep 7200`, a hidden two-hour
+      # deadline after which every remaining call read EOF (review 2026-09-27).
+      tail -f /dev/null > "$RUN/ans.fifo" 2>/dev/null &
+      KEEPER=$!
+      echo "$KEEPER" > "$RUN/keeper.pid"
+      # NOT the engine's own --bg: that re-exec redirects the child's stdout to a log,
+      # and stdout IS the request stream. The subshell's & detaches enough for a window.
+      # `|| rc=$?` because set -e would end the subshell before the keeper is released.
+      ( cd "$REPO" || exit 1
+        rc=0
+        DR_PROVIDER="${DR_PROVIDER:-glm}" DR_TRANSPORT=stdio \
+          DR_SEARXNG_URL="${DR_SEARXNG_URL:-}" DR_FIRECRAWL_URL="${DR_FIRECRAWL_URL:-}" \
+          python3 -m deepresearch --question "$Q" --depth "$DEPTH" \
+          --out "$RUN/report.json" \
+          < "$RUN/ans.fifo" > "$RUN/req.out" 2> "$RUN/run.log" || rc=$?
+        echo "$rc" > "$RUN/exit.code"
+        kill "$KEEPER" 2>/dev/null || true ) < /dev/null > /dev/null 2>&1 &
+      # ^ The wrapper runs several commands, so bash cannot exec python in its place, and
+      # an inherited stdout kept the CALLER's pipe open for the whole run: any tool that
+      # captures dr-launch's output hung until the research finished (found 2026-09-27;
+      # the one-command version before it did not). The engine's own streams are the
+      # fifo and the files above, so nothing is lost.
+      echo "$!" > "$RUN/engine.pid"
+      echo "launched (stdio transport - THIS WINDOW is the model): requests=$RUN/req.out log=$RUN/run.log report=$RUN/report.json"
+    else
+      echo harness > "$RUN/transport.mode"
+      # The engine powers its own calls through the provider's harness. On this
+      # deployment hermes lives inside the hermes-agent container, not on PATH: the
+      # contract's fallbackCommandEnv (DR_GLM_HARNESS) carries the spawn string.
+      if ! command -v hermes >/dev/null 2>&1; then
+        if docker exec hermes-agent true >/dev/null 2>&1; then
+          export DR_GLM_HARNESS="${DR_GLM_HARNESS:-docker exec hermes-agent /opt/hermes/.venv/bin/hermes}"
+          echo "hermes: not on PATH - using docker exec hermes-agent (DR_GLM_HARNESS)"
+        fi
+      fi
+      ( cd "$REPO" || exit 1
+        rc=0
+        DR_PROVIDER="${DR_PROVIDER:-glm-flash}" \
+          DR_SEARXNG_URL="${DR_SEARXNG_URL:-}" DR_FIRECRAWL_URL="${DR_FIRECRAWL_URL:-}" \
+          DR_GLM_HARNESS="${DR_GLM_HARNESS:-}" \
+          python3 -m deepresearch --question "$Q" --depth "$DEPTH" \
+          --out "$RUN/report.json" > "$RUN/run.log" 2>&1 || rc=$?
+        echo "$rc" > "$RUN/exit.code" ) < /dev/null > /dev/null 2>&1 &
+      echo "$!" > "$RUN/engine.pid"
+      echo "launched (harness transport: provider ${DR_PROVIDER:-glm-flash}, glm-5.3-flash at max effort - the window only watches): log=$RUN/run.log report=$RUN/report.json"
+    fi
     ;;
   dr-next)
-    # Finished runs say so: stdout's last line is then the summary JSON's closing
-    # brace, which read as a malformed pending request.
+    # Finished runs say so: a stdio run's stdout's last line is then the summary
+    # JSON's closing brace, which read as a malformed pending request.
     if [ -f "$RUN/exit.code" ]; then
       echo "done: exit $(cat "$RUN/exit.code") - report $RUN/report.json, log $RUN/run.log"
-    else
+    elif [ "$(cat "$RUN/transport.mode" 2>/dev/null || echo stdio)" = "stdio" ]; then
       # Test emptiness, not existence: req.out is CREATED empty by the launch
       # redirect and stays empty until the first model call, and `tail -1` exits 0
       # on an empty file - so the `|| echo "waiting"` fallback was dead in exactly
@@ -109,10 +152,22 @@ sys.exit(0 if _firecrawl_markdown(json.loads(urllib.request.urlopen(req, timeout
       else
         echo "waiting"
       fi
+    else
+      # Harness run: the engine powers its own calls and nothing waits on this
+      # window; the log's last line IS the progress (same emptiness rule as above).
+      if [ -s "$RUN/run.log" ]; then
+        tail -n 1 "$RUN/run.log"
+      else
+        echo "waiting (harness transport - the engine powers its own model calls)"
+      fi
     fi
     ;;
   dr-answer)
     REPLY="${2:?reply json required}"
+    if [ "$(cat "$RUN/transport.mode" 2>/dev/null || echo stdio)" = "harness" ]; then
+      echo "this run is HARNESS-powered: no request ever waits for your reply - watch it with dr-next, read $RUN/report.json when done" >&2
+      exit 1
+    fi
     # Opening a fifo nobody reads BLOCKS. With the engine gone, dr-answer hung forever
     # instead of saying so (review 2026-09-27).
     ENG="$(cat "$RUN/engine.pid" 2>/dev/null || true)"

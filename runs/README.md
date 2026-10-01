@@ -867,4 +867,5 @@ hinge number, broad low-wage groups near zero, H1 (near zero) surviving; citatio
 | `*-BLOCKED-*` | A run that died on a server-side credential revocation. Kept because it is why `preflight()` exists. |
 | `v18-*` | Live 1.18.x runs over the session transport (`claude -p`), importance-first ranking. |
 | `v19-*` | Live 1.18.3 quick run with the MODEL ITSELF on GLM-5.3-Flash through the stdio driver (`dr-launch`/`dr-next`/`dr-answer`) - 45 calls, 0 errors, 63 min, answer matches the known-good standing-desks truth. The run that measured the junk-answering searxng, the Crossref metadata shells and the inverted-CI extraction defect, all fixed in 1.19.0. |
+| `v20-*` | The 1.20.0 product test: the FIRST run on the harness-transport default (provider glm-flash, glm-5.3-flash at MAX reasoning, no window in the model path - stats carry model/reasoning/transport). 44 calls, 0 errors, 26 min; quick-depth pool variance on the answer leg is disclosed in the report itself. |
 | everything else | Superseded regime. See above. |

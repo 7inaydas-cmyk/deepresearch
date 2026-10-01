@@ -3109,8 +3109,13 @@ def deepresearch(question, depth="standard", contract=None):
                             if (_fetch_meta.get(s["url"]) or {}).get("abstractOnly") else {})}
                         for s in sources]
     def stats(**kw):
+        # The effort level lives only in the harness argv (reasoningFlag threading,
+        # 2026-09-30); report it when a harness applied one, so a reader can tell a
+        # max-effort flash run from a default-effort one.
+        _rl = _providers.reasoning_level()
         d = dict(depth=depth, provider=_providers.select()["name"], model=MODEL,
              transport=_providers.current_scheme(),
+                 **({"reasoning": _rl} if _rl else {}),
                  perspectives=len(persps), subQuestions=len(subqs),
                  sourcesFetched=len(sources), claimsExtracted=len(all_claims),
                  urlDupes=len(dupes), budgetDropped=len(dropped),

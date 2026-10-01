@@ -100,7 +100,7 @@ def spec(name):
     return _mark_endpoint_owner(s, p)
 
 
-def harness_command(spec):
+def harness_command(spec, model=None):
     """The full argv prefix that spawns this provider's harness, or None.
 
     Session-first (ADR-0005): the owner's deployments hold no API keys - model calls
@@ -112,6 +112,15 @@ def harness_command(spec):
     the seam falls back to key-env/OAuth HTTP. DR_TRANSPORT=http forces HTTP even
     when a harness exists, because a user who holds BOTH may prefer one socket to
     150 spawns.
+
+    MODEL SELECTION (2026-09-30): a harness that can take a model declares
+    `modelFlag` in its contract row; the EFFECTIVE model (DR_MODEL > --model >
+    defaultModel) is threaded into every spawn. Before this the model reached only
+    the HTTP body - a harness run silently used the CLI's own default, and --model
+    was accepted and ignored. `reasoningFlag` works the same way for effort:
+    DR_REASONING wins, then the row's reasoningDefault (glm-flash pins max; the
+    plain glm row deliberately declares none, so its spawns change only by gaining
+    an explicit -m of the model it already used).
     """
     mode = os.environ.get("DR_TRANSPORT", "").strip().lower()
     if mode == "http":
@@ -120,15 +129,24 @@ def harness_command(spec):
         return ["<stdio>"]  # sentinel: not a command; agent() speaks on stdin/stdout
     h = spec.get("harness") or {}
     cmd = h.get("command")
-    if not cmd:
-        return None
-    if shutil.which(cmd):
-        return [cmd] + list(h.get("args") or [])
+    # The threaded flags go BEFORE the row's args, never after: harness CLIs are
+    # argparse-shaped and a row's last arg is typically the prompt-taking flag
+    # (hermes: -z PROMPT). Appending after it makes the flag the prompt's value and
+    # the spawn dies on a usage error - caught by the first live glm-flash run
+    # (2026-09-30), which the argv-shape unit tests alone could not see.
+    pre = []
+    if h.get("modelFlag") and model:
+        pre += [h["modelFlag"], model]
+    level = os.environ.get("DR_REASONING", "").strip() or (h.get("reasoningDefault") or "")
+    if h.get("reasoningFlag") and level:
+        pre += [h["reasoningFlag"], level]
+    if cmd and shutil.which(cmd):
+        return [cmd] + pre + list(h.get("args") or [])
     env_cmd = os.environ.get(h.get("fallbackCommandEnv") or "", "").strip()
     if env_cmd:
         head = env_cmd.split()[0]
         if shutil.which(head) or os.path.exists(head):
-            return env_cmd.split() + list(h.get("args") or [])
+            return env_cmd.split() + pre + list(h.get("args") or [])
     return None
 
 
@@ -140,7 +158,15 @@ def run_harness(argv, prompt, timeout=300):
     the HTTP path - ADR-0001 applies to both transports equally. A non-zero exit
     raises RuntimeError and a timeout raises subprocess.TimeoutExpired; agent()'s
     retry loop treats both like any other failed attempt.
+
+    MAX-EFFORT SPAWNS GET 900s, not 300: measured on the first live glm-flash run
+    (2026-09-30), a max-reasoning call on a verify-sized prompt - every claim in one
+    request - exceeded 300s, burned all five attempts (25 minutes) and degraded the
+    run; small prompts answered in seconds on the same transport. The effort level
+    is already in the argv the seam built, so the stamina follows it.
     """
+    if "--reasoning" in argv and argv[argv.index("--reasoning") + 1] == "max":
+        timeout = max(timeout, 900)
     # Linux refuses any ONE argv string of 128 KiB or more (MAX_ARG_STRLEN), and an
     # exhaustive-depth synthesis prompt was measured at 119 KB (review 2026-09-27):
     # past the limit every attempt died on E2BIG and agent() retried it five times.
@@ -171,8 +197,15 @@ def _mark_endpoint_owner(s, p):
     evidence of anyone's semantics.
     """
     host = s["url"].split("/v1/messages")[0]
+    if p.get("explicitOnly"):
+        # A model variant's endpoint is its own family's - nothing about it is
+        # foreign, and adopting the base row's model here would silently un-pin
+        # glm-flash's whole point (2026-09-30).
+        return s
     for other, op in _CONTRACT["providers"].items():
-        if other == s["name"]:
+        if other == s["name"] or op.get("explicitOnly"):
+            # explicitOnly rows share their provider's endpoint by design: the same
+            # URL from the base row is not a foreign endpoint either.
             continue
         # The other provider's OWN endpoint, never its env override: under the shim
         # itself (ANTHROPIC_BASE_URL=api.z.ai while DR_PROVIDER=glm) the override
@@ -202,10 +235,14 @@ def select():
         return spec(explicit)
     # Inference: each provider's key environments are disjoint, so the set keys
     # vote. One vote is a decision; two are an ambiguity that must be refused
-    # aloud rather than resolved by dict order.
+    # aloud rather than resolved by dict order. A row marked explicitOnly (2026-09-30:
+    # glm-flash - the same Z.ai credential as glm, pinned to a model and effort)
+    # never votes: it is a variant of its provider, not another account, and letting
+    # it vote would turn every lone ZAI_API_KEY run into a refusal.
     voted = [(n, [e for e in _CONTRACT["providers"][n]["keyEnvs"]
                   if os.environ.get(e, "").strip()])
-             for n in names()]
+             for n in names()
+             if not _CONTRACT["providers"][n].get("explicitOnly")]
     voted = [(n, set_envs) for n, set_envs in voted if set_envs]
     if len(voted) == 1:
         return spec(voted[0][0])
@@ -312,8 +349,12 @@ def transport():
             # exists on the machine, IT is the power source and no credential is read
             # at all - the whole point is a run that holds no API key. Only the HTTP
             # fallback resolves a credential, so a session-powered describe() can
-            # never misname a key nobody set.
-            argv = harness_command(spec)
+            # never misname a key nobody set. The model threaded into the spawn is
+            # the EFFECTIVE one - DR_MODEL (which --model also sets) over the row's
+            # default - mirroring engine.MODULE's resolution exactly.
+            argv = harness_command(
+                spec, model=(os.environ.get("DR_MODEL", "").strip()
+                             or spec["default_model"]))
             if argv is not None:
                 stdio = argv == ["<stdio>"]
                 _TRANSPORT = dict(spec, scheme=("stdio" if stdio else "session"),
@@ -351,6 +392,23 @@ def current_scheme():
     if argv is None:
         return "http"
     return "stdio" if argv == ["<stdio>"] else "session"
+
+
+def reasoning_level():
+    """The effort a harness spawn would run at, '' when none applies. Pure, like
+    current_scheme(): recomputes the argv (a which() lookup, never a credential) so
+    stats() can label a max-effort run without resolving anything. '' covers stdio
+    (the window is the model; effort is the session's), HTTP, and harnesses that
+    declare no reasoningFlag."""
+    spec = select()
+    argv = harness_command(
+        spec, model=(os.environ.get("DR_MODEL", "").strip() or spec["default_model"]))
+    if not argv or argv == ["<stdio>"]:
+        return ""
+    flag = (spec.get("harness") or {}).get("reasoningFlag")
+    if flag and flag in argv:
+        return argv[argv.index(flag) + 1]
+    return ""
 
 
 def describe():

@@ -444,7 +444,7 @@ still works, but on a challenged IP it sees a scholarly-only slice of the web
 |---|---|
 | **CLI** | `python3 -m deepresearch --question "..."` |
 | **Claude Code** | `./install.sh claude-code` → `/deepresearch` |
-| **ZCode** | `./install.sh zcode` → `/deepresearch` — runs the pipeline **on the ZCode agent itself**, on the session's GLM subscription, no key: Mode A drives this repo's engine over stdio (`contrib/zcode-session/drive.sh`), Mode B imports its prompts and deterministic checkers so it cannot drift |
+| **ZCode** | `./install.sh zcode` → `/deepresearch` — no key: Mode A launches this repo's engine self-powered on **GLM-5.3-Flash at max effort** through the hermes harness (`contrib/zcode-session/drive.sh`, the 2026-09-30 default; `DR_TRANSPORT=stdio` opts into the window-as-model transport), Mode B imports its prompts and deterministic checkers so it cannot drift |
 | **Hermes** | `./install.sh hermes` → `/deepresearch` |
 
 `install.sh` symlinks rather than copies, deliberately: the two runtimes drifted five features apart when they were separate copies. The one exception is Hermes, whose skill loader never follows a symlink: it gets real files from `contrib/hermes/sync-skill.sh`, which `install.sh hermes` runs and which must be re-run after every `git pull` of the deployed checkout (`sync-skill.sh --check` says whether it is current).

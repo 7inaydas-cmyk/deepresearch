@@ -13,7 +13,18 @@
   "The glm baseUrl is the vendor's documented Anthropic-compatible endpoint. Nothing in",
   "this repo can verify an endpoint from a JSON file - preflight() and --selftest do",
   "that live, on the first call, and that is the only place the claim is checked.",
-  "SESSION TRANSPORT (ADR-0005): each provider may declare a harness - a CLI whose own login powers model calls. Resolution is session-FIRST: if the harness command resolves on this machine, deepresearch spawns it per call and never opens a socket; API-key HTTP is the fallback for headless machines with no logins. DR_TRANSPORT=http forces the old path. The owner's deployment reality is the spec: 'we don't use API keys - we use oauth or -p to power them.'"
+  "SESSION TRANSPORT (ADR-0005): each provider may declare a harness - a CLI whose own login powers model calls. Resolution is session-FIRST: if the harness command resolves on this machine, deepresearch spawns it per call and never opens a socket; API-key HTTP is the fallback for headless machines with no logins. DR_TRANSPORT=http forces the old path. The owner's deployment reality is the spec: 'we don't use API keys - we use oauth or -p to power them.'",
+  "",
+  "MODEL SELECTION ON THE HARNESS PATH (2026-09-30): a harness may",
+  "declare modelFlag / reasoningFlag / reasoningDefault; the seam threads",
+  "the effective model (DR_MODEL > --model > defaultModel) and the effort",
+  "(DR_REASONING > reasoningDefault) into every spawn. Before this, the",
+  "model reached only the HTTP body, and a harness run silently used the",
+  "CLI's own default - --model was accepted and ignored.",
+  "",
+  "explicitOnly rows (glm-flash) are model variants of their provider,",
+  "reachable by DR_PROVIDER name; they never vote in key inference -",
+  "a lone ZAI_API_KEY still infers glm."
  ],
  "default": "claude",
  "providers": {
@@ -65,7 +76,7 @@
     "anthropic-version": "2023-06-01"
    },
    "harness": {
-    "label": "hermes -p glm -z",
+    "label": "hermes -p glm -z -m <model>",
     "command": "hermes",
     "args": [
      "-p",
@@ -74,12 +85,48 @@
     ],
     "prompt": "positional",
     "fallbackCommandEnv": "DR_GLM_HARNESS",
-    "note": "The hermes gateway's one-shot mode with the zai provider selected. Powered by hermes' own held credential for the GLM plan - deepresearch holds nothing. Where hermes is not on PATH, DR_GLM_HARNESS carries a full command string (e.g. 'docker exec <container> /opt/hermes/.venv/bin/hermes')."
+    "note": "The hermes gateway's one-shot mode with the zai provider selected. Powered by hermes' own held credential for the GLM plan - deepresearch holds nothing. Where hermes is not on PATH, DR_GLM_HARNESS carries a full command string (e.g. 'docker exec <container> /opt/hermes/.venv/bin/hermes'). The modelFlag key threads the effective model (DR_MODEL / --model / defaultModel) into the spawn as -m.",
+    "modelFlag": "-m"
    },
    "harnessStdio": {
     "label": "zcode session (stdio)",
     "note": "The third transport (ADR-0005): the engine speaks newline-delimited JSON on stdin/stdout - one request {id, prompt, schema} out, one reply {id, reply} in - and the driving session window IS the model, on its own subscription. Selected with DR_TRANSPORT=stdio; no credential exists anywhere in the path, and calls are serialized behind a lock because one window is one rater."
    }
+  },
+  "glm-flash": {
+   "label": "Z.ai GLM (flash)",
+   "baseUrlEnv": "GLM_BASE_URL",
+   "baseUrl": "https://api.z.ai/api/anthropic",
+   "keyEnvs": [
+    "ZAI_API_KEY",
+    "GLM_API_KEY"
+   ],
+   "keyHelp": "https://z.ai",
+   "defaultModel": "glm-5.3-flash",
+   "systemPrefix": "You are GLM, a large language model trained by Z.ai, running as the model inside a multi-agent research harness.",
+   "staticHeaders": {
+    "anthropic-version": "2023-06-01"
+   },
+   "harness": {
+    "label": "hermes -p glm -z -m glm-5.3-flash --reasoning max",
+    "command": "hermes",
+    "args": [
+     "-p",
+     "glm",
+     "-z"
+    ],
+    "prompt": "positional",
+    "fallbackCommandEnv": "DR_GLM_HARNESS",
+    "note": "The hermes gateway's one-shot mode with the zai provider selected, pinned to glm-5.3-flash at MAX reasoning effort - the owner's 2026-09-30 default for every zcode-launched run (a measured flash run: 45 calls, 0 schema violations). DR_REASONING overrides the effort; DR_MODEL overrides the model; powered by hermes' own held credential, and DR_GLM_HARNESS carries the command where hermes is not on PATH (e.g. 'docker exec <container> /opt/hermes/.venv/bin/hermes').",
+    "modelFlag": "-m",
+    "reasoningFlag": "--reasoning",
+    "reasoningDefault": "max"
+   },
+   "harnessStdio": {
+    "label": "zcode session (stdio)",
+    "note": "The third transport (ADR-0005): the engine speaks newline-delimited JSON on stdin/stdout - one request {id, prompt, schema} out, one reply {id, reply} in - and the driving session window IS the model, on its own subscription. Selected with DR_TRANSPORT=stdio; no credential exists anywhere in the path, and calls are serialized behind a lock because one window is one rater."
+   },
+   "explicitOnly": true
   }
  }
 }
